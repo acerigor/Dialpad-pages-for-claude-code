@@ -3403,7 +3403,7 @@
       <button class="appt-seg-btn" id="seg-day" onclick="apptSetView('day')">Day</button>
     </div>
 
-    <button class="appt-nav-btn" onclick="navClick('Settings')" aria-label="Settings" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></button>
+    <button class="appt-nav-btn" onclick="window.location.href='../calendar_settings/calendar_settings.html'" aria-label="Calendar settings" title="Calendar settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></button>
 
     <div class="cal-legend">
       <span class="legend-item" data-type="appointment" onclick="toggleApptFilter('appointment')" title="Toggle Appointments"><span class="legend-dot chip-appointment"></span>Appointment</span>
@@ -3451,7 +3451,7 @@ function navClick(label){
   if(label==='Call'){ window.location.href='../call_history/coreconnect_call_history_v31.html'; return; }
   if(label==='Message'){ window.location.href='../coreconnect_message_history_v41/coreconnect_message_history_v41.html'; return; }
   if(label==='Voice mail'){ window.location.href='../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html'; return; }
-  if(label==='Settings'){ window.location.href='../calendar_settings/calendar_settings.html'; return; }
+  if(label==='Settings'){ window.location.href='../Settings/Settings_main_page/coreconnect_settings.html'; return; }
   showNavToast(label, 'Returning to '+label+' is not wired in this standalone page.');
 }
 

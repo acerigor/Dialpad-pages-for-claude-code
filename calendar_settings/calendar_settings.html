@@ -3516,7 +3516,8 @@ function navClick(label){
     'CRM':'../coreconnect_leads_v83/coreconnect_leads_v83.html',
     'Call':'../call_history/coreconnect_call_history_v31.html',
     'Message':'../coreconnect_message_history_v41/coreconnect_message_history_v41.html',
-    'Voice mail':'../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html'
+    'Voice mail':'../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
+    'Settings':'../Settings/Settings_main_page/coreconnect_settings.html'
   };
   if(routes[label]){ var u=routes[label]; if(csGuardNav(u)) window.location.href=u; return; }
   showNavToast(label,'Returning to '+label+' is not wired in this standalone page.');

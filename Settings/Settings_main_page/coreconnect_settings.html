@@ -3571,6 +3571,16 @@ document.addEventListener('keydown',(e)=>{
 
 function navClick(label){
   if(label === 'Settings') return; // already here
+  /* This page lives two folders deep (Settings/Settings_main_page/), so links use ../../ */
+  var routes={
+    'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
+    'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
+    'Call':'../../call_history/coreconnect_call_history_v31.html',
+    'Message':'../../coreconnect_message_history_v41/coreconnect_message_history_v41.html',
+    'Voice mail':'../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
+    'Appointments':'../../coreconnect_appointments/coreconnect_appointments.html'
+  };
+  if(routes[label]){ window.location.href=routes[label]; return; }
   showNavToast(label + ' is coming soon', 'This feature is under construction.');
 }
 

@@ -2884,6 +2884,92 @@
 .up-sub{font-size:13px;color:var(--mu);margin-top:3px;}
 .up-placeholder{font-size:13px;color:var(--mu);padding:40px;text-align:center;
   border:1px dashed var(--brd2);border-radius:12px;background:var(--sur);}
+/* ===== User Profile content ===== */
+.pf-section{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:18px 20px;margin-bottom:22px;}
+.pf-section-head{font-size:15px;font-weight:600;color:var(--tx);padding-bottom:14px;margin-bottom:16px;border-bottom:0.5px solid var(--brd);}
+.pf-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.pf-info-card{display:flex;align-items:center;gap:12px;background:var(--sur2);border:0.5px solid var(--brd);border-radius:10px;padding:14px 16px;min-width:0;}
+.pf-info-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.12);color:var(--ac2);}
+.pf-info-ic svg{width:20px;height:20px;}
+.pf-info-txt{min-width:0;}
+.pf-info-label{font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+.pf-info-val{font-size:14px;font-weight:500;color:var(--tx);margin-top:3px;word-break:break-word;}
+.pf-tabs{display:flex;gap:24px;border-bottom:0.5px solid var(--brd);margin-bottom:22px;overflow-x:auto;}
+.pf-tab{background:none;border:none;color:var(--mu);font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;padding:0 0 12px;border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;transition:color .12s;}
+.pf-tab:hover{color:var(--tx);}
+.pf-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.pf-pane{display:none;}
+.pf-pane.active{display:block;}
+.pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;max-width:1000px;}
+.pf-field{display:flex;flex-direction:column;gap:7px;min-width:0;}
+.pf-field>label{font-size:12.5px;color:var(--tx);font-weight:500;}
+.pf-field input,.pf-select{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;height:40px;padding:0 12px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
+.pf-field input:focus,.pf-select:focus{border-color:var(--ac);}
+.pf-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8aec4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;padding-right:36px;cursor:pointer;}
+.pf-select:hover{border-color:var(--ac);}
+/* While the dropdown is open (focused), flip the chevron to point up */
+.pf-select.pf-open{border-color:var(--ac);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236e9dff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 15 12 9 18 15'/%3E%3C/svg%3E");}
+.pf-select option{background:var(--sur2);color:var(--tx);}
+/* Custom dropdown (Department / User Role) — exact open/close arrow state */
+.pf-dd{position:relative;width:100%;}
+.pf-dd-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:40px;padding:0 12px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;outline:none;text-align:left;transition:border-color .15s;}
+.pf-dd-btn:hover{border-color:var(--ac);}
+.pf-dd.open .pf-dd-btn{border-color:var(--ac);}
+.pf-dd-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pf-dd-arrow{flex:none;width:16px;height:16px;color:#a8aec4;transition:transform .18s ease,color .15s;}
+.pf-dd.open .pf-dd-arrow{transform:rotate(180deg);color:#6e9dff;}
+.pf-dd-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;margin:0;padding:4px;list-style:none;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;box-shadow:0 12px 30px rgba(0,0,0,.45);max-height:240px;overflow:auto;display:none;}
+.pf-dd.open .pf-dd-menu{display:block;}
+.pf-dd-opt{padding:8px 10px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s;}
+.pf-dd-opt:hover{background:rgba(255,255,255,.06);}
+.pf-dd-opt.sel{background:var(--ac);color:#fff;}
+.pf-toggle-field{justify-content:flex-end;}
+.pf-toggle{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.pf-toggle input{position:absolute;opacity:0;width:0;height:0;}
+.pf-toggle-track{width:38px;height:21px;border-radius:11px;background:var(--sur2);border:0.5px solid var(--brd2);position:relative;flex-shrink:0;transition:background .2s,border-color .2s;}
+.pf-toggle-track::after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:var(--mu);top:2.5px;left:3px;transition:transform .2s,background .2s;}
+.pf-toggle input:checked + .pf-toggle-track{background:var(--ac);border-color:var(--ac);}
+.pf-toggle input:checked + .pf-toggle-track::after{transform:translateX(16px);background:#fff;}
+.pf-toggle-label{font-size:13px;color:var(--tx);}
+.pf-empty{padding:48px 20px;text-align:center;font-size:13px;color:var(--mu);border:1px dashed var(--brd2);border-radius:12px;background:var(--sur);}
+/* ── User Permission matrix ── */
+.pf-perm{display:flex;flex-direction:column;gap:18px;}
+.pf-perm-sec{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);}
+.pf-perm-sec-head{padding:11px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;letter-spacing:.2px;color:var(--tx);text-align:center;}
+.pf-perm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.pf-perm-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.pf-perm-tbl tbody td:first-child{min-width:160px;}
+.pf-perm-tbl th,.pf-perm-tbl td{padding:9px 12px;border-bottom:0.5px solid var(--brd2);}
+.pf-perm-tbl tr:last-child td{border-bottom:0;}
+.pf-perm-tbl thead th{font-size:11.5px;font-weight:600;color:var(--mu);background:rgba(255,255,255,.02);}
+.pf-perm-tbl thead th.pf-perm-colh{text-align:center;width:118px;cursor:pointer;user-select:none;transition:color .12s;}
+.pf-perm-tbl thead th.pf-perm-colh:hover{color:var(--tx);}
+/* Access / No-Access table: even thirds */
+.pf-acc-tbl thead th{width:33%;}
+.pf-acc-tbl thead th:first-child{width:34%;}
+.pf-perm-tbl thead th.pf-perm-colh .pf-perm-colh-in{display:inline-flex;flex-direction:column-reverse;align-items:center;gap:5px;line-height:1;}
+.pf-perm-tbl thead th:first-child{text-align:left;}
+.pf-perm-tbl tbody td:first-child{color:var(--tx);}
+.pf-perm-tbl tbody td.pf-perm-cell{text-align:center;}
+.pf-perm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
+@media (max-width:640px){
+  .pf-perm-tbl th,.pf-perm-tbl td{padding:9px 8px;}
+  .pf-perm-tbl thead th.pf-perm-colh{width:58px;}
+  .pf-perm-tbl tbody td:first-child{min-width:150px;}
+  .pf-acc-tbl thead th.pf-perm-colh{width:88px;}
+}
+/* custom checkbox */
+.pf-cbx{position:relative;display:inline-block;width:17px;height:17px;vertical-align:middle;cursor:pointer;}
+.pf-cbx input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.pf-cbx .pf-cbx-box{position:absolute;inset:0;border:1.5px solid var(--brd);border-radius:4px;background:var(--sur2);transition:background .12s,border-color .12s;}
+.pf-cbx .pf-cbx-box::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .12s;}
+.pf-cbx input:checked ~ .pf-cbx-box{background:var(--ac);border-color:var(--ac);}
+.pf-cbx input:checked ~ .pf-cbx-box::after{transform:rotate(45deg) scale(1);}
+.pf-cbx input:indeterminate ~ .pf-cbx-box{background:var(--ac);border-color:var(--ac);}
+.pf-cbx input:indeterminate ~ .pf-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
+.pf-cbx:hover .pf-cbx-box{border-color:var(--ac);}
+.pf-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:26px;}
+@media(max-width:760px){ .pf-grid{grid-template-columns:1fr;} .pf-toggle-field{justify-content:flex-start;} }
 /* Users page: role + status badges in each row */
 .u-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-right:6px;}
 .u-badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap;}
@@ -3068,16 +3154,92 @@
     <span class="set-page-title">User Profile</span>
   </div>
   <div class="set-scroll">
-    <!-- Selected user header -->
-    <div class="up-head">
-      <div class="up-avatar" id="profile-avatar">—</div>
-      <div class="up-headtxt">
-        <div class="up-name" id="profile-name">User Profile</div>
-        <div class="up-sub" id="profile-sub"></div>
+    <!-- User Information summary cards -->
+    <div class="pf-section">
+      <div class="pf-section-head">User Information</div>
+      <div class="pf-info-grid">
+        <div class="pf-info-card">
+          <div class="pf-info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="pf-info-txt"><div class="pf-info-label">Name</div><div class="pf-info-val" id="pf-card-name">—</div></div>
+        </div>
+        <div class="pf-info-card">
+          <div class="pf-info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+          <div class="pf-info-txt"><div class="pf-info-label">User Role</div><div class="pf-info-val" id="pf-card-role">—</div></div>
+        </div>
+        <div class="pf-info-card">
+          <div class="pf-info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div>
+          <div class="pf-info-txt"><div class="pf-info-label">Email</div><div class="pf-info-val" id="pf-card-email">—</div></div>
+        </div>
+        <div class="pf-info-card">
+          <div class="pf-info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="pf-info-txt"><div class="pf-info-label">Mobile</div><div class="pf-info-val" id="pf-card-mobile">—</div></div>
+        </div>
       </div>
     </div>
-    <!-- SHELL — profile content will be built from the supplied design -->
-    <div class="up-placeholder" id="profile-content">Profile details coming soon.</div>
+
+    <!-- Tabs -->
+    <div class="pf-tabs">
+      <button class="pf-tab active" data-tab="general" onclick="pfSwitchTab('general')">General Info</button>
+      <button class="pf-tab" data-tab="perm" onclick="pfSwitchTab('perm')">User Permission</button>
+      <button class="pf-tab" data-tab="lead" onclick="pfSwitchTab('lead')">User Lead Permission</button>
+      <button class="pf-tab" data-tab="tab" onclick="pfSwitchTab('tab')">User Tab Permission</button>
+    </div>
+
+    <!-- General Info pane -->
+    <div class="pf-pane active" data-pane="general">
+      <div class="pf-grid">
+        <div class="pf-field"><label for="pf-name">Name</label><input type="text" id="pf-name" autocomplete="off" /></div>
+        <div class="pf-field"><label for="pf-email">Email</label><input type="email" id="pf-email" autocomplete="off" /></div>
+        <div class="pf-field"><label>Departments</label>
+          <div class="pf-dd" id="pf-dept" data-value="Sales">
+            <button type="button" class="pf-dd-btn" aria-haspopup="listbox" aria-expanded="false" onclick="pfToggleDD(this)">
+              <span class="pf-dd-val">Sales</span>
+              <svg class="pf-dd-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <ul class="pf-dd-menu" role="listbox">
+              <li class="pf-dd-opt" role="option" data-value="Sales">Sales</li>
+              <li class="pf-dd-opt" role="option" data-value="Service">Service</li>
+              <li class="pf-dd-opt" role="option" data-value="Finance">Finance</li>
+              <li class="pf-dd-opt" role="option" data-value="BDC">BDC</li>
+              <li class="pf-dd-opt" role="option" data-value="Management">Management</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pf-field"><label>User Role</label>
+          <div class="pf-dd" id="pf-role" data-value="Sales Manager">
+            <button type="button" class="pf-dd-btn" aria-haspopup="listbox" aria-expanded="false" onclick="pfToggleDD(this)">
+              <span class="pf-dd-val">Sales Manager</span>
+              <svg class="pf-dd-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <ul class="pf-dd-menu" role="listbox">
+              <li class="pf-dd-opt" role="option" data-value="Sales Manager">Sales Manager</li>
+              <li class="pf-dd-opt" role="option" data-value="Sales Rep">Sales Rep</li>
+              <li class="pf-dd-opt" role="option" data-value="BDC Agent">BDC Agent</li>
+              <li class="pf-dd-opt" role="option" data-value="Admin">Admin</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pf-field"><label for="pf-pass">Password</label><input type="password" id="pf-pass" value="********" autocomplete="new-password" /></div>
+        <div class="pf-field"><label for="pf-pass2">Confirm Password</label><input type="password" id="pf-pass2" value="********" autocomplete="new-password" /></div>
+        <div class="pf-field"><label for="pf-mobile">Mobile</label><input type="tel" id="pf-mobile" autocomplete="off" /></div>
+        <div class="pf-field"><label for="pf-ext">Extension</label><input type="text" id="pf-ext" autocomplete="off" /></div>
+        <div class="pf-field"><label for="pf-phone">Phone Number</label><select id="pf-phone" class="pf-select"></select></div>
+        <div class="pf-field pf-toggle-field">
+          <label class="pf-toggle"><input type="checkbox" id="pf-sendcalls" /><span class="pf-toggle-track"></span><span class="pf-toggle-label">Send calls to Personal Number</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permission panes -->
+    <div class="pf-pane" data-pane="perm"><div id="pf-perm-root" class="pf-perm"></div></div>
+    <div class="pf-pane" data-pane="lead"><div id="pf-lead-root" class="pf-perm"></div></div>
+    <div class="pf-pane" data-pane="tab"><div id="pf-tab-root" class="pf-perm"></div></div>
+
+    <!-- Footer -->
+    <div class="pf-foot">
+      <button class="modal-cancel" onclick="pfCancel()">Cancel</button>
+      <button class="modal-save" id="pf-save-btn" onclick="pfUpdate()">Update</button>
+    </div>
   </div>
 </div>
 
@@ -3472,24 +3634,344 @@ function hideNavToast(){
 
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });
 
-// ── USER PROFILE (shell) ──
-// Reads ?key=<teamKey> and shows the selected user in the header. The rest of the
-// profile UI will be built from the supplied design.
-(function(){
-  var key  = new URLSearchParams(window.location.search).get('key');
-  var team = (window.CCLeads && CCLeads.TEAM) || [];
-  var u    = team.find(function(x){ return x.key === key; });
-  var nameEl = document.getElementById('profile-name');
-  var subEl  = document.getElementById('profile-sub');
-  var avEl   = document.getElementById('profile-avatar');
-  if(u){
-    if(nameEl) nameEl.textContent = u.name || 'User Profile';
-    if(subEl)  subEl.textContent  = [u.role, u.email].filter(Boolean).join(' · ');
-    if(avEl){
-      var p = String(u.name||'').trim().split(/\s+/);
-      avEl.textContent = ((((p[0]||'')[0])||'') + (((p[1]||'')[0])||'')).toUpperCase() || '?';
-      avEl.style.background = u.color || '#4f7cff';
-    }
-  }
+// ── USER PROFILE ──
+var _pfParams = new URLSearchParams(window.location.search);
+var PF_KEY = _pfParams.get('key');
+var PF_NEW = !PF_KEY || _pfParams.get('new')==='1';   // create-user mode when no key
+function _pfTeam(){ return (window.CCLeads && CCLeads.TEAM) || []; }
+function _pfUser(){ return _pfTeam().find(function(x){ return x.key === PF_KEY; }); }
+function _pfDigits(p){ return String(p||'').replace(/\D/g,''); }
+function _pfFmtPhone(p){ var d=_pfDigits(p); return d.length===10 ? '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6) : (p||''); }
+function pfSwitchTab(tab){
+  document.querySelectorAll('.pf-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===tab); });
+  document.querySelectorAll('.pf-pane').forEach(function(p){ p.classList.toggle('active', p.dataset.pane===tab); });
+}
+function _pfSel(id, val){
+  var el=document.getElementById(id); if(!el || val==null || val==='') return;
+  if(el.classList && el.classList.contains('pf-dd')){ _pfDDSet(el, val); return; }
+  for(var i=0;i<el.options.length;i++){ if(el.options[i].text===val){ el.selectedIndex=i; return; } }
+  var o=document.createElement('option'); o.text=val; el.add(o); el.value=val;
+}
+// Read a field value whether it's a native <select>/<input> or a custom .pf-dd dropdown.
+function _pfGetVal(id){ var el=document.getElementById(id); if(!el) return ''; if(el.classList && el.classList.contains('pf-dd')) return el.dataset.value||''; return el.value||''; }
+// Set the chosen value + visible label on a custom dropdown (adds the option if it's new).
+function _pfDDSet(dd, val){
+  if(!dd) return; dd.dataset.value = val;
+  var opts=dd.querySelectorAll('.pf-dd-opt'), match=null;
+  opts.forEach(function(o){ if(o.dataset.value===val) match=o; o.classList.toggle('sel', o.dataset.value===val); });
+  if(!match && val){ var ul=dd.querySelector('.pf-dd-menu'); var li=document.createElement('li'); li.className='pf-dd-opt sel'; li.setAttribute('role','option'); li.dataset.value=val; li.textContent=val; li.addEventListener('click', function(){ _pfDDSet(dd, val); _pfCloseDD(dd); }); ul.appendChild(li); }
+  var lbl=dd.querySelector('.pf-dd-val'); if(lbl) lbl.textContent = val || '—';
+}
+function _pfCloseDD(dd){ dd.classList.remove('open'); var b=dd.querySelector('.pf-dd-btn'); if(b) b.setAttribute('aria-expanded','false'); }
+function _pfCloseAllDD(){ document.querySelectorAll('.pf-dd.open').forEach(_pfCloseDD); }
+// Toggle a custom dropdown open/closed (closing any other open one first).
+function pfToggleDD(btn){
+  var dd=btn.closest('.pf-dd'); var wasOpen=dd.classList.contains('open');
+  _pfCloseAllDD();
+  if(!wasOpen){ dd.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+}
+function pfInitDropdowns(){
+  document.querySelectorAll('.pf-dd').forEach(function(dd){
+    dd.querySelectorAll('.pf-dd-opt').forEach(function(o){
+      o.addEventListener('click', function(){ _pfDDSet(dd, o.dataset.value); _pfCloseDD(dd); });
+    });
+  });
+  // Close on outside click or Escape so the arrow flips back down the instant the menu closes.
+  document.addEventListener('mousedown', function(e){ if(!e.target.closest('.pf-dd')) _pfCloseAllDD(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') _pfCloseAllDD(); });
+}
+function _pfVal(id, val){ var e=document.getElementById(id); if(e) e.value = (val==null?'':val); }
+function _pfTxt(id, val){ var e=document.getElementById(id); if(e) e.textContent = val; }
+// Keep the top User Information cards in sync with the form (live, for both create + edit).
+// ── User Permission matrix ──
+var PF_PERMS=['view','create','edit','delete'];
+var PF_PERM_SECTIONS=[
+  {key:'default', title:'Default', on:true, rows:[
+    ['dialpad_overview','Dialpad Overview Page'],['sms_template','User SMS Template CRUD Page'],
+    ['email_template','Email Template CRUD Page'],['label_flag','Label Flag CRUD Page'],
+    ['dialpad_library','Dialpad Library CRUD Page']
+  ]},
+  {key:'dialpad', title:'Dialpad', on:true, rows:[
+    ['biz_card_loc','Business Card Display Location'],['call_history','Call History Tab'],
+    ['msg_history','Message History Tab'],['voicemail','Voicemail Tab'],['crm','CRM Tab'],
+    ['send_biz_card','Send Businessage card Tab'],['dialpad_stat','Dialpad Stat Tab'],['appointment','Appointment Tab']
+  ]},
+  {key:'contact', title:'Contact', on:true, rows:[
+    ['manage_label_flag','Manage Label Flag'],['contact_page','Contact Page']
+  ]},
+  {key:'dialpad_stats', title:'Dialpad Stats', on:true, rows:[
+    ['talk_time','Talk Time Chart'],['personal_missed','Personal Missed Call Chart'],
+    ['outgoing_calls','Outgoing Calls Chart'],['incoming_calls','Incoming Calls Chart'],
+    ['outgoing_text','Outgoing Text Chart'],['incoming_text','Incoming Text Chart'],
+    ['dept_missed','Department Missed Call Chart']
+  ]},
+  {key:'widgets', title:'Widgets', on:false, rows:[
+    ['w_out_call','Allow to View outgoing call'],['w_out_text','Allow to View outgoing text'],
+    ['w_out_talktime','Allow to View outgoing talktime'],['w_in_call','Allow to View incoming call'],
+    ['w_in_text','Allow to View incoming text'],['w_in_talktime','Allow to View incoming talktime'],
+    ['w_total_talktime','Allow to View total talktime'],['w_no_attempt','Allow to View no attempt lead'],
+    ['w_assign_leads','Allow to View Assign leads'],['w_unseen_missed','Allow to View Unseen Missed call'],
+    ['w_unseen_msg','Allow to View Unseen messages'],['w_idle_time','Allow to View Idle Time Chart'],
+    ['w_sold_inv','Allow to View Sold inventory Chart'],['w_calls_chart','Allow to View Calls Chart Chart'],
+    ['w_texts_chart','Allow to View Texts Chart Chart'],['w_talktimes_chart','Allow to View TalkTimes Chart'],
+    ['w_sales_missed','Allow to View Sales Missed calls'],['w_sales_passed','Allow to View Sales Passed Missed calls'],
+    ['w_sales_accepted','Allow to View Sales Accepted calls'],['w_sales_in_msg','Allow to View Sales Incoming messages'],
+    ['w_sales_out_msg','Allow to View Sales Outgoing messages'],['w_call_volume','Allow to View Call Volume Chart'],
+    ['w_all_stats','Allow to View All User\'s Statistics'],['w_lead_vendor','Allow to View Lead Chart Based On Vendor Cost'],
+    ['w_sales_out_email','Allow to View Sales Outgoing Email'],['w_sales_in_email','Allow to View Sales Incoming Email'],
+    ['w_ai_out_sms','Allow to View AI Outgoing SMS'],['w_wallboard','Allow to View Wallboard'],
+    ['w_leads_chart','Allow to View Leads Chart'],['w_admin_widget','Allow to View Admin\'s Widget'],
+    ['w_leads_cars_sold','Allow to View Leads Based on Cars Sold']
+  ]},
+  {key:'settings', title:'Settings', on:false, rows:[
+    ['alert_setting','Alert Setting Page'],['desking_module','Desking Module Page'],
+    ['ai_setting','AI Setting Page'],['clear_call_queue','Clear Call Queue']
+  ]},
+  {key:'calendar_setting', title:'Calendar Setting', on:false, rows:[
+    ['send_appt_alerts','Send All Appointment Alerts']
+  ]}
+];
+// User Lead Permission — one big "CRM" section; default ON except the 6 rows marked false.
+var PF_LEAD_SECTIONS=[
+  {key:'crm', title:'CRM', on:true, rows:[
+    ['send_mass_sms','Allow To Send Mass SMS CRM Lead'],['send_mass_email','Allow To Send Mass Email CRM Lead'],
+    ['active_inactive','Allow To Active Inactive CRM Lead'],['see_date_col','Allow To See Date Column'],
+    ['see_assign_col','Allow To See Assign Column'],['assign_label','Allow To Assign Label To CRM Lead'],
+    ['see_name_col','Allow To See Name Column'],['see_stock_col','Allow To See Stock Number Column'],
+    ['see_vehicle_col','Allow To See Vehicle Column'],['see_number_email_col','Allow To See Number/Email Column'],
+    ['show_sms_overview','Allow To Show SMS Overview'],['show_talktime_overview','Allow To Show Talktime Overview'],
+    ['show_email_overview','Allow To Show Email Overview'],['make_call','Allow To Make a Call'],
+    ['send_message','Allow To Send Message'],['add_comments','Allow To Add Comments'],
+    ['favorite_lead','Allow To Favorite Lead'],['edit_lead','Allow To Edit Lead'],
+    ['bookmark_lead','Allow To Bookmark Lead'],['change_status','Allow To Change Status'],
+    ['view_assigned','Allow To View All Assigned Leads'],['view_unassigned','Allow To View All Unassigned Leads'],
+    ['see_last_attempt_col','Allow To See Last Attempt Column'],['see_last_engaged_col','Allow To See Last Engaged Column'],
+    ['upload_lead_data','Allow To Upload Lead Data',false],['delete_messages','Allow To Delete Messages',false],
+    ['push_deal','Allow To Push Deal',false],['see_last_attempt_hours','Allow To See Last Attempt Hours Column'],
+    ['see_last_engaged_hours','Allow To See Last Engaged Hours Column'],['update_source','Allow To Update Source',false],
+    ['merge_duplicate','Allow To Merge Duplicate Leads',false],['see_created_time','Allow To See Created Time'],
+    ['see_first_name','Allow To See First Name'],['see_last_name','Allow To See Last Name'],
+    ['see_dob','Allow To See DOB'],['see_check_ssn','Allow To See Check SSN'],
+    ['see_check_itin','Allow To See Check ITIN'],['see_check_no_ssn','Allow To See Check No SSN'],
+    ['see_country','Allow To See Country'],['see_ssn','Allow To See SSN',false],
+    ['see_gross_income','Allow To See Gross Anual Income'],['see_gross_income_time','Allow To See Gross Anual Income Time'],
+    ['see_sec_income','Allow To See Senondary Anual Income'],['see_income_type','Allow To See Income Type'],
+    ['see_sec_income_time','Allow To See Senondary Anual Income Time'],['see_sec_income_source','Allow To See Senondary Income Source'],
+    ['see_license_number','Allow To See License Number'],['see_license_state','Allow To See License State'],
+    ['see_cur_address','Allow To See Current Address'],['see_cur_city','Allow To See Current City'],
+    ['see_cur_region','Allow To See Current Region Code/State'],['see_cur_postal','Allow To See Current Postal Code'],
+    ['see_cur_res_type','Allow To See Current Recidence Type'],['see_cur_res_rent','Allow To See Current Recidence Rent Mortgage'],
+    ['see_cur_res_year','Allow To See Current Recidence Year'],['see_cur_res_month','Allow To See Current Recidence Month'],
+    ['see_cur_landlord_name','Allow To See Current Landlord Name'],['see_cur_landlord_phone','Allow To See Current Landloard Phone'],
+    ['see_prev_address','Allow To See Previous Address'],['see_prev_city','Allow To See Previous City'],
+    ['see_prev_region','Allow To See Previous Region Code/State'],['see_prev_postal','Allow To See Previous Postal Code'],
+    ['see_prev_res_year','Allow To See Previous Recidence Year'],['see_prev_res_month','Allow To See Previous Recidence Month'],
+    ['see_cur_emp_name','Allow To See Current Employer Name'],['see_cur_emp_phone','Allow To See Current Employer Phone'],
+    ['see_cur_emp_address','Allow To See Current Employer Address'],['see_cur_emp_city','Allow To See Current Employer City'],
+    ['see_cur_emp_state','Allow To See Current Employer State'],['see_cur_emp_zip','Allow To See Current Employer Zip'],
+    ['see_cur_emp_status','Allow To See Current Employment Status'],['see_cur_job_title','Allow To See Current Job Title'],
+    ['see_cur_job_type','Allow To See Current Job Type'],['see_cur_emp_year','Allow To See Current Employment Year'],
+    ['see_cur_emp_month','Allow To See Current Employment Month'],['see_prev_emp_name','Allow To See Previous Employer Name'],
+    ['see_prev_emp_phone','Allow To See Previous Employer Phone'],['see_prev_emp_address','Allow To See Previous Employer Address'],
+    ['see_prev_emp_city','Allow To See Previous Employer City'],['see_prev_emp_state','Allow To See Previous Employer State'],
+    ['see_prev_emp_zip','Allow To See Previous Employer Zip'],['see_prev_emp_status','Allow To See Previous Employment Status'],
+    ['see_prev_job_title','Allow To See Previous Job Title'],['see_prev_emp_year','Allow To See Previous Employment Year'],
+    ['see_prev_emp_month','Allow To See Previous Employment Month'],['see_trim','Allow To See Trim'],
+    ['see_vin','Allow To See VIN'],['see_is_trade','Allow To See Is Trade'],
+    ['see_trade_info','Allow To See Trade Info'],['see_price','Allow To See Price'],
+    ['see_mileage','Allow To See Mileage'],['see_down_payment','Allow To See Down Payment'],
+    ['see_terms','Allow To See Terms'],['see_fico_score','Allow To See Fico Score']
+  ]}
+];
+// User Tab Permission — Access / No Access (mutually exclusive). Default = Access (on).
+var PF_TAB_SECTIONS=[
+  {key:'custom_tab', title:'Custom Tab', on:true, rows:[
+    ['my_custom','My Custom'],['view_all_leads','View All Leads'],['my_leads','My Leads'],
+    ['no_attempt_leads','No Attempt Leads'],['no_response_leads','No Response Leads'],['inactive_leads','Inactive Leads']
+  ]}
+];
+function _pfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _pfPermCbx(extra){ return '<label class="pf-cbx">'+extra+'<span class="pf-cbx-box"></span></label>'; }
+// Build a permission matrix into `rootId` from `sections`; `saved` is an optional
+// perms map { "sec.row": {view,create,edit,delete} }. Row tuples are [key,label]
+// or [key,label,defaultBool] to override the section default for that row.
+function pfBuildPermMatrix(sections, rootId, saved){
+  saved = saved || {};
+  var html='';
+  sections.forEach(function(sec){
+    html+='<div class="pf-perm-sec" data-sec="'+sec.key+'">';
+    html+='<div class="pf-perm-sec-head">'+_pfEsc(sec.title)+'</div>';
+    html+='<div class="pf-perm-scroll"><table class="pf-perm-tbl"><thead><tr><th>Permission</th>';
+    PF_PERMS.forEach(function(p){
+      var lbl=p.charAt(0).toUpperCase()+p.slice(1);
+      html+='<th class="pf-perm-colh" data-col="'+p+'" onclick="pfToggleCol(\''+sec.key+'\',\''+p+'\')"><span class="pf-perm-colh-in">'+_pfPermCbx('<input type="checkbox" class="pf-col-master" data-col="'+p+'" tabindex="-1" />')+lbl+'</span></th>';
+    });
+    html+='</tr></thead><tbody>';
+    sec.rows.forEach(function(r){
+      var rowKey=r[0], rowLbl=r[1], rowDef=(r.length>2 ? !!r[2] : sec.on), mapKey=sec.key+'.'+rowKey;
+      var rec=saved[mapKey];
+      html+='<tr data-row="'+rowKey+'"><td>'+_pfEsc(rowLbl)+'</td>';
+      PF_PERMS.forEach(function(p){
+        var on = rec ? !!rec[p] : rowDef;
+        html+='<td class="pf-perm-cell">'+_pfPermCbx('<input type="checkbox" class="pf-perm-cbx" data-sec="'+sec.key+'" data-row="'+rowKey+'" data-perm="'+p+'"'+(on?' checked':'')+' onchange="pfRefreshColMaster(\''+sec.key+'\',\''+p+'\')" />')+'</td>';
+      });
+      html+='</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+  var root=document.getElementById(rootId); if(root){ root.innerHTML=html; }
+  sections.forEach(function(sec){ PF_PERMS.forEach(function(p){ pfRefreshColMaster(sec.key,p); }); });
+}
+function _pfColBoxes(sec,p){ return Array.prototype.slice.call(document.querySelectorAll('.pf-perm-cbx[data-sec="'+sec+'"][data-perm="'+p+'"]')); }
+// Toggle a whole column within a section (all-on if any are off, else all-off).
+function pfToggleCol(sec,p){
+  var boxes=_pfColBoxes(sec,p); if(!boxes.length) return;
+  var anyOff=boxes.some(function(b){ return !b.checked; });
+  boxes.forEach(function(b){ b.checked=anyOff; });
+  pfRefreshColMaster(sec,p);
+}
+// Update the column-header master checkbox (checked / unchecked / indeterminate).
+function pfRefreshColMaster(sec,p){
+  var boxes=_pfColBoxes(sec,p);
+  var th=document.querySelector('.pf-perm-sec[data-sec="'+sec+'"] .pf-perm-colh[data-col="'+p+'"] .pf-col-master');
+  if(!th) return;
+  var checked=boxes.filter(function(b){ return b.checked; }).length;
+  th.checked = checked===boxes.length && boxes.length>0;
+  th.indeterminate = checked>0 && checked<boxes.length;
+}
+// Read a matrix (within `rootId`) into a perms map for saving — config-agnostic.
+function pfCollectMatrix(rootId){
+  var map={}, root=document.getElementById(rootId); if(!root) return map;
+  Array.prototype.forEach.call(root.querySelectorAll('.pf-perm-cbx'), function(b){
+    var key=b.dataset.sec+'.'+b.dataset.row;
+    (map[key]||(map[key]={}))[b.dataset.perm]=!!b.checked;
+  });
+  return map;
+}
+// ── Access / No-Access matrix (User Tab Permission) ──
+var PF_ACC_COLS=[['access','Access'],['noaccess','No Access']];
+// Build a 2-column mutually-exclusive Access/No-Access matrix into `rootId`.
+// `saved` is { "sec.row": true|false } (true = Access).
+function pfBuildAccessMatrix(sections, rootId, saved){
+  saved = saved || {};
+  var html='';
+  sections.forEach(function(sec){
+    html+='<div class="pf-perm-sec" data-sec="'+sec.key+'">';
+    html+='<div class="pf-perm-sec-head">'+_pfEsc(sec.title)+'</div>';
+    html+='<div class="pf-perm-scroll"><table class="pf-perm-tbl pf-acc-tbl"><thead><tr><th>Permission</th>';
+    PF_ACC_COLS.forEach(function(c){
+      html+='<th class="pf-perm-colh" data-col="'+c[0]+'" onclick="pfSetAccessCol(\''+sec.key+'\',\''+c[0]+'\')"><span class="pf-perm-colh-in">'+_pfPermCbx('<input type="checkbox" class="pf-col-master" data-col="'+c[0]+'" tabindex="-1" />')+c[1]+'</span></th>';
+    });
+    html+='</tr></thead><tbody>';
+    sec.rows.forEach(function(r){
+      var rowKey=r[0], rowLbl=r[1], rowDef=(r.length>2 ? !!r[2] : sec.on), mapKey=sec.key+'.'+rowKey;
+      var access = (mapKey in saved) ? !!saved[mapKey] : rowDef;
+      html+='<tr data-row="'+rowKey+'"><td>'+_pfEsc(rowLbl)+'</td>';
+      PF_ACC_COLS.forEach(function(c){
+        var on = (c[0]==='access') ? access : !access;
+        html+='<td class="pf-perm-cell">'+_pfPermCbx('<input type="checkbox" class="pf-acc-cbx" data-sec="'+sec.key+'" data-row="'+rowKey+'" data-acc="'+c[0]+'"'+(on?' checked':'')+' onchange="pfAccessChange(\''+sec.key+'\',\''+rowKey+'\',\''+c[0]+'\')" />')+'</td>';
+      });
+      html+='</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+  var root=document.getElementById(rootId); if(root){ root.innerHTML=html; }
+  sections.forEach(function(sec){ PF_ACC_COLS.forEach(function(c){ pfRefreshAccMaster(sec.key,c[0]); }); });
+}
+function _pfAccBox(sec,row,col){ return document.querySelector('.pf-acc-cbx[data-sec="'+sec+'"][data-row="'+row+'"][data-acc="'+col+'"]'); }
+// Enforce exactly-one (radio-like) when a cell is clicked.
+function pfAccessChange(sec,row,which){
+  var acc=_pfAccBox(sec,row,'access'), no=_pfAccBox(sec,row,'noaccess'); if(!acc||!no) return;
+  var isAccess = (which==='access');
+  acc.checked=isAccess; no.checked=!isAccess;
+  pfRefreshAccMaster(sec,'access'); pfRefreshAccMaster(sec,'noaccess');
+}
+function _pfAccColBoxes(sec,col){ return Array.prototype.slice.call(document.querySelectorAll('.pf-acc-cbx[data-sec="'+sec+'"][data-acc="'+col+'"]')); }
+// Set every row in a section to a given column (Access or No Access).
+function pfSetAccessCol(sec,col){
+  var rows=document.querySelectorAll('.pf-perm-sec[data-sec="'+sec+'"] tbody tr');
+  Array.prototype.forEach.call(rows, function(tr){ pfAccessChange(sec, tr.dataset.row, col); });
+}
+function pfRefreshAccMaster(sec,col){
+  var boxes=_pfAccColBoxes(sec,col);
+  var th=document.querySelector('.pf-perm-sec[data-sec="'+sec+'"] .pf-perm-colh[data-col="'+col+'"] .pf-col-master');
+  if(!th) return;
+  var checked=boxes.filter(function(b){ return b.checked; }).length;
+  th.checked = checked===boxes.length && boxes.length>0;
+  th.indeterminate = checked>0 && checked<boxes.length;
+}
+// Read an access matrix into { "sec.row": true|false } (true = Access).
+function pfCollectAccessMatrix(rootId){
+  var map={}, root=document.getElementById(rootId); if(!root) return map;
+  Array.prototype.forEach.call(root.querySelectorAll('.pf-acc-cbx[data-acc="access"]'), function(b){
+    map[b.dataset.sec+'.'+b.dataset.row]=!!b.checked;
+  });
+  return map;
+}
+function pfSyncCards(){
+  var name=document.getElementById('pf-name').value.trim();
+  var email=document.getElementById('pf-email').value.trim();
+  var mob=document.getElementById('pf-mobile').value.trim();
+  _pfTxt('pf-card-name', name||'—');
+  _pfTxt('pf-card-role', _pfGetVal('pf-role')||'—');
+  _pfTxt('pf-card-email', email||'—');
+  _pfTxt('pf-card-mobile', _pfFmtPhone(mob)||'—');
+}
+(function pfInit(){
+  var u=PF_NEW ? null : _pfUser();
+  _pfVal('pf-name', u ? u.name : '');
+  _pfVal('pf-email', u ? u.email : '');
+  _pfSel('pf-dept', u ? (u.department||'Sales') : 'Sales');
+  _pfSel('pf-role', u ? u.role : '');
+  _pfVal('pf-mobile', u ? _pfDigits(u.phone) : '');
+  _pfVal('pf-ext', u ? (u.extension||'') : '');
+  var ph=document.getElementById('pf-phone');
+  if(ph){ ph.innerHTML=''; var o=document.createElement('option'); o.text=(u?_pfDigits(u.phone):'')||'—'; ph.add(o); }
+  var sc=document.getElementById('pf-sendcalls'); if(sc) sc.checked = !!(u && u.sendCalls);
+  var pt=document.querySelector('.set-page-title'); if(pt) pt.textContent = PF_NEW ? 'New User' : (u ? u.name : 'User Profile');
+  var saveBtn=document.getElementById('pf-save-btn'); if(saveBtn) saveBtn.textContent = PF_NEW ? 'Create user' : 'Update';
+  pfBuildPermMatrix(PF_PERM_SECTIONS, 'pf-perm-root', u && u.perms ? u.perms : null);
+  pfBuildPermMatrix(PF_LEAD_SECTIONS, 'pf-lead-root', u && u.leadPerms ? u.leadPerms : null);
+  pfBuildAccessMatrix(PF_TAB_SECTIONS, 'pf-tab-root', u && u.tabPerms ? u.tabPerms : null);
+  pfSyncCards();
+  pfInitDropdowns();
+  // Live-update the summary cards as the form is edited.
+  ['pf-name','pf-email','pf-mobile'].forEach(function(id){ var e=document.getElementById(id); if(e){ e.addEventListener('input', pfSyncCards); } });
+  document.querySelector('#pf-role .pf-dd-menu').addEventListener('click', pfSyncCards);
+  // Remaining native <select> (Phone Number): flip the chevron up while focused/open.
+  document.querySelectorAll('.pf-select').forEach(function(s){
+    s.addEventListener('focus', function(){ this.classList.add('pf-open'); });
+    s.addEventListener('blur',  function(){ this.classList.remove('pf-open'); });
+    s.addEventListener('change', function(){ this.blur(); });
+  });
 })();
+function pfUpdate(){
+  var name=document.getElementById('pf-name').value.trim();
+  var patch={
+    name: name,
+    email: document.getElementById('pf-email').value.trim(),
+    role: _pfGetVal('pf-role'),
+    department: _pfGetVal('pf-dept'),
+    phone: document.getElementById('pf-mobile').value.trim(),
+    extension: document.getElementById('pf-ext').value.trim(),
+    sendCalls: document.getElementById('pf-sendcalls').checked,
+    perms: pfCollectMatrix('pf-perm-root'),
+    leadPerms: pfCollectMatrix('pf-lead-root'),
+    tabPerms: pfCollectAccessMatrix('pf-tab-root')
+  };
+  if(PF_NEW){
+    if(!name){ var n=document.getElementById('pf-name'); if(n){ pfSwitchTab('general'); n.focus(); } return; }
+    patch.status='Active';
+    if(window.CCLeads && CCLeads.addTeamMember) CCLeads.addTeamMember(patch);
+    if(typeof showNavToast==='function') showNavToast('User added', name+' was added.');
+  } else {
+    var u=_pfUser(); if(!u){ pfCancel(); return; }
+    if(!patch.name) patch.name=u.name;
+    if(!patch.phone) patch.phone=u.phone;
+    if(window.CCLeads && CCLeads.updateTeamMember) CCLeads.updateTeamMember(PF_KEY, patch);
+    if(typeof showNavToast==='function') showNavToast('Profile updated', patch.name+' was saved.');
+  }
+  setTimeout(function(){ window.location.href='../Users/coreconnect_user.html'; }, 550);
+}
+function pfCancel(){ window.location.href='../Users/coreconnect_user.html'; }
 </script>

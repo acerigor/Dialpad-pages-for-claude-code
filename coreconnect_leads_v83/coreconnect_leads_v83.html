@@ -4695,6 +4695,7 @@ function getSortValue(lead, col){
     case 'lastEngaged': return lead.lastEngagedAt ? lead.lastEngagedAt.getTime() : null;
     case 'created':     return lead.createdAt ? lead.createdAt.getTime() : 0;
     case 'assign':      return (lead.assign || '').toLowerCase();
+    case 'label':       { var _l0=(typeof labelsForLead==='function')?labelsForLead(lead.no)[0]:null; return _l0 ? _l0.name.toLowerCase() : null; }
     case 'contact':     return (lead.email || lead.phone || '').toLowerCase();
     case 'calls':       return parseFraction(lead.calls);
     case 'sms':         return parseFraction(lead.sms);
@@ -4849,6 +4850,7 @@ const sortPopColumns = [
   {key:'lastAttempt', label:'Last attempt'},
   {key:'lastEngaged', label:'Last engaged'},
   {key:'assign',      label:'Assign'},
+  {key:'label',       label:'Label'},
   {key:'contact',     label:'Contact'},
   {key:'calls',       label:'Calls'},
   {key:'sms',         label:'SMS'},

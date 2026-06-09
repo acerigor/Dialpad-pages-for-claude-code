@@ -3059,7 +3059,7 @@
     </a>
     <span class="set-page-title">Users</span>
     <span class="ur-head-spacer"></span>
-    <button class="ur-add-btn" onclick="openUserModal()">
+    <button class="ur-add-btn" onclick="window.location.href='../User_profile/User_profile.html?new=1'">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add user
     </button>
@@ -3151,28 +3151,7 @@
     </div>
   </div>
 
-  <!-- ADD / EDIT USER MODAL -->
-  <div class="modal-backdrop" id="user-modal-backdrop" onclick="handleUserBackdrop(event)">
-    <div class="modal">
-      <div class="modal-header">
-        <span class="modal-title" id="user-modal-title">Add user</span>
-        <button class="modal-close" onclick="closeUserModal()" aria-label="Close">&#x2715;</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="modal-field"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><input type="text" id="user-name" placeholder="Full name" autocomplete="off" /></div>
-          <div class="modal-field"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><input type="email" id="user-email" placeholder="Email" autocomplete="off" /></div>
-          <div class="modal-field"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><input type="tel" id="user-phone" placeholder="Phone" autocomplete="off" /></div>
-          <div class="modal-field" style="height:40px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><select id="user-role" style="appearance:none;-webkit-appearance:none;"><option>Sales Manager</option><option>Sales Rep</option><option>BDC Agent</option><option>Admin</option></select></div>
-          <div class="modal-field" style="height:40px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg><select id="user-status" style="appearance:none;-webkit-appearance:none;"><option>Active</option><option>Invited</option><option>Inactive</option></select></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-cancel" onclick="closeUserModal()">Cancel</button>
-        <button class="modal-save" onclick="saveUser()">Save</button>
-      </div>
-    </div>
-  </div>
+  <!-- Add/Edit user now happens on the full User Profile screen (../User_profile/User_profile.html) -->
 
 <!-- Shared roster (CCLeads.TEAM) — single source of truth for users -->
 <script src="../../shared/leads-comms.js"></script>
@@ -3493,7 +3472,14 @@ var U_EDIT_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 var U_DEL_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
 function renderUsers(){
   var list=document.getElementById('user-list'); if(!list) return;
-  var team=_team();
+  // Show newly-created users first (by createdAt, newest first); seeded users keep their order below.
+  var team=_team().map(function(u,i){ return {u:u,i:i}; });
+  team.sort(function(a,b){
+    var ac=a.u.createdAt||0, bc=b.u.createdAt||0;
+    if(ac!==bc) return bc-ac;   // created (>0) above seeded (0); newest created first
+    return a.i-b.i;             // stable: preserve original order otherwise
+  });
+  team=team.map(function(x){ return x.u; });
   if(!team.length){ list.innerHTML='<div class="ur-row"><div class="ur-row-txt"><div class="ur-row-sub">No users yet.</div></div></div>'; return; }
   list.innerHTML = team.map(function(u){
     var sub=_uesc(u.email||'')+(u.phone?' · '+_uesc(u.phone):'');
@@ -3507,46 +3493,11 @@ function renderUsers(){
       '</div></div>';
   }).join('');
 }
-var _editingUserKey=null;
-function openUserModal(){
-  _editingUserKey=null;
-  var t=document.getElementById('user-modal-title'); if(t) t.textContent='Add user';
-  ['user-name','user-email','user-phone'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
-  document.getElementById('user-role').selectedIndex=1;
-  document.getElementById('user-status').value='Active';
-  document.getElementById('user-modal-backdrop').classList.add('open');
-  setTimeout(function(){ var n=document.getElementById('user-name'); if(n) n.focus(); },0);
-}
-function editUser(key){
-  var u=_team().find(function(x){ return x.key===key; }); if(!u) return;
-  _editingUserKey=key;
-  document.getElementById('user-modal-title').textContent='Edit user';
-  document.getElementById('user-name').value=u.name||'';
-  document.getElementById('user-email').value=u.email||'';
-  document.getElementById('user-phone').value=u.phone||'';
-  var rs=document.getElementById('user-role'); var found=false;
-  for(var i=0;i<rs.options.length;i++){ if(rs.options[i].text===u.role){ rs.selectedIndex=i; found=true; break; } }
-  if(!found && u.role){ var o=document.createElement('option'); o.text=u.role; rs.add(o); rs.value=u.role; }
-  document.getElementById('user-status').value=(u.status||'Active');
-  document.getElementById('user-modal-backdrop').classList.add('open');
-  setTimeout(function(){ var n=document.getElementById('user-name'); if(n) n.focus(); },0);
-}
-function closeUserModal(){ var bd=document.getElementById('user-modal-backdrop'); if(bd) bd.classList.remove('open'); _editingUserKey=null; }
-function handleUserBackdrop(e){ if(e.target===document.getElementById('user-modal-backdrop')) closeUserModal(); }
-function saveUser(){
-  var nameEl=document.getElementById('user-name'); var name=nameEl.value.trim();
-  if(!name){ nameEl.focus(); return; }
-  var patch={ name:name, email:document.getElementById('user-email').value.trim(), phone:document.getElementById('user-phone').value.trim(), role:document.getElementById('user-role').value, status:document.getElementById('user-status').value };
-  if(_editingUserKey){ if(window.CCLeads&&CCLeads.updateTeamMember) CCLeads.updateTeamMember(_editingUserKey,patch); if(typeof showNavToast==='function') showNavToast('User updated', name+' was saved.'); }
-  else { if(window.CCLeads&&CCLeads.addTeamMember) CCLeads.addTeamMember(patch); if(typeof showNavToast==='function') showNavToast('User added', name+' was added.'); }
-  closeUserModal(); renderUsers();
-}
 function deleteUser(key){
   var u=_team().find(function(x){ return x.key===key; });
   if(window.CCLeads&&CCLeads.removeTeamMember) CCLeads.removeTeamMember(key);
   renderUsers();
   if(typeof showNavToast==='function') showNavToast('User removed', (u?u.name:'User')+' was removed.');
 }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeUserModal(); });
 renderUsers();
 </script>

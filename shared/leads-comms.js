@@ -231,6 +231,7 @@
     if(!m.key)   m.key = _teamKeyFor(m.name);
     if(!m.color) m.color = TEAM_PALETTE[TEAM.length % TEAM_PALETTE.length];
     if(!m.status) m.status = 'Active';
+    if(!m.createdAt) m.createdAt = Date.now();   // stamp so UIs can show newest-first
     TEAM.push(m); saveTeam(); return m;
   }
   function updateTeamMember(key, patch){

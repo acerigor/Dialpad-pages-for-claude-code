@@ -203,11 +203,52 @@
     {key:'HM', name:'Henry Morales',    role:'BDC Agent',     color:'#0F6E56'},
   ];
 
+  // Persist + enrich the roster so it's the live source for Assign, the appointment team-picker,
+  // and the Users settings page. Stored under cc_team; persisted copy (if any) loads over defaults.
+  const TEAM_KEY = 'cc_team';
+  const TEAM_PALETTE = ['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#534AB7','#185FA5','#72243E'];
+  (function loadTeam(){
+    try {
+      var saved = JSON.parse(localStorage.getItem(TEAM_KEY) || 'null');
+      if(saved && saved.length){ TEAM.length = 0; saved.forEach(function(m){ TEAM.push(m); }); }
+    } catch(e){}
+  })();
+  TEAM.forEach(function(u,i){
+    u.phone  = u.phone  || '(555) ' + (100 + i*10) + '-' + (2000 + i);
+    u.email  = u.email  || (u.name.toLowerCase().replace(/[^a-z]+/g,'.').replace(/^\.+|\.+$/g,'') + '@coreconnect.io');
+    u.status = u.status || 'Active';
+  });
+  function saveTeam(){ try { localStorage.setItem(TEAM_KEY, JSON.stringify(TEAM)); } catch(e){} }
+  function _teamKeyFor(name){
+    var p = String(name||'').trim().split(/\s+/);
+    var base = (((p[0]||'')[0]||'') + ((p[1]||p[0]||'')[0]||'') || 'U').toUpperCase();
+    var key = base, n = 1;
+    while(TEAM.some(function(u){ return u.key === key; })){ key = base + (++n); }
+    return key;
+  }
+  function addTeamMember(m){
+    m = m || {};
+    if(!m.key)   m.key = _teamKeyFor(m.name);
+    if(!m.color) m.color = TEAM_PALETTE[TEAM.length % TEAM_PALETTE.length];
+    if(!m.status) m.status = 'Active';
+    TEAM.push(m); saveTeam(); return m;
+  }
+  function updateTeamMember(key, patch){
+    var u = TEAM.find(function(x){ return x.key === key; });
+    if(u){ Object.assign(u, patch); saveTeam(); }
+    return u;
+  }
+  function removeTeamMember(key){
+    var i = TEAM.findIndex(function(x){ return x.key === key; });
+    if(i >= 0){ TEAM.splice(i, 1); saveTeam(); }
+  }
+
   global.CCLeads = {
     LEADS, emailCountsForLead, emailTotals, EMAIL_SEED_OUT, EMAIL_SEED_IN,
     smsCountsForLead, smsTotals,
     callCountsForLead, callTotals,
     NOW, createdOffsets, leadHoursBack, leadInPeriod, getPeriod, setPeriod,
-    getActivities, addActivity, removeActivity, updateActivity, TEAM
+    getActivities, addActivity, removeActivity, updateActivity,
+    TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember
   };
 })(window);

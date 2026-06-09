@@ -6015,7 +6015,9 @@ const filterConfig=[
   ]},
   {key:'engage',label:'Engagement',type:'multi',options:[
     {val:'has_email',label:'Has email',count:38},
+    {val:'no_email',label:'No email',count:6},
     {val:'has_phone',label:'Has phone',count:51},
+    {val:'no_phone',label:'No phone',count:4},
     {val:'never_engaged',label:'Never engaged',count:12},
     {val:'unread_email',label:'Unread email',count:12},
     {val:'has_inbound_email',label:'Inbound email',count:42},
@@ -6646,8 +6648,9 @@ function assignFullName(key){
 // matching can distinguish them — e.g. "(555) 100-2000", "(555) 200-2001", etc.
 assignUsers.forEach((u, i) => {
   const idx = String(i).padStart(2, '0'); // '00'..'17'
-  // (555) Aii-iiii  where A is i+1 (1..18), and the rest stretches the index
-  u.phone = '(555) ' + (100 + i*10) + '-' + (2000 + i);
+  // (555) Aii-iiii  where A is i+1 (1..18), and the rest stretches the index.
+  // Guarded so it never clobbers a phone already set by the shared roster / Users page edits.
+  u.phone = u.phone || '(555) ' + (100 + i*10) + '-' + (2000 + i);
 });
 
 // Populate the "Assigned User" filter options from the assignUsers list so the
@@ -7021,7 +7024,9 @@ function leadMatchesFilterValue(l, group, val){
   }
   if(group === 'engage'){
     if(val === 'has_email')     return !!l.email;
+    if(val === 'no_email')      return !l.email;
     if(val === 'has_phone')     return !!l.phone;
+    if(val === 'no_phone')      return !l.phone;
     if(val === 'never_engaged') return l.sms === '0/0' && l.calls === '0/0';
     if(val === 'unread_email')  return !!l.unreadEmail;
     // Leads with email activity (an email address AND have been contacted). Both directions share the
@@ -7307,7 +7312,7 @@ const filterValOptions = {
   // Generated from assignUsers (all 18) + a synthetic 'Unassigned' option
   assign:  assignUsers.map(u => ({val:u.key, label:u.key})).concat([{val:'Unassigned',label:'Unassigned'}]),
   active:  [{val:'true',label:'Active only'},{val:'false',label:'Inactive only'}],
-  engage:  [{val:'has_email',label:'Has email'},{val:'has_phone',label:'Has phone'},{val:'never_engaged',label:'Never engaged'},{val:'unread_email',label:'Unread email'}],
+  engage:  [{val:'has_email',label:'Has email'},{val:'no_email',label:'No email'},{val:'has_phone',label:'Has phone'},{val:'no_phone',label:'No phone'},{val:'never_engaged',label:'Never engaged'},{val:'unread_email',label:'Unread email'}],
   label:   [{val:'Hot',label:'Hot'},{val:'Warm',label:'Warm'},{val:'Cold',label:'Cold'},{val:'No Label',label:'No label'}],
   lastAttempt: [{val:'today',label:'Today'},{val:'yesterday',label:'Yesterday'},{val:'last7',label:'Last 7 days'},{val:'last30',label:'Last 30 days'},{val:'older',label:'Older'}],
   lastEngaged: [{val:'today',label:'Today'},{val:'yesterday',label:'Yesterday'},{val:'last7',label:'Last 7 days'},{val:'last30',label:'Last 30 days'},{val:'older',label:'Older'},{val:'never',label:'Never'}],

@@ -473,6 +473,12 @@
   .lbl-add{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);}
   .lbl-cell:hover .lbl-add{color:var(--ac2);}
   .label-popup{position:fixed;z-index:1600;width:230px;}
+  .lblp-sort{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px 8px;}
+  .lblp-sort-lbl{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+  .lblp-sort-seg{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:2px;gap:2px;}
+  .lblp-sort-btn{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:11px;font-weight:500;padding:4px 10px;border-radius:5px;cursor:pointer;transition:background .12s,color .12s;}
+  .lblp-sort-btn:hover{color:var(--tx);}
+  .lblp-sort-btn.on{background:var(--ac);color:#fff;}
   .lblp-list{max-height:200px;overflow-y:auto;margin-bottom:6px;}
   .lblp-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;transition:background .1s;}
   .lblp-item:hover{background:rgba(255,255,255,.04);}
@@ -3112,6 +3118,13 @@
   <!-- LABEL PICKER POPUP -->
   <div class="assign-popup label-popup" id="label-popup" style="display:none;">
     <div class="assign-popup-title">Label</div>
+    <div class="lblp-sort">
+      <span class="lblp-sort-lbl">Sort by</span>
+      <div class="lblp-sort-seg">
+        <button class="lblp-sort-btn" data-sort="name" onclick="setLabelSort('name')">Name</button>
+        <button class="lblp-sort-btn" data-sort="color" onclick="setLabelSort('color')">Color</button>
+      </div>
+    </div>
     <div class="lblp-list" id="lblp-list"></div>
     <div class="lblp-create">
       <input type="text" id="lblp-new-name" placeholder="New label name" maxlength="24" onkeydown="if(event.key==='Enter'){event.preventDefault();addNewLabel();}" />
@@ -4509,7 +4522,23 @@ const COLS = {
    LABEL_MAP: per-lead assignments {leadNo:[labelId,...]}   (localStorage 'cc_lead_label_map') */
 var LBL_KEY='cc_lead_labels', LBL_MAP_KEY='cc_lead_label_map';
 var LABEL_PALETTE=['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#64748b'];
-var LABELS, LABEL_MAP, _lblNewColor=LABEL_PALETTE[0], _lblPopupLead=null;
+var LABELS, LABEL_MAP, _lblNewColor=LABEL_PALETTE[0], _lblPopupLead=null, _lblSort='name';
+// Sort labels for the popup list — by name (A→Z) or by color (grouped in palette order).
+function _sortedLabels(){
+  var arr=LABELS.slice();
+  if(_lblSort==='color'){
+    arr.sort(function(a,b){
+      var ia=LABEL_PALETTE.indexOf(a.color), ib=LABEL_PALETTE.indexOf(b.color);
+      if(ia<0) ia=999; if(ib<0) ib=999;
+      if(ia!==ib) return ia-ib;
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+  } else {
+    arr.sort(function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+  }
+  return arr;
+}
+function setLabelSort(mode){ _lblSort=mode; renderLabelPopup(); }
 function _saveLabels(){ try{ localStorage.setItem(LBL_KEY, JSON.stringify(LABELS)); }catch(e){} }
 function _saveLabelMap(){ try{ localStorage.setItem(LBL_MAP_KEY, JSON.stringify(LABEL_MAP)); }catch(e){} }
 (function _initLabels(){
@@ -4554,10 +4583,11 @@ function renderLabelPopup(){
   if(_lblPopupLead==null) return;
   var assigned=LABEL_MAP[_lblPopupLead]||[];
   var listEl=document.getElementById('lblp-list'); if(!listEl) return;
-  listEl.innerHTML = LABELS.length ? LABELS.map(function(lb){
+  listEl.innerHTML = LABELS.length ? _sortedLabels().map(function(lb){
     var on=assigned.indexOf(lb.id)>=0;
     return '<div class="lblp-item'+(on?' on':'')+'" onclick="toggleLeadLabel('+_lblPopupLead+',\''+lb.id+'\')"><span class="lblp-dot" style="background:'+lb.color+';"></span><span class="lblp-name">'+escapeHtml(lb.name)+'</span><span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></div>';
   }).join('') : '<div class="lblp-empty">No labels yet — create one below.</div>';
+  document.querySelectorAll('#label-popup .lblp-sort-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.sort===_lblSort); });
   renderLabelSwatches();
 }
 function openLabelPopup(e, leadNo){

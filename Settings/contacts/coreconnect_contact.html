@@ -1,4 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Contacts</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -457,6 +458,7 @@
   .modal-field{display:flex;align-items:center;gap:10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:40px;transition:border-color .15s;}
   .modal-field:focus-within{border-color:var(--ac);}
   .modal-field i{color:var(--mu);font-size:15px;flex-shrink:0;}
+  .modal-field > svg{color:var(--mu);width:15px;height:15px;flex-shrink:0;}
   .modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;width:100%;height:100%;}
   .modal-field select option{background:var(--sur2);color:var(--tx);}
   .modal-field input::placeholder{color:var(--mu);}
@@ -465,6 +467,64 @@
   .modal-cancel:hover{border-color:var(--brd2);color:var(--tx);}
   .modal-save{background:var(--ac);border:none;border-radius:8px;padding:0 20px;height:34px;color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
   .modal-save:hover{background:var(--ac2);}
+
+  /* ===== USER ROLE MODAL (two-pane: nav rail + content) ===== */
+  .role-modal{width:860px;max-width:95%;padding:0;flex-direction:row;align-items:stretch;}
+  /* Left nav rail */
+  .role-rail{width:230px;flex-shrink:0;background:var(--sur2);border-right:0.5px solid var(--brd);
+    display:flex;flex-direction:column;padding:22px 0;}
+  .role-rail-title{font-size:17px;font-weight:600;letter-spacing:-.3px;color:var(--tx);padding:0 22px 18px;}
+  .role-rail-nav{display:flex;flex-direction:column;gap:2px;}
+  .role-rail-item{display:flex;align-items:center;gap:10px;padding:11px 22px;font-size:13px;
+    font-weight:500;color:var(--mu);cursor:pointer;border:none;background:transparent;
+    font-family:var(--font);text-align:left;transition:all .12s;border-left:2px solid transparent;}
+  .role-rail-item svg{width:15px;height:15px;flex-shrink:0;}
+  .role-rail-item:hover{color:var(--tx);background:rgba(255,255,255,.03);}
+  .role-rail-item.active{color:var(--ac2);background:rgba(79,124,255,.08);border-left-color:var(--ac);}
+  .role-rail-item:disabled{opacity:.4;cursor:not-allowed;}
+  .role-rail-item:disabled:hover{color:var(--mu);background:transparent;}
+  /* Right content pane */
+  .role-pane{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .role-pane-head{display:flex;align-items:center;justify-content:space-between;
+    padding:20px 24px 0;flex-shrink:0;}
+  .role-pane-eyebrow{font-size:13px;font-weight:600;color:var(--tx);text-transform:uppercase;
+    letter-spacing:.5px;padding-bottom:7px;border-bottom:2px solid var(--ac);display:inline-block;}
+  .role-pane-body{flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:20px;}
+  .role-tab{display:none;flex-direction:column;gap:20px;}
+  .role-tab.active{display:flex;}
+  .role-tab-empty{color:var(--mu);font-size:13px;padding:30px 0;text-align:center;}
+
+  /* Permission groups (Settings tab) */
+  .perm-group{border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .perm-group-title{background:var(--sur2);padding:11px 14px;font-size:12.5px;font-weight:600;
+    color:var(--tx);letter-spacing:-.1px;text-align:center;border-bottom:0.5px solid var(--brd);}
+  .perm-table{width:100%;border-collapse:collapse;min-width:440px;}
+  .perm-scroll{overflow-x:auto;position:relative;-webkit-overflow-scrolling:touch;}
+  .perm-table thead th{font-size:10.5px;font-weight:500;color:var(--mu);text-transform:uppercase;
+    letter-spacing:.5px;padding:9px 10px;border-bottom:0.5px solid var(--brd);background:rgba(255,255,255,.02);}
+  .perm-table thead th:first-child{text-align:left;}
+  .perm-table tbody td{padding:9px 10px;border-bottom:0.5px solid var(--brd);font-size:12.5px;color:var(--tx);}
+  .perm-table tbody tr:last-child td{border-bottom:none;}
+  .perm-table .perm-name{text-align:left;color:var(--tx);min-width:180px;}
+  .perm-table .perm-cell{text-align:center;width:64px;}
+  .perm-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--ac);margin:0;vertical-align:middle;}
+  /* Field group */
+  .role-fg{display:flex;flex-direction:column;gap:8px;}
+  .role-fg-label{font-size:13px;color:var(--tx);line-height:1.4;}
+  .role-fg-hint{color:var(--mu);font-weight:400;}
+  .role-input{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:0 13px;height:42px;color:var(--tx);font-family:var(--font);font-size:13px;
+    outline:none;transition:border-color .15s;width:100%;}
+  .role-input:focus{border-color:var(--ac);}
+  .role-input::placeholder{color:var(--mu);}
+  .role-textarea{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:11px 13px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;
+    outline:none;transition:border-color .15s;width:100%;min-height:96px;resize:vertical;}
+  .role-textarea:focus{border-color:var(--ac);}
+  .role-textarea::placeholder{color:var(--mu);}
+  .role-charcount{font-size:11px;color:var(--mu);font-family:var(--mono);}
+  .role-pane-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+    padding:14px 24px;border-top:0.5px solid var(--brd);flex-shrink:0;}
 
   /* ════════════════════════════════════════════════════════════════════════════
      v78 — EXPORT MODAL
@@ -2344,7 +2404,26 @@
     .modal-cancel,.modal-save{width:100%;}
     .modal-body{padding:16px;}
 
-    /* === Phase 2F — QA touch-target fixes for floating popovers === */
+    /* User Role modal goes full-screen on phone */
+    .modal-backdrop:has(.role-modal){padding:0;align-items:stretch;justify-content:stretch;}
+    .role-modal{flex-direction:column;width:100vw;max-width:100vw;height:100vh;max-height:100vh;
+      border:none;border-radius:0;}
+    .role-rail{width:100%;border-right:none;border-bottom:0.5px solid var(--brd);padding:16px 0;flex-shrink:0;}
+    .role-rail-title{padding:0 18px 12px;font-size:16px;}
+    .role-rail-nav{flex-direction:row;overflow-x:auto;gap:0;}
+    .role-rail-item{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;padding:10px 16px;}
+    .role-rail-item.active{border-left:none;border-bottom-color:var(--ac);}
+    .role-pane{flex:1;min-height:0;}
+    .role-input{height:46px;font-size:16px;}
+    .role-textarea{font-size:16px;}
+    .role-pane-foot{flex-direction:column-reverse;gap:10px;}
+    .role-pane-foot .modal-cancel,.role-pane-foot .modal-save{width:100%;height:44px;font-size:14px;}
+    /* Permission tables scroll horizontally on phone; cue the swipe with a right-edge fade */
+    .perm-group{position:relative;}
+    .perm-group::after{content:'';position:absolute;top:36px;right:0;bottom:0;width:24px;
+      background:linear-gradient(to right, rgba(24,28,39,0), var(--sur));
+      pointer-events:none;border-radius:0 10px 10px 0;}
+    .perm-cb,.tab-cb{width:18px;height:18px;}
     /* Sort popup (toolbar Sort, bucket Sort) */
     .sort-pop{max-height:calc(100vh - 16px);min-width:calc(100vw - 32px);}
     .sort-pop-opt{min-height:44px;padding:0 12px;font-size:13px;}
@@ -2771,6 +2850,55 @@
   letter-spacing:-.2px;line-height:1.3;}
 .set-card-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4;}
 
+/* ===== USER ROLES PAGE ===== */
+/* Page head adopts set-page-head; add a right-aligned primary action button */
+.ur-head-spacer{flex:1;}
+.ur-add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ac);border:none;
+  border-radius:8px;padding:0 16px;height:36px;color:#fff;font-size:13px;font-weight:500;
+  font-family:var(--font);cursor:pointer;transition:background .15s;flex-shrink:0;}
+.ur-add-btn:hover{background:var(--ac2);}
+.ur-add-btn svg{width:15px;height:15px;}
+/* Back-to-Settings button in the page head (matches calendar-settings .cs-back) */
+.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;
+  font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
+.ur-back:hover{background:var(--sur2);color:var(--tx);}
+.ur-back svg{width:16px;height:16px;}
+
+/* Roles list section — single surface card containing rows */
+.ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;
+  border-bottom:0.5px solid var(--brd);transition:background .15s;}
+.ur-row:last-child{border-bottom:none;}
+.ur-row:hover{background:var(--sur2);}
+.ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(79,124,255,.10);color:var(--ac2);}
+.ur-row-ic svg{width:20px;height:20px;}
+.ur-row-txt{min-width:0;flex:1;}
+.ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);letter-spacing:-.2px;line-height:1.3;}
+.ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4;}
+/* Users page: role + status badges in each row */
+.u-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-right:6px;}
+.u-badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.u-role{background:rgba(79,124,255,.12);color:var(--ac2);}
+.u-status.active{background:rgba(34,200,138,.14);color:var(--gr);}
+.u-status.invited{background:rgba(245,166,35,.14);color:var(--am);}
+.u-status.inactive{background:var(--sur2);color:var(--mu);}
+@media(max-width:640px){ .u-meta{display:none;} }
+.ur-row-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.ur-act-btn{width:32px;height:32px;border-radius:8px;border:none;background:transparent;
+  color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .12s;}
+.ur-act-btn svg{width:16px;height:16px;}
+.ur-act-edit:hover{background:rgba(79,124,255,.12);color:var(--ac2);}
+.ur-act-del:hover{background:rgba(232,85,85,.12);color:var(--rd);}
+
+@media (max-width:640px){
+  .ur-add-btn{padding:0 13px;height:34px;}
+  .ur-row{padding:14px 14px;gap:11px;}
+  .ur-row-ic{width:36px;height:36px;}
+}
+
 @media (max-width:640px){
   .set-page-head{padding:14px 16px;}
   .set-page-title{font-size:16px;}
@@ -2783,6 +2911,162 @@
 <style>
   .root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;}
   @media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
+
+  /* ── CONTACTS MODULE ── */
+  .cts-wrap{flex:1;display:flex;min-height:0;overflow:hidden;}
+  /* Left panel */
+  .cts-side{flex:none;width:236px;border-right:0.5px solid var(--brd2);display:flex;flex-direction:column;padding:16px 14px;gap:14px;overflow-y:auto;}
+  .cts-create{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:38px;background:var(--ac);border:none;border-radius:9px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .cts-create:hover{background:var(--ac2);}
+  .cts-create svg{width:15px;height:15px;}
+  .cts-nav{display:flex;flex-direction:column;gap:2px;}
+  .cts-nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;background:transparent;border:none;border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .12s;}
+  .cts-nav-item:hover{background:rgba(255,255,255,.04);}
+  .cts-nav-item.active{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .cts-nav-ic{display:flex;flex:none;}
+  .cts-nav-ic svg{width:16px;height:16px;}
+  .cts-nav-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cts-nav-count{flex:none;min-width:20px;height:18px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;background:var(--sur2);border-radius:9px;font-size:11px;color:var(--mu);}
+  .cts-nav-item.active .cts-nav-count{background:rgba(79,124,255,.22);color:var(--ac2);}
+  .cts-labels-head{display:flex;align-items:center;justify-content:space-between;padding:4px 10px 0;color:var(--mu);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+  .cts-label-add{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--ac2);font-size:17px;line-height:1;cursor:pointer;border-radius:6px;transition:background .12s;}
+  .cts-label-add:hover{background:rgba(255,255,255,.05);}
+  .cts-labels{display:flex;flex-direction:column;gap:2px;}
+  .cts-label-item{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px;background:transparent;border:none;border-radius:8px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:pointer;text-align:left;transition:background .12s;}
+  .cts-label-item:hover{background:rgba(255,255,255,.04);}
+  .cts-label-item.active{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .cts-label-dot{width:11px;height:11px;border-radius:50%;flex:none;}
+  .cts-label-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cts-label-count{flex:none;font-size:11px;color:var(--mu);}
+  .cts-labels-empty{padding:6px 10px;font-size:11.5px;color:var(--mu);}
+  /* Main */
+  .cts-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;}
+  .cts-top{flex:none;display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:0.5px solid var(--brd2);}
+  .cts-search{flex:1;display:flex;align-items:center;gap:9px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;height:38px;padding:0 12px;transition:border-color .15s;}
+  .cts-search:focus-within{border-color:var(--ac);}
+  .cts-search svg{width:15px;height:15px;color:var(--mu);flex:none;}
+  .cts-search input{flex:1;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;}
+  .cts-dir-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;}
+  .cts-dir-toggle input{display:none;}
+  .cts-dir-track{position:relative;width:36px;height:20px;border-radius:11px;background:var(--sur2);border:0.5px solid var(--brd2);transition:background .15s;flex:none;}
+  .cts-dir-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--mu);transition:transform .15s,background .15s;}
+  .cts-dir-toggle input:checked ~ .cts-dir-track{background:rgba(79,124,255,.3);border-color:var(--ac);}
+  .cts-dir-toggle input:checked ~ .cts-dir-track::after{transform:translateX(16px);background:var(--ac);}
+  .cts-dir-label{font-size:12.5px;color:var(--mu);white-space:nowrap;}
+  .cts-upload{flex:none;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);cursor:pointer;transition:border-color .12s,color .12s;}
+  .cts-upload:hover{border-color:var(--ac);color:var(--ac2);}
+  .cts-upload svg{width:16px;height:16px;}
+  /* Table */
+  .cts-table-wrap{flex:1;overflow:auto;padding:8px 20px 40px;}
+  .cts-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .cts-table thead th{position:sticky;top:0;background:var(--bg);text-align:left;font-size:11.5px;font-weight:600;color:var(--mu);padding:10px 12px;border-bottom:0.5px solid var(--brd2);white-space:nowrap;z-index:1;}
+  .cts-th-tag,.cts-th-kebab{width:38px;text-align:center;}
+  .cts-th-tag svg,.cts-th-kebab svg{width:15px;height:15px;color:var(--mu);}
+  .cts-group td{padding:10px 12px 6px;font-size:12px;font-weight:600;color:var(--ac2);}
+  .cts-row td{padding:11px 12px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .cts-row:hover{background:rgba(255,255,255,.025);}
+  .cts-name-cell{display:flex;align-items:center;gap:11px;}
+  .cts-avatar{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#fff;}
+  .cts-name{color:var(--tx);font-weight:500;}
+  .cts-sub{color:var(--mu);}
+  .cts-flag{background:transparent;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:20px;transition:background .12s;}
+  .cts-flag:hover{background:rgba(255,255,255,.05);}
+  .cts-flag svg{width:15px;height:15px;}
+  .cts-flag-name{font-size:12px;}
+  .cts-flag-empty{color:var(--mu);}
+  .cts-cell-c{text-align:center;}
+  .cts-shared{display:inline-flex;color:var(--ac2);}
+  .cts-shared svg{width:15px;height:15px;}
+  .cts-kebab{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:7px;color:var(--mu);cursor:pointer;transition:background .12s,color .12s;}
+  .cts-kebab:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .cts-kebab svg{width:16px;height:16px;}
+  .cts-empty{padding:46px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  /* Row kebab menu */
+  .cts-menu{display:none;position:fixed;z-index:1700;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;min-width:140px;box-shadow:0 10px 28px rgba(0,0,0,.5);}
+  .cts-menu.open{display:block;}
+  .cts-menu-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-size:12.5px;color:var(--tx);cursor:pointer;transition:background .12s;}
+  .cts-menu-item:hover{background:rgba(255,255,255,.05);}
+  .cts-menu-item.danger{color:var(--rd);}
+  .cts-menu-item svg{width:14px;height:14px;}
+
+  /* Contact modal: photo uploader + notes */
+  .ct-photo-row{display:flex;align-items:center;gap:14px;padding:2px 0 4px;}
+  .ct-photo{width:60px;height:60px;border-radius:50%;flex:none;background:var(--sur2);border:1px solid var(--brd2);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:600;overflow:hidden;}
+  .ct-photo-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-start;}
+  .ct-photo-btn{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;color:var(--tx);font-family:var(--font);font-size:12px;font-weight:500;padding:7px 13px;cursor:pointer;transition:border-color .12s;}
+  .ct-photo-btn:hover{border-color:var(--ac);}
+  .ct-photo-remove{background:transparent;border:none;color:var(--rd);font-family:var(--font);font-size:11.5px;cursor:pointer;padding:0 2px;}
+  .ct-notes-field textarea{flex:1;background:transparent;border:none;outline:none;resize:vertical;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.45;min-height:54px;max-height:160px;}
+  .ct-notes-field textarea::placeholder{color:var(--mu);}
+  .ct-check{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;padding:4px 2px 2px;}
+  .ct-check input{position:absolute;opacity:0;width:0;height:0;}
+  .ct-check-box{width:18px;height:18px;flex:none;border:1.5px solid var(--brd2);border-radius:5px;background:var(--sur2);display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}
+  .ct-check-box svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .12s;}
+  .ct-check input:checked ~ .ct-check-box{background:var(--ac);border-color:var(--ac);}
+  .ct-check input:checked ~ .ct-check-box svg{opacity:1;}
+  .ct-check:hover .ct-check-box{border-color:var(--ac);}
+  .ct-check input:focus-visible ~ .ct-check-box{box-shadow:0 0 0 2px rgba(79,124,255,.4);}
+  .ct-check-txt{display:flex;flex-direction:column;gap:1px;}
+  .ct-check-label{font-size:12.5px;color:var(--tx);font-weight:500;}
+  .ct-check-sub{font-size:11px;color:var(--mu);}
+
+  /* ── Label popup (assign + create) — ported from CRM leads ── */
+  .label-popup{position:fixed;z-index:1600;width:236px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;}
+  .label-popup.open{display:block;}
+  .lblp-title{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:4px 8px 8px;}
+  .lblp-sort{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px 8px;}
+  .lblp-sort-lbl{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+  .lblp-sort-seg{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:2px;gap:2px;}
+  .lblp-sort-btn{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:11px;font-weight:500;padding:4px 10px;border-radius:5px;cursor:pointer;transition:background .12s,color .12s;}
+  .lblp-sort-btn:hover{color:var(--tx);}
+  .lblp-sort-btn.on{background:var(--ac);color:#fff;}
+  .lblp-list{max-height:200px;overflow-y:auto;margin-bottom:6px;}
+  .lblp-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;transition:background .1s;}
+  .lblp-item:hover{background:rgba(255,255,255,.04);}
+  .lblp-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+  .lblp-name{flex:1;font-size:12.5px;color:var(--tx);}
+  .lblp-check{color:var(--gr);display:flex;opacity:0;}
+  .lblp-item.on .lblp-check{opacity:1;}
+  .lblp-empty{padding:10px 9px;font-size:11.5px;color:var(--mu);text-align:center;}
+  .lblp-create{border-top:0.5px solid var(--brd);padding-top:8px;margin-top:4px;}
+  .lblp-create input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:7px 9px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
+  .lblp-create input:focus{border-color:var(--ac);}
+  .lblp-swatches{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+  .lblp-sw{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s;}
+  .lblp-sw:hover{transform:scale(1.12);}
+  .lblp-sw.on{border-color:var(--tx);}
+  .lblp-add-btn{width:100%;background:var(--ac);border:none;border-radius:7px;padding:8px;color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
+  .lblp-add-btn:hover{background:var(--ac2);}
+
+  /* Tablet / narrow desktop: keep the two-pane but trim the table so the kebab stays reachable */
+  @media (max-width:900px) and (min-width:641px){
+    .cts-side{width:192px;}
+    .cts-table thead th:nth-child(3),.cts-table tbody td:nth-child(3){display:none;}   /* Email */
+    .cts-th-tag,.cts-table tbody td:nth-child(5){display:none;}                          /* tag */
+  }
+  @media (max-width:640px){
+    .cts-wrap{flex-direction:column;overflow:visible;}
+    /* Left panel becomes a compact stacked block: Create + a horizontal label-chip strip */
+    .cts-side{width:100%;border-right:none;border-bottom:0.5px solid var(--brd2);flex-direction:column;gap:10px;padding:12px 14px;overflow:visible;}
+    .cts-nav-item{padding:9px 12px;}
+    .cts-labels-head{padding:2px 2px 0;}
+    .cts-labels{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:7px;padding-bottom:3px;-webkit-overflow-scrolling:touch;}
+    .cts-label-item{flex:none;width:auto;border:0.5px solid var(--brd2);border-radius:16px;padding:6px 11px;}
+    .cts-label-item.active{border-color:var(--ac);}
+    .cts-dir-label{display:none;}
+    .label-popup{width:calc(100vw - 32px);}
+    /* Top bar + table tightened to fit a phone; drop Email + tag columns, flag shows icon only */
+    .cts-top{padding:12px 14px;gap:10px;}
+    .cts-table-wrap{padding:6px 10px 32px;}
+    .cts-table th,.cts-table td{padding:10px 5px;}
+    .cts-table thead th:nth-child(3),.cts-table tbody td:nth-child(3){display:none;}   /* Email */
+    .cts-th-tag,.cts-table tbody td:nth-child(5){display:none;}                          /* tag */
+    .cts-flag-name{display:none;}
+    .cts-name{font-size:12.5px;}
+    .cts-sub{font-size:12px;}
+    .cts-name-cell{gap:8px;}
+    .cts-avatar{width:26px;height:26px;font-size:10.5px;}
+  }
 </style>
 
 <!-- TOP HEADER -->
@@ -2925,445 +3209,130 @@
 </div>
 
 <div class="root main-area" id="root">
-  <div class="set-page-head"><span class="set-page-title">Settings</span></div>
-  <div class="set-scroll">
-    <section class="set-section">
-      <h3 class="set-grp">Company Setting</h3>
-      <div class="set-grid">
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../User_roles/coreconnect_user_roles.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6 1.2 0 2.3.3 3.2.9"/><circle cx="18" cy="16" r="2.2"/><path d="M18 12.5v1.3M18 18.2v1.3M21.2 16h-1.3M16.1 16h-1.3M20.3 13.7l-.9.9M16.6 17.4l-.9.9M20.3 18.3l-.9-.9M16.6 14.6l-.9-.9"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">User Roles</div>
-            <div class="set-card-sub">Manage User Roles</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../Users/coreconnect_user.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5M18 20c0-2.3-1-4.3-2.6-5.3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Users</div>
-            <div class="set-card-sub">Manage users and their info</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../contacts/coreconnect_contact.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.2"/><path d="M5.5 16c.6-1.7 2-2.7 3.5-2.7s2.9 1 3.5 2.7"/><path d="M15 9h4M15 12.5h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Contact</div>
-            <div class="set-card-sub">Go To Contact</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Report</div>
-            <div class="set-card-sub">Go To Report</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l6 6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Google Analytics</div>
-            <div class="set-card-sub">Manage Google Analytics Charts</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Desking Module</div>
-            <div class="set-card-sub">Manage Desking Module</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Desking Module Setting</div>
-            <div class="set-card-sub">Change Desking Module Setting</div>
-          </div>
-        </div>
+  <div class="set-page-head">
+    <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">Contacts</span>
+  </div>
+  <div class="cts-wrap">
+    <!-- LEFT PANEL -->
+    <aside class="cts-side">
+      <button class="cts-create" onclick="openContactModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Create Contact
+      </button>
+      <div class="cts-nav">
+        <button class="cts-nav-item active" id="cts-nav-all" onclick="setContactFilter(null)">
+          <span class="cts-nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <span class="cts-nav-label">Contacts</span>
+          <span class="cts-nav-count" id="cts-count-all">0</span>
+        </button>
       </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Alert Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="10" rx="4"/><path d="M12 8V6M9 9 7 7M15 9l2-2M8 12H4M20 12h-4M8 15l-3 2M16 15l3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Alert Management</div>
-            <div class="set-card-sub">Change CRM Alert Management</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Transcript Alert Management</div>
-            <div class="set-card-sub">Change Transcript Alert Management</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Management</div>
-            <div class="set-card-sub">Change Notification Management</div>
-          </div>
-        </div>
+      <div>
+        <div class="cts-labels-head"><span>Labels</span><button class="cts-label-add" onclick="openLabelPopupNew(event)" title="New label">+</button></div>
+        <div class="cts-labels" id="cts-labels"></div>
       </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Organizational Structure & Management</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Locations</div>
-            <div class="set-card-sub">Manage Locations</div>
-          </div>
+    </aside>
+    <!-- MAIN -->
+    <main class="cts-main">
+      <div class="cts-top">
+        <div class="cts-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="cts-search-input" placeholder="Search contacts..." oninput="onContactSearch(this.value)" autocomplete="off" />
         </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/><path d="m4 4 16 16"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Inactive Reason</div>
-            <div class="set-card-sub">Manage Inactive Reason</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2 12.5h11l2-9H6.5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Sold Inventory</div>
-            <div class="set-card-sub">Manage Sold Inventory</div>
-          </div>
-        </div>
+        <label class="cts-dir-toggle" title="Switch directory">
+          <input type="checkbox" id="cts-dir" onchange="onDirToggle()" />
+          <span class="cts-dir-track"></span>
+          <span class="cts-dir-label" id="cts-dir-label">Default Directory</span>
+        </label>
+        <button class="cts-upload" onclick="onUploadClick()" title="Import contacts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
       </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">CRM Management</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="M17 12v8M19.2 14h-3.1a1.6 1.6 0 0 0 0 3.2h2a1.6 1.6 0 0 1 0 3.2H15"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Vendors Cost</div>
-            <div class="set-card-sub">Manage CRM Vendors Cost</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6" r="2.4"/><circle cx="7" cy="15" r="2.4"/><circle cx="17" cy="15" r="2.4"/><path d="M12 8.4v3M10.4 13.6 8.6 13M13.6 13.6l1.8-.6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Google Sheet</div>
-            <div class="set-card-sub">Manage CRM Google Sheet</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V7"/><circle cx="8" cy="8" r="1.5"/><path d="m3 14 4-3 5 4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Status</div>
-            <div class="set-card-sub">Manage CRM Status</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7.5 9 1.5 1.5 2.5-2.5M7.5 15l1.5 1.5 2.5-2.5M14 9h3M14 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Lead Rule Status</div>
-            <div class="set-card-sub">Manage Lead Rule Status</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="m15 14 5 5M20 14l-5 5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Disable Rules</div>
-            <div class="set-card-sub">Manage Disable Rules</div>
-          </div>
-        </div>
+      <div class="cts-table-wrap">
+        <table class="cts-table">
+          <thead><tr>
+            <th>Name</th><th>Phone Number</th><th>Email</th><th>Labels</th>
+            <th class="cts-th-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></th>
+            <th class="cts-th-kebab"></th>
+          </tr></thead>
+          <tbody id="cts-tbody"></tbody>
+        </table>
       </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Communication Tools & Templates</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M12 7v4M10 9.5l2 2 2-2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Greeting Message</div>
-            <div class="set-card-sub">Manage Greeting Message</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="12" cy="8.5" r="1.8"/><path d="M9 12.5c.5-1.2 1.6-2 3-2s2.5.8 3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">User SMS Template</div>
-            <div class="set-card-sub">Go To User SMS Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h14v9H7l-4 3z"/><circle cx="8" cy="8" r="1.5"/><circle cx="12" cy="8" r="1.5"/><path d="M21 8v9l-3-2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department SMS Template</div>
-            <div class="set-card-sub">Go To Department SMS Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Email Template</div>
-            <div class="set-card-sub">Go To Email Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="12" rx="2"/><path d="m3 7 7 5 7-5"/><path d="M16 14h6M19 11l3 3-3 3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Email Campaign</div>
-            <div class="set-card-sub">Go To Email Campaign</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Task & Workflow Automation</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Automated Task</div>
-            <div class="set-card-sub">Go To Automated Task</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Permissions & Settings</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Permission</div>
-            <div class="set-card-sub">Go To Department Permission</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v17"/><path d="M7 7h.01M10 7h.01M7 10h.01M10 10h.01M7 13h.01M10 13h.01"/><circle cx="18" cy="12" r="2"/><path d="M15 21c0-2 1.3-3.5 3-3.5s3 1.5 3 3.5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Lead Permission</div>
-            <div class="set-card-sub">Go To Department Lead Permission</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Miscellaneous</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 3 2 3H5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Label Flag</div>
-            <div class="set-card-sub">Go To Label Flag</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Video Gallery</div>
-            <div class="set-card-sub">Go To Video Gallery</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">General Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Pagination Setting</div>
-            <div class="set-card-sub">Change page size</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Personal Voice Mail File</div>
-            <div class="set-card-sub">Change Personal Voice Mail File</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Voice Mail File</div>
-            <div class="set-card-sub">Change Department Voice Mail File</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">CRM Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2L15 12a14 14 0 0 0 5 5l.8-1.1a2 2 0 0 1 2-.5c.8.3 1.6.5 2.5.6"/><circle cx="6" cy="6" r="3.2"/><path d="M6 4.5V6l1 .8"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">TalkTime Required</div>
-            <div class="set-card-sub">Change TalkTime Required in seconds</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Lead Assignment Rules</div>
-            <div class="set-card-sub">Change Lead Assignment Rules</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS Sent Hour</div>
-            <div class="set-card-sub">Change Mass SMS Sent Hour</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M11 18h2"/><path d="M9 8h6M12 6v4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS X Value</div>
-            <div class="set-card-sub">Change Mass SMS X Value</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Auto SMS Send</div>
-            <div class="set-card-sub">Change Auto SMS Send functionality</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Dialpad Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Idle Time Chart Minute Setting</div>
-            <div class="set-card-sub">Change Idle Time Chart Minute Setting</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Format</div>
-            <div class="set-card-sub">Change Notification Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M9 7h6M9 10h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Tagged Chat SMS Format</div>
-            <div class="set-card-sub">Change Tagged Chat SMS Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Settings</div>
-            <div class="set-card-sub">Change Notification Settings</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10"/><path d="M7 3c0 4 5 5 5 9 0-4 5-5 5-9M7 21c0-4 5-5 5-9 0 4 5 5 5 9"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Wait While Setting</div>
-            <div class="set-card-sub">Change Wait While Setting</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">AI Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><path d="M12 3v3M9 18v2M15 18v2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">AI Settings</div>
-            <div class="set-card-sub">Manage AI Settings</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </main>
   </div>
 </div>
 
-  <!-- v80: SEND BUSINESS CARD MODAL (ported from coreconnect_dashboard_v41.html) -->
-  <div class="modal-backdrop" id="bc-modal-backdrop" onclick="handleBcBackdropClick(event)">
-    <div class="modal bc-modal">
+  <!-- CREATE / EDIT CONTACT MODAL -->
+  <div class="modal-backdrop" id="contact-modal-backdrop" onclick="handleContactBackdrop(event)">
+    <div class="modal">
       <div class="modal-header">
-        <span class="modal-title">Send Business Card</span>
-        <button class="modal-close" onclick="closeBcModal()" aria-label="Close">&#x2715;</button>
+        <span class="modal-title" id="contact-modal-title">Create Contact</span>
+        <button class="modal-close" onclick="closeContactModal()" aria-label="Close">&#x2715;</button>
       </div>
       <div class="modal-body">
-
-        <!-- Business card preview (branded — recreated from artwork) -->
-        <div class="bc-card">
-          <div class="bc-logo">
-            <svg class="bc-logo-car" viewBox="0 0 200 70" fill="none" aria-hidden="true">
-              <path d="M8 50 C 30 30, 70 18, 120 20 C 150 21, 175 30, 192 30 C 180 34, 150 33, 120 33 C 78 32, 38 40, 14 54 Z" fill="#d8232a"/>
-            </svg>
-            <div class="bc-logo-usa">USA</div>
-            <div class="bc-logo-sub">DIRECT AUTO</div>
-          </div>
-          <div class="bc-info">
-            <div class="bc-name-band"><span>Amin Hussain</span></div>
-            <div class="bc-detail-panel">
-              <div class="bc-lines">
-                <div class="bc-line">(254) 457-4533</div>
-                <div class="bc-line">houstondirectauto@gmail.com</div>
-                <div class="bc-line">www.usadirectauto.com</div>
-                <div class="bc-line">421 Little York Rd, Houston, TX 77076</div>
-              </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div class="ct-photo-row">
+            <div class="ct-photo" id="ct-photo-preview"><span id="ct-photo-initials">?</span></div>
+            <div class="ct-photo-actions">
+              <button type="button" class="ct-photo-btn" onclick="document.getElementById('ct-photo-input').click()">Upload photo</button>
+              <button type="button" class="ct-photo-remove" id="ct-photo-remove" style="display:none;" onclick="clearContactPhoto()">Remove photo</button>
             </div>
+            <input type="file" id="ct-photo-input" accept="image/*" style="display:none;" onchange="onContactPhotoPick(this)" />
           </div>
-          <div class="bc-icon-strip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="modal-field"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><input type="text" id="ct-name" placeholder="Full name" autocomplete="off" oninput="onCtNameInput()" /></div>
+          <div class="modal-field"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><input type="tel" id="ct-phone" placeholder="Phone number" autocomplete="off" /></div>
+          <div class="modal-field"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><input type="email" id="ct-email" placeholder="Email (optional)" autocomplete="off" /></div>
+          <div class="modal-field" style="height:auto;min-height:40px;padding:8px 12px;align-items:center;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <div id="ct-label-chips" style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"></div>
           </div>
+          <div class="modal-field ct-notes-field" style="height:auto;align-items:flex-start;padding:9px 12px;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-top:3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+            <textarea id="ct-notes" rows="3" placeholder="Notes (optional)"></textarea>
+          </div>
+          <label class="ct-check">
+            <input type="checkbox" id="ct-shared" />
+            <span class="ct-check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span class="ct-check-txt"><span class="ct-check-label">Visible to other users</span><span class="ct-check-sub">Share this contact with your team's directory</span></span>
+          </label>
         </div>
-
-        <!-- Form row -->
-        <div class="bc-form">
-          <div class="bc-form-col">
-            <label class="bc-flabel" for="bc-number">Customer Number</label>
-            <div class="modal-field">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <input type="tel" id="bc-number" placeholder="Number" />
-            </div>
-          </div>
-          <div class="bc-form-col bc-checks">
-            <label class="bc-check">
-              <input type="checkbox" id="bc-share-card" />
-              <span class="bc-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>Share Business Card</span>
-            </label>
-            <label class="bc-check">
-              <input type="checkbox" id="bc-share-loc" checked onchange="toggleBcLocation()" />
-              <span class="bc-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>Share Location</span>
-            </label>
-          </div>
-          <div class="bc-form-col" id="bc-location-col">
-            <label class="bc-flabel" for="bc-location">Location Address</label>
-            <div class="modal-field" style="height:40px;">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <select id="bc-location" style="appearance:none;-webkit-appearance:none;">
-                <option value="" disabled selected>Select Location</option>
-                <option>421 Little York Rd, Houston, TX 77076</option>
-                <option>5820 North Fwy, Houston, TX 77076</option>
-                <option>10250 Southwest Fwy, Houston, TX 77074</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
       </div>
       <div class="modal-footer">
-        <button class="modal-cancel" onclick="closeBcModal()">Cancel</button>
-        <button class="modal-save" onclick="sendBusinessCard()">Submit</button>
+        <button class="modal-cancel" onclick="closeContactModal()">Cancel</button>
+        <button class="modal-save" onclick="saveContact()">Save</button>
       </div>
     </div>
   </div>
 
+  <!-- LABEL POPUP (assign + create) -->
+  <div class="label-popup" id="label-popup">
+    <div class="lblp-title">Label</div>
+    <div class="lblp-sort">
+      <span class="lblp-sort-lbl">Sort by</span>
+      <div class="lblp-sort-seg">
+        <button class="lblp-sort-btn" data-sort="name" onclick="setLabelSort('name')">Name</button>
+        <button class="lblp-sort-btn" data-sort="color" onclick="setLabelSort('color')">Color</button>
+      </div>
+    </div>
+    <div class="lblp-list" id="lblp-list"></div>
+    <div class="lblp-create">
+      <input type="text" id="lblp-new-name" placeholder="New label name" maxlength="24" onkeydown="if(event.key==='Enter'){event.preventDefault();addNewLabel();}" />
+      <div class="lblp-swatches" id="lblp-swatches"></div>
+      <button class="lblp-add-btn" onclick="addNewLabel()">Create label</button>
+    </div>
+  </div>
+
+  <!-- ROW KEBAB MENU -->
+  <div class="cts-menu" id="cts-menu">
+    <div class="cts-menu-item" onclick="ctsMenuEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>Edit</div>
+    <div class="cts-menu-item danger" onclick="ctsMenuDelete()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Delete</div>
+  </div>
+
+<!-- Shared roster (CCLeads.TEAM) — single source of truth for users -->
+<script src="../../shared/leads-comms.js"></script>
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
 // Anchor "now" to match the rest of the seed data (May 23, 2026 7:00 PM)
@@ -3570,8 +3539,8 @@ document.addEventListener('keydown',(e)=>{
 });
 
 function navClick(label){
-  if(label === 'Settings') return; // already here
-  /* This page lives two folders deep (Settings/Settings_main_page/), so links use ../../ */
+  if(label === 'Settings') return; // already here (kept active)
+  /* This page lives two folders deep (Settings/User_roles/), so links use ../../ */
   var routes={
     'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
     'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
@@ -3605,54 +3574,6 @@ function closeMobileDrawer(){
   if(bd)     bd.classList.remove('open');
 }
 
-function openBcModal(){
-  const bd = document.getElementById('bc-modal-backdrop');
-  if(!bd) return;
-  bd.classList.add('open');
-  // Make sure the Location field's visibility matches the checkbox on open
-  toggleBcLocation();
-  // Focus the Customer Number input so the user can type immediately
-  setTimeout(() => {
-    const el = document.getElementById('bc-number');
-    if(el) el.focus();
-  }, 0);
-}
-
-function closeBcModal(){
-  const bd = document.getElementById('bc-modal-backdrop');
-  if(bd) bd.classList.remove('open');
-  // Reset all fields back to defaults so the next open starts clean
-  const num  = document.getElementById('bc-number');     if(num)  num.value = '';
-  const loc  = document.getElementById('bc-location');   if(loc)  loc.selectedIndex = 0;
-  const card = document.getElementById('bc-share-card'); if(card) card.checked = false;
-  const sloc = document.getElementById('bc-share-loc');  if(sloc) sloc.checked = true;
-  // Re-sync the Location column visibility with the just-reset checkbox state
-  toggleBcLocation();
-}
-
-function toggleBcLocation(){
-  // Show/hide the Location dropdown based on the "Share Location" checkbox
-  const sloc = document.getElementById('bc-share-loc');
-  const col  = document.getElementById('bc-location-col');
-  if(col) col.style.display = (sloc && sloc.checked) ? '' : 'none';
-}
-
-function handleBcBackdropClick(e){
-  // Only close when the backdrop itself is clicked, not when bubbling from inside
-  if(e.target === document.getElementById('bc-modal-backdrop')) closeBcModal();
-}
-
-function sendBusinessCard(){
-  const numEl = document.getElementById('bc-number');
-  if(!numEl) return;
-  const num = numEl.value.trim();
-  if(!num){ numEl.focus(); return; }  // require a customer number
-  closeBcModal();
-  if(typeof showNavToast === 'function'){
-    showNavToast('Business card sent', 'Sent to ' + num + '.');
-  }
-}
-
 let navToastTimer = null;
 function showNavToast(title, body){
   const t = document.getElementById('nav-toast');
@@ -3670,4 +3591,223 @@ function hideNavToast(){
 }
 
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });
+
+// ---- CONTACTS ----
+var CT_KEY='cc_contacts', CT_LBL_KEY='cc_contact_labels', CT_LBL_MAP_KEY='cc_contact_label_map';
+var LABEL_PALETTE=['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#64748b'];
+var AVATAR_PALETTE=['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9'];
+var CONTACTS, CONTACT_LABELS, CONTACT_LABEL_MAP;
+var _ctSearch='', _ctFilterLabel=null, _ctEditId=null, _ctMenuId=null, _ctModalLabelId=null, _ctModalPhoto=null, _ctDirShared=false;
+var _lblPopupContact=null, _lblPopupMode='assign', _lblNewColor=LABEL_PALETTE[0], _lblSort='name';
+
+function _ctEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _ctIni(name){ var p=String(name||'').trim().split(/\s+/); return ((((p[0]||'')[0])||'')+(((p[1]||'')[0])||'')).toUpperCase()||'?'; }
+function _ctAvatarColor(id){ var n=0; String(id).split('').forEach(function(c){ n=(n+c.charCodeAt(0))%AVATAR_PALETTE.length; }); return AVATAR_PALETTE[n]; }
+function _ctFmtPhone(p){ var d=String(p||'').replace(/\D/g,''); return d.length===10 ? '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6) : (p||''); }
+function _ctSave(){ try{ localStorage.setItem(CT_KEY, JSON.stringify(CONTACTS)); }catch(e){} }
+function _ctSaveLabels(){ try{ localStorage.setItem(CT_LBL_KEY, JSON.stringify(CONTACT_LABELS)); }catch(e){} }
+function _ctSaveMap(){ try{ localStorage.setItem(CT_LBL_MAP_KEY, JSON.stringify(CONTACT_LABEL_MAP)); }catch(e){} }
+
+(function _ctInit(){
+  try{ CONTACTS=JSON.parse(localStorage.getItem(CT_KEY)||'null'); }catch(e){ CONTACTS=null; }
+  try{ CONTACT_LABELS=JSON.parse(localStorage.getItem(CT_LBL_KEY)||'null'); }catch(e){ CONTACT_LABELS=null; }
+  try{ CONTACT_LABEL_MAP=JSON.parse(localStorage.getItem(CT_LBL_MAP_KEY)||'null'); }catch(e){ CONTACT_LABEL_MAP=null; }
+  if(!CONTACT_LABELS){ CONTACT_LABELS=[
+    {id:'family',name:'Family',color:'#22c88a'},
+    {id:'work',name:'Work',color:'#4f7cff'},
+    {id:'vip',name:'VIP',color:'#a78bfa'},
+    {id:'vendor',name:'Vendor',color:'#f5a623'}
+  ]; _ctSaveLabels(); }
+  if(!CONTACTS){ CONTACTS=[
+    {id:'c1',name:'Ruth',phone:'3163959710',email:''},
+    {id:'c2',name:'Marcus Reed',phone:'4805551182',email:'marcus.reed@gmail.com',shared:true},
+    {id:'c3',name:'Priya Nair',phone:'2125550148',email:'priya.nair@outlook.com'},
+    {id:'c4',name:'Diego Alvarez',phone:'3105550199',email:''},
+    {id:'c5',name:'Hannah Lee',phone:'6175550123',email:'hannah.lee@coreconnect.io',shared:true}
+  ]; _ctSave(); }
+  if(!CONTACT_LABEL_MAP){ CONTACT_LABEL_MAP={ 'c1':'family', 'c2':'work', 'c3':'vip' }; _ctSaveMap(); }
+})();
+
+function labelForContact(id){ var lid=CONTACT_LABEL_MAP[id]; return lid ? CONTACT_LABELS.find(function(x){return x.id===lid;}) : null; }
+function assignContactLabel(id, labelId){ var cur=CONTACT_LABEL_MAP[id]; if(cur===labelId) delete CONTACT_LABEL_MAP[id]; else CONTACT_LABEL_MAP[id]=labelId; _ctSaveMap(); renderContacts(); renderSidebarLabels(); renderLabelPopup(); }
+function createContactLabel(name, color){ var id='ctl_'+Date.now()+'_'+Math.floor(Math.random()*1e4); CONTACT_LABELS.push({id:id,name:name,color:color}); _ctSaveLabels(); return id; }
+function _ctNewId(){ return 'c'+Date.now()+'_'+Math.floor(Math.random()*1e4); }
+function addContact(c){ c.id=_ctNewId(); c.createdAt=Date.now(); CONTACTS.push(c); _ctSave(); if(c.labelId){ CONTACT_LABEL_MAP[c.id]=c.labelId; _ctSaveMap(); } return c; }
+function updateContact(id, patch){ var c=CONTACTS.find(function(x){return x.id===id;}); if(c){ Object.assign(c,patch); _ctSave(); } return c; }
+function removeContact(id){ var i=CONTACTS.findIndex(function(x){return x.id===id;}); if(i>=0){ CONTACTS.splice(i,1); delete CONTACT_LABEL_MAP[id]; _ctSave(); _ctSaveMap(); } }
+
+// Directory scope: "Default" = all of my contacts; "Shared" = only those visible to other users.
+function _ctDirContacts(){ return _ctDirShared ? CONTACTS.filter(function(c){ return !!c.shared; }) : CONTACTS; }
+function getFilteredContacts(){
+  var q=_ctSearch.trim().toLowerCase();
+  return _ctDirContacts().filter(function(c){
+    if(_ctFilterLabel && CONTACT_LABEL_MAP[c.id]!==_ctFilterLabel) return false;
+    if(q){ var hay=[c.name,c.phone,_ctFmtPhone(c.phone),c.email].filter(Boolean).join(' ').toLowerCase(); if(hay.indexOf(q)<0) return false; }
+    return true;
+  }).sort(function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+}
+
+var CT_KEBAB_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
+var CT_FLAG_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
+var CT_SHARED_SVG='<span class="cts-shared" title="Visible to other users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="3"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>';
+
+function renderContacts(){
+  var tb=document.getElementById('cts-tbody'); if(!tb) return;
+  var list=getFilteredContacts();
+  var dirCount=_ctDirContacts().length;
+  var allEl=document.getElementById('cts-count-all'); if(allEl) allEl.textContent=dirCount;
+  if(!list.length){ var msg = dirCount===0 ? (_ctDirShared?'No shared contacts yet.':'No contacts yet -- click Create Contact.') : 'No contacts match your search.'; tb.innerHTML='<tr><td colspan="6"><div class="cts-empty">'+msg+'</div></td></tr>'; return; }
+  var rows='<tr class="cts-group"><td colspan="6">Contacts ('+list.length+')</td></tr>';
+  rows+=list.map(function(c){
+    var lb=labelForContact(c.id);
+    var flag = lb
+      ? '<button class="cts-flag" onclick="openLabelPopup(event,\''+c.id+'\')" style="color:'+lb.color+'">'+CT_FLAG_SVG+'<span class="cts-flag-name" style="color:'+lb.color+'">'+_ctEsc(lb.name)+'</span></button>'
+      : '<button class="cts-flag cts-flag-empty" onclick="openLabelPopup(event,\''+c.id+'\')" title="Add label">'+CT_FLAG_SVG+'</button>';
+    return '<tr class="cts-row" data-id="'+c.id+'">'+
+      '<td><div class="cts-name-cell">'+(c.photo?'<span class="cts-avatar" style="background-image:url(\''+c.photo+'\');background-size:cover;background-position:center;"></span>':'<span class="cts-avatar" style="background:'+_ctAvatarColor(c.id)+'">'+_ctIni(c.name)+'</span>')+'<span class="cts-name">'+_ctEsc(c.name)+'</span></div></td>'+
+      '<td class="cts-sub">'+_ctEsc(_ctFmtPhone(c.phone))+'</td>'+
+      '<td class="cts-sub">'+(c.email?_ctEsc(c.email):'<span style="color:var(--mu)">--</span>')+'</td>'+
+      '<td>'+flag+'</td>'+
+      '<td class="cts-cell-c">'+(c.shared?CT_SHARED_SVG:'')+'</td>'+
+      '<td class="cts-cell-c"><button class="cts-kebab" onclick="openCtMenu(event,\''+c.id+'\')">'+CT_KEBAB_SVG+'</button></td>'+
+    '</tr>';
+  }).join('');
+  tb.innerHTML=rows;
+}
+
+function renderSidebarLabels(){
+  var box=document.getElementById('cts-labels'); if(!box) return;
+  var counts={}; _ctDirContacts().forEach(function(c){ var l=CONTACT_LABEL_MAP[c.id]; if(l) counts[l]=(counts[l]||0)+1; });
+  if(!CONTACT_LABELS.length){ box.innerHTML='<div class="cts-labels-empty">No labels yet.</div>'; return; }
+  box.innerHTML=CONTACT_LABELS.map(function(l){
+    var active=(_ctFilterLabel===l.id);
+    return '<button class="cts-label-item'+(active?' active':'')+'" onclick="setContactFilter(\''+l.id+'\')"><span class="cts-label-dot" style="background:'+l.color+'"></span><span class="cts-label-name">'+_ctEsc(l.name)+'</span><span class="cts-label-count">'+(counts[l.id]||0)+'</span></button>';
+  }).join('');
+}
+
+function setContactFilter(labelId){ _ctFilterLabel=labelId; var all=document.getElementById('cts-nav-all'); if(all) all.classList.toggle('active', labelId===null); renderSidebarLabels(); renderContacts(); }
+function onContactSearch(v){ _ctSearch=v||''; renderContacts(); }
+function onDirToggle(){ _ctDirShared=document.getElementById('cts-dir').checked; document.getElementById('cts-dir-label').textContent = _ctDirShared ? 'Shared Directory' : 'Default Directory'; var navL=document.querySelector('#cts-nav-all .cts-nav-label'); if(navL) navL.textContent = _ctDirShared ? 'Shared' : 'Contacts'; renderSidebarLabels(); renderContacts(); }
+function onUploadClick(){ if(typeof showNavToast==='function') showNavToast('Import contacts', 'Contact import is coming soon.'); }
+
+function openContactModal(id){
+  _ctEditId=id||null;
+  var c=id?CONTACTS.find(function(x){return x.id===id;}):null;
+  document.getElementById('contact-modal-title').textContent = id ? 'Edit Contact' : 'Create Contact';
+  document.getElementById('ct-name').value = c?c.name:'';
+  document.getElementById('ct-phone').value = c?c.phone:'';
+  document.getElementById('ct-email').value = c?(c.email||''):'';
+  document.getElementById('ct-notes').value = c?(c.notes||''):'';
+  document.getElementById('ct-shared').checked = c ? !!c.shared : false;
+  _ctModalLabelId = c ? (CONTACT_LABEL_MAP[c.id]||null) : null;
+  _ctModalPhoto = c ? (c.photo||null) : null;
+  var fi=document.getElementById('ct-photo-input'); if(fi) fi.value='';
+  _ctUpdatePhotoPreview();
+  renderModalLabelChips();
+  document.getElementById('contact-modal-backdrop').classList.add('open');
+  setTimeout(function(){ var n=document.getElementById('ct-name'); if(n) n.focus(); },0);
+}
+function renderModalLabelChips(){
+  var box=document.getElementById('ct-label-chips'); if(!box) return;
+  if(!CONTACT_LABELS.length){ box.innerHTML='<span style="color:var(--mu);font-size:12px;">No labels yet</span>'; return; }
+  box.innerHTML=CONTACT_LABELS.map(function(l){
+    var on=(_ctModalLabelId===l.id);
+    return '<button type="button" onclick="toggleModalLabel(\''+l.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:14px;border:1px solid '+(on?l.color:'var(--brd2)')+';background:'+(on?(l.color+'22'):'transparent')+';color:'+(on?l.color:'var(--mu)')+';font-family:var(--font);font-size:11.5px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:'+l.color+'"></span>'+_ctEsc(l.name)+'</button>';
+  }).join('');
+}
+function toggleModalLabel(id){ _ctModalLabelId = (_ctModalLabelId===id)?null:id; renderModalLabelChips(); }
+function _ctUpdatePhotoPreview(){
+  var prev=document.getElementById('ct-photo-preview'), ini=document.getElementById('ct-photo-initials'), rm=document.getElementById('ct-photo-remove');
+  if(!prev) return;
+  if(_ctModalPhoto){ prev.style.backgroundImage="url('"+_ctModalPhoto+"')"; if(ini) ini.style.display='none'; if(rm) rm.style.display=''; }
+  else { prev.style.backgroundImage='none'; if(ini){ ini.style.display=''; ini.textContent=_ctIni((document.getElementById('ct-name').value||'').trim()); } if(rm) rm.style.display='none'; }
+}
+function onCtNameInput(){ if(!_ctModalPhoto) _ctUpdatePhotoPreview(); }
+function onContactPhotoPick(input){
+  var f=input.files && input.files[0]; if(!f) return;
+  if(!/^image\//.test(f.type)){ if(typeof showNavToast==='function') showNavToast('Invalid file','Please choose an image.'); return; }
+  var reader=new FileReader();
+  reader.onload=function(e){ _ctModalPhoto=e.target.result; _ctUpdatePhotoPreview(); };
+  reader.readAsDataURL(f);
+}
+function clearContactPhoto(){ _ctModalPhoto=null; var fi=document.getElementById('ct-photo-input'); if(fi) fi.value=''; _ctUpdatePhotoPreview(); }
+function closeContactModal(){ document.getElementById('contact-modal-backdrop').classList.remove('open'); _ctEditId=null; }
+function handleContactBackdrop(e){ if(e.target===document.getElementById('contact-modal-backdrop')) closeContactModal(); }
+function saveContact(){
+  var nameEl=document.getElementById('ct-name'); var name=nameEl.value.trim();
+  if(!name){ nameEl.focus(); return; }
+  var patch={ name:name, phone:document.getElementById('ct-phone').value.trim(), email:document.getElementById('ct-email').value.trim(), notes:document.getElementById('ct-notes').value.trim(), photo:_ctModalPhoto||null, shared:document.getElementById('ct-shared').checked };
+  if(_ctEditId){
+    updateContact(_ctEditId, patch);
+    if(_ctModalLabelId) CONTACT_LABEL_MAP[_ctEditId]=_ctModalLabelId; else delete CONTACT_LABEL_MAP[_ctEditId];
+    _ctSaveMap();
+    if(typeof showNavToast==='function') showNavToast('Contact updated', name+' was saved.');
+  } else {
+    patch.labelId=_ctModalLabelId||null; addContact(patch);
+    if(typeof showNavToast==='function') showNavToast('Contact added', name+' was added.');
+  }
+  closeContactModal(); renderContacts(); renderSidebarLabels();
+}
+
+function openCtMenu(e, id){
+  e.stopPropagation(); _ctMenuId=id;
+  var menu=document.getElementById('cts-menu'); var r=e.currentTarget.getBoundingClientRect();
+  menu.classList.add('open');
+  var mw=menu.offsetWidth||140, mh=menu.offsetHeight||80;
+  var left=r.right-mw; if(left<8) left=8;
+  var top=r.bottom+4; if(top+mh>window.innerHeight) top=Math.max(8, r.top-mh-4);
+  menu.style.left=left+'px'; menu.style.top=top+'px';
+}
+function closeCtMenu(){ var m=document.getElementById('cts-menu'); if(m) m.classList.remove('open'); _ctMenuId=null; }
+function ctsMenuEdit(){ var id=_ctMenuId; closeCtMenu(); if(id) openContactModal(id); }
+function ctsMenuDelete(){ var id=_ctMenuId; closeCtMenu(); if(!id) return; var c=CONTACTS.find(function(x){return x.id===id;}); removeContact(id); renderContacts(); renderSidebarLabels(); if(typeof showNavToast==='function') showNavToast('Contact removed', (c?c.name:'Contact')+' was removed.'); }
+
+function _sortedContactLabels(){
+  var arr=CONTACT_LABELS.slice();
+  if(_lblSort==='color'){ arr.sort(function(a,b){ var ia=LABEL_PALETTE.indexOf(a.color), ib=LABEL_PALETTE.indexOf(b.color); if(ia<0)ia=999; if(ib<0)ib=999; if(ia!==ib)return ia-ib; return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); }); }
+  else { arr.sort(function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); }); }
+  return arr;
+}
+function setLabelSort(mode){ _lblSort=mode; renderLabelPopup(); }
+function renderLabelSwatches(){ var box=document.getElementById('lblp-swatches'); if(!box) return; box.innerHTML=LABEL_PALETTE.map(function(c){ return '<span class="lblp-sw'+(c===_lblNewColor?' on':'')+'" style="background:'+c+';" onclick="selectLabelColor(\''+c+'\')"></span>'; }).join(''); }
+function selectLabelColor(c){ _lblNewColor=c; renderLabelSwatches(); }
+function renderLabelPopup(){
+  var listEl=document.getElementById('lblp-list'); if(!listEl) return;
+  var assigned = _lblPopupContact ? CONTACT_LABEL_MAP[_lblPopupContact] : null;
+  listEl.innerHTML = CONTACT_LABELS.length ? _sortedContactLabels().map(function(lb){
+    var on=(assigned===lb.id);
+    return '<div class="lblp-item'+(on?' on':'')+'" onclick="onLabelPick(\''+lb.id+'\')"><span class="lblp-dot" style="background:'+lb.color+';"></span><span class="lblp-name">'+_ctEsc(lb.name)+'</span><span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></div>';
+  }).join('') : '<div class="lblp-empty">No labels yet -- create one below.</div>';
+  document.querySelectorAll('#label-popup .lblp-sort-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.sort===_lblSort); });
+  renderLabelSwatches();
+}
+function onLabelPick(labelId){ if(_lblPopupContact){ assignContactLabel(_lblPopupContact, labelId); } }
+function _positionPopup(pop, ref){
+  var rect=ref.getBoundingClientRect(); var pw=pop.offsetWidth||236, ph=pop.offsetHeight||320;
+  var left=rect.left, top=rect.bottom+4;
+  if(left+pw>window.innerWidth) left=window.innerWidth-pw-8; if(left<8) left=8;
+  if(top+ph>window.innerHeight) top=Math.max(8, rect.top-ph-4);
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+}
+function openLabelPopup(e, contactId){ e.stopPropagation(); _lblPopupMode='assign'; _lblPopupContact=contactId; var pop=document.getElementById('label-popup'); if(!pop) return; document.getElementById('lblp-new-name').value=''; renderLabelPopup(); pop.classList.add('open'); _positionPopup(pop, e.currentTarget); }
+function openLabelPopupNew(e){ e.stopPropagation(); _lblPopupMode='create'; _lblPopupContact=null; var pop=document.getElementById('label-popup'); if(!pop) return; document.getElementById('lblp-new-name').value=''; renderLabelPopup(); pop.classList.add('open'); _positionPopup(pop, e.currentTarget); setTimeout(function(){ var n=document.getElementById('lblp-new-name'); if(n) n.focus(); },0); }
+function closeLabelPopup(){ var pop=document.getElementById('label-popup'); if(pop) pop.classList.remove('open'); _lblPopupContact=null; }
+function addNewLabel(){
+  var nm=document.getElementById('lblp-new-name'); if(!nm) return;
+  var name=nm.value.trim(); if(!name){ nm.focus(); return; }
+  var id=createContactLabel(name, _lblNewColor); nm.value='';
+  renderSidebarLabels(); renderModalLabelChips();
+  if(_lblPopupContact){ assignContactLabel(_lblPopupContact, id); } else { renderLabelPopup(); }
+}
+
+document.addEventListener('mousedown', function(e){
+  var pop=document.getElementById('label-popup');
+  if(pop && pop.classList.contains('open') && !pop.contains(e.target) && !e.target.closest('.cts-flag') && !e.target.closest('.cts-label-add')) closeLabelPopup();
+  var menu=document.getElementById('cts-menu');
+  if(menu && menu.classList.contains('open') && !menu.contains(e.target) && !e.target.closest('.cts-kebab')) closeCtMenu();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeLabelPopup(); closeCtMenu(); var b=document.getElementById('contact-modal-backdrop'); if(b && b.classList.contains('open')) closeContactModal(); } });
+
+renderSidebarLabels();
+renderContacts();
 </script>

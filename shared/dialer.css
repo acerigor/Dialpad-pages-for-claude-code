@@ -1,0 +1,142 @@
+/* ============================================================================
+   Canonical Quick-Dial dialer styles — single source of truth for the dialer's
+   look. Injected by shared/dialer.js (appended to <head>, so it overrides any
+   page-local dialer CSS) to keep every page's dialer visually identical.
+   Mirrors the leads/message-history dialer panel.
+   ========================================================================== */
+
+.dialer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1600;
+  background:var(--ac);color:#fff;border-radius:10px 0 0 10px;
+  padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
+  box-shadow:-3px 0 16px rgba(0,0,0,.4);transition:background .15s;}
+.dialer-tab:hover{background:var(--ac2);}
+.dialer-tab svg{width:18px;height:18px;}
+.dialer-tab-label{font-size:9px;font-weight:600;letter-spacing:.6px;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
+
+.dialer-panel{position:fixed;right:-320px;top:0;bottom:0;width:300px;
+  background:#181c27;border-left:0.5px solid rgba(255,255,255,0.13);
+  z-index:1500;display:flex;flex-direction:column;
+  transition:right .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 32px rgba(0,0,0,.5);}
+.dialer-panel.open{right:0;}
+
+.dialer-header{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:0.5px solid rgba(255,255,255,0.07);flex-shrink:0;background:#181c27;}
+.dialer-header-left{display:flex;align-items:center;gap:8px;}
+.dialer-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gr);}
+.dialer-title{font-size:14px;font-weight:600;color:var(--tx);}
+.dialer-close{width:26px;height:26px;border-radius:6px;border:0.5px solid var(--brd2);
+  background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:15px;transition:all .15s;}
+.dialer-close:hover{border-color:var(--rd);color:var(--rd);}
+.dialer-close svg{width:16px;height:16px;}
+
+.dialer-contact-bar{padding:12px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.dialer-contact-label{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.dialer-contact-row{display:flex;align-items:center;gap:10px;}
+.dialer-contact-av{width:32px;height:32px;border-radius:50%;background:var(--ac);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
+.dialer-contact-name{font-size:13px;font-weight:500;color:var(--tx);}
+.dialer-contact-num{font-size:11.5px;color:var(--mu);font-family:var(--mono);}
+.dialer-contact-clear{margin-left:auto;width:22px;height:22px;border-radius:5px;border:0.5px solid var(--brd2);
+  background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;}
+.dialer-contact-clear:hover{color:var(--rd);border-color:var(--rd);}
+
+/* main content area is a flex column that fills the panel */
+.dialer-main{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+
+.dialer-display{padding:20px 16px 10px;text-align:center;flex-shrink:0;}
+.dialer-number{font-size:24px;font-weight:500;font-family:var(--mono);color:var(--tx);
+  letter-spacing:3px;min-height:36px;word-break:break-all;line-height:1.2;}
+.dialer-number-placeholder{font-size:14px;color:var(--mu);font-family:var(--font);letter-spacing:normal;}
+
+.dialer-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 20px;flex-shrink:0;}
+.dk{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:52px;border-radius:10px;background:#1e2333;border:0.5px solid rgba(255,255,255,0.07);
+  cursor:pointer;transition:all .1s;user-select:none;}
+.dk:hover{background:rgba(79,124,255,.12);border-color:var(--ac);}
+.dk:active{transform:scale(.95);}
+.dk-num{font-size:18px;font-weight:500;color:var(--tx);line-height:1;}
+.dk-sub{font-size:8px;font-weight:500;color:var(--mu);letter-spacing:.8px;margin-top:2px;}
+
+.dialer-actions{display:flex;align-items:center;gap:8px;padding:8px 20px 16px;flex-shrink:0;}
+.dialer-backspace{width:44px;height:44px;border-radius:50%;border:0.5px solid var(--brd2);
+  background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.dialer-backspace:hover{border-color:var(--rd);color:var(--rd);}
+.dialer-call-btn{flex:1;height:54px;border-radius:27px;border:none;
+  background:var(--gr);color:#fff;font-size:15px;font-weight:600;font-family:var(--font);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .15s;box-shadow:0 4px 16px rgba(34,200,138,.25);}
+.dialer-call-btn:hover{background:#1db87e;box-shadow:0 4px 20px rgba(34,200,138,.4);}
+.dialer-call-btn.calling{background:var(--rd);box-shadow:0 4px 16px rgba(232,85,85,.3);}
+.dialer-call-btn.calling:hover{background:#d44;}
+.dialer-call-btn svg{width:20px;height:20px;}
+.dialer-mute{width:44px;height:44px;border-radius:50%;border:0.5px solid var(--brd2);
+  background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.dialer-mute:hover{border-color:var(--ac);color:var(--ac2);}
+.dialer-mute.muted{background:rgba(232,85,85,.12);border-color:var(--rd);color:var(--rd);}
+
+.dialer-calling-overlay{display:none;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:16px;padding:24px;}
+.dialer-calling-overlay.active{display:flex;}
+.dialer-calling-av{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:#fff;}
+.dialer-calling-name{font-size:16px;font-weight:600;color:var(--tx);}
+.dialer-calling-status{font-size:13px;color:var(--mu);}
+.dialer-calling-timer{font-size:22px;font-weight:500;font-family:var(--mono);color:var(--tx);}
+.pulse-ring{width:88px;height:88px;border-radius:50%;border:2px solid var(--gr);position:absolute;animation:pulse 1.4s ease-out infinite;opacity:0;}
+@keyframes pulse{0%{transform:scale(1);opacity:.6;}100%{transform:scale(1.7);opacity:0;}}
+.dialer-calling-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:88px;height:88px;}
+
+/* ── new layout parts ── */
+.dialer-add-new{display:flex;align-items:center;justify-content:center;gap:7px;
+  margin:0 16px 12px;height:36px;border-radius:8px;border:none;cursor:pointer;
+  background:var(--ac);color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);
+  transition:background .15s;flex-shrink:0;}
+.dialer-add-new:hover{background:var(--ac2);}
+.dialer-add-new svg{width:14px;height:14px;}
+.dialer-mynum{display:flex;align-items:center;justify-content:space-between;
+  margin:12px 16px;padding:8px 11px;background:var(--sur2);border:0.5px solid var(--brd2);
+  border-radius:8px;flex-shrink:0;}
+.dialer-mynum-label{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+.dialer-mynum-val{font-size:12.5px;color:var(--tx);font-family:var(--mono);margin-top:2px;}
+.dialer-sort-btn{display:flex;align-items:center;gap:4px;background:transparent;
+  border:0.5px solid var(--brd2);border-radius:6px;padding:4px 9px;color:var(--mu);
+  font-size:11.5px;font-family:var(--font);cursor:pointer;transition:all .15s;}
+.dialer-sort-btn:hover{border-color:var(--ac);color:var(--ac2);}
+.dialer-contacts{flex:1;overflow-y:auto;border-top:0.5px solid var(--brd);}
+.dialer-contacts-title{font-size:10px;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.6px;padding:10px 16px 6px;}
+.dialer-contact{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;
+  transition:background .1s;border-bottom:0.5px solid var(--brd);}
+.dialer-contact:last-child{border-bottom:none;}
+.dialer-contact:hover{background:rgba(79,124,255,.05);}
+.dialer-contact-firstmatch{background:rgba(79,124,255,.10);border-left:2px solid var(--ac);padding-left:14px;}
+.dialer-contact-firstmatch:hover{background:rgba(79,124,255,.15);}
+.dialer-section-header{font-size:9.5px;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.7px;padding:10px 16px 4px;font-weight:500;
+  background:var(--sur);border-bottom:0.5px solid var(--brd);}
+.dialer-no-match{padding:24px 16px;text-align:center;font-size:12px;color:var(--mu);}
+.dc-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;}
+.dc-name{font-size:12.5px;color:var(--tx);font-weight:500;}
+.dc-num{font-size:11px;color:var(--mu);font-family:var(--mono);}
+.dialer-name-input{margin:12px 16px 0;display:flex;align-items:center;
+  background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+  padding:0 11px;height:36px;flex-shrink:0;transition:border-color .15s;}
+.dialer-name-input:focus-within{border-color:var(--ac);}
+.dialer-name-input input{background:none;border:none;outline:none;color:var(--tx);
+  font-family:var(--font);font-size:12.5px;width:100%;}
+.dialer-name-input input::placeholder{color:var(--mu);}
+.dialer-keypad-collapsed{display:none;}
+.dialer-hide-keypad{display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:9px;border-top:0.5px solid var(--brd);color:var(--mu);font-size:11.5px;
+  cursor:pointer;transition:color .15s;flex-shrink:0;background:var(--sur);}
+.dialer-hide-keypad:hover{color:var(--ac2);}
+
+@media (max-width:640px){
+  .dialer-panel{width:100%;right:-100%;box-shadow:none;border-left:none;z-index:1600;}
+  .dialer-panel.open{right:0;}
+  .dialer-header{padding:14px 16px;}
+  .dialer-close{width:40px;height:40px;border-radius:8px;}
+  .dialer-title{font-size:16px;}
+}

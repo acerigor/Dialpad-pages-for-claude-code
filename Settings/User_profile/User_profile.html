@@ -2905,6 +2905,11 @@
 .pf-field>label{font-size:12.5px;color:var(--tx);font-weight:500;}
 .pf-field input,.pf-select{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;height:40px;padding:0 12px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
 .pf-field input:focus,.pf-select:focus{border-color:var(--ac);}
+.pf-field input.pf-invalid{border-color:var(--rd);}
+.pf-field input.pf-invalid:focus{border-color:var(--rd);}
+.pf-field-err{display:none;color:var(--rd);font-size:11.5px;margin-top:5px;}
+.pf-field input.pf-readonly{background:var(--sur);color:var(--mu);cursor:default;}
+.pf-field input.pf-readonly:focus{border-color:var(--brd2);}
 .pf-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8aec4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;padding-right:36px;cursor:pointer;}
 .pf-select:hover{border-color:var(--ac);}
 /* While the dropdown is open (focused), flip the chevron to point up */
@@ -2950,7 +2955,7 @@
 .pf-perm-tbl thead th.pf-perm-colh .pf-perm-colh-in{display:inline-flex;flex-direction:column-reverse;align-items:center;gap:5px;line-height:1;}
 .pf-perm-tbl thead th:first-child{text-align:left;}
 .pf-perm-tbl tbody td:first-child{color:var(--tx);}
-.pf-perm-tbl tbody td.pf-perm-cell{text-align:center;}
+.pf-perm-tbl tbody td.pf-perm-cell{text-align:center;cursor:pointer;}
 .pf-perm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
 @media (max-width:640px){
   .pf-perm-tbl th,.pf-perm-tbl td{padding:9px 8px;}
@@ -2969,6 +2974,15 @@
 .pf-cbx input:indeterminate ~ .pf-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
 .pf-cbx:hover .pf-cbx-box{border-color:var(--ac);}
 .pf-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:26px;}
+/* Unsaved-changes confirm modal */
+.pf-confirm-backdrop{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:20px;}
+.pf-confirm-backdrop.open{display:flex;}
+.pf-confirm{width:100%;max-width:380px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:22px 22px 18px;box-shadow:0 24px 60px rgba(0,0,0,.5);}
+.pf-confirm-title{font-size:16px;font-weight:600;color:var(--tx);margin-bottom:8px;}
+.pf-confirm-body{font-size:13px;line-height:1.55;color:var(--mu);margin-bottom:20px;}
+.pf-confirm-foot{display:flex;justify-content:flex-end;gap:10px;}
+.pf-confirm-discard{background:var(--rd);border:none;color:#fff;font-family:var(--font);font-size:13px;font-weight:500;padding:0 16px;height:38px;border-radius:8px;cursor:pointer;transition:filter .12s;}
+.pf-confirm-discard:hover{filter:brightness(1.08);}
 @media(max-width:760px){ .pf-grid{grid-template-columns:1fr;} .pf-toggle-field{justify-content:flex-start;} }
 /* Users page: role + status badges in each row */
 .u-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-right:6px;}
@@ -3133,6 +3147,18 @@
   </div>
 </div>
 
+<!-- UNSAVED-CHANGES CONFIRM -->
+<div class="pf-confirm-backdrop" id="pf-confirm-backdrop" onclick="if(event.target===this) pfConfirmKeep()">
+  <div class="pf-confirm" role="dialog" aria-modal="true" aria-labelledby="pf-confirm-title">
+    <div class="pf-confirm-title" id="pf-confirm-title">Discard changes?</div>
+    <div class="pf-confirm-body">You have unsaved changes on this profile. If you leave now, they’ll be lost.</div>
+    <div class="pf-confirm-foot">
+      <button class="modal-cancel" onclick="pfConfirmKeep()">Keep editing</button>
+      <button class="pf-confirm-discard" onclick="pfConfirmDiscard()">Discard changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- PAGE-LEVEL NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
@@ -3147,7 +3173,7 @@
 
 <div class="root main-area" id="root">
   <div class="set-page-head">
-    <a class="ur-back" href="../Users/coreconnect_user.html" title="Back to Users">
+    <a class="ur-back" href="../Users/coreconnect_user.html" title="Back to Users" onclick="event.preventDefault(); pfGuardedNav(this.getAttribute('href'));">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Users</span>
     </a>
@@ -3189,7 +3215,7 @@
     <div class="pf-pane active" data-pane="general">
       <div class="pf-grid">
         <div class="pf-field"><label for="pf-name">Name</label><input type="text" id="pf-name" autocomplete="off" /></div>
-        <div class="pf-field"><label for="pf-email">Email</label><input type="email" id="pf-email" autocomplete="off" /></div>
+        <div class="pf-field"><label for="pf-email">Email</label><input type="email" id="pf-email" autocomplete="off" aria-describedby="pf-email-err" /><span class="pf-field-err" id="pf-email-err">Enter a valid email address.</span></div>
         <div class="pf-field"><label>Departments</label>
           <div class="pf-dd" id="pf-dept" data-value="Sales">
             <button type="button" class="pf-dd-btn" aria-haspopup="listbox" aria-expanded="false" onclick="pfToggleDD(this)">
@@ -3219,11 +3245,11 @@
             </ul>
           </div>
         </div>
-        <div class="pf-field"><label for="pf-pass">Password</label><input type="password" id="pf-pass" value="********" autocomplete="new-password" /></div>
-        <div class="pf-field"><label for="pf-pass2">Confirm Password</label><input type="password" id="pf-pass2" value="********" autocomplete="new-password" /></div>
+        <div class="pf-field"><label for="pf-pass">Password</label><input type="password" id="pf-pass" autocomplete="new-password" aria-describedby="pf-pass-err" /><span class="pf-field-err" id="pf-pass-err">Password is required.</span></div>
+        <div class="pf-field"><label for="pf-pass2">Confirm Password</label><input type="password" id="pf-pass2" autocomplete="new-password" aria-describedby="pf-pass2-err" /><span class="pf-field-err" id="pf-pass2-err">Passwords do not match.</span></div>
         <div class="pf-field"><label for="pf-mobile">Mobile</label><input type="tel" id="pf-mobile" autocomplete="off" /></div>
         <div class="pf-field"><label for="pf-ext">Extension</label><input type="text" id="pf-ext" autocomplete="off" /></div>
-        <div class="pf-field"><label for="pf-phone">Phone Number</label><select id="pf-phone" class="pf-select"></select></div>
+        <div class="pf-field"><label for="pf-phone">Phone Number</label><input type="text" id="pf-phone" class="pf-readonly" readonly tabindex="-1" aria-readonly="true" placeholder="—" /></div>
         <div class="pf-field pf-toggle-field">
           <label class="pf-toggle"><input type="checkbox" id="pf-sendcalls" /><span class="pf-toggle-track"></span><span class="pf-toggle-label">Send calls to Personal Number</span></label>
         </div>
@@ -3543,7 +3569,7 @@ function navClick(label){
     'Voice mail':'../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
     'Appointments':'../../coreconnect_appointments/coreconnect_appointments.html'
   };
-  if(routes[label]){ window.location.href=routes[label]; return; }
+  if(routes[label]){ pfGuardedNav(routes[label]); return; }
   showNavToast(label + ' is coming soon', 'This feature is under construction.');
 }
 
@@ -3638,6 +3664,16 @@ document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifi
 var _pfParams = new URLSearchParams(window.location.search);
 var PF_KEY = _pfParams.get('key');
 var PF_NEW = !PF_KEY || _pfParams.get('new')==='1';   // create-user mode when no key
+var PF_PW_PLACEHOLDER='********';   // edit-mode masked value meaning "keep current password"
+// Unsaved-changes guard
+var pfDirty=false, pfInitDone=false, pfPendingNav=null;
+function pfMarkDirty(){ if(pfInitDone) pfDirty=true; }
+function pfGuardedNav(url){
+  if(pfDirty){ pfPendingNav=url; var bd=document.getElementById('pf-confirm-backdrop'); if(bd) bd.classList.add('open'); return; }
+  window.location.href=url;
+}
+function pfConfirmKeep(){ var bd=document.getElementById('pf-confirm-backdrop'); if(bd) bd.classList.remove('open'); pfPendingNav=null; }
+function pfConfirmDiscard(){ pfDirty=false; var bd=document.getElementById('pf-confirm-backdrop'); if(bd) bd.classList.remove('open'); var url=pfPendingNav; pfPendingNav=null; if(url) window.location.href=url; }
 function _pfTeam(){ return (window.CCLeads && CCLeads.TEAM) || []; }
 function _pfUser(){ return _pfTeam().find(function(x){ return x.key === PF_KEY; }); }
 function _pfDigits(p){ return String(p||'').replace(/\D/g,''); }
@@ -3661,6 +3697,7 @@ function _pfDDSet(dd, val){
   opts.forEach(function(o){ if(o.dataset.value===val) match=o; o.classList.toggle('sel', o.dataset.value===val); });
   if(!match && val){ var ul=dd.querySelector('.pf-dd-menu'); var li=document.createElement('li'); li.className='pf-dd-opt sel'; li.setAttribute('role','option'); li.dataset.value=val; li.textContent=val; li.addEventListener('click', function(){ _pfDDSet(dd, val); _pfCloseDD(dd); }); ul.appendChild(li); }
   var lbl=dd.querySelector('.pf-dd-val'); if(lbl) lbl.textContent = val || '—';
+  pfMarkDirty();
 }
 function _pfCloseDD(dd){ dd.classList.remove('open'); var b=dd.querySelector('.pf-dd-btn'); if(b) b.setAttribute('aria-expanded','false'); }
 function _pfCloseAllDD(){ document.querySelectorAll('.pf-dd.open').forEach(_pfCloseDD); }
@@ -3672,9 +3709,33 @@ function pfToggleDD(btn){
 }
 function pfInitDropdowns(){
   document.querySelectorAll('.pf-dd').forEach(function(dd){
+    var btn=dd.querySelector('.pf-dd-btn');
     dd.querySelectorAll('.pf-dd-opt').forEach(function(o){
-      o.addEventListener('click', function(){ _pfDDSet(dd, o.dataset.value); _pfCloseDD(dd); });
+      o.setAttribute('tabindex','-1');
+      o.addEventListener('click', function(){ _pfDDSet(dd, o.dataset.value); _pfCloseDD(dd); if(btn) btn.focus(); });
     });
+    // Keyboard: open/move with arrows from the button.
+    if(btn) btn.addEventListener('keydown', function(e){
+      var isOpen=dd.classList.contains('open');
+      var opts=Array.prototype.slice.call(dd.querySelectorAll('.pf-dd-opt'));
+      if(e.key==='ArrowDown'){ e.preventDefault(); if(!isOpen) pfToggleDD(btn); (dd.querySelector('.pf-dd-opt.sel')||opts[0]||btn).focus(); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); if(!isOpen) pfToggleDD(btn); (opts[opts.length-1]||btn).focus(); }
+      else if(e.key==='Escape'){ if(isOpen){ e.preventDefault(); _pfCloseDD(dd); } }
+    });
+    // Keyboard: navigate/select within the open menu.
+    var menu=dd.querySelector('.pf-dd-menu');
+    if(menu) menu.addEventListener('keydown', function(e){
+      var opts=Array.prototype.slice.call(dd.querySelectorAll('.pf-dd-opt'));
+      var idx=opts.indexOf(document.activeElement);
+      if(e.key==='ArrowDown'){ e.preventDefault(); (opts[Math.min(opts.length-1, idx+1)]||opts[0]).focus(); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); (opts[Math.max(0, idx-1)]||opts[0]).focus(); }
+      else if(e.key==='Home'){ e.preventDefault(); opts[0].focus(); }
+      else if(e.key==='End'){ e.preventDefault(); opts[opts.length-1].focus(); }
+      else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(idx>=0){ _pfDDSet(dd, opts[idx].dataset.value); _pfCloseDD(dd); if(btn) btn.focus(); } }
+      else if(e.key==='Escape'){ e.preventDefault(); _pfCloseDD(dd); if(btn) btn.focus(); }
+    });
+    // Close when focus leaves the dropdown entirely (e.g., Tab away).
+    dd.addEventListener('focusout', function(e){ if(!dd.contains(e.relatedTarget)) _pfCloseDD(dd); });
   });
   // Close on outside click or Escape so the arrow flips back down the instant the menu closes.
   document.addEventListener('mousedown', function(e){ if(!e.target.closest('.pf-dd')) _pfCloseAllDD(); });
@@ -3829,6 +3890,7 @@ function pfToggleCol(sec,p){
   var anyOff=boxes.some(function(b){ return !b.checked; });
   boxes.forEach(function(b){ b.checked=anyOff; });
   pfRefreshColMaster(sec,p);
+  pfMarkDirty();
 }
 // Update the column-header master checkbox (checked / unchecked / indeterminate).
 function pfRefreshColMaster(sec,p){
@@ -3885,6 +3947,7 @@ function pfAccessChange(sec,row,which){
   var isAccess = (which==='access');
   acc.checked=isAccess; no.checked=!isAccess;
   pfRefreshAccMaster(sec,'access'); pfRefreshAccMaster(sec,'noaccess');
+  pfMarkDirty();
 }
 function _pfAccColBoxes(sec,col){ return Array.prototype.slice.call(document.querySelectorAll('.pf-acc-cbx[data-sec="'+sec+'"][data-acc="'+col+'"]')); }
 // Set every row in a section to a given column (Access or No Access).
@@ -3916,17 +3979,29 @@ function pfSyncCards(){
   _pfTxt('pf-card-role', _pfGetVal('pf-role')||'—');
   _pfTxt('pf-card-email', email||'—');
   _pfTxt('pf-card-mobile', _pfFmtPhone(mob)||'—');
+  var ph=document.getElementById('pf-phone'); if(ph) ph.value=_pfFmtPhone(mob)||'';
+}
+// Show a clear "user not found" state when ?key= doesn't match any user.
+function pfShowNotFound(){
+  var pt=document.querySelector('.set-page-title'); if(pt) pt.textContent='User not found';
+  var scroll=document.querySelector('.set-scroll');
+  if(scroll) scroll.innerHTML='<div class="pf-empty" style="margin-top:8px;">This user could not be found — they may have been removed.'
+    +'<div style="margin-top:16px;"><button class="modal-save" onclick="window.location.href=\'../Users/coreconnect_user.html\'">Back to Users</button></div></div>';
 }
 (function pfInit(){
   var u=PF_NEW ? null : _pfUser();
+  if(!PF_NEW && !u){ pfShowNotFound(); pfInitDone=true; return; }
   _pfVal('pf-name', u ? u.name : '');
   _pfVal('pf-email', u ? u.email : '');
   _pfSel('pf-dept', u ? (u.department||'Sales') : 'Sales');
   _pfSel('pf-role', u ? u.role : '');
   _pfVal('pf-mobile', u ? _pfDigits(u.phone) : '');
   _pfVal('pf-ext', u ? (u.extension||'') : '');
+  // New user: blank password (must be set). Existing user: masked placeholder = "keep current".
+  _pfVal('pf-pass',  PF_NEW ? '' : PF_PW_PLACEHOLDER);
+  _pfVal('pf-pass2', PF_NEW ? '' : PF_PW_PLACEHOLDER);
   var ph=document.getElementById('pf-phone');
-  if(ph){ ph.innerHTML=''; var o=document.createElement('option'); o.text=(u?_pfDigits(u.phone):'')||'—'; ph.add(o); }
+  if(ph){ ph.value = u ? (_pfFmtPhone(u.phone)||'') : ''; }
   var sc=document.getElementById('pf-sendcalls'); if(sc) sc.checked = !!(u && u.sendCalls);
   var pt=document.querySelector('.set-page-title'); if(pt) pt.textContent = PF_NEW ? 'New User' : (u ? u.name : 'User Profile');
   var saveBtn=document.getElementById('pf-save-btn'); if(saveBtn) saveBtn.textContent = PF_NEW ? 'Create user' : 'Update';
@@ -3935,8 +4010,20 @@ function pfSyncCards(){
   pfBuildAccessMatrix(PF_TAB_SECTIONS, 'pf-tab-root', u && u.tabPerms ? u.tabPerms : null);
   pfSyncCards();
   pfInitDropdowns();
+  // Larger hit target: clicking anywhere in a permission cell toggles its checkbox.
+  document.querySelectorAll('#pf-perm-root, #pf-lead-root, #pf-tab-root').forEach(function(root){
+    root.addEventListener('click', function(e){
+      if(e.target.closest('.pf-cbx')) return;   // the checkbox/label already handles its own clicks
+      var cell=e.target.closest('.pf-perm-cell'); if(!cell) return;
+      var cb=cell.querySelector('input[type=checkbox]'); if(!cb) return;
+      cb.checked=!cb.checked;
+      cb.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+  });
   // Live-update the summary cards as the form is edited.
   ['pf-name','pf-email','pf-mobile'].forEach(function(id){ var e=document.getElementById(id); if(e){ e.addEventListener('input', pfSyncCards); } });
+  var emEl=document.getElementById('pf-email'); if(emEl){ emEl.addEventListener('input', function(){ pfShowEmailErr(false); }); }
+  ['pf-pass','pf-pass2'].forEach(function(id){ var e=document.getElementById(id); if(e){ e.addEventListener('input', pfClearPwErr); } });
   document.querySelector('#pf-role .pf-dd-menu').addEventListener('click', pfSyncCards);
   // Remaining native <select> (Phone Number): flip the chevron up while focused/open.
   document.querySelectorAll('.pf-select').forEach(function(s){
@@ -3944,9 +4031,47 @@ function pfSyncCards(){
     s.addEventListener('blur',  function(){ this.classList.remove('pf-open'); });
     s.addEventListener('change', function(){ this.blur(); });
   });
+  // Mark the form dirty on any field edit (text inputs, toggles, permission checkboxes).
+  var pfScroll=document.querySelector('.set-scroll');
+  if(pfScroll){ pfScroll.addEventListener('input', pfMarkDirty); pfScroll.addEventListener('change', pfMarkDirty); }
+  pfInitDone=true;
 })();
+// Toggle a field's invalid state + its inline error message.
+function pfShowFieldErr(inpId, errId, show, msg){
+  var inp=document.getElementById(inpId), err=document.getElementById(errId);
+  if(inp){ inp.classList.toggle('pf-invalid', show); inp.setAttribute('aria-invalid', show?'true':'false'); }
+  if(err){ if(msg) err.textContent=msg; err.style.display = show ? 'block' : 'none'; }
+}
+// Email is optional, but if provided it must be a valid address.
+function _pfEmailValid(v){ v=String(v||'').trim(); return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+// True if the email already belongs to a DIFFERENT user (exceptKey = the user being edited).
+function _pfEmailTaken(email, exceptKey){
+  email=String(email||'').trim().toLowerCase(); if(!email) return false;
+  return ((window.CCLeads&&CCLeads.TEAM)||[]).some(function(u){ return u.key!==exceptKey && u.email && u.email.toLowerCase()===email; });
+}
+function pfShowEmailErr(show){ pfShowFieldErr('pf-email','pf-email-err', show); }
+// Password fields: real on the form, but no plaintext is stored (no backend) — only a hasPassword flag.
+function pfClearPwErr(){ pfShowFieldErr('pf-pass','pf-pass-err',false); pfShowFieldErr('pf-pass2','pf-pass2-err',false); }
+// Returns {ok, changed}. Create requires a password + match; Edit keeps the existing
+// password when both fields are left as the ******** placeholder.
+function pfCheckPassword(){
+  pfClearPwErr();
+  var p1=document.getElementById('pf-pass').value, p2=document.getElementById('pf-pass2').value;
+  if(!PF_NEW && p1===PF_PW_PLACEHOLDER && p2===PF_PW_PLACEHOLDER) return {ok:true, changed:false};
+  if(!p1 || p1===PF_PW_PLACEHOLDER){ pfShowFieldErr('pf-pass','pf-pass-err',true,'Password is required.'); pfSwitchTab('general'); document.getElementById('pf-pass').focus(); return {ok:false}; }
+  if(p1!==p2){ pfShowFieldErr('pf-pass2','pf-pass2-err',true,'Passwords do not match.'); pfSwitchTab('general'); document.getElementById('pf-pass2').focus(); return {ok:false}; }
+  return {ok:true, changed:true};
+}
 function pfUpdate(){
   var name=document.getElementById('pf-name').value.trim();
+  if(PF_NEW && !name){ var n=document.getElementById('pf-name'); if(n){ pfSwitchTab('general'); n.focus(); } return; }
+  var emailEl=document.getElementById('pf-email');
+  var emailVal=emailEl.value.trim();
+  if(!_pfEmailValid(emailVal)){ pfShowFieldErr('pf-email','pf-email-err',true,'Enter a valid email address.'); pfSwitchTab('general'); emailEl.focus(); return; }
+  if(_pfEmailTaken(emailVal, PF_NEW?null:PF_KEY)){ pfShowFieldErr('pf-email','pf-email-err',true,'A user with this email already exists.'); pfSwitchTab('general'); emailEl.focus(); return; }
+  pfShowEmailErr(false);
+  var pw=pfCheckPassword();
+  if(!pw.ok) return;
   var patch={
     name: name,
     email: document.getElementById('pf-email').value.trim(),
@@ -3960,18 +4085,20 @@ function pfUpdate(){
     tabPerms: pfCollectAccessMatrix('pf-tab-root')
   };
   if(PF_NEW){
-    if(!name){ var n=document.getElementById('pf-name'); if(n){ pfSwitchTab('general'); n.focus(); } return; }
     patch.status='Active';
+    patch.hasPassword=true;
     if(window.CCLeads && CCLeads.addTeamMember) CCLeads.addTeamMember(patch);
     if(typeof showNavToast==='function') showNavToast('User added', name+' was added.');
   } else {
     var u=_pfUser(); if(!u){ pfCancel(); return; }
     if(!patch.name) patch.name=u.name;
     if(!patch.phone) patch.phone=u.phone;
+    if(pw.changed) patch.hasPassword=true;   // only touch when the password was actually changed
     if(window.CCLeads && CCLeads.updateTeamMember) CCLeads.updateTeamMember(PF_KEY, patch);
     if(typeof showNavToast==='function') showNavToast('Profile updated', patch.name+' was saved.');
   }
+  pfDirty=false;   // saved — don't trigger the unsaved-changes guard on the post-save nav
   setTimeout(function(){ window.location.href='../Users/coreconnect_user.html'; }, 550);
 }
-function pfCancel(){ window.location.href='../Users/coreconnect_user.html'; }
+function pfCancel(){ pfGuardedNav('../Users/coreconnect_user.html'); }
 </script>

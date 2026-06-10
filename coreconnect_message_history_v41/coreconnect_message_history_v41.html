@@ -2243,6 +2243,14 @@ function formatPhoneDisplay(num){
   return num;
 }
 
+// Shared contacts from the Contacts page (Settings/contacts) — only those marked
+// "Visible to other users" (shared:true) with a phone. Read from the shared cc_contacts store.
+var _DIALER_CT_PALETTE=['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9'];
+function _dialerContactColor(id){ var n=0; String(id||'').split('').forEach(function(ch){ n=(n+ch.charCodeAt(0))%_DIALER_CT_PALETTE.length; }); return _DIALER_CT_PALETTE[n]; }
+function getSharedContacts(){
+  try{ var arr=JSON.parse(localStorage.getItem('cc_contacts')||'[]'); return Array.isArray(arr)?arr.filter(c=>c&&c.shared&&c.phone):[]; }
+  catch(e){ return []; }
+}
 function getDialerDirectory(){
   const leadEntries = leads
     .filter(l => l.phone)
@@ -2250,7 +2258,9 @@ function getDialerDirectory(){
   const userEntries = assignUsers
     .filter(u => u.phone)
     .map(u => ({ name: u.name, phone: u.phone, av: u.key, color: u.color, kind: 'user' }));
-  return { leads: leadEntries, users: userEntries };
+  const contactEntries = getSharedContacts()
+    .map(c => ({ name: c.name, phone: c.phone, av: ini(c.name), color: _dialerContactColor(c.id), kind: 'contact' }));
+  return { leads: leadEntries, users: userEntries, contacts: contactEntries };
 }
 
 function getFilteredDialerEntries(){
@@ -2271,20 +2281,22 @@ function getFilteredDialerEntries(){
   return {
     leads: dir.leads.filter(match),
     users: dir.users.filter(match),
+    contacts: dir.contacts.filter(match),
   };
 }
 
 function renderDialerContacts(){
   const list = document.getElementById('dialer-contacts-list');
   if(!list) return;
-  const { leads: leadHits, users: userHits } = getFilteredDialerEntries();
+  const { leads: leadHits, users: userHits, contacts: contactHits } = getFilteredDialerEntries();
 
   const sortFn = (a,b) => dialerSortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
   leadHits.sort(sortFn);
   userHits.sort(sortFn);
+  contactHits.sort(sortFn);
 
   const hasQuery = !!(dialerMatchQuery.digits || dialerMatchQuery.text);
-  const totalHits = leadHits.length + userHits.length;
+  const totalHits = leadHits.length + userHits.length + contactHits.length;
 
   if(hasQuery && totalHits === 0){
     list.innerHTML = `<div class="dialer-no-match">No matches</div>`;
@@ -2311,10 +2323,14 @@ function renderDialerContacts(){
     if(leadHits.length || hasQuery) html += `<div class="dialer-section-header">Team</div>`;
     html += userHits.map((c, i) => renderRow(c, highlightFirst && leadHits.length === 0 && i === 0)).join('');
   }
+  if(contactHits.length){
+    if(leadHits.length || userHits.length || hasQuery) html += `<div class="dialer-section-header">Contacts</div>`;
+    html += contactHits.map((c, i) => renderRow(c, highlightFirst && leadHits.length === 0 && userHits.length === 0 && i === 0)).join('');
+  }
   list.innerHTML = html;
 
   if(hasQuery && totalHits === 1){
-    const only = leadHits[0] || userHits[0];
+    const only = leadHits[0] || userHits[0] || contactHits[0];
     updateDialerMatchBar(only);
   } else {
     updateDialerMatchBar(null);
@@ -2374,8 +2390,8 @@ function initiateCall(){
   let color= dialerContactColor;
 
   if(!num && dialerMatchQuery.text){
-    const { leads: leadHits, users: userHits } = getFilteredDialerEntries();
-    const firstMatch = leadHits[0] || userHits[0];
+    const { leads: leadHits, users: userHits, contacts: contactHits } = getFilteredDialerEntries();
+    const firstMatch = leadHits[0] || userHits[0] || contactHits[0];
     if(firstMatch){
       num   = firstMatch.phone.replace(/\D/g,'');
       name  = firstMatch.name;

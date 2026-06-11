@@ -459,6 +459,19 @@
   .modal-field i{color:var(--mu);font-size:15px;flex-shrink:0;}
   .modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;width:100%;height:100%;}
   .modal-field select option{background:var(--sur2);color:var(--tx);}
+  /* Per-activity calendar settings: entry row + sub-modal cards */
+  .modal-backdrop.act-settings-bd{z-index:3100;}
+  .act-settings-row{display:flex;align-items:center;gap:10px;width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:9px 12px;cursor:pointer;font-family:var(--font);text-align:left;color:var(--tx);transition:border-color .12s;}
+  .act-settings-row:hover{border-color:var(--ac);}
+  .act-settings-row > i{color:var(--mu);font-size:15px;flex:none;}
+  .act-settings-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .act-settings-row-title{font-size:13px;font-weight:500;}
+  .act-settings-row-sub{font-size:11px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .acts-card{padding-top:2px;}
+  .acts-card + .acts-card{border-top:0.5px solid var(--brd);padding-top:14px;margin-top:6px;}
+  .acts-card-title{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:4px;}
+  .acts-label{font-size:11.5px;color:var(--mu);margin:8px 0 5px;}
+  .acts-checks{display:flex;flex-direction:column;gap:11px;margin-top:11px;}
   .modal-field input::placeholder{color:var(--mu);}
   .modal-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:0.5px solid var(--brd);flex-shrink:0;}
   .modal-cancel{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 16px;height:34px;color:var(--mu);font-size:13px;font-family:var(--font);cursor:pointer;transition:all .15s;}
@@ -3204,6 +3217,11 @@
             <div class="modal-field"><i class="ti ti-users" aria-hidden="true"></i><input type="text" id="appt-users-input" placeholder="Add team member…" autocomplete="off" oninput="auRender('appt',this.value)" onfocus="auRender('appt',this.value)" onblur="auBlur('appt')" /></div>
             <div class="au-dropdown" id="appt-users-dd"></div>
           </div>
+          <button type="button" class="act-settings-row" onclick="openActivitySettings('appt')">
+            <i class="ti ti-settings" aria-hidden="true"></i>
+            <span class="act-settings-row-main"><span class="act-settings-row-title">Calendar settings</span><span class="act-settings-row-sub" id="appt-settings-summary"></span></span>
+            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
       <div class="modal-footer">
@@ -3233,6 +3251,11 @@
             <div class="modal-field"><i class="ti ti-users" aria-hidden="true"></i><input type="text" id="rem-users-input" placeholder="Add team member…" autocomplete="off" oninput="auRender('rem',this.value)" onfocus="auRender('rem',this.value)" onblur="auBlur('rem')" /></div>
             <div class="au-dropdown" id="rem-users-dd"></div>
           </div>
+          <button type="button" class="act-settings-row" onclick="openActivitySettings('rem')">
+            <i class="ti ti-settings" aria-hidden="true"></i>
+            <span class="act-settings-row-main"><span class="act-settings-row-title">Calendar settings</span><span class="act-settings-row-sub" id="rem-settings-summary"></span></span>
+            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
       <div class="modal-footer">
@@ -3262,11 +3285,59 @@
             <div class="modal-field"><i class="ti ti-users" aria-hidden="true"></i><input type="text" id="task-users-input" placeholder="Add team member…" autocomplete="off" oninput="auRender('task',this.value)" onfocus="auRender('task',this.value)" onblur="auBlur('task')" /></div>
             <div class="au-dropdown" id="task-users-dd"></div>
           </div>
+          <button type="button" class="act-settings-row" onclick="openActivitySettings('task')">
+            <i class="ti ti-settings" aria-hidden="true"></i>
+            <span class="act-settings-row-main"><span class="act-settings-row-title">Calendar settings</span><span class="act-settings-row-sub" id="task-settings-summary"></span></span>
+            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
       <div class="modal-footer">
         <button class="modal-cancel" onclick="closeTaskModal()">Cancel</button>
         <button class="modal-save" onclick="saveTask()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY CALENDAR SETTINGS SUB-MODAL (per-activity, layered above the create modal) -->
+  <div class="modal-backdrop act-settings-bd" id="act-settings-backdrop" onclick="if(event.target===this)closeActivitySettings()">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Calendar settings</span>
+        <button class="modal-close" onclick="closeActivitySettings()">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="acts-card" id="acts-guest-card">
+            <div class="acts-card-title">Guests</div>
+            <div class="acts-label">Remind guests before</div>
+            <div class="modal-field" style="height:40px;"><i class="ti ti-bell" aria-hidden="true"></i><select id="acts-guest-remind" style="appearance:none;-webkit-appearance:none;"><option value="5">5 minutes before</option><option value="10">10 minutes before</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select></div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-guest-sms" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>SMS invitation</label>
+              <label class="bc-check"><input type="checkbox" id="acts-guest-email" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Email invitation</label>
+            </div>
+          </div>
+          <div class="acts-card" id="acts-user-card">
+            <div class="acts-card-title" id="acts-user-title">Remind me</div>
+            <div class="acts-label">Remind me before</div>
+            <div class="modal-field" style="height:40px;"><i class="ti ti-bell" aria-hidden="true"></i><select id="acts-user-remind" style="appearance:none;-webkit-appearance:none;"><option value="5">5 minutes before</option><option value="10">10 minutes before</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select></div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-user-sms" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>SMS notification</label>
+              <label class="bc-check"><input type="checkbox" id="acts-user-email" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Email notification</label>
+            </div>
+          </div>
+          <div class="acts-card" id="acts-notif-card">
+            <div class="acts-card-title">Notify on</div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-notif-cancelled" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Cancelled appointment</label>
+              <label class="bc-check"><input type="checkbox" id="acts-notif-confirmed" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Guest confirmed attendance</label>
+              <label class="bc-check"><input type="checkbox" id="acts-notif-created" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>New appointment created by me</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save" onclick="closeActivitySettings()">Done</button>
       </div>
     </div>
   </div>
@@ -7600,7 +7671,7 @@ function _openActivityModal(bdId, leadFieldId, dateFieldId){
   var bd=document.getElementById(bdId); if(!bd) return;
   var lf=document.getElementById(leadFieldId); if(lf) lf.value=cpLead.name||'';
   var df=document.getElementById(dateFieldId); if(df && !df.value) df.value=_todayInputVal();
-  var scope=_scopeOf(bdId); if(scope) auReset(scope);
+  var scope=_scopeOf(bdId); if(scope){ auReset(scope); _actSettings[scope]=_actSettingsDefault(); _refreshActSummary(scope); }
   bd.classList.add('open');
 }
 function closeActivityModal(bdId){ var bd=document.getElementById(bdId); if(!bd) return; bd.classList.remove('open'); _clearModalFields(bdId); var scope=_scopeOf(bdId); if(scope) auReset(scope); }
@@ -7657,11 +7728,58 @@ function auBlur(scope){ setTimeout(function(){ var dd=document.getElementById(sc
 function _scopeUsers(scope){
   return _actUsers[scope].map(function(k){ var u=assignUsers.find(function(x){ return x.key===k; }); return u?{key:u.key,name:u.name,color:u.color}:null; }).filter(Boolean);
 }
+/* ── Per-activity calendar settings (reminders + notifications, configured from inside each
+   create modal and saved onto the activity record). ── */
+function _actSettingsDefault(){ return { guestRemind:'5', guestSms:true, guestEmail:true, userRemind:'5', userSms:true, userEmail:true, notifCancelled:true, notifConfirmed:true, notifCreated:true }; }
+var _actSettings = { appt:_actSettingsDefault(), rem:_actSettingsDefault(), task:_actSettingsDefault() };
+var _actSettingsScope = null;
+function _remindLabel(v){ return ({'5':'5 min','10':'10 min','15':'15 min','30':'30 min','60':'1 hour','1440':'1 day'})[String(v)] || (v+' min'); }
+function _channelsLabel(sms,email){ var a=[]; if(sms)a.push('SMS'); if(email)a.push('Email'); return a.length?a.join(', '):'No alerts'; }
+function _refreshActSummary(scope){ var el=document.getElementById(scope+'-settings-summary'); if(!el) return; var s=_actSettings[scope]; el.textContent='Remind '+_remindLabel(s.userRemind)+' before · '+_channelsLabel(s.userSms,s.userEmail); }
+function _typeScope(type){ return type==='appointment'?'appt':type==='reminder'?'rem':type==='task'?'task':null; }
+function _actSettingsFor(scope){ var s=_actSettings[scope]; if(scope==='appt') return JSON.parse(JSON.stringify(s)); return { userRemind:s.userRemind, userSms:s.userSms, userEmail:s.userEmail }; }
+function openActivitySettings(scope){
+  _actSettingsScope=scope;
+  var isAppt=(scope==='appt');
+  document.getElementById('acts-guest-card').style.display = isAppt?'':'none';
+  document.getElementById('acts-notif-card').style.display = isAppt?'':'none';
+  document.getElementById('acts-user-title').textContent = isAppt?'Me':'Remind me';
+  var s=_actSettings[scope];
+  document.getElementById('acts-guest-remind').value=s.guestRemind;
+  document.getElementById('acts-guest-sms').checked=s.guestSms;
+  document.getElementById('acts-guest-email').checked=s.guestEmail;
+  document.getElementById('acts-user-remind').value=s.userRemind;
+  document.getElementById('acts-user-sms').checked=s.userSms;
+  document.getElementById('acts-user-email').checked=s.userEmail;
+  document.getElementById('acts-notif-cancelled').checked=s.notifCancelled;
+  document.getElementById('acts-notif-confirmed').checked=s.notifConfirmed;
+  document.getElementById('acts-notif-created').checked=s.notifCreated;
+  document.getElementById('act-settings-backdrop').classList.add('open');
+}
+function closeActivitySettings(){
+  var scope=_actSettingsScope;
+  if(scope){
+    var s=_actSettings[scope];
+    s.guestRemind=document.getElementById('acts-guest-remind').value;
+    s.guestSms=document.getElementById('acts-guest-sms').checked;
+    s.guestEmail=document.getElementById('acts-guest-email').checked;
+    s.userRemind=document.getElementById('acts-user-remind').value;
+    s.userSms=document.getElementById('acts-user-sms').checked;
+    s.userEmail=document.getElementById('acts-user-email').checked;
+    s.notifCancelled=document.getElementById('acts-notif-cancelled').checked;
+    s.notifConfirmed=document.getElementById('acts-notif-confirmed').checked;
+    s.notifCreated=document.getElementById('acts-notif-created').checked;
+    _refreshActSummary(scope);
+  }
+  document.getElementById('act-settings-backdrop').classList.remove('open');
+  _actSettingsScope=null;
+}
 /* 'YYYY-MM-DD' (date input) -> 'YYYY-M-D' (unpadded — matches the calendar's date keys) */
 function _normActivityDate(v){ if(!v) return ''; var p=v.split('-'); return p[0]+'-'+parseInt(p[1],10)+'-'+parseInt(p[2],10); }
 function _persistActivity(type, title, dateVal, timeVal, notes, users){
   if(!cpLead || !window.CCLeads || !CCLeads.addActivity) return false;
-  CCLeads.addActivity({ type:type, leadNo:cpLead.no, title:title, date:_normActivityDate(dateVal), time:timeVal||'', notes:notes||'', users:users||[] });
+  var sc=_typeScope(type);
+  CCLeads.addActivity({ type:type, leadNo:cpLead.no, title:title, date:_normActivityDate(dateVal), time:timeVal||'', notes:notes||'', users:users||[], settings: sc?_actSettingsFor(sc):null });
   if(typeof showNavToast==='function'){ showNavToast(type.charAt(0).toUpperCase()+type.slice(1)+' added', title+' — '+cpLead.name); }
   return true;
 }
@@ -7683,7 +7801,7 @@ function saveTask(){
   if(!dateEl.value){ dateEl.focus(); return; }
   if(_persistActivity('task', tEl.value.trim(), dateEl.value, document.getElementById('task-time').value, document.getElementById('task-notes').value, _scopeUsers('task'))) closeTaskModal();
 }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ closeApptModal(); closeReminderModal(); closeTaskModal(); } });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ var asb=document.getElementById('act-settings-backdrop'); if(asb && asb.classList.contains('open')){ closeActivitySettings(); return; } closeApptModal(); closeReminderModal(); closeTaskModal(); } });
 let cpMessages = {};  // keyed by leadNo
 let cpTab = 'sms';
 

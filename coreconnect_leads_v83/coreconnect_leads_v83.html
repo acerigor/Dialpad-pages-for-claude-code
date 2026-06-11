@@ -387,6 +387,9 @@
   .status-deposit{background:rgba(79,124,255,.14);color:var(--ac2);}
   .status-bdc{background:rgba(167,139,250,.14);color:#c4b5fd;}
   .status-select:focus{box-shadow:0 0 0 2px rgba(79,124,255,.3);}
+  /* Status shown as a clickable pill (table/Kanban) that opens the label-style picker */
+  .status-pill{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;vertical-align:middle;}
+  .status-pill:hover{filter:brightness(1.12);}
   .bdg-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
   .bdg-a{background:rgba(34,200,138,.12);color:var(--gr);}
   .bdg-f{background:rgba(245,166,35,.12);color:var(--am);}
@@ -485,7 +488,16 @@
     padding:2px 7px;border-radius:10px;border:0.5px solid transparent;white-space:nowrap;}
   .lbl-add{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);}
   .lbl-cell:hover .lbl-add{color:var(--ac2);}
+  /* Sidebar Label control — mirrors the Status select for visual consistency:
+     full-width tinted box, same sizing/radius, chevron on the right. */
+  .cp-label-select{display:flex;align-items:center;width:100%;cursor:pointer;
+    font-family:var(--font);font-size:11.5px;font-weight:500;
+    padding:6px 9px;border-radius:5px;border:none;outline:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:filter .12s;}
+  .cp-label-select:hover{filter:brightness(1.12);}
+  .cp-label-select.is-empty{background-color:rgba(255,255,255,.05);color:var(--mu);}
   .label-popup{position:fixed;z-index:1600;width:230px;}
+  .status-popup{position:fixed;z-index:1600;width:230px;}
   .lblp-sort{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px 8px;}
   .lblp-sort-lbl{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
   .lblp-sort-seg{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:2px;gap:2px;}
@@ -1598,8 +1610,8 @@
   .cp-sidebar-value{font-size:12.5px;color:#e8eaf0;font-family:'DM Mono',monospace;}
   /* Sidebar status select — layers sizing on top of the shared .status-select.
      Color classes (.status-active, .status-followup, …) come from the table styles. */
-  .cp-status-select{width:100%;font-size:11.5px;padding:6px 22px 6px 9px;
-    background-position:right 7px center;}
+  .cp-status-select{width:100%;font-size:11.5px;padding:6px 9px;
+    background-image:none;}
   /* Legacy rule kept for any markup that still uses bare `.cp-sidebar-status select` */
   .cp-sidebar-status select:not(.status-select){appearance:none;-webkit-appearance:none;
     background:rgba(245,166,35,.12);
@@ -3146,6 +3158,12 @@
     </div>
   </div>
 
+  <!-- STATUS PICKER POPUP (contact panel) — mirrors the label popup style -->
+  <div class="assign-popup status-popup" id="cp-status-popup" style="display:none;">
+    <div class="assign-popup-title">Status</div>
+    <div class="lblp-list" id="cp-status-list"></div>
+  </div>
+
   <!-- ADD LEAD MODAL -->
   <div class="modal-backdrop" id="modal-backdrop" onclick="handleModalBackdropClick(event)">
     <div class="modal">
@@ -4029,7 +4047,6 @@
             <div class="cp-kebab-item" onclick="openReminderModal()"><i class="ti ti-bell" aria-hidden="true"></i> Add Reminder</div>
             <div class="cp-kebab-item" onclick="openApptModal()"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Add Appointment</div>
             <div class="cp-kebab-item" onclick="openBcFromKebab()"><i class="ti ti-id" aria-hidden="true"></i> Business Card</div>
-            <div class="cp-kebab-item" onclick="openLabelFromKebab(event)"><i class="ti ti-tag" aria-hidden="true"></i> Assign Label</div>
             <div class="cp-kebab-item" onclick="openTaskModal()"><i class="ti ti-checkbox" aria-hidden="true"></i> Task</div>
             <div class="cp-kebab-item" onclick="closeCPKebab()"><i class="ti ti-star" aria-hidden="true"></i> Send Review Link</div>
             <div class="cp-kebab-item" onclick="closeCPKebab()"><i class="ti ti-briefcase" aria-hidden="true"></i> Add New Deal</div>
@@ -4059,10 +4076,11 @@
         </div>
         <div class="cp-sidebar-field">
           <div class="cp-sidebar-label">Status</div>
-          <div class="cp-sidebar-status">
-            <!-- Options populated dynamically from STATUS_LIST on panel open -->
-            <select id="cp-status-sel" class="status-select cp-status-select" onchange="updateCPStatus(this)"></select>
-          </div>
+          <div class="cp-label-select" id="cp-status-cell" onclick="openStatusPopup(event)"></div>
+        </div>
+        <div class="cp-sidebar-field">
+          <div class="cp-sidebar-label">Label</div>
+          <div class="cp-label-select is-empty" id="cp-label-cell" onclick="openLabelFromSidebar(event)">Add label</div>
         </div>
         <div class="cp-sidebar-field">
           <div class="cp-sidebar-label">Lead Assigned to</div>
@@ -4462,13 +4480,9 @@ function updateStatus(sel, leadNo){
     });
   }
 
-  // If the contact panel is open on THIS lead, keep the sidebar select in sync
+  // If the contact panel is open on THIS lead, keep the sidebar Status pill in sync
   if(typeof cpLead !== 'undefined' && cpLead && cpLead.no === lead.no){
-    const cpSel = document.getElementById('cp-status-sel');
-    if(cpSel){
-      cpSel.value = newStatus;
-      cpSel.className = 'status-select cp-status-select ' + statusToClass(newStatus);
-    }
+    if(typeof renderCPStatus === 'function') renderCPStatus();
     // Refresh the Activity tab if it's visible
     if(typeof cpTab !== 'undefined' && cpTab === 'activity' && typeof renderCPMessages === 'function'){
       renderCPMessages();
@@ -4519,7 +4533,7 @@ const COLS = {
   },
   'status': {
     label: 'Status', sortKey: 'status', width: 100,
-    cell: l => `<td><select class="status-select ${statusToClass(l.status)}" onchange="updateStatus(this,${l.no})" onclick="event.stopPropagation()">${STATUS_LIST.map(s => `<option value="${s}" ${l.status===s?'selected':''}>\u25CF ${s}</option>`).join('')}</select></td>`
+    cell: l => `<td><span class="status-select status-pill ${statusToClass(l.status)}" onclick="openStatusPopupFor(event,${l.no})">\u25CF ${escapeHtml(l.status)}</span></td>`
   },
   'name': {
     label: 'Name', sortKey: 'name', width: 160,
@@ -4643,8 +4657,27 @@ function toggleLeadLabel(no, id){
   else LABEL_MAP[no]=[id];
   _saveLabelMap();
   if(typeof renderLeads==='function') renderLeads();
+  if(typeof cpLead!=='undefined' && cpLead && typeof renderCPLabel==='function') renderCPLabel();
   renderLabelPopup();
 }
+/* Render the current lead's label as a pill (or an "Add label" placeholder) in the contact-panel sidebar. */
+function renderCPLabel(){
+  var cell=document.getElementById('cp-label-cell'); if(!cell) return;
+  var lb=(typeof cpLead!=='undefined' && cpLead && typeof labelsForLead==='function') ? labelsForLead(cpLead.no)[0] : null;
+  if(lb){
+    cell.className='cp-label-select';
+    cell.style.backgroundColor=lb.color+'1f';   // ~12% tint, matching the Status pill (keeps the CSS chevron)
+    cell.style.color=lb.color;
+    cell.textContent=lb.name;
+  } else {
+    cell.className='cp-label-select is-empty';
+    cell.style.backgroundColor='';
+    cell.style.color='';
+    cell.textContent='Add label';
+  }
+}
+/* Open the label picker anchored to the sidebar Label cell (replaces the old kebab entry point). */
+function openLabelFromSidebar(e){ e.stopPropagation(); if(typeof cpLead!=='undefined' && cpLead) openLabelPopup(e, cpLead.no); }
 function renderLabelSwatches(){
   var box=document.getElementById('lblp-swatches'); if(!box) return;
   box.innerHTML=LABEL_PALETTE.map(function(c){ return '<span class="lblp-sw'+(c===_lblNewColor?' on':'')+'" style="background:'+c+';" onclick="selectLabelColor(\''+c+'\')"></span>'; }).join('');
@@ -4687,16 +4720,13 @@ function addNewLabel(){
   nm.value='';
   toggleLeadLabel(_lblPopupLead, id);
 }
-function openLabelFromKebab(e){
-  e.stopPropagation();
-  if(typeof cpLead!=='undefined' && cpLead) openLabelPopup(e, cpLead.no);
-  closeCPKebab();
-}
 /* Use mousedown (fires before the swatch/list re-render detaches the clicked node,
    which would otherwise make the click look like it landed outside the popup). */
 document.addEventListener('mousedown', function(e){
   var pop=document.getElementById('label-popup');
   if(pop && pop.style.display!=='none' && !pop.contains(e.target)) closeLabelPopup();
+  var sp=document.getElementById('cp-status-popup');
+  if(sp && sp.style.display!=='none' && !sp.contains(e.target) && e.target.id!=='cp-status-cell') closeStatusPopup();
 });
 
 // Derive a lead's email out/in counts. The base count (per-lead seed thread) comes from the
@@ -5082,8 +5112,8 @@ function renderLeadsCards(pageLeads){
 
 // Build the HTML for a single lead card (phone view)
 function leadCardHTML(l){
-  // Status select (matches the desktop version)
-  const statusHTML = `<select class="status-select ${statusToClass(l.status)}" onchange="event.stopPropagation();updateStatus(this,${l.no})" onclick="event.stopPropagation()">${STATUS_LIST.map(s => `<option value="${s}" ${l.status===s?'selected':''}>\u25CF ${s}</option>`).join('')}</select>`;
+  // Status pill \u2014 opens the label-style status picker (matches the desktop version)
+  const statusHTML = `<span class="status-select status-pill ${statusToClass(l.status)}" onclick="openStatusPopupFor(event,${l.no})">\u25CF ${escapeHtml(l.status)}</span>`;
   // Active toggle
   const toggleHTML = `<div class="tog ${l.active?'':'off'}" onclick="event.stopPropagation();this.classList.toggle('off');"></div>`;
   // Assigned avatar
@@ -7846,26 +7876,11 @@ function openContactPanel(leadNo, mode) {
     emEl.title = '';
   }
 
-  // Status select — populate from STATUS_LIST (single source of truth) and
-  // apply the matching .status-* color class. This keeps the sidebar in lockstep
-  // with the table/Kanban/card renderers.
-  const sel = document.getElementById('cp-status-sel');
-  if(sel){
-    const cur = cpLead.status || STATUS_LIST[2]; // default to 'Follow Up'
-    // Rebuild options only if STATUS_LIST has changed shape or first paint
-    if(sel.options.length !== STATUS_LIST.length){
-      sel.innerHTML = STATUS_LIST.map(s =>
-        `<option value="${s}">${s}</option>`
-      ).join('');
-    }
-    sel.value = cur;
-    // Strip any prior status-* class, then apply the current one
-    sel.className = 'status-select cp-status-select ' + statusToClass(cur);
-    // Clear any legacy inline styles left over from the old 3-status dictionary
-    sel.style.background = '';
-    sel.style.borderColor = '';
-    sel.style.color = '';
-  }
+  // Status pill — label-style picker (see renderCPStatus / openStatusPopup)
+  renderCPStatus();
+
+  // Label field — show the lead's current label pill (or "Add label" placeholder)
+  renderCPLabel();
 
   // Assign
   const assignColors = {DP:'#4f7cff',JD:'#22c88a',MR:'#f5a623',TK:'#a78bfa'};
@@ -7924,49 +7939,94 @@ function openContactPanel(leadNo, mode) {
   }, 300);
 }
 
-function updateCPStatus(sel) {
-  if(!cpLead) return;
-  const newStatus = sel.value;
-  const oldStatus = cpLead.status;
+/* Status dot color per status (mirrors the .status-* class palette) for the popup picker. */
+function statusColor(s){
+  if(s === 'Active')    return '#22c88a';
+  if(s === 'Follow Up') return '#f5a623';
+  if(s === 'Dead')      return '#e85555';
+  if(s === 'Sold')      return '#2dd4bf';
+  if(s === 'Deposit')   return '#6e9dff';
+  if(typeof s === 'string' && s.indexOf('BDC') === 0) return '#c4b5fd';
+  return '#22c88a';
+}
+/* Paint the sidebar Status pill (tinted box, same look as the Label field). */
+function renderCPStatus(){
+  var cell=document.getElementById('cp-status-cell'); if(!cell) return;
+  if(typeof cpLead==='undefined' || !cpLead){ cell.textContent=''; return; }
+  var s=cpLead.status || STATUS_LIST[2];
+  var c=statusColor(s);
+  cell.className='cp-label-select';
+  cell.style.backgroundColor=c+'1f';
+  cell.style.color=c;
+  cell.textContent=s;
+}
+/* Label-style status picker — works for any lead (table/Kanban cells AND the contact
+   panel sidebar). `_statusPopupLead` holds the lead number the open popup applies to. */
+var _statusPopupLead = null;
+function renderStatusPopupList(){
+  var listEl=document.getElementById('cp-status-list'); if(!listEl) return;
+  var lead=(typeof leads!=='undefined') ? leads.find(function(l){ return l.no===_statusPopupLead; }) : null;
+  var cur=(lead && lead.status) || STATUS_LIST[2];
+  listEl.innerHTML = STATUS_LIST.map(function(s){
+    var on=(s===cur);
+    return '<div class="lblp-item'+(on?' on':'')+'" onclick="pickStatus(\''+s.replace(/'/g,"\\'")+'\')"><span class="lblp-dot" style="background:'+statusColor(s)+';"></span><span class="lblp-name">'+escapeHtml(s)+'</span><span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></div>';
+  }).join('');
+}
+/* Generic opener: anchor the picker to the clicked trigger for the given lead. */
+function openStatusPopupFor(e, leadNo){
+  e.stopPropagation();
+  _statusPopupLead = leadNo;
+  var pop=document.getElementById('cp-status-popup'); if(!pop) return;
+  renderStatusPopupList();
+  pop.style.display='block';
+  try{
+    var rect=e.currentTarget.getBoundingClientRect();
+    var pw=pop.offsetWidth||230, ph=pop.offsetHeight||320;
+    var left=rect.left, top=rect.bottom+4;
+    if(left+pw>window.innerWidth) left=window.innerWidth-pw-8;
+    if(left<8) left=8;
+    if(top+ph>window.innerHeight) top=Math.max(8, rect.top-ph-4);  // flip above if no room below
+    pop.style.left=left+'px'; pop.style.top=top+'px';
+  }catch(err){}
+}
+/* Sidebar trigger → opens the picker for the current contact-panel lead. */
+function openStatusPopup(e){ if(typeof cpLead!=='undefined' && cpLead) openStatusPopupFor(e, cpLead.no); }
+function closeStatusPopup(){ var pop=document.getElementById('cp-status-popup'); if(pop){ pop.style.display='none'; } _statusPopupLead=null; }
 
-  // Re-style the select via the shared .status-* class system (drop any
-  // legacy inline styles the old 3-status dictionary may have left behind).
-  sel.className = 'status-select cp-status-select ' + statusToClass(newStatus);
-  sel.style.background = '';
-  sel.style.borderColor = '';
-  sel.style.color = '';
+/* Apply a picked status to the popup's target lead, then propagate everywhere. */
+function pickStatus(newStatus){
+  var no=_statusPopupLead;
+  closeStatusPopup();
+  applyLeadStatus(no, newStatus);
+}
+function applyLeadStatus(leadNo, newStatus){
+  var lead=(typeof leads!=='undefined') ? leads.find(function(l){ return l.no===leadNo; }) : null;
+  if(!lead) return;
+  var oldStatus=lead.status;
+  if(oldStatus===newStatus) return;  // no-op when unchanged
 
-  // No-op when the status didn't actually change
-  if(newStatus === oldStatus) return;
+  // Mutate the underlying lead (reference into the leads array)
+  lead.status=newStatus;
 
-  // Mutate the underlying lead (cpLead is a reference into the leads array)
-  cpLead.status = newStatus;
-
-  // Log to activity history so the Activity tab in this panel reflects the change.
-  // Mirrors the shape used by Kanban drag-drop and other activity entries.
-  if(typeof cpMessages !== 'undefined'){
-    if(!cpMessages[cpLead.no]) cpMessages[cpLead.no] = {};
-    if(!cpMessages[cpLead.no].activity) cpMessages[cpLead.no].activity = [];
-    const now = new Date();
-    const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
-                    ', ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-    cpMessages[cpLead.no].activity.push({
-      dir: 'out',
-      text: `Status changed: ${oldStatus} → ${newStatus} (via contact panel)`,
-      time: timeStr,
-      agent: 'David P.',
-      isActivity: true
-    });
-    // If the Activity tab is currently visible, refresh it so the entry appears now
-    if(typeof cpTab !== 'undefined' && cpTab === 'activity' && typeof renderCPMessages === 'function'){
-      renderCPMessages();
-    }
+  // Log to activity history (mirrors Kanban drag-drop / other activity entries)
+  if(typeof cpMessages!=='undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo]={};
+    if(!cpMessages[leadNo].activity) cpMessages[leadNo].activity=[];
+    var now=new Date();
+    var timeStr=now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
+                ', ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    cpMessages[leadNo].activity.push({ dir:'out', text:'Status changed: '+oldStatus+' → '+newStatus, time:timeStr, agent:'David P.', isActivity:true });
   }
 
-  // Propagate to the main board and buckets so the change is visible everywhere.
-  // renderLeads() is the v78 router — dispatches to Table or Kanban view.
-  if(typeof renderLeads === 'function') renderLeads();
-  if(typeof renderBuckets === 'function') renderBuckets();
+  // Keep the contact-panel sidebar pill + Activity tab in sync if open on this lead
+  if(typeof cpLead!=='undefined' && cpLead && cpLead.no===leadNo){
+    if(typeof renderCPStatus==='function') renderCPStatus();
+    if(typeof cpTab!=='undefined' && cpTab==='activity' && typeof renderCPMessages==='function') renderCPMessages();
+  }
+
+  // Propagate to the main board (table/Kanban) and buckets
+  if(typeof renderLeads==='function') renderLeads();
+  if(typeof renderBuckets==='function') renderBuckets();
 }
 
 let cpSidebarOpen = true;

@@ -465,6 +465,25 @@
   .modal-field svg{width:16px;height:16px;color:var(--mu);flex-shrink:0;}
   .modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;width:100%;height:100%;}
   .modal-field select option{background:var(--sur2);color:var(--tx);}
+  /* Per-activity calendar settings: entry row + sub-modal cards */
+  .modal-backdrop.act-settings-bd{z-index:3100;}
+  .act-settings-row{display:flex;align-items:center;gap:10px;width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:9px 12px;cursor:pointer;font-family:var(--font);text-align:left;color:var(--tx);transition:border-color .12s;}
+  .act-settings-row:hover{border-color:var(--ac);}
+  .act-settings-row > svg{width:15px;height:15px;color:var(--mu);flex:none;}
+  .act-settings-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .act-settings-row-title{font-size:13px;font-weight:500;}
+  .act-settings-row-sub{font-size:11px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .acts-card{padding-top:2px;}
+  .acts-card + .acts-card{border-top:0.5px solid var(--brd);padding-top:14px;margin-top:6px;}
+  .acts-card-title{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:4px;}
+  .acts-label{font-size:11.5px;color:var(--mu);margin:8px 0 5px;}
+  .acts-checks{display:flex;flex-direction:column;gap:11px;margin-top:11px;}
+  /* Mobile: appointment/reminder/task (and their settings) modals go full-screen */
+  @media (max-width:640px){
+    .modal-backdrop{padding:0;align-items:stretch;justify-content:stretch;}
+    .modal{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
+    .modal-body{flex:1;}
+  }
   .modal-field input::placeholder{color:var(--mu);}
   .modal-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:0.5px solid var(--brd);flex-shrink:0;}
   .modal-cancel{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 16px;height:34px;color:var(--mu);font-size:13px;font-family:var(--font);cursor:pointer;transition:all .15s;}
@@ -2281,7 +2300,13 @@
     .add-btn svg,.table-btn svg,.mobile-search-toggle svg{width:18px;height:18px;}
     .kebab-btn i{font-size:18px;}
     .chip{height:36px;}
-    .modal-close{width:40px;height:40px;}
+    .modal-close{width:44px;height:44px;}
+    /* Modal fat-finger: fields, footer buttons, checkboxes, settings rows all >=44px */
+    .modal-field{height:46px !important;}
+    .modal-field input,.modal-field select{font-size:16px;}   /* also avoids iOS focus-zoom */
+    .modal-cancel,.modal-save,.ad-del-btn{min-height:46px;}
+    .bc-check{min-height:44px;padding:7px 2px;}
+    .act-settings-row{padding:12px;}
     .kebab-item{padding:12px 14px;}
     .fd-cat{padding:12px 14px;}
     .fd-opt{padding:11px 12px;}
@@ -2860,6 +2885,14 @@
   .appt-seg-btn.seg-today{color:var(--tx);}
   .appt-seg-btn.seg-today:hover{background:var(--sur2);color:var(--tx);}
   .appt-seg-div{width:0.5px;align-self:stretch;margin:4px 2px;background:var(--brd2);}
+  /* Mobile-only compact view dropdown (hidden on desktop) */
+  .appt-view-select{display:none;appearance:none;-webkit-appearance:none;background-color:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:14px;font-weight:500;height:44px;padding:0 36px 0 14px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8aec4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;}
+  .appt-view-select:hover{border-color:var(--ac);}
+  .appt-view-select option{background:var(--sur2);color:var(--tx);}
+  @media (max-width:640px){
+    .appt-view-seg{display:none;}
+    .appt-view-select{display:inline-block;}
+  }
 
   /* calendar canvas */
   /* ── FULL-HEIGHT CANVAS (desktop): calendar fills viewport, no page scroll ── */
@@ -2895,6 +2928,24 @@
   .chip-appointment{background:rgba(79,124,255,.12);color:var(--ac2);}
   .chip-reminder   {background:rgba(245,166,35,.12);color:var(--am);}
   .chip-task       {background:rgba(45,212,191,.14);color:var(--teal);}
+  /* Mobile month: event dots under the date + selected-day list (hidden on desktop) */
+  .cal-dots{display:none;gap:3px;justify-content:center;}
+  .cal-dot{width:5px;height:5px;border-radius:50%;background:var(--mu);}
+  .cal-dot.t-appointment{background:var(--ac2);}
+  .cal-dot.t-reminder{background:var(--am);}
+  .cal-dot.t-task{background:var(--teal);}
+  .cal-month-daylist{display:none;}
+  .cmdl-head{font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding:0 2px;}
+  .cmdl-item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:0.5px solid var(--brd);cursor:pointer;min-height:44px;}
+  .cmdl-item:last-child{border-bottom:none;}
+  .cmdl-dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--mu);}
+  .cmdl-dot.t-appointment{background:var(--ac2);}
+  .cmdl-dot.t-reminder{background:var(--am);}
+  .cmdl-dot.t-task{background:var(--teal);}
+  .cmdl-main{min-width:0;flex:1;}
+  .cmdl-title{font-size:14px;color:var(--tx);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cmdl-time{font-size:12px;color:var(--mu);font-family:var(--mono);margin-top:2px;}
+  .cmdl-empty{padding:22px 4px;color:var(--mu);font-size:13px;text-align:center;}
   .cal-more{font-size:10.5px;color:var(--mu);font-weight:500;padding:1px 7px;cursor:pointer;}
   .cal-more:hover{color:var(--ac2);}
 
@@ -2951,6 +3002,22 @@
     font-size:12px;font-weight:500;overflow:hidden;cursor:pointer;border-left:2px solid currentColor;}
   .day-event .de-time{font-family:var(--mono);font-size:10.5px;opacity:.85;}
   .day-event .de-name{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* "now" indicator line (used in the mobile week-view timeline) */
+  .day-now{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--gr);z-index:4;pointer-events:none;}
+  .day-now::before{content:'';position:absolute;left:-2px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--gr);box-shadow:0 0 0 2px rgba(34,200,138,.25);}
+
+  /* ── MOBILE WEEK VIEW ── day-strip picker + single-day timeline (hidden on desktop) */
+  .week-strip{display:none;}
+  .week-day-body{display:none;}
+  .wstrip-day{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:7px 0;background:transparent;border:none;border-radius:10px;cursor:pointer;font-family:var(--font);}
+  .wstrip-dow{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;}
+  .wstrip-num{font-size:15px;font-weight:600;color:var(--tx);font-family:var(--mono);
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .12s;}
+  .wstrip-day.sun .wstrip-dow,.wstrip-day.sun .wstrip-num{color:var(--rd);}
+  .wstrip-day.sel{background:var(--sur2);}
+  .wstrip-day.sel .wstrip-num{background:var(--ac);color:#fff;}
+  .wstrip-day.today:not(.sel) .wstrip-num{box-shadow:inset 0 0 0 1.5px var(--ac);}
 
   /* legend */
   .cal-legend{flex-basis:100%;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
@@ -2972,16 +3039,31 @@
     .appt-canvas{padding:14px;}
     .root.main-area{height:auto;min-height:0;overflow:visible;}
     .appt-canvas{flex:none;display:block;}
-    .cal-month{display:block;}
-    .cal-weekdays{display:none;}
-    .cal-grid{grid-template-columns:1fr;grid-auto-rows:auto;gap:8px;}
-    .cal-cell{flex-direction:row;align-items:flex-start;gap:10px;min-height:0;padding:10px 12px;}
-    .cal-cell.muted{display:none;}
-    .cal-cell:empty{display:none;}
-    .cal-date{flex-shrink:0;}
-    .cal-day-chips{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;}
-    .cal-week{overflow-x:auto;}
-    .week-body,.week-head{min-width:680px;}
+    /* Month view: compact 7-col grid + selected-day event list */
+    .cal-month{display:flex;flex-direction:column;}
+    .cal-weekdays{display:grid;gap:3px;margin-bottom:4px;}
+    .cal-weekday:first-child{color:var(--rd);}
+    .cal-grid{grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:3px;flex:none;}
+    .cal-cell{flex-direction:column;align-items:center;justify-content:flex-start;gap:0;min-height:46px;padding:5px 0 4px;background:transparent;border:none;border-radius:9px;cursor:pointer;}
+    .cal-cell:hover{background:rgba(255,255,255,.04);border:none;}
+    .cal-cell.muted{display:flex;}
+    .cal-cell:nth-child(7n+1) .cal-date{color:var(--rd);}
+    .cal-cell.muted .cal-date{opacity:.4;}
+    .cal-date{flex-shrink:0;font-size:13px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+    .cal-cell.selected:not(.today){box-shadow:inset 0 0 0 1.5px var(--ac);}
+    .cal-cell.today .cal-date{background:var(--ac);color:#fff;border-radius:50%;font-weight:600;}
+    .cal-day-chips{display:none;}
+    .cal-dots{display:flex;min-height:6px;margin-top:2px;}
+    .cal-more{display:none;}
+    .cal-month-daylist{display:block;margin-top:14px;border-top:0.5px solid var(--brd);padding-top:12px;}
+    /* week view → day-strip picker + single-day timeline (no horizontal scroll) */
+    .cal-week.show{flex-direction:column;}
+    .week-head,.week-body{display:none !important;}
+    .week-strip{display:flex;gap:3px;margin-bottom:12px;flex-shrink:0;}
+    .week-day-body{display:grid;grid-template-columns:48px 1fr;
+      border:0.5px solid var(--brd);border-radius:10px;background:var(--sur);
+      flex:1;min-height:0;overflow:auto;}
+    .week-day-body .day-col{position:relative;}
     .cal-day .day-body,.cal-day .day-head{min-width:0;}
     /* ── fat-finger: enlarge controls to ≥44px tap targets ── */
     .appt-nav-btn{width:44px;height:44px;}
@@ -3238,12 +3320,60 @@
             <div class="modal-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><input type="text" id="ae-users-input" placeholder="Add team member…" autocomplete="off" oninput="aeRenderUsers(this.value)" onfocus="aeRenderUsers(this.value)" onblur="aeBlurUsers()" /></div>
             <div class="au-dropdown" id="ae-users-dd"></div>
           </div>
+          <button type="button" class="act-settings-row" onclick="aeOpenSettings()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span class="act-settings-row-main"><span class="act-settings-row-title">Calendar settings</span><span class="act-settings-row-sub" id="ae-settings-summary"></span></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
         </div>
       </div>
       <div class="modal-footer">
         <button class="ad-del-btn" id="ae-delete" onclick="deleteApptEdit()">Delete</button>
         <button class="modal-cancel" onclick="closeApptEdit()">Cancel</button>
         <button class="modal-save" onclick="saveApptEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY CALENDAR SETTINGS SUB-MODAL (per-activity, layered above the edit modal) -->
+  <div class="modal-backdrop act-settings-bd" id="act-settings-backdrop" onclick="if(event.target===this)aeCloseSettings()">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Calendar settings</span>
+        <button class="modal-close" onclick="aeCloseSettings()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="acts-card" id="acts-guest-card">
+            <div class="acts-card-title">Guests</div>
+            <div class="acts-label">Remind guests before</div>
+            <div class="modal-field" style="height:40px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><select id="acts-guest-remind" style="appearance:none;-webkit-appearance:none;"><option value="5">5 minutes before</option><option value="10">10 minutes before</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select></div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-guest-sms" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>SMS invitation</label>
+              <label class="bc-check"><input type="checkbox" id="acts-guest-email" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Email invitation</label>
+            </div>
+          </div>
+          <div class="acts-card" id="acts-user-card">
+            <div class="acts-card-title" id="acts-user-title">Remind me</div>
+            <div class="acts-label">Remind me before</div>
+            <div class="modal-field" style="height:40px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><select id="acts-user-remind" style="appearance:none;-webkit-appearance:none;"><option value="5">5 minutes before</option><option value="10">10 minutes before</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select></div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-user-sms" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>SMS notification</label>
+              <label class="bc-check"><input type="checkbox" id="acts-user-email" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Email notification</label>
+            </div>
+          </div>
+          <div class="acts-card" id="acts-notif-card">
+            <div class="acts-card-title">Notify on</div>
+            <div class="acts-checks">
+              <label class="bc-check"><input type="checkbox" id="acts-notif-cancelled" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Cancelled appointment</label>
+              <label class="bc-check"><input type="checkbox" id="acts-notif-confirmed" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Guest confirmed attendance</label>
+              <label class="bc-check"><input type="checkbox" id="acts-notif-created" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>New appointment created by me</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save" onclick="aeCloseSettings()">Done</button>
       </div>
     </div>
   </div>
@@ -3402,6 +3532,13 @@
       <button class="appt-seg-btn" id="seg-week" onclick="apptSetView('week')">Week</button>
       <button class="appt-seg-btn" id="seg-day" onclick="apptSetView('day')">Day</button>
     </div>
+    <!-- Mobile-only compact view selector (replaces the segmented control on phones) -->
+    <select class="appt-view-select" id="appt-view-select" onchange="apptViewSelect(this.value)" aria-label="Calendar view">
+      <option value="today">Today</option>
+      <option value="month" selected>Month</option>
+      <option value="week">Week</option>
+      <option value="day">Day</option>
+    </select>
 
     <button class="appt-nav-btn" onclick="window.location.href='../calendar_settings/calendar_settings.html'" aria-label="Calendar settings" title="Calendar settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></button>
 
@@ -3417,10 +3554,13 @@
     <div class="cal-month" id="cal-month">
       <div class="cal-weekdays"><div class="cal-weekday">Sun</div><div class="cal-weekday">Mon</div><div class="cal-weekday">Tue</div><div class="cal-weekday">Wed</div><div class="cal-weekday">Thu</div><div class="cal-weekday">Fri</div><div class="cal-weekday">Sat</div></div>
       <div class="cal-grid" id="cal-grid"><!-- rendered by renderMonth() --></div>
+      <div class="cal-month-daylist" id="cal-month-daylist"><!-- mobile: selected-day events --></div>
     </div>
     <div class="cal-week" id="cal-week">
+      <div class="week-strip" id="week-strip"><!-- mobile: 7-day picker --></div>
       <div class="week-head" id="week-head"><!-- rendered by renderWeek() --></div>
       <div class="week-body" id="week-body"><!-- rendered by renderWeek() --></div>
+      <div class="week-day-body" id="week-day-body"><!-- mobile: selected-day timeline --></div>
     </div>
     <div class="cal-day" id="cal-day">
       <div class="day-head" id="day-head"><div class="dh-spacer"></div><div class="dh-label today"><div class="dh-dow">Friday</div><div class="dh-num">5</div></div></div>
@@ -3510,7 +3650,7 @@ document.addEventListener('click',function(e){
   var p=document.getElementById('notif-panel'),bell=document.getElementById('header-bell');
   if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!bell.contains(e.target))closeNotifications();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeNotifications();closeMobileDrawer();closeApptPicker();closeApptDetail();closeApptEdit();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var asb=document.getElementById('act-settings-backdrop');if(asb&&asb.classList.contains('open')){aeCloseSettings();return;}closeNotifications();closeMobileDrawer();closeApptPicker();closeApptDetail();closeApptEdit();}});
 
 /* ---- Appointments view toggle ---- */
 function showOnly(viewId){
@@ -3526,6 +3666,12 @@ function syncSegButtons(){
   Object.keys(segs).forEach(function(k){
     var btn=document.getElementById(segs[k]); if(btn) btn.classList.toggle('active', k===apptView);
   });
+  var vs=document.getElementById('appt-view-select'); if(vs && vs.value!==apptView) vs.value=apptView;
+}
+/* Mobile compact view dropdown: Today jumps to today (keeping the current view); the rest switch view. */
+function apptViewSelect(v){
+  if(v==='today'){ if(typeof apptToday==='function') apptToday(); var vs=document.getElementById('appt-view-select'); if(vs) vs.value=apptView; }
+  else { apptSetView(v); }
 }
 function apptSetView(v){
   apptView=v;
@@ -3537,6 +3683,7 @@ function apptSetView(v){
 var APPT_TODAY = {y:2026, m:6, d:5};   // Fri Jun 5 2026 = "today"
 var apptFocus = new Date(2026, 5, 5);  // currently focused date (drives all views)
 var apptView = 'month';                // active view: month | week | day
+var _calSelDay = null;                 // mobile month view: {y,m,d} selected day for the day-list
 var MONTH_NAMES = ['January','February','March','April','May','June','July',
   'August','September','October','November','December'];
 var MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -3664,8 +3811,10 @@ function renderMonth(y, m){
         '<span class="chip-name">'+esc(apptLabel(o))+'</span></div>';
     }).join('');
     if(extra>0) chips += '<div class="cal-more" onclick="apptMoreClick(event)">+'+extra+' more</div>';
-    cells.push('<div class="cal-cell'+isToday+'" onclick="apptDayClick('+d+')">'+
+    var dots = list.slice(0,3).map(function(o){ return '<span class="cal-dot t-'+o.type+'"></span>'; }).join('');
+    cells.push('<div class="cal-cell'+isToday+'" data-day="'+d+'" onclick="apptDayClick('+d+')">'+
       '<div class="cal-date">'+d+'</div>'+
+      '<div class="cal-dots">'+dots+'</div>'+
       '<div class="cal-day-chips">'+chips+'</div></div>');
   }
   // trailing fillers to complete the last week row
@@ -3679,6 +3828,12 @@ function renderMonth(y, m){
   // update the subtitle count for the displayed month
   var count=document.getElementById('appt-count');
   if(count) count.textContent = monthTotal + ' scheduled this month';
+
+  // Mobile: keep/choose a selected day and render its event list below the grid.
+  var inMonth = _calSelDay && _calSelDay.y===y && _calSelDay.m===m;
+  if(!inMonth){ _calSelDay = (y===APPT_TODAY.y && m===APPT_TODAY.m) ? {y:y,m:m,d:APPT_TODAY.d} : {y:y,m:m,d:1}; }
+  _highlightSelectedDay();
+  renderMobileDayList(_calSelDay.y, _calSelDay.m, _calSelDay.d);
 }
 
 /* ---- Day view (data-driven) ---- */
@@ -3686,6 +3841,61 @@ var DOW_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Sat
 var DOW_ABBR = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function sameDay(dt, t){ return dt.getFullYear()===t.y && (dt.getMonth()+1)===t.m && dt.getDate()===t.d; }
+
+/* ---- Mobile week view: day-strip picker + single-day timeline ---- */
+var APPT_NOW_HM = '15:24';   // fixed demo "current time" for the now-line
+var _weekSelDay = null;      // {y,m,d} selected day within the focused week (mobile)
+
+// Inner HTML for a day-col: hour slots + time-positioned event blocks (+ optional now-line)
+function _dayColHTML(y, m, d, showNow){
+  var slots='';
+  for(var i=0;i<11;i++) slots+='<div class="day-slot"></div>';
+  var list=(APPT_DATA[y+'-'+m+'-'+d]||[]).filter(function(o){ return isVisible(o.type); });
+  var events=list.map(function(o){
+    var hm=String(o.time).split(':'), h=parseInt(hm[0],10), mi=parseInt(hm[1],10);
+    if(isNaN(h)||h<8||h>18) return '';
+    var top=((h-8)+(mi/60))/11*100;
+    return '<div class="day-event chip-'+o.type+'" style="top:'+top.toFixed(2)+'%;height:42px;" data-aid="'+o.id+'" onclick="apptChipClick(event)">'+
+      '<span class="de-time">'+esc(o.time)+'</span>'+
+      '<span class="de-name">'+esc(apptLabel(o))+'</span></div>';
+  }).join('');
+  var now='';
+  if(showNow){
+    var nm=APPT_NOW_HM.split(':'), nh=parseInt(nm[0],10), nmi=parseInt(nm[1],10);
+    if(nh>=8 && nh<=18){ var nt=((nh-8)+(nmi/60))/11*100; now='<div class="day-now" style="top:'+nt.toFixed(2)+'%"></div>'; }
+  }
+  return slots+events+now;
+}
+
+function renderWeekStrip(){
+  var strip=document.getElementById('week-strip'); if(!strip) return;
+  var start=startOfWeek(apptFocus), html='';
+  for(var i=0;i<7;i++){
+    var dt=new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    var isToday=sameDay(dt, APPT_TODAY);
+    var isSel=_weekSelDay && sameDay(dt, _weekSelDay);
+    var isSun=dt.getDay()===0;
+    html+='<button class="wstrip-day'+(isSel?' sel':'')+(isToday?' today':'')+(isSun?' sun':'')+'" '+
+      'onclick="weekStripSelect('+dt.getFullYear()+','+(dt.getMonth()+1)+','+dt.getDate()+')">'+
+      '<span class="wstrip-dow">'+DOW_ABBR[dt.getDay()]+'</span>'+
+      '<span class="wstrip-num">'+dt.getDate()+'</span></button>';
+  }
+  strip.innerHTML=html;
+}
+
+function renderWeekDayBody(){
+  var body=document.getElementById('week-day-body'); if(!body||!_weekSelDay) return;
+  var hours=['8 am','9 am','10 am','11 am','12 pm','1 pm','2 pm','3 pm','4 pm','5 pm','6 pm'];
+  var axis='<div class="day-axis">'+hours.map(function(h){ return '<div class="day-hour">'+h+'</div>'; }).join('')+'</div>';
+  var sel=_weekSelDay, dt=new Date(sel.y, sel.m-1, sel.d);
+  body.innerHTML=axis+'<div class="day-col">'+_dayColHTML(sel.y, sel.m, sel.d, sameDay(dt, APPT_TODAY))+'</div>';
+}
+
+function weekStripSelect(y, m, d){
+  _weekSelDay={y:y, m:m, d:d};
+  renderWeekStrip();
+  renderWeekDayBody();
+}
 
 function renderDay(y, m, d){
   var head=document.getElementById('day-head');
@@ -3761,6 +3971,17 @@ function renderWeek(anchor){
     cols+='<div class="week-col">'+slots+events+'</div>';
   });
   body.innerHTML=axis+cols;
+
+  // mobile: keep a selected day inside this week, then render the strip + single-day timeline
+  var inWeek=_weekSelDay && days.some(function(dt){ return sameDay(dt, _weekSelDay); });
+  if(!inWeek){
+    var pick=null;
+    for(var k=0;k<days.length;k++){ if(sameDay(days[k], APPT_TODAY)){ pick=days[k]; break; } }
+    if(!pick) pick=days[0];
+    _weekSelDay={y:pick.getFullYear(), m:pick.getMonth()+1, d:pick.getDate()};
+  }
+  renderWeekStrip();
+  renderWeekDayBody();
 }
 
 /* ---- Unified navigation (single focus date drives all views) ---- */
@@ -3850,7 +4071,38 @@ function apptOpenDate(y, m, d){
 function apptOpenDay(d){ // kept for any legacy calls — opens day in focus month
   apptOpenDate(apptFocus.getFullYear(), apptFocus.getMonth()+1, d);
 }
-function apptDayClick(d){ apptOpenDate(apptFocus.getFullYear(), apptFocus.getMonth()+1, d); }
+function apptDayClick(d){
+  // On mobile the month is a grid; tapping a day selects it and lists its events below
+  // (instead of jumping to the day view as on desktop).
+  if(window.matchMedia && window.matchMedia('(max-width:640px)').matches){
+    _calSelDay = { y:apptFocus.getFullYear(), m:apptFocus.getMonth()+1, d:d };
+    _highlightSelectedDay();
+    renderMobileDayList(_calSelDay.y, _calSelDay.m, _calSelDay.d);
+    return;
+  }
+  apptOpenDate(apptFocus.getFullYear(), apptFocus.getMonth()+1, d);
+}
+function _highlightSelectedDay(){
+  var grid=document.getElementById('cal-grid'); if(!grid) return;
+  grid.querySelectorAll('.cal-cell.selected').forEach(function(c){ c.classList.remove('selected'); });
+  if(_calSelDay){ var c=grid.querySelector('.cal-cell[data-day="'+_calSelDay.d+'"]'); if(c) c.classList.add('selected'); }
+}
+function _calTimeMin(t){ if(!t) return 9999; var p=String(t).split(':'); return (parseInt(p[0],10)||0)*60+(parseInt(p[1],10)||0); }
+function renderMobileDayList(y,m,d){
+  var box=document.getElementById('cal-month-daylist'); if(!box) return;
+  var key=y+'-'+m+'-'+d;
+  var list=(APPT_DATA[key]||[]).filter(function(o){ return isVisible(o.type); }).slice()
+    .sort(function(a,b){ return _calTimeMin(a.time) - _calTimeMin(b.time); });
+  var dow=DOW_FULL[new Date(y,m-1,d).getDay()];
+  var head='<div class="cmdl-head">'+dow+', '+MONTH_ABBR[m-1]+' '+d+'</div>';
+  if(!list.length){ box.innerHTML=head+'<div class="cmdl-empty">No events this day</div>'; return; }
+  box.innerHTML = head + list.map(function(o){
+    return '<div class="cmdl-item" data-aid="'+o.id+'" onclick="apptChipClick(event)">'+
+      '<span class="cmdl-dot t-'+o.type+'"></span>'+
+      '<div class="cmdl-main"><div class="cmdl-title">'+esc(apptLabel(o))+'</div>'+
+      '<div class="cmdl-time">'+esc(o.time||'All day')+'</div></div></div>';
+  }).join('');
+}
 function apptChipClick(e){
   e.stopPropagation();
   var el = e.target.closest('[data-aid]'); if(!el) return;
@@ -3966,6 +4218,46 @@ function _aeSetTime(t){
   sel.value=v;
 }
 _aePopulateTime();
+/* ── Per-activity calendar settings (edited from inside the edit modal, saved onto the activity) ── */
+function _aeSettingsDefault(){ return { guestRemind:'5', guestSms:true, guestEmail:true, userRemind:'5', userSms:true, userEmail:true, notifCancelled:true, notifConfirmed:true, notifCreated:true }; }
+function _aeMergeSettings(s){ var d=_aeSettingsDefault(); if(s&&typeof s==='object'){ Object.keys(d).forEach(function(k){ if(s[k]!==undefined) d[k]=s[k]; }); } return d; }
+var _aeSettings = _aeSettingsDefault();
+function _aeSetScope(){ return (_aeRec && _aeRec.type==='appointment') ? 'appt' : 'user'; }
+function _aeRemindLabel(v){ return ({'5':'5 min','10':'10 min','15':'15 min','30':'30 min','60':'1 hour','1440':'1 day'})[String(v)] || (v+' min'); }
+function _aeChannels(sms,email){ var a=[]; if(sms)a.push('SMS'); if(email)a.push('Email'); return a.length?a.join(', '):'No alerts'; }
+function _aeRefreshSettingsSummary(){ var el=document.getElementById('ae-settings-summary'); if(!el) return; el.textContent='Remind '+_aeRemindLabel(_aeSettings.userRemind)+' before · '+_aeChannels(_aeSettings.userSms,_aeSettings.userEmail); }
+function _aeSettingsFor(){ var s=_aeSettings; if(_aeSetScope()==='appt') return JSON.parse(JSON.stringify(s)); return { userRemind:s.userRemind, userSms:s.userSms, userEmail:s.userEmail }; }
+function aeOpenSettings(){
+  var isAppt=_aeSetScope()==='appt';
+  document.getElementById('acts-guest-card').style.display = isAppt?'':'none';
+  document.getElementById('acts-notif-card').style.display = isAppt?'':'none';
+  document.getElementById('acts-user-title').textContent = isAppt?'Me':'Remind me';
+  var s=_aeSettings;
+  document.getElementById('acts-guest-remind').value=s.guestRemind;
+  document.getElementById('acts-guest-sms').checked=s.guestSms;
+  document.getElementById('acts-guest-email').checked=s.guestEmail;
+  document.getElementById('acts-user-remind').value=s.userRemind;
+  document.getElementById('acts-user-sms').checked=s.userSms;
+  document.getElementById('acts-user-email').checked=s.userEmail;
+  document.getElementById('acts-notif-cancelled').checked=s.notifCancelled;
+  document.getElementById('acts-notif-confirmed').checked=s.notifConfirmed;
+  document.getElementById('acts-notif-created').checked=s.notifCreated;
+  document.getElementById('act-settings-backdrop').classList.add('open');
+}
+function aeCloseSettings(){
+  var s=_aeSettings;
+  s.guestRemind=document.getElementById('acts-guest-remind').value;
+  s.guestSms=document.getElementById('acts-guest-sms').checked;
+  s.guestEmail=document.getElementById('acts-guest-email').checked;
+  s.userRemind=document.getElementById('acts-user-remind').value;
+  s.userSms=document.getElementById('acts-user-sms').checked;
+  s.userEmail=document.getElementById('acts-user-email').checked;
+  s.notifCancelled=document.getElementById('acts-notif-cancelled').checked;
+  s.notifConfirmed=document.getElementById('acts-notif-confirmed').checked;
+  s.notifCreated=document.getElementById('acts-notif-created').checked;
+  _aeRefreshSettingsSummary();
+  document.getElementById('act-settings-backdrop').classList.remove('open');
+}
 function openApptEdit(rec){
   _aeRec = rec;
   document.getElementById('ae-title').textContent = 'Edit '+rec.type.charAt(0).toUpperCase()+rec.type.slice(1);
@@ -3988,6 +4280,10 @@ function openApptEdit(rec){
   var inp=document.getElementById('ae-users-input'); if(inp) inp.value='';
   var dd=document.getElementById('ae-users-dd'); if(dd){ dd.classList.remove('show'); dd.innerHTML=''; }
   _aeChips();
+  // buildApptData() doesn't carry `settings` onto the chip record, so read it from the live store.
+  var _liveAct = (window.CCLeads && CCLeads.getActivities) ? CCLeads.getActivities().find(function(a){ return a.id===rec.id; }) : null;
+  _aeSettings = _aeMergeSettings((_liveAct && _liveAct.settings) || rec.settings);
+  _aeRefreshSettingsSummary();
   document.getElementById('appt-edit-backdrop').classList.add('open');
 }
 function closeApptEdit(){ var bd=document.getElementById('appt-edit-backdrop'); if(bd) bd.classList.remove('open'); _aeRec=null; }
@@ -4003,7 +4299,7 @@ function saveApptEdit(){
   if(window.CCLeads && CCLeads.updateActivity){
     CCLeads.updateActivity(_aeRec.id, {
       title:title, date:_aeUnpad(dateEl.value), time:document.getElementById('ae-time').value||'',
-      notes:document.getElementById('ae-notes').value||'', users:users
+      notes:document.getElementById('ae-notes').value||'', users:users, settings:_aeSettingsFor()
     });
   }
   closeApptEdit();

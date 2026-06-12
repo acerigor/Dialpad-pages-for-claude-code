@@ -484,8 +484,10 @@
 
   /* ── Label column + picker ── */
   .lbl-cell{display:flex;flex-wrap:wrap;gap:4px;align-items:center;cursor:pointer;min-height:20px;}
-  .lbl-pill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;
-    padding:2px 7px;border-radius:10px;border:0.5px solid transparent;white-space:nowrap;}
+  /* Matches the Status-column badge: tinted rectangle + leading dot */
+  .lbl-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;
+    padding:3px 8px;border-radius:5px;white-space:nowrap;}
+  .lbl-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
   .lbl-add{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);}
   .lbl-cell:hover .lbl-add{color:var(--ac2);}
   /* Sidebar Label control — mirrors the Status select for visual consistency:
@@ -4579,7 +4581,7 @@ const COLS = {
     label: 'Label', sortKey: 'label', width: 160,
     cell: l => {
       const lbls = (typeof labelsForLead === 'function') ? labelsForLead(l.no) : [];
-      const pills = lbls.map(b => `<span class="lbl-pill" style="background:${b.color}22;color:${b.color};border-color:${b.color}55;">${escapeHtml(b.name)}</span>`).join('');
+      const pills = lbls.map(b => `<span class="lbl-pill" style="background:${b.color}1f;color:${b.color};"><span class="lbl-dot"></span>${escapeHtml(b.name)}</span>`).join('');
       return `<td><div class="lbl-cell" onclick="event.stopPropagation();openLabelPopup(event,${l.no})">${lbls.length ? pills : `<span class="lbl-add"><i class="ti ti-tag" style="font-size:12px;" aria-hidden="true"></i>Add label</span>`}</div></td>`;
     }
   },

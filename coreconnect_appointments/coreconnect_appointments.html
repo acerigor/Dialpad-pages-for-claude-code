@@ -464,6 +464,8 @@
   .modal-field i{color:var(--mu);font-size:15px;flex-shrink:0;}
   .modal-field svg{width:16px;height:16px;color:var(--mu);flex-shrink:0;}
   .modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;width:100%;height:100%;}
+  /* Hide the native date-picker icon — the field already has a leading calendar icon */
+  .modal-field input[type="date"]::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none;}
   .modal-field select option{background:var(--sur2);color:var(--tx);}
   /* Per-activity calendar settings: entry row + sub-modal cards */
   .modal-backdrop.act-settings-bd{z-index:3100;}
@@ -494,7 +496,8 @@
   .appt-add-opt-title{font-size:14px;font-weight:600;}
   .appt-add-opt-sub{font-size:11.5px;color:var(--mu);}
   .appt-add-chev{width:16px;height:16px;color:var(--mu);flex:none;}
-  .appt-add-view{display:block;width:100%;margin-top:12px;background:transparent;border:none;
+  .appt-add-view{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;
+    margin-top:12px;background:transparent;border:none;
     color:var(--ac2);font-size:12.5px;font-family:var(--font);cursor:pointer;padding:8px;
     border-top:0.5px solid var(--brd);border-radius:0;}
   .appt-add-view:hover{color:var(--ac);}
@@ -2452,7 +2455,7 @@
 
     /* Modal footer on phone — stack buttons vertically, full-width, primary on top */
     .modal-footer{flex-direction:column-reverse;gap:10px;padding:14px 16px;}
-    .modal-cancel,.modal-save{width:100%;}
+    .modal-cancel,.modal-save,.ad-del-btn{width:100%;margin-right:0;}
     .modal-body{padding:16px;}
 
     /* === Phase 2F — QA touch-target fixes for floating popovers === */
@@ -2865,30 +2868,34 @@
   /* ===== APPOINTMENTS PAGE (v1) — composed from CoreConnect tokens ===== */
   .appt-toolbar{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;
     background:var(--bg);border-bottom:0.5px solid var(--brd);flex-wrap:wrap;}
-  .appt-title-wrap{display:flex;flex-direction:column;gap:2px;margin-right:auto;}
-  .appt-title{font-size:19px;font-weight:600;letter-spacing:-.3px;color:var(--tx);}
-  .appt-subtitle{font-size:12.5px;color:var(--mu);font-family:var(--mono);}
-
-  /* month nav cluster */
-  .appt-nav{display:flex;align-items:center;gap:4px;}
+  /* month nav cluster — sits at the left of the toolbar, pushes the rest right */
+  .appt-nav{display:flex;align-items:center;gap:4px;margin-right:auto;}
   .appt-nav-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
     border-radius:8px;border:0.5px solid var(--brd2);background:var(--sur);color:var(--mu);
     cursor:pointer;transition:all .12s;}
   .appt-nav-btn:hover{background:var(--sur2);color:var(--tx);border-color:var(--ac);}
   .appt-nav-btn svg{width:16px;height:16px;}
   .appt-label-wrap{position:relative;display:inline-flex;}
-  .appt-month-label{font-size:14px;font-weight:600;color:var(--tx);min-width:152px;text-align:center;
-    background:none;border:none;font-family:var(--font);cursor:pointer;padding:6px 8px;border-radius:8px;
-    transition:background .12s;}
-  .appt-month-label:hover{background:var(--sur2);}
-  .appt-picker{position:absolute;top:40px;left:50%;transform:translateX(-50%);z-index:200;
+  /* Matches the leads-page "View" toolbar button (.tbtn / .view-btn) for consistency */
+  .appt-month-label{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;
+    padding:0 11px;min-width:116px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    color:var(--mu);font-size:12.5px;font-family:var(--font);cursor:pointer;white-space:nowrap;
+    transition:all .15s;}
+  .appt-month-label:hover{border-color:var(--ac);color:var(--ac2);}
+  .appt-month-chev{width:11px;height:11px;color:var(--mu);flex:none;transition:transform .15s,color .15s;}
+  .appt-month-label:hover .appt-month-chev{color:var(--ac2);}
+  /* open state — accent + chevron flips up while the month/year picker is open */
+  .appt-label-wrap:has(.appt-picker.open) .appt-month-label{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
+  .appt-label-wrap:has(.appt-picker.open) .appt-month-chev{transform:rotate(180deg);color:var(--ac2);}
+  .appt-picker{position:absolute;top:44px;left:0;z-index:200;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;padding:12px;
-    width:280px;box-shadow:0 12px 40px rgba(0,0,0,.45);display:none;}
+    width:auto;box-shadow:0 12px 40px rgba(0,0,0,.45);display:none;}
   .appt-picker.open{display:block;}
   .appt-picker-year{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .appt-picker-yearnum{font-size:14px;font-weight:600;color:var(--tx);font-family:var(--mono);}
-  .appt-picker-months{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-  .appt-picker-month{height:34px;border:0.5px solid var(--brd2);background:var(--sur);color:var(--tx);
+  .appt-picker-months{display:grid;grid-template-columns:repeat(3,56px);gap:6px;justify-content:center;}
+  .appt-picker-month{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border:0.5px solid var(--brd2);background:var(--sur);color:var(--tx);
     font-size:12.5px;font-weight:500;font-family:var(--font);border-radius:8px;cursor:pointer;
     transition:all .12s;}
   .appt-picker-month:hover{background:var(--sur2);border-color:var(--ac);}
@@ -2905,24 +2912,27 @@
   .appt-seg-btn.seg-today{color:var(--tx);}
   .appt-seg-btn.seg-today:hover{background:var(--sur2);color:var(--tx);}
   .appt-seg-div{width:0.5px;align-self:stretch;margin:4px 2px;background:var(--brd2);}
-  /* Mobile-only compact view dropdown (hidden on desktop) */
-  .appt-view-select{display:none;appearance:none;-webkit-appearance:none;background-color:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:14px;font-weight:500;height:44px;padding:0 36px 0 14px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8aec4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;}
-  .appt-view-select:hover{border-color:var(--ac);}
-  .appt-view-select option{background:var(--sur2);color:var(--tx);}
+  /* Mobile-only compact view dropdown — custom, matches our other dropdowns (hidden on desktop) */
+  .appt-view-dd{display:none;position:relative;}
+  .appt-view-dd-btn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px;
+    background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);
+    font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .15s;}
+  .appt-view-dd-btn:hover{border-color:var(--ac);}
+  .appt-view-dd-chev{width:12px;height:12px;color:var(--mu);flex:none;transition:transform .15s,color .15s;}
+  .appt-view-dd.open .appt-view-dd-btn{border-color:var(--ac);background:rgba(79,124,255,.08);}
+  .appt-view-dd.open .appt-view-dd-chev{transform:rotate(180deg);color:var(--ac2);}
+  .appt-view-dd-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:170px;z-index:200;
+    background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);}
+  .appt-view-dd.open .appt-view-dd-menu{display:block;}
+  .appt-view-dd-item{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 11px;border-radius:7px;font-size:14px;color:var(--tx);cursor:pointer;transition:background .1s;}
+  .appt-view-dd-item:hover{background:rgba(255,255,255,.05);}
+  .appt-view-dd-check{width:14px;height:14px;color:var(--ac2);opacity:0;flex:none;}
+  .appt-view-dd-item.on .appt-view-dd-check{opacity:1;}
   @media (max-width:640px){
     .appt-view-seg{display:none;}
-    .appt-view-select{display:inline-block;}
-  }
-  /* Toolbar "New" button — opens the add chooser for the focused day */
-  .appt-new-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;
-    border:none;border-radius:8px;background:var(--ac);color:#fff;font-family:var(--font);
-    font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap;}
-  .appt-new-btn:hover{background:var(--ac2);}
-  .appt-new-btn svg{width:16px;height:16px;}
-  @media (max-width:640px){
-    .appt-new-btn span{display:none;}
-    .appt-new-btn{height:44px;width:44px;padding:0;justify-content:center;border-radius:10px;}
-    .appt-new-btn svg{width:20px;height:20px;}
+    .appt-view-dd{display:inline-block;}
   }
 
   /* calendar canvas */
@@ -2967,8 +2977,8 @@
   .cal-dot.t-task{background:var(--teal);}
   .cal-month-daylist{display:none;}
   .cmdl-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding:0 2px;}
-  .cmdl-add{width:34px;height:34px;border-radius:8px;border:none;background:var(--ac);color:#fff;
-    font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  .cmdl-add{width:44px;height:44px;border-radius:8px;border:none;background:var(--ac);color:#fff;
+    font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
     flex:none;transition:background .15s;font-family:var(--font);}
   .cmdl-add:hover{background:var(--ac2);}
   .cmdl-item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:0.5px solid var(--brd);cursor:pointer;min-height:44px;}
@@ -3069,7 +3079,6 @@
   /* ── RESPONSIVE: phone collapses month grid into a stacked agenda ── */
   @media(max-width:760px){
     .appt-toolbar{padding:14px 14px 12px;gap:8px;}
-    .appt-title{font-size:17px;}
     .appt-month-label{min-width:0;font-size:13px;}
     .appt-canvas{padding:14px;}
     .root.main-area{height:auto;min-height:0;overflow:visible;}
@@ -3354,7 +3363,7 @@
             </select>
           </div>
           <div class="modal-field" id="ae-title-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg><input type="text" id="ae-title-input" placeholder="Title" /></div>
-          <div class="modal-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><input type="date" id="ae-date" /></div>
+          <div class="modal-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><input type="date" id="ae-date" onclick="if(this.showPicker)this.showPicker();" /></div>
           <div class="modal-field" style="height:40px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><select id="ae-time" style="appearance:none;-webkit-appearance:none;"></select></div>
           <div class="modal-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><input type="text" id="ae-notes" placeholder="Notes (optional)" /></div>
           <div class="modal-section-title" style="margin:2px 0 0;">Team members</div>
@@ -3578,15 +3587,9 @@
 
   <!-- APPOINTMENTS TOOLBAR -->
   <div class="appt-toolbar">
-    <div class="appt-title-wrap">
-      <span class="appt-title">Appointments</span>
-      <span class="appt-subtitle" id="appt-count">25 scheduled this month</span>
-    </div>
-
     <div class="appt-nav">
-      <button class="appt-nav-btn" onclick="apptPrev()" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="appt-label-wrap">
-        <button class="appt-month-label" id="appt-month-label" onclick="toggleApptPicker(event)" title="Jump to month/year">June 2026</button>
+        <button class="appt-month-label" id="appt-month-label" onclick="toggleApptPicker(event)" title="Jump to month/year"><span id="appt-month-text">June 2026</span><svg class="appt-month-chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
         <div class="appt-picker" id="appt-picker">
           <div class="appt-picker-year">
             <button class="appt-nav-btn" onclick="apptPickerYear(-1)" aria-label="Previous year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -3596,7 +3599,6 @@
           <div class="appt-picker-months" id="appt-picker-months"><!-- rendered --></div>
         </div>
       </div>
-      <button class="appt-nav-btn" onclick="apptNext()" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
     </div>
     <div class="appt-view-seg">
       <button class="appt-seg-btn seg-today" onclick="apptToday()">Today</button>
@@ -3605,17 +3607,19 @@
       <button class="appt-seg-btn" id="seg-week" onclick="apptSetView('week')">Week</button>
       <button class="appt-seg-btn" id="seg-day" onclick="apptSetView('day')">Day</button>
     </div>
-    <!-- Mobile-only compact view selector (replaces the segmented control on phones) -->
-    <select class="appt-view-select" id="appt-view-select" onchange="apptViewSelect(this.value)" aria-label="Calendar view">
-      <option value="today">Today</option>
-      <option value="month" selected>Month</option>
-      <option value="week">Week</option>
-      <option value="day">Day</option>
-    </select>
-    <button class="appt-new-btn" onclick="openAddForFocus()" aria-label="New">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>New</span>
-    </button>
+    <!-- Mobile-only compact view selector — custom dropdown matching our other dropdowns -->
+    <div class="appt-view-dd" id="appt-view-dd">
+      <button class="appt-view-dd-btn" id="appt-view-dd-btn" onclick="toggleViewDD(event)" aria-haspopup="menu" aria-expanded="false" aria-label="Calendar view">
+        <span id="appt-view-dd-label">Month</span>
+        <svg class="appt-view-dd-chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="appt-view-dd-menu" id="appt-view-dd-menu" role="menu">
+        <div class="appt-view-dd-item" data-view="today" onclick="pickView('today')" role="menuitem"><span>Today</span><svg class="appt-view-dd-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="appt-view-dd-item" data-view="month" onclick="pickView('month')" role="menuitem"><span>Month</span><svg class="appt-view-dd-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="appt-view-dd-item" data-view="week" onclick="pickView('week')" role="menuitem"><span>Week</span><svg class="appt-view-dd-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="appt-view-dd-item" data-view="day" onclick="pickView('day')" role="menuitem"><span>Day</span><svg class="appt-view-dd-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+      </div>
+    </div>
 
     <button class="appt-nav-btn" onclick="window.location.href='../calendar_settings/calendar_settings.html'" aria-label="Calendar settings" title="Calendar settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></button>
 
@@ -3727,7 +3731,7 @@ document.addEventListener('click',function(e){
   var p=document.getElementById('notif-panel'),bell=document.getElementById('header-bell');
   if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!bell.contains(e.target))closeNotifications();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var asb=document.getElementById('act-settings-backdrop');if(asb&&asb.classList.contains('open')){aeCloseSettings();return;}var addb=document.getElementById('appt-add-backdrop');if(addb&&addb.classList.contains('open')){closeAddChooser();return;}closeNotifications();closeMobileDrawer();closeApptPicker();closeApptDetail();closeApptEdit();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var asb=document.getElementById('act-settings-backdrop');if(asb&&asb.classList.contains('open')){aeCloseSettings();return;}var addb=document.getElementById('appt-add-backdrop');if(addb&&addb.classList.contains('open')){closeAddChooser();return;}closeNotifications();closeMobileDrawer();closeApptPicker();closeViewDD();closeApptDetail();closeApptEdit();}});
 
 /* ---- Appointments view toggle ---- */
 function showOnly(viewId){
@@ -3743,12 +3747,17 @@ function syncSegButtons(){
   Object.keys(segs).forEach(function(k){
     var btn=document.getElementById(segs[k]); if(btn) btn.classList.toggle('active', k===apptView);
   });
-  var vs=document.getElementById('appt-view-select'); if(vs && vs.value!==apptView) vs.value=apptView;
+  if(typeof syncViewDD==='function') syncViewDD();
 }
-/* Mobile compact view dropdown: Today jumps to today (keeping the current view); the rest switch view. */
-function apptViewSelect(v){
-  if(v==='today'){ if(typeof apptToday==='function') apptToday(); var vs=document.getElementById('appt-view-select'); if(vs) vs.value=apptView; }
-  else { apptSetView(v); }
+/* Mobile compact view dropdown (custom): Today jumps to today (keeping the current view); the rest switch view. */
+var APPT_VIEW_LABELS={today:'Today',month:'Month',week:'Week',day:'Day'};
+function toggleViewDD(e){ if(e) e.stopPropagation(); var dd=document.getElementById('appt-view-dd'); if(!dd) return; var open=dd.classList.toggle('open'); var b=document.getElementById('appt-view-dd-btn'); if(b) b.setAttribute('aria-expanded', open?'true':'false'); if(open) syncViewDD(); }
+function closeViewDD(){ var dd=document.getElementById('appt-view-dd'); if(dd) dd.classList.remove('open'); var b=document.getElementById('appt-view-dd-btn'); if(b) b.setAttribute('aria-expanded','false'); }
+function pickView(v){ closeViewDD(); if(v==='today'){ if(typeof apptToday==='function') apptToday(); } else { apptSetView(v); } syncViewDD(); }
+function syncViewDD(){
+  var lbl=document.getElementById('appt-view-dd-label'); if(lbl) lbl.textContent=APPT_VIEW_LABELS[apptView]||'Month';
+  var menu=document.getElementById('appt-view-dd-menu'); if(!menu) return;
+  Array.prototype.forEach.call(menu.querySelectorAll('.appt-view-dd-item'), function(it){ it.classList.toggle('on', it.getAttribute('data-view')===apptView); });
 }
 function apptSetView(v){
   apptView=v;
@@ -4063,10 +4072,10 @@ function renderWeek(anchor){
 
 /* ---- Unified navigation (single focus date drives all views) ---- */
 function fmtFocus(){
-  var label=document.getElementById('appt-month-label');
+  var label=document.getElementById('appt-month-text');
   if(!label) return;
   if(apptView==='month'){
-    label.textContent = MONTH_NAMES[apptFocus.getMonth()] + ' ' + apptFocus.getFullYear();
+    label.textContent = MONTH_ABBR[apptFocus.getMonth()] + ' ' + apptFocus.getFullYear();
   } else if(apptView==='day'){
     label.textContent = DOW_FULL[apptFocus.getDay()] + ', ' + MONTH_ABBR[apptFocus.getMonth()] +
       ' ' + apptFocus.getDate() + ', ' + apptFocus.getFullYear();
@@ -4135,6 +4144,8 @@ document.addEventListener('click', function(e){
   var p=document.getElementById('appt-picker');
   var lbl=document.getElementById('appt-month-label');
   if(p && p.classList.contains('open') && !p.contains(e.target) && e.target!==lbl) closeApptPicker();
+  var dd=document.getElementById('appt-view-dd');
+  if(dd && dd.classList.contains('open') && !dd.contains(e.target)) closeViewDD();
 });
 
 /* Open a specific date in Day view (from week header click). */
@@ -4429,14 +4440,6 @@ function openAddChooser(y,m,d,opts){
 }
 function closeAddChooser(){ var bd=document.getElementById('appt-add-backdrop'); if(bd) bd.classList.remove('open'); }
 function addChooserViewDay(){ if(!_addDate) return; var a=_addDate; closeAddChooser(); apptOpenDate(a.y,a.m,a.d); }
-/* Toolbar "New" — open the chooser for the currently focused/selected day (view-aware). */
-function openAddForFocus(){
-  var y,m,d, isMobile=(window.matchMedia && window.matchMedia('(max-width:640px)').matches);
-  if(apptView==='week' && _weekSelDay){ y=_weekSelDay.y; m=_weekSelDay.m; d=_weekSelDay.d; }
-  else if(apptView==='month' && isMobile && _calSelDay){ y=_calSelDay.y; m=_calSelDay.m; d=_calSelDay.d; }
-  else { y=apptFocus.getFullYear(); m=apptFocus.getMonth()+1; d=apptFocus.getDate(); }
-  openAddChooser(y,m,d,{allowView:(apptView==='month')});
-}
 
 /* Open the edit modal in "create" mode for the chosen type + the chooser's date. */
 function openApptCreate(type){

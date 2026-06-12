@@ -1331,6 +1331,7 @@
     /* DETAIL PANEL — tighter margins and single-column summary on phone
        so long values (Name + department, Line type + phone) don't truncate. */
     .dp-header{padding:14px 14px 12px;}
+    .dp-act{height:44px;padding:0 16px;font-size:13px;}   /* fat-finger + consistent with voicemail/message pages */
     .dp-summary{margin:14px;padding:14px;grid-template-columns:1fr;gap:12px;}
     .dp-rec{margin:0 14px 14px;}
     .dp-notes{margin:0 14px 14px;}
@@ -1362,6 +1363,498 @@
     .fd-foot-hint{display:none;}
     .fp-cb,.fp-radio{width:20px;height:20px;}
   }
+  /* ===== Conference Call: nav-toast ===== */
+  .nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+    padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;
+    transform:translateX(380px);opacity:0;pointer-events:none;
+    transition:transform .25s ease-out, opacity .2s ease-out;
+    display:flex;align-items:center;gap:12px;}
+  .nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+  .nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);
+    color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+  .nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+  .nav-toast-text span{color:var(--mu);font-size:12px;}
+  .nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;
+    cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+  .nav-toast-close:hover{opacity:1;color:var(--tx);}
+
+  /* ===== Conference Call: setup + live bar + fullscreen ===== */
+    /* hide the mobile-only Current/Add tabs on desktop */
+  .cc-mobile-tabs{display:none;}
+  .cc-mobile-tab{display:none;}
+  .cc-modal{width:960px;max-width:96%;background:var(--bg);}
+  .cc-body{padding:20px 24px 10px;display:flex;flex-direction:column;gap:18px;}
+  .cc-title-field{}
+  .cc-field{display:flex;flex-direction:column;gap:6px;}
+  .cc-label{font-size:11.5px;font-weight:500;color:var(--mu);
+    text-transform:uppercase;letter-spacing:.5px;}
+  .cc-count{font-family:var(--mono);font-size:11px;color:var(--ac2);
+    background:rgba(79,124,255,.12);padding:1px 7px;border-radius:9px;}
+  .cc-optional{font-weight:400;text-transform:none;letter-spacing:0;color:var(--mu);font-size:10.5px;}
+  .cc-input{height:38px;padding:0 13px;background:var(--sur2);border:0.5px solid var(--brd2);
+    border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;
+    transition:border-color .15s;}
+  .cc-input:focus{border-color:var(--ac);}
+
+  /* Two-column workspace — each column is a raised card */
+  .cc-cols{display:flex;gap:16px;align-items:stretch;}
+  .cc-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;
+    background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;
+    padding:18px;height:320px;}
+  .cc-col-left{flex:1.05;}
+  .cc-col-right{flex:1;}
+
+  /* Column section header (Participants / Add Participants) */
+  .cc-col-head{display:flex;align-items:center;gap:10px;}
+  .cc-col-title{font-size:14px;font-weight:600;color:var(--tx);
+    text-transform:none;letter-spacing:0;}
+
+  /* Participants list */
+  .cc-participants{display:flex;flex-direction:column;gap:6px;
+    flex:1;overflow-y:auto;padding-right:6px;min-height:0;
+    scrollbar-width:thin;scrollbar-color:var(--mu) rgba(255,255,255,.04);}
+  .cc-participants::-webkit-scrollbar{width:10px;}
+  .cc-participants::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:5px;}
+  .cc-participants::-webkit-scrollbar-thumb{background:var(--mu);border-radius:5px;
+    border:2px solid var(--sur2);background-clip:padding-box;}
+  .cc-participants::-webkit-scrollbar-thumb:hover{background:#9aa0b8;background-clip:padding-box;border:2px solid var(--sur2);}
+
+  .cc-row{display:flex;align-items:center;gap:11px;padding:13px 14px;
+    background:var(--sur);border:0.5px solid var(--brd);border-radius:8px;}
+  .cc-row.locked{background:rgba(79,124,255,.05);border-color:rgba(79,124,255,.18);}
+  .cc-row-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;}
+  .cc-row-info{flex:1;min-width:0;}
+  .cc-row-name{font-size:13px;color:var(--tx);font-weight:500;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .cc-row-meta{font-size:11px;color:var(--mu);margin-top:1px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;}
+  .cc-row-badge{font-size:9.5px;font-weight:600;color:var(--ac2);
+    background:rgba(79,124,255,.14);padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.4px;}
+  .cc-row-badge.host{color:var(--gr);background:rgba(34,200,138,.14);}
+  .cc-row-badge.lead{color:#c4b5fd;background:rgba(167,139,250,.14);}
+  .cc-row-badge.ext{color:var(--am);background:rgba(245,166,35,.14);}
+  .cc-row-remove{width:24px;height:24px;border-radius:6px;background:transparent;border:none;
+    color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .12s;flex-shrink:0;}
+  .cc-row-remove:hover{background:rgba(232,85,85,.12);color:var(--rd);}
+  .cc-row-lock{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+    color:var(--mu);opacity:.55;flex-shrink:0;}
+
+  /* Add panel — tabs + body */
+  .cc-pop{display:flex;flex-direction:column;flex:1;min-height:0;gap:14px;}
+
+  /* Bigger, more prominent tabs */
+  .cc-pop-tabs{display:flex;border-bottom:0.5px solid var(--brd);}
+  .cc-pop-tab{flex:1;background:transparent;border:none;color:var(--mu);
+    font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;
+    padding:12px 10px;border-bottom:2px solid transparent;margin-bottom:-0.5px;
+    transition:color .12s;}
+  .cc-pop-tab:hover{color:var(--tx);}
+  .cc-pop-tab.active{color:var(--ac2);border-bottom-color:var(--ac);font-weight:600;}
+
+  .cc-pop-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .cc-pop-pane{display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;}
+
+  .cc-pop-search{display:flex;align-items:center;gap:7px;padding:8px 12px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;}
+  .cc-pop-search i{color:var(--mu);font-size:13px;}
+  .cc-pop-search input{flex:1;background:none;border:none;outline:none;color:var(--tx);
+    font-family:var(--font);font-size:13px;}
+  .cc-pop-search input::placeholder{color:var(--mu);}
+  .cc-pop-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;min-height:0;padding-right:6px;
+    scrollbar-width:thin;scrollbar-color:var(--mu) rgba(255,255,255,.04);}
+  .cc-pop-list::-webkit-scrollbar{width:10px;}
+  .cc-pop-list::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:5px;}
+  .cc-pop-list::-webkit-scrollbar-thumb{background:var(--mu);border-radius:5px;
+    border:2px solid var(--sur2);background-clip:padding-box;}
+  .cc-pop-list::-webkit-scrollbar-thumb:hover{background:#9aa0b8;background-clip:padding-box;border:2px solid var(--sur2);}
+
+  .cc-pop-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:7px;
+    cursor:pointer;transition:background .12s;}
+  .cc-pop-item:hover{background:var(--sur);}
+  .cc-pop-item.added{opacity:.45;pointer-events:none;}
+  .cc-pop-item-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:10.5px;font-weight:600;color:#fff;flex-shrink:0;}
+  .cc-pop-item-info{flex:1;min-width:0;}
+  .cc-pop-item-name{font-size:13px;color:var(--tx);font-weight:500;}
+  .cc-pop-item-role{font-size:11px;color:var(--mu);margin-top:1px;}
+  .cc-pop-item-check{color:var(--gr);font-size:14px;display:none;}
+  .cc-pop-item.added .cc-pop-item-check{display:inline;}
+  .cc-pop-empty{padding:24px 12px;text-align:center;color:var(--mu);font-size:11.5px;}
+
+  /* External tab inputs */
+  .cc-ext-field{display:flex;flex-direction:column;gap:4px;}
+  .cc-ext-label{font-size:10.5px;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;}
+  .cc-ext-input{height:36px;padding:0 12px;background:var(--sur);border:0.5px solid var(--brd2);
+    border-radius:7px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;
+    transition:border-color .15s;}
+  .cc-ext-input:focus{border-color:var(--ac);}
+  .cc-ext-add{margin-top:4px;height:36px;background:var(--ac);border:none;border-radius:7px;
+    color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;
+    transition:background .15s;}
+  .cc-ext-add:hover{background:var(--ac2);}
+  .cc-ext-add[disabled]{opacity:.4;cursor:not-allowed;}
+  .cc-ext-add[disabled]:hover{background:var(--ac);}
+
+  /* Footer */
+  .cc-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px 18px;}
+  .cc-cancel{padding:0 22px;height:38px;border-radius:8px;background:transparent;
+    border:1px solid var(--brd2);color:var(--tx);font-size:12.5px;font-weight:500;
+    font-family:var(--font);cursor:pointer;transition:all .15s;}
+  .cc-cancel:hover{border-color:var(--ac);color:var(--ac2);}
+  .cc-start{display:inline-flex;align-items:center;gap:8px;padding:0 24px;height:38px;
+    border-radius:8px;background:var(--gr);border:none;color:#fff;
+    font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;
+    transition:background .15s;}
+  .cc-start:hover{background:#2ee695;}
+  .cc-start[disabled]{opacity:.4;cursor:not-allowed;}
+  .cc-start[disabled]:hover{background:var(--gr);}
+
+  /* LIVE CALL BAR (persistent at bottom of viewport, slides up when call starts) */
+  .lc-bar{position:fixed;left:64px;right:0;bottom:0;height:56px;z-index:1400;
+    background:linear-gradient(to top, var(--sur) 0%, var(--sur2) 100%);
+    border-top:0.5px solid rgba(79,124,255,.28);
+    display:flex;align-items:center;padding:0 18px;gap:18px;
+    box-shadow:0 -8px 24px rgba(0,0,0,.4);
+    transform:translateY(100%);transition:transform .25s ease-out;
+    cursor:pointer;}
+  .lc-bar.open{transform:translateY(0);}
+  .lc-section{display:flex;align-items:center;gap:10px;}
+  .lc-left{flex:0 0 auto;}
+  .lc-center{flex:1;justify-content:center;gap:14px;}
+  .lc-right{flex:0 0 auto;gap:6px;cursor:auto;}
+
+  /* Pulsing live dot */
+  .lc-live-dot{width:8px;height:8px;border-radius:50%;background:var(--rd);
+    box-shadow:0 0 0 0 rgba(232,85,85,.6);animation:lc-pulse 1.5s infinite;}
+  @keyframes lc-pulse{
+    0%   {box-shadow:0 0 0 0 rgba(232,85,85,.6);}
+    70%  {box-shadow:0 0 0 8px rgba(232,85,85,0);}
+    100% {box-shadow:0 0 0 0 rgba(232,85,85,0);}
+  }
+  .lc-live-label{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--rd);
+    letter-spacing:.8px;}
+  .lc-title{font-size:13px;font-weight:600;color:var(--tx);margin-left:6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;}
+
+  /* Avatar cluster (overlapping) */
+  .lc-avatars{display:flex;align-items:center;}
+  .lc-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:9px;font-weight:600;color:#fff;
+    border:2px solid var(--sur);margin-left:-8px;}
+  .lc-av:first-child{margin-left:0;}
+  .lc-av-more{background:var(--sur2);color:var(--tx);font-family:var(--mono);font-size:9.5px;}
+  .lc-summary{font-size:12px;color:var(--mu);}
+  .lc-timer{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--tx);
+    background:rgba(255,255,255,.05);padding:4px 10px;border-radius:6px;letter-spacing:.5px;}
+
+  /* Right-side controls */
+  .lc-ctrl{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);
+    border:none;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .12s;}
+  .lc-ctrl:hover{background:rgba(255,255,255,.10);}
+  .lc-ctrl.off{background:rgba(232,85,85,.16);color:var(--rd);}
+  .lc-ctrl.off:hover{background:rgba(232,85,85,.24);}
+  .lc-ctrl.active{background:rgba(79,124,255,.20);color:var(--ac2);}
+  .lc-ctrl.active:hover{background:rgba(79,124,255,.28);}
+  .lc-ctrl .lc-ico-off{display:none;}
+  .lc-ctrl.off .lc-ico-on{display:none;}
+  .lc-ctrl.off .lc-ico-off{display:inline;}
+
+  .lc-end{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:36px;
+    border-radius:8px;background:var(--rd);border:none;color:#fff;
+    font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;
+    transition:background .15s;margin-left:6px;}
+  .lc-end:hover{background:#f06464;}
+
+  /* LIVE CALL PARTICIPANTS PANEL (opens above the bar) */
+  .lc-panel{display:none;position:fixed;left:80px;bottom:68px;width:340px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+    box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:1401;overflow:hidden;
+    flex-direction:column;max-height:60vh;}
+  .lc-panel.open{display:flex;animation:lc-panel-in .2s ease-out;}
+  @keyframes lc-panel-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .lc-panel-head{display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+  .lc-panel-title{font-size:13px;font-weight:600;color:var(--tx);
+    display:inline-flex;align-items:center;gap:8px;}
+  .lc-panel-count{font-family:var(--mono);font-size:10.5px;color:var(--ac2);
+    background:rgba(79,124,255,.12);padding:1px 6px;border-radius:9px;font-weight:500;}
+  .lc-panel-close{background:transparent;border:none;color:var(--mu);cursor:pointer;
+    font-size:13px;width:24px;height:24px;display:flex;align-items:center;
+    justify-content:center;border-radius:6px;transition:all .12s;}
+  .lc-panel-close:hover{background:var(--sur2);color:var(--tx);}
+  .lc-panel-list{overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;
+    scrollbar-width:thin;scrollbar-color:var(--mu) rgba(255,255,255,.04);}
+  .lc-panel-list::-webkit-scrollbar{width:8px;}
+  .lc-panel-list::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px;}
+  .lc-panel-list::-webkit-scrollbar-thumb{background:var(--mu);border-radius:4px;
+    border:2px solid var(--sur);background-clip:padding-box;}
+
+  .lc-panel-row{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;
+    transition:background .12s;}
+  .lc-panel-row:hover{background:var(--sur2);}
+  .lc-panel-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:10.5px;font-weight:600;color:#fff;flex-shrink:0;}
+  .lc-panel-info{flex:1;min-width:0;}
+  .lc-panel-name{font-size:12.5px;color:var(--tx);font-weight:500;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .lc-panel-status{font-size:10.5px;color:var(--gr);margin-top:1px;display:flex;align-items:center;gap:4px;}
+  .lc-panel-status.muted{color:var(--rd);}
+  .lc-panel-status-dot{width:6px;height:6px;border-radius:50%;background:var(--gr);}
+  .lc-panel-status.muted .lc-panel-status-dot{background:var(--rd);}
+  .lc-panel-tags{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+  .lc-panel-tag{font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:4px;
+    text-transform:uppercase;letter-spacing:.4px;color:var(--mu);background:rgba(255,255,255,.06);}
+  .lc-panel-tag.host{color:var(--gr);background:rgba(34,200,138,.14);}
+  .lc-panel-tag.you{color:var(--ac2);background:rgba(79,124,255,.14);}
+
+  /* End Call confirmation modal */
+  .lc-confirm-modal{width:420px;max-width:90%;}
+  .lc-confirm-body{display:flex;flex-direction:row;align-items:center;gap:16px;padding:20px 22px;}
+  .lc-confirm-icon{width:48px;height:48px;border-radius:50%;background:rgba(232,85,85,.14);
+    color:var(--rd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .lc-confirm-text{font-size:13px;color:var(--tx);line-height:1.5;}
+  .lc-confirm-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px 18px;}
+  .lc-confirm-end{padding:0 22px;height:38px;border-radius:8px;background:var(--rd);
+    border:none;color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);
+    cursor:pointer;transition:background .15s;}
+  .lc-confirm-end:hover{background:#f06464;}
+
+  /* FULLSCREEN CONFERENCE CALL VIEW */
+  .fs-call{position:fixed;inset:0;z-index:1500;background:var(--bg);
+    display:none;flex-direction:column;}
+  .fs-call.open{display:flex;animation:fs-fade-in .2s ease-out;}
+  @keyframes fs-fade-in{from{opacity:0;}to{opacity:1;}}
+
+  /* Header strip */
+  .fs-head{display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px;border-bottom:0.5px solid var(--brd);flex-shrink:0;
+    background:linear-gradient(to bottom, var(--sur) 0%, transparent 100%);}
+  .fs-head-left{display:flex;align-items:center;gap:10px;}
+  .fs-head-right{display:flex;align-items:center;gap:14px;}
+  .fs-live-dot{width:8px;height:8px;border-radius:50%;background:var(--rd);
+    box-shadow:0 0 0 0 rgba(232,85,85,.6);animation:lc-pulse 1.5s infinite;}
+  .fs-live-label{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--rd);
+    letter-spacing:.8px;}
+  .fs-title{font-size:14px;font-weight:600;color:var(--tx);margin-left:8px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;}
+  .fs-summary{font-size:12px;color:var(--mu);}
+  .fs-timer{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--tx);
+    background:rgba(255,255,255,.05);padding:5px 12px;border-radius:6px;letter-spacing:.5px;}
+  .fs-min{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);
+    border:none;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .12s;}
+  .fs-min:hover{background:rgba(255,255,255,.10);}
+
+  /* Stage (grid or focus mode) */
+  .fs-stage{flex:1;padding:18px 24px 100px;overflow:hidden;display:flex;}
+  .fs-grid{flex:1;display:grid;gap:12px;align-content:center;justify-content:center;
+    width:100%;}
+  /* Responsive grid layouts */
+  .fs-grid[data-count="1"]{grid-template-columns:minmax(0, 70%);grid-auto-rows:minmax(0, 70%);}
+  .fs-grid[data-count="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));grid-auto-rows:minmax(0, 1fr);}
+  .fs-grid[data-count="3"],
+  .fs-grid[data-count="4"]{grid-template-columns:repeat(2, minmax(0, 1fr));grid-auto-rows:minmax(0, 1fr);}
+  .fs-grid[data-count="5"],
+  .fs-grid[data-count="6"],
+  .fs-grid[data-count="7"],
+  .fs-grid[data-count="8"],
+  .fs-grid[data-count="9"]{grid-template-columns:repeat(3, minmax(0, 1fr));grid-auto-rows:minmax(0, 1fr);}
+  .fs-grid.scrollable{overflow-y:auto;align-content:start;grid-auto-rows:minmax(160px, 1fr);
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    scrollbar-width:thin;scrollbar-color:var(--mu) rgba(255,255,255,.04);}
+  .fs-grid.scrollable::-webkit-scrollbar{width:10px;}
+  .fs-grid.scrollable::-webkit-scrollbar-track{background:rgba(255,255,255,.04);}
+  .fs-grid.scrollable::-webkit-scrollbar-thumb{background:var(--mu);border-radius:5px;
+    border:2px solid var(--bg);background-clip:padding-box;}
+
+  /* Focus mode: big tile + thumbnail strip */
+  .fs-focus{display:none;flex:1;flex-direction:row;gap:12px;width:100%;position:relative;}
+  .fs-focus.open{display:flex;}
+  .fs-focus-main{flex:1;display:flex;align-items:stretch;}
+  .fs-focus-thumbs{width:200px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;
+    overflow-y:auto;padding-right:4px;
+    scrollbar-width:thin;scrollbar-color:var(--mu) rgba(255,255,255,.04);}
+  .fs-focus-thumbs::-webkit-scrollbar{width:8px;}
+  .fs-focus-thumbs::-webkit-scrollbar-thumb{background:var(--mu);border-radius:4px;
+    border:2px solid var(--bg);background-clip:padding-box;}
+  .fs-focus-thumbs .fs-tile{aspect-ratio:16/10;flex-shrink:0;}
+  .fs-focus-back{position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:7px;
+    padding:7px 12px;border-radius:8px;background:rgba(255,255,255,.10);border:0.5px solid var(--brd2);
+    color:var(--tx);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;
+    transition:all .12s;backdrop-filter:blur(6px);z-index:10;}
+  .fs-focus-back:hover{background:rgba(255,255,255,.16);}
+
+  /* Tile */
+  /* Mobile: stack conference tiles in a single column */
+  @media (max-width: 640px){
+    .fs-grid[data-count]{grid-template-columns:1fr;grid-auto-rows:minmax(160px, 1fr);align-content:start;overflow-y:auto;}
+  }
+  .fs-tile{position:relative;background:var(--sur2);border-radius:14px;overflow:hidden;
+    cursor:pointer;border:2px solid transparent;transition:border-color .15s;
+    display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;}
+  .fs-tile.speaking{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac);}
+  .fs-tile.cam-off{background:#0a0c14;}
+  /* SVG portrait fills tile */
+  .fs-tile-portrait{width:100%;height:100%;display:block;}
+  /* When camera off, show large initials instead */
+  .fs-tile-init-large{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:48px;font-weight:600;color:#fff;letter-spacing:1px;}
+
+  /* Bottom-left name label */
+  .fs-tile-name{position:absolute;bottom:10px;left:10px;
+    padding:5px 10px;border-radius:6px;background:rgba(0,0,0,.5);
+    color:#fff;font-size:12.5px;font-weight:500;max-width:calc(100% - 56px);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    backdrop-filter:blur(4px);display:flex;align-items:center;gap:6px;}
+  .fs-tile-name-tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;
+    text-transform:uppercase;letter-spacing:.4px;color:#fff;background:rgba(255,255,255,.18);}
+  .fs-tile-name-tag.you{background:rgba(79,124,255,.6);}
+
+  /* Bottom-right indicators */
+  .fs-tile-icons{position:absolute;bottom:10px;right:10px;display:flex;gap:6px;align-items:center;}
+  .fs-tile-icon{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);
+    color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .fs-tile-icon.muted{background:rgba(232,85,85,.85);}
+  .fs-tile-icon.speaking{background:rgba(79,124,255,.85);}
+  /* Audio wave animation for speaking indicator */
+  .fs-wave{display:flex;align-items:center;gap:2px;height:14px;}
+  .fs-wave span{width:2px;background:#fff;border-radius:1px;animation:fs-wave 1s infinite ease-in-out;}
+  .fs-wave span:nth-child(1){height:6px;animation-delay:-0.3s;}
+  .fs-wave span:nth-child(2){height:10px;animation-delay:-0.15s;}
+  .fs-wave span:nth-child(3){height:14px;}
+  .fs-wave span:nth-child(4){height:8px;animation-delay:-0.45s;}
+  @keyframes fs-wave{
+    0%, 100% {transform:scaleY(0.5);}
+    50% {transform:scaleY(1);}
+  }
+
+  /* Floating controls pill */
+  .fs-controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1501;
+    display:flex;align-items:center;gap:8px;padding:8px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;
+    box-shadow:0 12px 32px rgba(0,0,0,.55);}
+  .fs-ctrl{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.05);
+    border:none;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .12s;position:relative;}
+  .fs-ctrl:hover{background:rgba(255,255,255,.10);}
+  .fs-ctrl.off{background:rgba(232,85,85,.18);color:var(--rd);}
+  .fs-ctrl.off:hover{background:rgba(232,85,85,.26);}
+  .fs-ctrl.active{background:rgba(79,124,255,.22);color:var(--ac2);}
+  .fs-ctrl.active:hover{background:rgba(79,124,255,.30);}
+  .fs-ctrl .lc-ico-off{display:none;}
+  .fs-ctrl.off .lc-ico-on{display:none;}
+  .fs-ctrl.off .lc-ico-off{display:inline;}
+
+  .fs-end{display:inline-flex;align-items:center;gap:8px;padding:0 18px;height:44px;
+    border-radius:10px;background:var(--rd);border:none;color:#fff;
+    font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;
+    transition:background .15s;margin-left:6px;}
+  .fs-end:hover{background:#f06464;}
+
+  /* Kebab menu */
+  .fs-kebab-wrap{position:relative;}
+  .fs-kebab-menu{display:none;position:absolute;bottom:calc(100% + 8px);right:0;min-width:180px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;
+    box-shadow:0 -8px 24px rgba(0,0,0,.5);}
+  .fs-kebab-menu.open{display:block;}
+  .fs-kebab-item{padding:10px 14px;font-size:12.5px;color:var(--tx);cursor:pointer;
+    transition:background .12s,color .12s;border-bottom:0.5px solid var(--brd);}
+  .fs-kebab-item:last-child{border-bottom:none;}
+  .fs-kebab-item:hover{background:var(--sur2);color:var(--ac2);}
+
+  /* Bell pulse indicator when a call is active */
+  .header-bell.in-call{color:var(--gr);}
+  .header-bell-call-dot{position:absolute;top:9px;right:9px;width:8px;height:8px;
+    border-radius:50%;background:var(--gr);border:2px solid var(--bg);
+    display:none;box-shadow:0 0 0 0 rgba(34,200,138,.6);}
+  .header-bell-call-dot.show{display:block;animation:lc-pulse-green 1.5s infinite;}
+  @keyframes lc-pulse-green{
+    0%   {box-shadow:0 0 0 0 rgba(34,200,138,.6);}
+    70%  {box-shadow:0 0 0 8px rgba(34,200,138,0);}
+    100% {box-shadow:0 0 0 0 rgba(34,200,138,0);}
+  }
+
+  @media (max-width: 640px){
+    /* === FULL-SCREEN CC MODAL on phone === */
+    .cc-modal{
+      width:100% !important;max-width:100% !important;
+      max-height:100vh !important;height:100vh;
+      border-radius:0;border:none;margin:0;
+    }
+    /* Backdrop pads disappear so modal is truly edge-to-edge */
+    .modal-backdrop:has(.cc-modal){padding:0;}
+
+    /* CC body: maintains vertical flow */
+    .cc-body{padding:14px 14px 6px;gap:14px;}
+
+    /* Mobile tabs — show, hide the per-column desktop headers */
+    .cc-mobile-tabs{
+      display:flex;background:var(--sur2);border:0.5px solid var(--brd2);
+      border-radius:10px;padding:3px;gap:3px;flex-shrink:0;
+    }
+    .cc-mobile-tab{
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      flex:1;min-height:40px;padding:0 12px;border-radius:7px;
+      background:transparent;border:none;color:var(--mu);
+      font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;
+      transition:background .15s,color .15s;
+    }
+    .cc-mobile-tab:hover{color:var(--tx);}
+    .cc-mobile-tab.active{background:var(--ac);color:#fff;}
+    .cc-mobile-tab-count{
+      font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:10px;
+      background:rgba(255,255,255,.18);color:inherit;min-width:22px;text-align:center;
+    }
+    .cc-mobile-tab:not(.active) .cc-mobile-tab-count{
+      background:rgba(255,255,255,.08);color:var(--mu);
+    }
+
+    /* CC columns: tabbed view — only one visible at a time */
+    .cc-cols{flex-direction:column;gap:0;flex:1;min-height:0;}
+    .cc-col{flex:initial;}
+    .cc-col-left,.cc-col-right{display:none;}
+    .cc-cols.cc-show-left .cc-col-left{display:flex;}
+    .cc-cols.cc-show-right .cc-col-right{display:flex;}
+
+    /* Hide the desktop per-column headers on phone (tabs replace them) */
+    .cc-col-head{display:none;}
+
+    /* Participants list expands naturally — no max-height constraint */
+    .cc-participants{max-height:none;}
+
+    /* Add pop: also natural height, list expands */
+    .cc-pop{gap:12px;}
+    .cc-pop-list{max-height:none;}
+
+    /* External form fields: bigger inputs (44px) + 16px font (no iOS zoom) */
+    .cc-ext-input{height:44px;font-size:16px;}
+    .cc-ext-add{height:44px;font-size:14px;}
+
+    /* CC title input bigger touch */
+    .cc-input{height:44px;font-size:16px;}
+
+    /* CC pop search input */
+    .cc-pop-search{padding:10px 12px;}
+    .cc-pop-search input{font-size:16px;}
+
+    /* CC pop tab strip touch-friendly */
+    .cc-pop-tab{min-height:44px;font-size:13.5px;}
+
+    /* Footer already stacks via the v54 modal-footer rule */
+  }
+
+  /* Conference responsive fragments */
+  @media (max-width: 640px){
+    .lc-bar{left:0;}
+    .cc-pop-item{padding:13px 14px;}
+    .cc-cancel,.cc-start{height:44px;font-size:13.5px;}
+  }
+
 </style>
 </head>
 <body>
@@ -1998,6 +2491,231 @@
   <span id="bc-toast-msg">Business card sent</span>
 </div>
 
+<!-- ===== CONFERENCE CALL (ported from CRM) ===== -->
+  <div class="modal-backdrop" id="cc-modal-backdrop" onclick="handleCCBackdrop(event)">
+    <div class="modal cc-modal">
+      <div class="modal-header">
+        <span class="modal-title">Start Conference Call</span>
+        <button class="modal-close" onclick="closeConferenceSetup()">&#x2715;</button>
+      </div>
+      <div class="modal-body cc-body">
+        <!-- Title field (spans both columns) -->
+        <div class="cc-field cc-title-field">
+          <label class="cc-label">Call title <span class="cc-optional">(optional)</span></label>
+          <input type="text" class="cc-input" id="cc-title-input" placeholder="e.g. Discuss Bentley financing" />
+        </div>
+
+        <!-- Mobile-only tab strip: switch between Current participants and Add panel -->
+        <div class="cc-mobile-tabs" role="tablist">
+          <button class="cc-mobile-tab active" data-cc-col="left" onclick="ccSetCol('left')">
+            Current <span class="cc-mobile-tab-count" id="cc-mobile-count">0</span>
+          </button>
+          <button class="cc-mobile-tab" data-cc-col="right" onclick="ccSetCol('right')">
+            Add
+          </button>
+        </div>
+
+        <!-- Two-column workspace: participants list on the left, add panel on the right -->
+        <div class="cc-cols" id="cc-cols">
+          <!-- LEFT: current participants -->
+          <div class="cc-col cc-col-left">
+            <div class="cc-col-head">
+              <label class="cc-col-title">Participants</label>
+              <span class="cc-count" id="cc-count">0</span>
+            </div>
+            <div class="cc-participants" id="cc-participants"><!-- rendered dynamically --></div>
+          </div>
+
+          <!-- RIGHT: add new participants (tabbed) -->
+          <div class="cc-col cc-col-right">
+            <div class="cc-col-head">
+              <label class="cc-col-title">Add Participants</label>
+            </div>
+            <div class="cc-pop">
+              <div class="cc-pop-tabs">
+                <button class="cc-pop-tab active" data-pop-tab="team" onclick="ccSetPopTab('team')">Team</button>
+                <button class="cc-pop-tab" data-pop-tab="external" onclick="ccSetPopTab('external')">External</button>
+              </div>
+              <div class="cc-pop-body">
+                <!-- Team tab -->
+                <div class="cc-pop-pane" id="cc-pop-team">
+                  <div class="cc-pop-search">
+                    <i class="ti ti-search" aria-hidden="true"></i>
+                    <input type="text" id="cc-pop-search-input" placeholder="Search team..." oninput="ccFilterTeam(this.value)" />
+                  </div>
+                  <div class="cc-pop-list" id="cc-pop-team-list"><!-- team rows --></div>
+                </div>
+                <!-- External tab -->
+                <div class="cc-pop-pane" id="cc-pop-external" style="display:none;">
+                  <div class="cc-ext-field">
+                    <label class="cc-ext-label">Name</label>
+                    <input type="text" class="cc-ext-input" id="cc-ext-name" placeholder="Full name" oninput="ccValidateExternal()" />
+                  </div>
+                  <div class="cc-ext-field">
+                    <label class="cc-ext-label">Phone or Email</label>
+                    <input type="text" class="cc-ext-input" id="cc-ext-contact" placeholder="(555) 123-4567 or jane@example.com" oninput="ccValidateExternal()" />
+                  </div>
+                  <button class="cc-ext-add" id="cc-ext-add" onclick="ccAddExternal()" disabled>Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer cc-foot">
+        <button class="cc-cancel" onclick="closeConferenceSetup()">Cancel</button>
+        <button class="cc-start" id="cc-start" onclick="ccStartCall()" disabled>
+          <i class="ti ti-phone" aria-hidden="true" style="font-size:13px;"></i>
+          Start Call
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE CALL BAR (persistent across navigation) -->
+  <div class="lc-bar" id="lc-bar" onclick="lcToggleParticipants(event)">
+    <!-- LEFT: Live dot + label + lead name -->
+    <div class="lc-section lc-left">
+      <span class="lc-live-dot" aria-hidden="true"></span>
+      <span class="lc-live-label">LIVE</span>
+      <span class="lc-title" id="lc-title">Conference Call</span>
+    </div>
+
+    <!-- CENTER: avatar cluster + timer -->
+    <div class="lc-section lc-center">
+      <div class="lc-avatars" id="lc-avatars"></div>
+      <span class="lc-summary" id="lc-summary">0 participants</span>
+      <span class="lc-timer" id="lc-timer">00:00</span>
+    </div>
+
+    <!-- RIGHT: controls -->
+    <div class="lc-section lc-right" onclick="event.stopPropagation()">
+      <button class="lc-ctrl" id="lc-mute" onclick="lcToggle('mute')" title="Mute / unmute">
+        <svg class="lc-ico lc-ico-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <svg class="lc-ico lc-ico-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button class="lc-ctrl" id="lc-cam" onclick="lcToggle('cam')" title="Camera on / off">
+        <svg class="lc-ico lc-ico-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <svg class="lc-ico lc-ico-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+      <button class="lc-ctrl" id="lc-share" onclick="lcToggle('share')" title="Share screen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </button>
+      <button class="lc-end" onclick="lcRequestEnd(event)" title="End call">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+        End Call
+      </button>
+    </div>
+  </div>
+
+  <!-- LIVE CALL PARTICIPANTS PANEL (opens above the bar on click) -->
+  <div class="lc-panel" id="lc-panel">
+    <div class="lc-panel-head">
+      <span class="lc-panel-title">Participants <span class="lc-panel-count" id="lc-panel-count">0</span></span>
+      <button class="lc-panel-close" onclick="lcCloseParticipants()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="lc-panel-list" id="lc-panel-list"><!-- populated --></div>
+  </div>
+
+  <!-- FULLSCREEN CONFERENCE CALL VIEW -->
+  <div class="fs-call" id="fs-call">
+    <!-- Top header strip -->
+    <div class="fs-head">
+      <div class="fs-head-left">
+        <span class="fs-live-dot"></span>
+        <span class="fs-live-label">LIVE</span>
+        <span class="fs-title" id="fs-title">Conference Call</span>
+      </div>
+      <div class="fs-head-right">
+        <span class="fs-summary" id="fs-summary">0 participants</span>
+        <span class="fs-timer" id="fs-timer">00:00</span>
+        <button class="fs-min" onclick="lcMinimize()" title="Minimize to bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tiles container (grid mode + focus mode) -->
+    <div class="fs-stage" id="fs-stage">
+      <!-- Grid mode: tiles rendered here -->
+      <div class="fs-grid" id="fs-grid"></div>
+      <!-- Focus mode: big tile + thumbnail strip + back button -->
+      <div class="fs-focus" id="fs-focus">
+        <div class="fs-focus-main" id="fs-focus-main"></div>
+        <div class="fs-focus-thumbs" id="fs-focus-thumbs"></div>
+        <button class="fs-focus-back" onclick="lcExitFocus()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Back to grid
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating controls pill (bottom-center) -->
+    <div class="fs-controls">
+      <button class="fs-ctrl" id="fs-mute" onclick="lcToggle('mute')" title="Mute / unmute">
+        <svg class="lc-ico lc-ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <svg class="lc-ico lc-ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button class="fs-ctrl" id="fs-cam" onclick="lcToggle('cam')" title="Camera on / off">
+        <svg class="lc-ico lc-ico-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <svg class="lc-ico lc-ico-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+      <button class="fs-ctrl" id="fs-share" onclick="lcToggle('share')" title="Share screen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </button>
+      <button class="fs-ctrl" onclick="fsToggleFullscreen()" title="Browser fullscreen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <div class="fs-kebab-wrap">
+        <button class="fs-ctrl" onclick="fsToggleKebab(event)" title="More options">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </button>
+        <div class="fs-kebab-menu" id="fs-kebab-menu">
+          <div class="fs-kebab-item" onclick="fsKebabAction('participants')">Show participants</div>
+          <div class="fs-kebab-item" onclick="fsKebabAction('invite')">Copy invite link</div>
+          <div class="fs-kebab-item" onclick="fsKebabAction('settings')">Settings</div>
+        </div>
+      </div>
+      <button class="fs-end" onclick="lcRequestEnd(event)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+        End Call
+      </button>
+    </div>
+  </div>
+
+  <!-- END CALL CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="lc-confirm-backdrop" onclick="handleLCConfirmBackdrop(event)">
+    <div class="modal lc-confirm-modal">
+      <div class="modal-header">
+        <span class="modal-title">End conference call?</span>
+        <button class="modal-close" onclick="lcCancelEnd()">&#x2715;</button>
+      </div>
+      <div class="modal-body lc-confirm-body">
+        <div class="lc-confirm-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+        </div>
+        <div class="lc-confirm-text" id="lc-confirm-text">N participants will be disconnected.</div>
+      </div>
+      <div class="modal-footer lc-confirm-foot">
+        <button class="cc-cancel" onclick="lcCancelEnd()">Cancel</button>
+        <button class="lc-confirm-end" onclick="lcConfirmEnd()">End Call</button>
+      </div>
+    </div>
+  </div>
+
+<!-- nav toast -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </div>
+  <div class="nav-toast-text">
+    <strong id="nav-toast-title">Coming soon</strong>
+    <span id="nav-toast-body">This feature is under construction.</span>
+  </div>
+  <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
+</div>
+
 <script src="../shared/leads-comms.js"></script>
 <script>
 /* ============ MOCK DATA ============ */
@@ -2488,6 +3206,10 @@ function renderDetail(){
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Email
         </button>` : ''}
+        <button class="dp-act" onclick="openConferenceFromCall('${c.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Conference
+        </button>
       </div>
     </div>
 
@@ -3636,26 +4358,15 @@ function openAddLeadStub(){
 // Triggered by the "Call back" button on the detail pane. Hands the selected
 // call's contact to the dialer and starts the calling overlay flow.
 function dpCallBack(callId){
-  if(dialerState.isCalling) return;  // already on a call, ignore
+  // Mirrors the message-history "Call" button: drive the unified dialer (shared/dialer.js)
+  // — open the panel, load the contact, then auto-start the call.
   const c = ALL_CALLS.find(x => x.id === callId);
   if(!c) return;
-  // Open the dialer panel first so the user sees the call lifecycle
-  openDialerPanel();
-  dialerState.contact = {
-    name: c.contact.name,
-    num: c.contact.num,
-    av: c.contact.av,
-    clr: c.contact.clr,
-  };
-  dialerState.number = c.contact.num;
-  // Clear any leftover name-input filter so the contacts list isn't filtered later
-  const input = document.getElementById('dialer-name-input');
-  if(input) input.value = '';
-  dialerState.filter = '';
-  renderDialerContacts();
-  showDialerContactBar();
-  renderDialerNumber();
-  // Small delay so the panel slide/push animation isn't competing with the call overlay swap
+  const panel = document.getElementById('dialer-panel');
+  if(panel && panel.classList.contains('in-call')) return;      // already on a call — ignore
+  if(panel && !panel.classList.contains('open')) toggleDialer(); // open the dialer so the lifecycle is visible
+  loadRecentCall(c.contact.num, c.contact.name, c.contact.av, c.contact.clr);
+  // Small delay so the panel slide-in isn't competing with the calling-overlay swap.
   setTimeout(initiateCall, 250);
 }
 
@@ -4450,6 +5161,726 @@ window.addEventListener('resize',()=>{
 });
 </script>
 <!-- Unified Quick-Dial dialer (overrides this page's inline dialer) -->
+<script>
+/* ===== Conference Call (ported from CRM) ===== */
+var assignUsers = (window.CCLeads && CCLeads.TEAM) ? CCLeads.TEAM : [];
+let navToastTimer = null;
+function showNavToast(title, body){
+  const t = document.getElementById('nav-toast');
+  if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent  = body;
+  t.classList.add('show');
+  if(navToastTimer){ clearTimeout(navToastTimer); }
+  navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  const t = document.getElementById('nav-toast');
+  if(t) t.classList.remove('show');
+  if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
+}
+
+// ── CONFERENCE CALL SETUP ─────────────────────
+// Participant shape: { id, kind:'host'|'lead'|'team'|'external', key?, name, meta, color, locked? }
+// `kind` drives the badge color/label; `locked` prevents removal (host + lead).
+let ccParticipants = [];
+let ccPopTab = 'team'; // 'team' | 'external'
+
+// Launch the conference setup for a specific call, seeding that call's contact.
+function openConferenceFromCall(callId){
+  var c = (typeof ALL_CALLS !== 'undefined') ? ALL_CALLS.find(function(x){ return x.id === callId; }) : null;
+  openConferenceSetup(c ? c.contact : null);
+}
+
+function openConferenceSetup(seed){
+  // Seed initial participants — host (current user) + optional call contact
+  ccParticipants = [];
+  // The host is always the current user. We don't store a real session, so use David P. (DP) — first in assignUsers.
+  const host = assignUsers[0]; // David P., Sales Manager
+  ccParticipants.push({
+    id: 'host-'+host.key,
+    kind: 'host',
+    key: host.key,
+    name: host.name + ' (you)',
+    meta: host.role,
+    color: host.color,
+    locked: true,
+  });
+  // If launched from a call's detail, seed that contact as a participant
+  if(seed && seed.name){
+    ccParticipants.push({
+      id: 'seed-'+(seed.lead || seed.num || Date.now()),
+      kind: 'lead',
+      name: seed.name,
+      meta: seed.num || seed.email || '—',
+      color: seed.clr || 'var(--ac)',
+      locked: false,
+    });
+  }
+  // If a contact panel lead is in context, add them automatically
+  if(typeof cpLead !== 'undefined' && cpLead){
+    ccParticipants.push({
+      id: 'lead-'+cpLead.no,
+      kind: 'lead',
+      name: cpLead.name,
+      meta: cpLead.phone || cpLead.email || '\u2014',
+      color: cpLead.ac || 'var(--ac)',
+      locked: true,
+    });
+  }
+  // Reset UI
+  document.getElementById('cc-title-input').value = '';
+  ccPopTab = 'team';
+  document.querySelectorAll('.cc-pop-tab').forEach(t => t.classList.toggle('active', t.dataset.popTab === 'team'));
+  document.getElementById('cc-pop-team').style.display = '';
+  document.getElementById('cc-pop-external').style.display = 'none';
+  document.getElementById('cc-pop-search-input').value = '';
+  document.getElementById('cc-ext-name').value = '';
+  document.getElementById('cc-ext-contact').value = '';
+  document.getElementById('cc-ext-add').disabled = true;
+  // Phase 2E — default to "Current" tab on phone (so user sees the seeded host + lead)
+  ccSetCol('left');
+  ccRender();
+  document.getElementById('cc-modal-backdrop').classList.add('open');
+}
+
+// ── Phase 2E: Mobile tab switcher between Current participants ('left') and Add ('right') ──
+function ccSetCol(which){
+  const cols = document.getElementById('cc-cols');
+  if(cols){
+    cols.classList.remove('cc-show-left','cc-show-right');
+    cols.classList.add('cc-show-' + which);
+  }
+  document.querySelectorAll('.cc-mobile-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.ccCol === which);
+  });
+}
+
+function closeConferenceSetup(){
+  document.getElementById('cc-modal-backdrop').classList.remove('open');
+}
+
+function handleCCBackdrop(e){
+  if(e.target === document.getElementById('cc-modal-backdrop')) closeConferenceSetup();
+}
+
+// Render the participants list + counter + Start button state
+function ccRender(){
+  const list = document.getElementById('cc-participants');
+  if(!list) return;
+  list.innerHTML = ccParticipants.map(p => {
+    const initials = (p.name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+    const badgeText = p.kind === 'host' ? 'Host' : p.kind === 'lead' ? 'Lead' : p.kind === 'external' ? 'External' : 'Team';
+    const badgeClass = p.kind === 'host' ? 'host' : p.kind === 'lead' ? 'lead' : p.kind === 'external' ? 'ext' : '';
+    const rightAction = p.locked
+      ? '<span class="cc-row-lock" title="Required participant"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>'
+      : '<button class="cc-row-remove" onclick="ccRemoveParticipant(\''+p.id+'\')" title="Remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+    return '<div class="cc-row '+(p.locked?'locked':'')+'">'
+      + '<div class="cc-row-av" style="background:'+p.color+';">'+initials+'</div>'
+      + '<div class="cc-row-info">'
+      +   '<div class="cc-row-name">'+p.name+'</div>'
+      +   '<div class="cc-row-meta"><span class="cc-row-badge '+badgeClass+'">'+badgeText+'</span> '+(p.meta||'')+'</div>'
+      + '</div>'
+      + rightAction
+      + '</div>';
+  }).join('');
+  // Counter
+  document.getElementById('cc-count').textContent = ccParticipants.length;
+  // Phase 2E — also update the mobile-tab count
+  const mobCount = document.getElementById('cc-mobile-count');
+  if(mobCount) mobCount.textContent = ccParticipants.length;
+  // Start button enabled when at least 1 invited participant (host doesn't count alone)
+  // (host + lead alone = enabled too, since lead counts as an invited participant)
+  const startBtn = document.getElementById('cc-start');
+  if(startBtn) startBtn.disabled = ccParticipants.length < 2;
+  // Re-render team list to reflect added state
+  ccRenderTeam();
+}
+
+function ccRemoveParticipant(id){
+  ccParticipants = ccParticipants.filter(p => p.id !== id);
+  ccRender();
+}
+
+// ── Add Participant: tab + search + add ───────
+function ccSetPopTab(tab){
+  ccPopTab = tab;
+  document.querySelectorAll('.cc-pop-tab').forEach(t => t.classList.toggle('active', t.dataset.popTab === tab));
+  document.getElementById('cc-pop-team').style.display     = tab === 'team' ? '' : 'none';
+  document.getElementById('cc-pop-external').style.display = tab === 'external' ? '' : 'none';
+  // Focus the right input
+  setTimeout(() => {
+    if(tab === 'team') document.getElementById('cc-pop-search-input').focus();
+    else document.getElementById('cc-ext-name').focus();
+  }, 30);
+}
+
+function ccFilterTeam(q){
+  ccRenderTeam(q);
+}
+
+function ccRenderTeam(q){
+  const list = document.getElementById('cc-pop-team-list');
+  if(!list) return;
+  const query = (q || '').trim().toLowerCase();
+  // Filter out the host (already in participants) — but show all OTHER assignUsers, marking added ones as disabled
+  const hostKey = ccParticipants.find(p => p.kind === 'host')?.key;
+  const matches = assignUsers.filter(u => u.key !== hostKey).filter(u =>
+    !query || u.name.toLowerCase().includes(query) || u.role.toLowerCase().includes(query) || u.key.toLowerCase().includes(query)
+  );
+  if(matches.length === 0){
+    list.innerHTML = '<div class="cc-pop-empty">No matches</div>';
+    return;
+  }
+  const addedKeys = new Set(ccParticipants.filter(p => p.kind === 'team').map(p => p.key));
+  list.innerHTML = matches.map(u => {
+    const added = addedKeys.has(u.key);
+    return '<div class="cc-pop-item '+(added?'added':'')+'" onclick="ccAddTeam(\''+u.key+'\')">'
+      + '<div class="cc-pop-item-av" style="background:'+u.color+';">'+u.key+'</div>'
+      + '<div class="cc-pop-item-info">'
+      +   '<div class="cc-pop-item-name">'+u.name+'</div>'
+      +   '<div class="cc-pop-item-role">'+u.role+'</div>'
+      + '</div>'
+      + '<span class="cc-pop-item-check">\u2713</span>'
+      + '</div>';
+  }).join('');
+}
+
+function ccAddTeam(key){
+  // Already added?
+  if(ccParticipants.some(p => p.kind === 'team' && p.key === key)) return;
+  const u = assignUsers.find(x => x.key === key);
+  if(!u) return;
+  ccParticipants.push({
+    id: 'team-'+u.key,
+    kind: 'team',
+    key: u.key,
+    name: u.name,
+    meta: u.role,
+    color: u.color,
+    locked: false,
+  });
+  ccRender();
+}
+
+function ccValidateExternal(){
+  const name = document.getElementById('cc-ext-name').value.trim();
+  const contact = document.getElementById('cc-ext-contact').value.trim();
+  const btn = document.getElementById('cc-ext-add');
+  if(!btn) return;
+  btn.disabled = name.length === 0 || contact.length === 0;
+}
+
+function ccAddExternal(){
+  const name = document.getElementById('cc-ext-name').value.trim();
+  const contact = document.getElementById('cc-ext-contact').value.trim();
+  if(!name || !contact) return;
+  // Pick a deterministic color from a small palette
+  const palette = ['#f5a623','#e85555','#22c88a','#a78bfa','#0F6E56','#185FA5'];
+  const idx = (ccParticipants.length * 3) % palette.length;
+  ccParticipants.push({
+    id: 'ext-'+Date.now()+'-'+Math.floor(Math.random()*1000),
+    kind: 'external',
+    name: name,
+    meta: contact,
+    color: palette[idx],
+    locked: false,
+  });
+  // Clear inputs
+  document.getElementById('cc-ext-name').value = '';
+  document.getElementById('cc-ext-contact').value = '';
+  document.getElementById('cc-ext-add').disabled = true;
+  ccRender();
+  // Refocus name for adding another
+  document.getElementById('cc-ext-name').focus();
+}
+
+function ccStartCall(){
+  const title = document.getElementById('cc-title-input').value.trim();
+  // Snapshot the participants for the live call
+  const snapshot = ccParticipants.map(p => ({...p}));
+  closeConferenceSetup();
+  // Hand off to the Live Call bar
+  lcStartCall(title, snapshot);
+}
+
+// ── LIVE CALL BAR ─────────────────────────────
+// State for the active call. When `lcActive` is true the bar is showing.
+let lcActive = false;
+let lcStartedAt = null;       // Date the call started
+let lcTitle = '';
+let lcCallParticipants = [];  // snapshot taken at start
+let lcTimerInterval = null;
+let lcStates = { mute:false, cam:false, share:false };
+// Per-participant random mute/connection state (for demo realism)
+let lcParticipantStates = {}; // id -> { muted:boolean }
+
+function lcStartCall(title, participants){
+  if(lcActive){
+    // If a call is somehow already going, end it cleanly first
+    lcReset();
+  }
+  lcActive = true;
+  lcStartedAt = new Date();
+  lcTitle = title || 'Conference Call';
+  lcCallParticipants = participants;
+  lcStates = { mute:false, cam:false, share:false };
+  // Seed per-participant statuses — mute a couple at random for realism (host always unmuted)
+  lcParticipantStates = {};
+  participants.forEach((p, i) => {
+    lcParticipantStates[p.id] = { muted: p.kind === 'host' ? false : (i % 3 === 0 && i > 0) };
+  });
+  // Render bar
+  lcRender();
+  document.getElementById('lc-bar').classList.add('open');
+  // Start timer
+  lcTickTimer();
+  lcTimerInterval = setInterval(lcTickTimer, 1000);
+  // Bell indicator
+  const callDot = document.getElementById('header-bell-call-dot');
+  const bell = document.getElementById('header-bell');
+  if(callDot) callDot.classList.add('show');
+  if(bell) bell.classList.add('in-call');
+  // Shift main content up a bit so the bar doesn't overlap the bottom area visually
+  document.body.style.paddingBottom = '56px';
+  // Auto-expand to fullscreen view immediately
+  lcExpand();
+  // Toast
+  const n = participants.length;
+  showNavToast('Conference call started', (title ? '"'+title+'" \u2014 ' : '') + n + ' participant'+(n===1?'':'s')+' connected.');
+}
+
+function lcRender(){
+  // Title
+  const titleEl = document.getElementById('lc-title');
+  if(titleEl) titleEl.textContent = lcTitle;
+  // Avatar cluster (max 4 + "+N more")
+  const wrap = document.getElementById('lc-avatars');
+  if(wrap){
+    const MAX = 4;
+    const shown = lcCallParticipants.slice(0, MAX);
+    const extra = lcCallParticipants.length - shown.length;
+    wrap.innerHTML = shown.map(p => {
+      const initials = (p.name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+      return '<div class="lc-av" style="background:'+p.color+';">'+initials+'</div>';
+    }).join('') + (extra > 0 ? '<div class="lc-av lc-av-more">+'+extra+'</div>' : '');
+  }
+  // Summary text
+  const sumEl = document.getElementById('lc-summary');
+  if(sumEl){
+    const n = lcCallParticipants.length;
+    sumEl.textContent = n + ' participant'+(n===1?'':'s');
+  }
+}
+
+function lcTickTimer(){
+  if(!lcStartedAt) return;
+  const sec = Math.floor((Date.now() - lcStartedAt.getTime()) / 1000);
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  const txt = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const el1 = document.getElementById('lc-timer');
+  const el2 = document.getElementById('fs-timer');
+  if(el1) el1.textContent = txt;
+  if(el2) el2.textContent = txt;
+}
+
+function lcToggle(which){
+  if(!lcActive) return;
+  lcStates[which] = !lcStates[which];
+  // Map: which → bar element id, fullscreen element id
+  const map = {
+    mute:  ['lc-mute',  'fs-mute'],
+    cam:   ['lc-cam',   'fs-cam'],
+    share: ['lc-share', 'fs-share'],
+  };
+  const [barId, fsId] = map[which];
+  const barEl = document.getElementById(barId);
+  const fsEl  = document.getElementById(fsId);
+  if(which === 'share'){
+    if(barEl) barEl.classList.toggle('active', lcStates.share);
+    if(fsEl)  fsEl.classList.toggle('active',  lcStates.share);
+  } else {
+    if(barEl) barEl.classList.toggle('off', lcStates[which]);
+    if(fsEl)  fsEl.classList.toggle('off',  lcStates[which]);
+  }
+  // If muting yourself, reflect in participant lists
+  if(which === 'mute'){
+    const hostP = lcCallParticipants.find(p => p.kind === 'host');
+    if(hostP) lcParticipantStates[hostP.id] = { muted: lcStates.mute };
+    // Re-render the bar panel if open
+    const panel = document.getElementById('lc-panel');
+    if(panel && panel.classList.contains('open')) lcRenderPanel();
+    // Re-render fullscreen tiles to update mute icon on host's tile
+    if(lcFullscreenOpen) fsRenderTiles();
+  }
+  if(which === 'cam'){
+    // Re-render fullscreen tiles to update host's camera-off state
+    if(lcFullscreenOpen) fsRenderTiles();
+  }
+}
+
+// ── Bar click → expand to fullscreen ──────────
+function lcToggleParticipants(e){
+  // (Repurposed) Clicking the bar now expands to the fullscreen call view.
+  // The right-side controls (mute/cam/share/end) stop propagation so they don't trigger this.
+  if(!lcActive) return;
+  lcExpand();
+}
+
+function lcCloseParticipants(){
+  const panel = document.getElementById('lc-panel');
+  if(panel) panel.classList.remove('open');
+}
+
+function lcRenderPanel(){
+  const list = document.getElementById('lc-panel-list');
+  const count = document.getElementById('lc-panel-count');
+  if(!list) return;
+  if(count) count.textContent = lcCallParticipants.length;
+  list.innerHTML = lcCallParticipants.map(p => {
+    const initials = (p.name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+    const st = lcParticipantStates[p.id] || {muted:false};
+    const isYou = p.kind === 'host';
+    const statusClass = st.muted ? 'muted' : '';
+    const statusLabel = st.muted ? 'Muted' : 'Connected';
+    let tags = '';
+    if(isYou) tags += '<span class="lc-panel-tag you">YOU</span>';
+    if(p.kind === 'host') tags += '<span class="lc-panel-tag host">HOST</span>';
+    return '<div class="lc-panel-row">'
+      + '<div class="lc-panel-av" style="background:'+p.color+';">'+initials+'</div>'
+      + '<div class="lc-panel-info">'
+      + '<div class="lc-panel-name">'+p.name.replace(' (you)','')+'</div>'
+      + '<div class="lc-panel-status '+statusClass+'"><span class="lc-panel-status-dot"></span>'+statusLabel+'</div>'
+      + '</div>'
+      + '<div class="lc-panel-tags">'+tags+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── End call (with confirm) ───────────────────
+function lcRequestEnd(e){
+  if(e) e.stopPropagation();
+  if(!lcActive) return;
+  const n = lcCallParticipants.length;
+  const text = n + ' participant'+(n===1?'':'s')+' will be disconnected.';
+  document.getElementById('lc-confirm-text').textContent = text;
+  document.getElementById('lc-confirm-backdrop').classList.add('open');
+}
+
+function lcCancelEnd(){
+  document.getElementById('lc-confirm-backdrop').classList.remove('open');
+}
+
+function handleLCConfirmBackdrop(e){
+  if(e.target === document.getElementById('lc-confirm-backdrop')) lcCancelEnd();
+}
+
+function lcConfirmEnd(){
+  // Calculate duration before clearing
+  const sec = lcStartedAt ? Math.floor((Date.now() - lcStartedAt.getTime()) / 1000) : 0;
+  const durM = Math.floor(sec / 60);
+  const durS = sec % 60;
+  const durText = String(durM).padStart(2,'0') + ':' + String(durS).padStart(2,'0');
+  // Close confirm modal
+  lcCancelEnd();
+  // Close panel if open
+  lcCloseParticipants();
+  // Slide bar out
+  document.getElementById('lc-bar').classList.remove('open');
+  // Clear state (small delay so the slide animation can finish)
+  setTimeout(lcReset, 250);
+  // Bell indicators
+  const callDot = document.getElementById('header-bell-call-dot');
+  const bell = document.getElementById('header-bell');
+  if(callDot) callDot.classList.remove('show');
+  if(bell) bell.classList.remove('in-call');
+  // Restore body padding
+  document.body.style.paddingBottom = '';
+  // Confirmation toast
+  showNavToast('You ended the call', 'Duration: '+durText+' \u2014 logged in history.');
+}
+
+function lcReset(){
+  lcActive = false;
+  lcStartedAt = null;
+  lcTitle = '';
+  lcCallParticipants = [];
+  lcStates = { mute:false, cam:false, share:false };
+  lcParticipantStates = {};
+  if(lcTimerInterval){ clearInterval(lcTimerInterval); lcTimerInterval = null; }
+  // Stop speaking simulation
+  fsStopSpeakingSim();
+  // Hide fullscreen view
+  const fs = document.getElementById('fs-call');
+  if(fs) fs.classList.remove('open');
+  lcFullscreenOpen = false;
+  lcFocusedId = null;
+  // Reset visual state of icons (both bar and fullscreen)
+  ['lc-mute','lc-cam','fs-mute','fs-cam'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('off');
+  });
+  ['lc-share','fs-share'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('active');
+  });
+}
+
+// ── FULLSCREEN CALL VIEW ──────────────────────
+let lcFullscreenOpen = false;
+let lcFocusedId = null;        // id of participant currently in focus mode (null = grid)
+let fsSpeakingInterval = null; // timer for speaking simulation
+let fsCurrentSpeaker = null;   // id of currently-speaking participant (or null = silence)
+
+function lcExpand(){
+  if(!lcActive) return;
+  const fs = document.getElementById('fs-call');
+  if(!fs) return;
+  // Render title + summary + tiles
+  document.getElementById('fs-title').textContent = lcTitle;
+  const n = lcCallParticipants.length;
+  document.getElementById('fs-summary').textContent = n + ' participant' + (n===1?'':'s');
+  // Sync control states (mute/cam/share)
+  const fsMute  = document.getElementById('fs-mute');
+  const fsCam   = document.getElementById('fs-cam');
+  const fsShare = document.getElementById('fs-share');
+  if(fsMute)  fsMute.classList.toggle('off',     lcStates.mute);
+  if(fsCam)   fsCam.classList.toggle('off',      lcStates.cam);
+  if(fsShare) fsShare.classList.toggle('active', lcStates.share);
+  // Reset focus mode (always start in grid)
+  lcFocusedId = null;
+  fsRenderTiles();
+  // Show
+  fs.classList.add('open');
+  lcFullscreenOpen = true;
+  // Start the speaking simulation
+  fsStartSpeakingSim();
+  // Sync the bar timer once so the fullscreen timer doesn't start at 00:00 visually
+  lcTickTimer();
+}
+
+function lcMinimize(){
+  const fs = document.getElementById('fs-call');
+  if(fs) fs.classList.remove('open');
+  lcFullscreenOpen = false;
+  lcFocusedId = null;
+  fsStopSpeakingSim();
+  // Close kebab if open
+  const kb = document.getElementById('fs-kebab-menu');
+  if(kb) kb.classList.remove('open');
+}
+
+// Build a deterministic SVG "portrait" — gradient circular background + large initials.
+// Each participant gets a consistent visual identity based on their color.
+function fsBuildPortraitSVG(name, color){
+  const initials = (name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+  // Lighten/darken the color for the gradient stops
+  const dark = color;
+  // Derive a lighter shade by hex-mixing with white (simple approach)
+  const lighter = fsLightenHex(color, 0.30);
+  // Hash the name for slight rotation variation to feel less identical
+  let hash = 0;
+  for(let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) | 0;
+  const angle = Math.abs(hash) % 360;
+  return ''
+    + '<svg class="fs-tile-portrait" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">'
+    + '<defs><linearGradient id="g'+Math.abs(hash)+'" gradientTransform="rotate('+angle+')"><stop offset="0%" stop-color="'+lighter+'"/><stop offset="100%" stop-color="'+dark+'"/></linearGradient>'
+    + '<radialGradient id="r'+Math.abs(hash)+'" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="rgba(255,255,255,0.18)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs>'
+    + '<rect width="400" height="400" fill="url(#g'+Math.abs(hash)+')"/>'
+    + '<rect width="400" height="400" fill="url(#r'+Math.abs(hash)+')"/>'
+    + '<text x="200" y="220" font-family="DM Sans, sans-serif" font-size="140" font-weight="600" fill="#fff" text-anchor="middle" letter-spacing="2">'+initials+'</text>'
+    + '</svg>';
+}
+
+// Hex color lighten helper (mix with white by factor)
+function fsLightenHex(hex, factor){
+  if(!hex || hex[0] !== '#') return hex;
+  let h = hex.slice(1);
+  if(h.length === 3) h = h.split('').map(c => c+c).join('');
+  const r = parseInt(h.slice(0,2),16);
+  const g = parseInt(h.slice(2,4),16);
+  const b = parseInt(h.slice(4,6),16);
+  const lr = Math.round(r + (255 - r) * factor);
+  const lg = Math.round(g + (255 - g) * factor);
+  const lb = Math.round(b + (255 - b) * factor);
+  return '#' + [lr,lg,lb].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+// Build a single tile's HTML
+function fsBuildTileHTML(p, opts){
+  opts = opts || {};
+  const isHost = p.kind === 'host';
+  const isSpeaking = fsCurrentSpeaker === p.id;
+  // Host inherits the user's actual mute/cam state; others have seeded mute, no cam toggle
+  const muted = isHost ? lcStates.mute : (lcParticipantStates[p.id]?.muted || false);
+  const camOff = isHost ? lcStates.cam : false;
+  const nameClean = p.name.replace(' (you)','');
+  let html = '<div class="fs-tile '+(isSpeaking?'speaking':'')+' '+(camOff?'cam-off':'')+'" data-pid="'+p.id+'" onclick="fsTileClick(\''+p.id+'\')">';
+  if(camOff){
+    const initials = nameClean.split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+    html += '<div class="fs-tile-init-large" style="color:'+p.color+';">'+initials+'</div>';
+  } else {
+    html += fsBuildPortraitSVG(p.name, p.color);
+  }
+  // Name label
+  html += '<div class="fs-tile-name">'+nameClean;
+  if(isHost) html += '<span class="fs-tile-name-tag you">You</span>';
+  html += '</div>';
+  // Icons (mute / speaking)
+  html += '<div class="fs-tile-icons">';
+  if(isSpeaking && !muted){
+    html += '<div class="fs-tile-icon speaking" title="Speaking"><div class="fs-wave"><span></span><span></span><span></span><span></span></div></div>';
+  }
+  if(muted){
+    html += '<div class="fs-tile-icon muted" title="Muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>';
+  }
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
+// Render either grid mode or focus mode based on lcFocusedId
+function fsRenderTiles(){
+  const grid  = document.getElementById('fs-grid');
+  const focus = document.getElementById('fs-focus');
+  const focusMain = document.getElementById('fs-focus-main');
+  const focusThumbs = document.getElementById('fs-focus-thumbs');
+  if(!grid || !focus) return;
+  if(lcFocusedId){
+    // Focus mode: hide grid, show focus
+    grid.style.display = 'none';
+    focus.classList.add('open');
+    const focused = lcCallParticipants.find(p => p.id === lcFocusedId);
+    if(focusMain && focused) focusMain.innerHTML = fsBuildTileHTML(focused);
+    if(focusThumbs){
+      focusThumbs.innerHTML = lcCallParticipants
+        .filter(p => p.id !== lcFocusedId)
+        .map(p => fsBuildTileHTML(p))
+        .join('');
+    }
+  } else {
+    // Grid mode
+    focus.classList.remove('open');
+    grid.style.display = '';
+    const n = lcCallParticipants.length;
+    if(n >= 10){
+      grid.classList.add('scrollable');
+      grid.removeAttribute('data-count');
+    } else {
+      grid.classList.remove('scrollable');
+      grid.setAttribute('data-count', String(n));
+    }
+    grid.innerHTML = lcCallParticipants.map(p => fsBuildTileHTML(p)).join('');
+  }
+}
+
+function fsTileClick(id){
+  if(!lcFullscreenOpen) return;
+  lcFocusedId = id;
+  fsRenderTiles();
+}
+
+function lcExitFocus(){
+  lcFocusedId = null;
+  fsRenderTiles();
+}
+
+// ── Speaking simulation ───────────────────────
+// Every ~2.5s, pick a random unmuted participant to be the "speaker".
+// ~20% chance of silence (no speaker). Updates only the affected tiles for performance.
+function fsStartSpeakingSim(){
+  fsStopSpeakingSim();
+  fsSpeakingInterval = setInterval(() => {
+    if(!lcFullscreenOpen) return;
+    const eligible = lcCallParticipants.filter(p => {
+      const isHost = p.kind === 'host';
+      const muted  = isHost ? lcStates.mute : (lcParticipantStates[p.id]?.muted || false);
+      return !muted;
+    });
+    const prev = fsCurrentSpeaker;
+    if(eligible.length === 0 || Math.random() < 0.2){
+      fsCurrentSpeaker = null;
+    } else {
+      fsCurrentSpeaker = eligible[Math.floor(Math.random() * eligible.length)].id;
+    }
+    if(prev !== fsCurrentSpeaker) fsRenderTiles();
+  }, 2500);
+}
+
+function fsStopSpeakingSim(){
+  if(fsSpeakingInterval){ clearInterval(fsSpeakingInterval); fsSpeakingInterval = null; }
+  fsCurrentSpeaker = null;
+}
+
+// ── Browser fullscreen ────────────────────────
+function fsToggleFullscreen(){
+  const fs = document.getElementById('fs-call');
+  if(!fs) return;
+  if(!document.fullscreenElement){
+    if(fs.requestFullscreen) fs.requestFullscreen().catch(()=>{});
+  } else {
+    if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  }
+}
+
+// ── Kebab menu ────────────────────────────────
+function fsToggleKebab(e){
+  if(e) e.stopPropagation();
+  const kb = document.getElementById('fs-kebab-menu');
+  if(!kb) return;
+  kb.classList.toggle('open');
+}
+
+function fsKebabAction(action){
+  const kb = document.getElementById('fs-kebab-menu');
+  if(kb) kb.classList.remove('open');
+  if(action === 'participants'){
+    // Open the participants panel above the bar — but if we're fullscreen, briefly minimize to bar to show it
+    lcMinimize();
+    setTimeout(() => {
+      lcRenderPanel();
+      const panel = document.getElementById('lc-panel');
+      if(panel) panel.classList.add('open');
+    }, 100);
+  } else if(action === 'invite'){
+    showNavToast('Invite link copied', 'Share with others to join the call.');
+  } else if(action === 'settings'){
+    showNavToast('Settings', 'Audio/video settings coming soon.');
+  }
+}
+
+// Close kebab on click outside
+document.addEventListener('click',(e)=>{
+  const kb = document.getElementById('fs-kebab-menu');
+  if(!kb || !kb.classList.contains('open')) return;
+  const wrap = kb.parentElement;
+  if(wrap && wrap.contains(e.target)) return;
+  kb.classList.remove('open');
+});
+document.addEventListener('click',(e)=>{
+  const panel = document.getElementById('lc-panel');
+  const bar = document.getElementById('lc-bar');
+  if(!panel || !panel.classList.contains('open')) return;
+  if(bar && bar.contains(e.target)) return;
+  if(panel.contains(e.target)) return;
+  lcCloseParticipants();
+});
+
+// Escape priority order: confirm modal > kebab > focus mode > participants panel > minimize fullscreen
+document.addEventListener('keydown',(e)=>{
+  if(e.key !== 'Escape') return;
+  const confirm = document.getElementById('lc-confirm-backdrop');
+  if(confirm && confirm.classList.contains('open')){ lcCancelEnd(); return; }
+  const kb = document.getElementById('fs-kebab-menu');
+  if(kb && kb.classList.contains('open')){ kb.classList.remove('open'); return; }
+  if(lcFullscreenOpen && lcFocusedId){ lcExitFocus(); return; }
+  const panel = document.getElementById('lc-panel');
+  if(panel && panel.classList.contains('open')){ lcCloseParticipants(); return; }
+  if(lcFullscreenOpen){ lcMinimize(); return; }
+});
+</script>
+
 <script src="../shared/dialer.js"></script>
 </body>
 </html>

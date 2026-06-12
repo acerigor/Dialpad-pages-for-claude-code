@@ -1287,6 +1287,10 @@
   .fs-focus-back:hover{background:rgba(255,255,255,.16);}
 
   /* Tile */
+  /* Mobile: stack conference tiles in a single column */
+  @media (max-width: 640px){
+    .fs-grid[data-count]{grid-template-columns:1fr;grid-auto-rows:minmax(160px, 1fr);align-content:start;overflow-y:auto;}
+  }
   .fs-tile{position:relative;background:var(--sur2);border-radius:14px;overflow:hidden;
     cursor:pointer;border:2px solid transparent;transition:border-color .15s;
     display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;}
@@ -1610,16 +1614,6 @@
   .cp-sidebar-value{font-size:12.5px;color:#e8eaf0;font-family:'DM Mono',monospace;}
   /* Sidebar status select — layers sizing on top of the shared .status-select.
      Color classes (.status-active, .status-followup, …) come from the table styles. */
-  .cp-status-select{width:100%;font-size:11.5px;padding:6px 9px;
-    background-image:none;}
-  /* Legacy rule kept for any markup that still uses bare `.cp-sidebar-status select` */
-  .cp-sidebar-status select:not(.status-select){appearance:none;-webkit-appearance:none;
-    background:rgba(245,166,35,.12);
-    border:0.5px solid rgba(245,166,35,.3);border-radius:5px;padding:4px 20px 4px 8px;
-    color:#f5a623;font-size:11.5px;font-family:'DM Sans',sans-serif;font-weight:500;
-    cursor:pointer;outline:none;width:100%;
-    background-image:url("data:image/svg+xml,%3Csvg width='8' height='8' viewBox='0 0 8 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 2.5L4 5.5L7 2.5' stroke='%23f5a623' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 5px center;}
   .cp-assign-row{display:flex;align-items:center;gap:7px;padding:5px 0;}
   .cp-assign-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;flex-shrink:0;}
   .cp-assign-name{font-size:12px;color:#e8eaf0;}
@@ -2517,6 +2511,10 @@
   /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
 
+    /* Larger tap targets for the table Status + Label pills (popup triggers) on mobile */
+    tbody .status-pill{padding-top:6px;padding-bottom:6px;}
+    tbody .lbl-cell{min-height:32px;align-items:center;}
+
     /* === CONTACT PANEL — full-screen takeover === */
     .contact-panel{
       width:100%;right:-100%;
@@ -2565,7 +2563,8 @@
     .cp-sidebar-field{flex:0 0 auto;width:100%;min-width:0;gap:6px;}
     .cp-sidebar-label{font-size:10.5px;}
     .cp-sidebar-value{font-size:14px;}
-    .cp-sidebar-status select{height:36px;font-size:13px;}
+    /* Sidebar Status + Label pills: comfortable tap height on mobile */
+    .cp-label-select{min-height:40px;font-size:13px;padding:9px 11px;}
     .cp-assign-av{width:30px;height:30px;font-size:10px;}
     .cp-assign-name{font-size:13px;}
 

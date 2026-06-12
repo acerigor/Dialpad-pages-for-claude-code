@@ -995,6 +995,9 @@
       position:fixed !important;top:0;left:0;right:0;bottom:0;
       width:100%;height:100vh;min-width:0;
       border-radius:0;border:none;z-index:200;box-shadow:none;}
+    /* Lift the toolbar's stacking context above the fixed top-header (z:60) while the
+       full-screen calendar sheet is open, so it isn't trapped behind the header. */
+    .toolbar:has(.cal-panel.open){z-index:300;}
     .cal-mobile-header{display:flex;}
     .cal-mobile-close{width:48px;height:48px;}
     .cal-nav{padding:14px 18px;}

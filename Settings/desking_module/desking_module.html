@@ -1,0 +1,870 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Figure A Deal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+  :root{
+    --bg:#0f1117; --sur:#181c27; --sur2:#1e2333;
+    --brd:rgba(255,255,255,0.07); --brd2:rgba(255,255,255,0.13);
+    --tx:#e8eaf0; --mu:#7a7f94; --ac:#4f7cff; --ac2:#6e9dff;
+    --gr:#22c88a; --am:#f5a623; --rd:#e85555;
+    --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--bg);font-family:var(--font);color:var(--tx);-webkit-font-smoothing:antialiased;}
+
+  .dk-page{max-width:1440px;margin:0 auto;padding:18px;display:flex;flex-direction:column;gap:16px;}
+
+  /* Header bar */
+  .dk-topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;padding:15px 20px;}
+  .dk-brand{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:600;color:var(--tx);}
+  .dk-car{width:34px;height:34px;border-radius:9px;background:rgba(79,124,255,.15);display:flex;align-items:center;justify-content:center;color:var(--ac2);flex:none;}
+  .dk-car svg{width:20px;height:20px;}
+  .dk-top-actions{display:flex;align-items:center;gap:10px;}
+  .dk-ws{height:38px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;padding:0 32px 0 12px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;}
+  .dk-ws option{background:var(--sur2);color:var(--tx);}
+  .dk-apply{height:38px;padding:0 22px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .dk-apply:hover{background:var(--ac2);}
+
+  /* Layout */
+  .dk-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .dk-col{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  .dk-card{background:var(--sur);border:0.5px solid var(--brd);border-radius:12px;padding:18px 20px;}
+  .dk-card-title{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:16px;}
+
+  /* Form fields */
+  .dk-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .dk-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .dk-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .dk-field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .dk-label{font-size:12px;font-weight:500;color:var(--mu);}
+  .dk-input,.dk-select{height:38px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
+  .dk-input:focus,.dk-select:focus{border-color:var(--ac);}
+  .dk-input::placeholder{color:var(--mu);}
+  .dk-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.7);opacity:.7;cursor:pointer;}
+  .dk-select{appearance:none;-webkit-appearance:none;padding-right:30px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;}
+  .dk-select option{background:var(--sur2);color:var(--tx);}
+
+  /* Custom popup dropdown */
+  .dk-dd{position:relative;}
+  .dk-dd.open{z-index:60;}
+  .dk-dd-ws{width:200px;}
+  .dk-dd-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:38px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;transition:border-color .15s;}
+  .dk-dd.open .dk-dd-btn{border-color:var(--ac);}
+  .dk-dd-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dk-dd-chev{width:13px;height:13px;color:var(--mu);flex:none;transition:transform .15s;}
+  .dk-dd.open .dk-dd-chev{transform:rotate(180deg);}
+  .dk-dd-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:60;max-height:248px;overflow-y:auto;white-space:nowrap;}
+  .dk-dd.open .dk-dd-menu{display:block;}
+  .dk-dd-opt{padding:8px 12px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
+  .dk-dd-opt:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+  .dk-dd-opt.sel{background:rgba(79,124,255,.12);color:var(--ac2);}
+
+  /* Custom date field + shared calendar popup */
+  .dk-date{position:relative;}
+  .dk-date-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:38px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;transition:border-color .15s;}
+  .dk-date.open .dk-date-btn{border-color:var(--ac);}
+  .dk-date-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dk-date-val.ph{color:var(--mu);}
+  .dk-date-ic{width:15px;height:15px;color:var(--mu);flex:none;}
+  .dk-cal{display:none;position:fixed;z-index:2100;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:12px;width:264px;box-shadow:0 12px 32px rgba(0,0,0,.5);}
+  .dk-cal.open{display:block;}
+  .dk-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .dk-cal-title{font-size:13px;font-weight:600;color:var(--tx);}
+  .dk-cal-nav{width:30px;height:30px;border:none;background:transparent;color:var(--mu);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+  .dk-cal-nav:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .dk-cal-nav svg{width:15px;height:15px;}
+  .dk-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .dk-cal-dow{font-size:10px;font-weight:600;color:var(--mu);text-align:center;padding:4px 0;text-transform:uppercase;}
+  .dk-cal-day{height:32px;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--tx);border-radius:7px;cursor:pointer;transition:background .12s;}
+  .dk-cal-day:hover{background:rgba(255,255,255,.06);}
+  .dk-cal-day.empty{visibility:hidden;cursor:default;}
+  .dk-cal-day.today{box-shadow:inset 0 0 0 1px var(--brd2);}
+  .dk-cal-day.sel{background:var(--ac);color:#fff;font-weight:600;}
+  .dk-cal-day.sel:hover{background:var(--ac2);}
+
+  /* Product picker (After Market) */
+  .dk-item-name{display:flex;align-items:center;font-size:13px;color:var(--tx);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dk-prod{position:relative;display:inline-block;}
+  .dk-prod.open{z-index:60;}
+  .dk-prod-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:rgba(79,124,255,.1);border:0.5px solid rgba(79,124,255,.4);border-radius:8px;color:var(--ac2);font-family:var(--font);font-size:12.5px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:background .15s;}
+  .dk-prod-btn:hover{background:rgba(79,124,255,.18);}
+  .dk-prod-btn .dk-prod-plus{width:14px;height:14px;}
+  .dk-prod-chev{width:12px;height:12px;margin-left:2px;transition:transform .15s;}
+  .dk-prod.open .dk-prod-chev{transform:rotate(180deg);}
+  .dk-prod-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:248px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:60;max-height:320px;overflow-y:auto;}
+  .dk-prod.open .dk-prod-menu{display:block;}
+  .dk-prod-opt{padding:9px 12px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
+  .dk-prod-opt:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+
+  .dk-addbtn{width:100%;margin-top:14px;height:40px;background:rgba(79,124,255,.1);border:0.5px dashed rgba(79,124,255,.4);border-radius:8px;color:var(--ac2);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s;}
+  .dk-addbtn:hover{background:rgba(79,124,255,.18);}
+  .dk-addbtn svg{width:14px;height:14px;}
+
+  /* Tabs */
+  .dk-tabs{display:grid;grid-template-columns:repeat(4,1fr);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .dk-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 8px;background:var(--sur2);border:none;border-right:0.5px solid var(--brd);color:var(--mu);font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.4px;cursor:pointer;transition:background .12s,color .12s;}
+  .dk-tab:last-child{border-right:none;}
+  .dk-tab b{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .dk-tab.active{background:var(--sur);color:var(--ac2);box-shadow:inset 0 -2px 0 var(--ac);}
+  .dk-tab.active b{color:var(--ac2);}
+  .dk-tabpanel{display:none;}
+  .dk-tabpanel.active{display:block;}
+
+  .dk-subhead{display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:600;color:var(--tx);margin-bottom:14px;}
+  .dk-x{width:28px;height:28px;border:none;background:transparent;color:var(--mu);font-size:17px;line-height:1;cursor:pointer;border-radius:7px;display:flex;align-items:center;justify-content:center;}
+  .dk-x:hover{background:rgba(232,85,85,.12);color:var(--rd);}
+  .dk-empty-note{font-size:12.5px;color:var(--mu);padding:4px 0 2px;}
+  #dk-defdowns .dk-defdown + .dk-defdown{margin-top:12px;}
+  .dk-ti-head-right{display:flex;align-items:center;gap:8px;}
+  .dk-ti-total{font-family:var(--mono);font-size:13px;color:var(--mu);}
+
+  /* Vehicle card */
+  .dk-veh{display:flex;align-items:center;gap:22px;}
+  .dk-veh-img{flex:none;color:var(--mu);opacity:.8;}
+  .dk-veh-img svg{width:150px;height:auto;}
+  .dk-veh-empty{display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--mu);font-size:13px;}
+  .dk-addveh{height:40px;padding:0 18px;background:rgba(79,124,255,.12);border:0.5px solid rgba(79,124,255,.35);border-radius:8px;color:var(--ac2);font-family:var(--font);font-weight:600;font-size:12.5px;letter-spacing:.4px;cursor:pointer;transition:background .15s;}
+  .dk-addveh:hover{background:rgba(79,124,255,.2);}
+
+  /* KPI boxes */
+  .dk-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+  .dk-kpi{background:var(--sur);border:0.5px solid var(--brd);border-radius:10px;padding:14px 8px;text-align:center;}
+  .dk-kpi-val{font-size:15px;font-weight:700;color:var(--tx);font-family:var(--mono);}
+  .dk-kpi-lbl{font-size:10.5px;color:var(--mu);margin-top:5px;}
+
+  /* Summary panels */
+  .dk-sum-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .dk-sum-title{font-size:14.5px;font-weight:600;color:var(--tx);margin-bottom:10px;}
+  .dk-sum-line{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px;}
+  .dk-sum-line .k{color:var(--mu);}
+  .dk-sum-line .k.lnk{color:var(--ac2);cursor:pointer;}
+  .dk-sum-line .v{color:var(--tx);font-family:var(--mono);font-size:12.5px;}
+  .dk-sum-line.total{border-top:0.5px solid var(--brd2);margin-top:4px;padding-top:9px;}
+  .dk-sum-line.total .k{color:var(--tx);font-weight:600;}
+  .dk-sum-line.total .v{color:var(--tx);font-weight:600;}
+
+  /* Amortization */
+  .dk-amort-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:14px;font-weight:600;color:var(--tx);}
+  .dk-amort-head svg{width:16px;height:16px;color:var(--mu);transition:transform .15s;}
+  .dk-amort.open .dk-amort-head svg{transform:rotate(180deg);}
+  .dk-amort-body{display:none;margin-top:14px;overflow-x:auto;}
+  .dk-amort.open .dk-amort-body{display:block;}
+  .dk-amort-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:460px;}
+  .dk-amort-table th{text-align:right;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
+  .dk-amort-table th:first-child,.dk-amort-table td:first-child{text-align:left;}
+  .dk-amort-table td{text-align:right;padding:8px 10px;border-bottom:0.5px solid var(--brd);color:var(--tx);font-family:var(--mono);white-space:nowrap;}
+  .dk-amort-empty{padding:20px 4px;color:var(--mu);font-size:13px;text-align:center;}
+
+  /* Item rows (aftermarket / accessories) */
+  .dk-item-row{display:grid;grid-template-columns:1fr 150px 34px;gap:12px;align-items:center;margin-bottom:10px;}
+  .dk-item-row:last-of-type{margin-bottom:0;}
+
+  /* Extra schedule / sub-block */
+  .dk-subblock{border:0.5px solid var(--brd2);border-radius:10px;padding:14px 16px;margin-top:14px;}
+
+  /* Vehicle filled state */
+  .dk-veh-info{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .dk-veh-name{font-size:15px;font-weight:600;color:var(--tx);}
+  .dk-veh-meta{font-size:12.5px;color:var(--mu);}
+  .dk-veh-price{font-size:14px;font-weight:600;color:var(--ac2);font-family:var(--mono);margin-top:2px;}
+  .dk-veh-acts{display:flex;gap:8px;margin-top:8px;}
+  .dk-veh-link{background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;padding:4px 0;}
+  .dk-veh-link.rd{color:var(--rd);}
+
+  /* Modal */
+  .dk-modal-back{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;align-items:center;justify-content:center;padding:20px;}
+  .dk-modal-back.open{display:flex;}
+  .dk-modal{width:460px;max-width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;overflow:hidden;max-height:calc(100vh - 40px);display:flex;flex-direction:column;}
+  .dk-modal.sm{width:380px;}
+  .dk-modal-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .dk-modal-title{font-size:15px;font-weight:600;color:var(--tx);}
+  .dk-modal-x{width:30px;height:30px;border:none;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;color:var(--mu);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .dk-modal-x:hover{color:var(--rd);border-color:var(--rd);}
+  .dk-modal-body{padding:18px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+  .dk-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:0.5px solid var(--brd);flex:none;}
+  .dk-btn{height:36px;padding:0 16px;border-radius:8px;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;}
+  .dk-btn-cancel{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .dk-btn-cancel:hover{border-color:var(--mu);}
+  .dk-btn-save{background:var(--ac);border:none;color:#fff;font-weight:600;}
+  .dk-btn-save:hover{background:var(--ac2);}
+
+  /* Toast */
+  .dk-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:11px 18px;color:var(--tx);font-size:13px;box-shadow:0 12px 32px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:2200;}
+  .dk-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* Responsive */
+  @media (max-width:980px){
+    .dk-wrap{grid-template-columns:1fr;}
+    .dk-kpis{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:640px){
+    .dk-page{padding:12px;gap:12px;}
+    .dk-topbar{flex-direction:column;align-items:stretch;gap:12px;}
+    .dk-top-actions{justify-content:space-between;}
+    .dk-ws{flex:1;}
+    .dk-grid4,.dk-grid3{grid-template-columns:1fr 1fr;}
+    .dk-sum-row2{grid-template-columns:1fr;}
+    .dk-kpis{grid-template-columns:repeat(2,1fr);}
+    .dk-veh{flex-direction:column;align-items:flex-start;gap:14px;}
+    .dk-veh-img svg{width:120px;}
+    .dk-apply{height:40px;}
+    .dk-addbtn,.dk-addveh{height:44px;}
+  }
+  /* fat-finger: enlarge touch targets on small / touch screens */
+  @media (max-width:900px){
+    .dk-apply,.dk-input,.dk-dd-btn,.dk-date-btn,.dk-prod-btn,.dk-btn{height:44px;}
+    .dk-dd-ws{flex:1;width:auto;}
+    .dk-addbtn,.dk-addveh{height:44px;}
+    .dk-x{width:40px;height:40px;font-size:18px;}
+    .dk-modal-x{width:40px;height:40px;}
+    .dk-dd-opt,.dk-prod-opt{padding:12px 12px;}
+    .dk-cal{width:320px;}
+    .dk-cal-day{height:40px;}
+    .dk-cal-nav{width:40px;height:40px;}
+    .dk-veh-link{padding:10px 0;}
+  }
+</style>
+
+<div class="dk-page">
+
+  <!-- Header bar -->
+  <div class="dk-topbar">
+    <div class="dk-brand">
+      <span class="dk-car"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11l1.3.6A2 2 0 0 1 21.5 13.4V17a1 1 0 0 1-1 1h-1a2 2 0 1 1-4 0H8.5a2 2 0 1 1-4 0h-1a1 1 0 0 1-1-1v-3.6A2 2 0 0 1 3.7 11.6L5 11Zm1.8-.5h10.4l-1-3a.5.5 0 0 0-.5-.4H8.3a.5.5 0 0 0-.5.4l-1 3Z"/></svg></span>
+      Figure A Deal
+    </div>
+    <div class="dk-top-actions">
+      <div class="dk-dd dk-dd-ws" id="dk-worksheet" data-value="In-House Worksheet">
+        <button type="button" class="dk-dd-btn" onclick="dkddToggle(event,this)"><span class="dk-dd-val">In-House Worksheet</span><svg class="dk-dd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="dk-dd-menu">
+          <div class="dk-dd-opt" data-val="In-House Worksheet" onclick="dkddPick(this)">In-House Worksheet</div>
+          <div class="dk-dd-opt" data-val="Cash Deal" onclick="dkddPick(this)">Cash Deal</div>
+        </div>
+      </div>
+      <button class="dk-apply" onclick="dkApply()">Apply</button>
+    </div>
+  </div>
+
+  <div class="dk-wrap">
+
+    <!-- LEFT -->
+    <div class="dk-col">
+
+      <!-- Contract Details -->
+      <div class="dk-card">
+        <div class="dk-card-title">Contract Details</div>
+        <div class="dk-grid4">
+          <div class="dk-field"><label class="dk-label">Contract Date</label><div class="dk-date" id="dk-contract-date" data-value=""><button type="button" class="dk-date-btn" onclick="dkCalOpen(event,this)"><span class="dk-date-val ph">mm/dd/yyyy</span><svg class="dk-date-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>
+          <div class="dk-field"><label class="dk-label">Sales Price</label><input class="dk-input" inputmode="decimal" id="dk-sales-price" placeholder="0.00"></div>
+          <div class="dk-field"><label class="dk-label">Initial Cash Down</label><input class="dk-input" inputmode="decimal" id="dk-cash-down" placeholder="0.00"></div>
+          <div class="dk-field"><label class="dk-label">Loan Rate (%)</label><input class="dk-input" inputmode="decimal" id="dk-loan-rate" value="18.00"></div>
+        </div>
+      </div>
+
+      <!-- Payment Schedule -->
+      <div class="dk-card">
+        <div class="dk-card-title">Payment Schedule</div>
+        <div class="dk-grid4">
+          <div class="dk-field"><label class="dk-label"># Payments</label><input class="dk-input" inputmode="numeric" id="dk-num-payments" placeholder="0"></div>
+          <div class="dk-field"><label class="dk-label">Desired Payments</label><input class="dk-input" inputmode="decimal" id="dk-desired-payment" placeholder="0.00"></div>
+          <div class="dk-field"><label class="dk-label">Frequency</label>
+            <div class="dk-dd" id="dk-frequency" data-value="Bi-Weekly">
+              <button type="button" class="dk-dd-btn" onclick="dkddToggle(event,this)"><span class="dk-dd-val">Bi-Weekly</span><svg class="dk-dd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="dk-dd-menu">
+                <div class="dk-dd-opt" data-val="Weekly" onclick="dkddPick(this)">Weekly</div>
+                <div class="dk-dd-opt" data-val="Bi-Weekly" onclick="dkddPick(this)">Bi-Weekly</div>
+                <div class="dk-dd-opt" data-val="Semi-Monthly" onclick="dkddPick(this)">Semi-Monthly</div>
+                <div class="dk-dd-opt" data-val="Monthly" onclick="dkddPick(this)">Monthly</div>
+              </div>
+            </div>
+          </div>
+          <div class="dk-field"><label class="dk-label">First Payment Date</label><div class="dk-date" id="dk-first-payment" data-value=""><button type="button" class="dk-date-btn" onclick="dkCalOpen(event,this)"><span class="dk-date-val ph">mm/dd/yyyy</span><svg class="dk-date-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>
+        </div>
+        <div id="dk-extra-schedules"></div>
+        <button class="dk-addbtn" onclick="dkAddSchedule()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Another Schedule</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="dk-tabs" id="dk-tabs">
+        <button class="dk-tab active" data-tab="defdowns" onclick="dkTab('defdowns')">DEF DOWNS<b data-total="defdowns">$0.00</b></button>
+        <button class="dk-tab" data-tab="tradein" onclick="dkTab('tradein')">TRADE-IN<b data-total="tradein">$0.00</b></button>
+        <button class="dk-tab" data-tab="aftermarket" onclick="dkTab('aftermarket')">AFTER MARKET<b data-total="aftermarket">$0.00</b></button>
+        <button class="dk-tab" data-tab="accessories" onclick="dkTab('accessories')">ACCESSORIES<b data-total="accessories">$0.00</b></button>
+      </div>
+
+      <!-- DEF DOWNS panel -->
+      <div class="dk-tabpanel active" data-panel="defdowns">
+        <div id="dk-defdowns">
+          <div class="dk-card dk-defdown">
+            <div class="dk-subhead"><span class="dk-dd-title">Deferred Down 1</span> <button class="dk-x" title="Remove" onclick="dkRemoveDefDown(this)">&times;</button></div>
+            <div class="dk-grid2">
+              <div class="dk-field"><label class="dk-label">Deferred Down</label><input class="dk-input dk-dd-amt" inputmode="decimal" placeholder="0.00" oninput="dkRecalc()"></div>
+              <div class="dk-field"><label class="dk-label">Due On</label><div class="dk-date" data-value=""><button type="button" class="dk-date-btn" onclick="dkCalOpen(event,this)"><span class="dk-date-val ph">mm/dd/yyyy</span><svg class="dk-date-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></div>
+            </div>
+          </div>
+        </div>
+        <button class="dk-addbtn" onclick="dkAddDefDown()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Another Deferred Down</button>
+      </div>
+
+      <!-- TRADE-IN panel -->
+      <div class="dk-tabpanel" data-panel="tradein">
+        <div id="dk-tradeins">
+          <div class="dk-card dk-tradein-card">
+            <div class="dk-subhead"><span class="dk-ti-title">Trade-In 1</span><span class="dk-ti-head-right"><span class="dk-ti-total">$0.00</span><button class="dk-x" title="Remove" onclick="dkRemoveTradeIn(this)">&times;</button></span></div>
+            <div class="dk-grid4">
+              <div class="dk-field"><label class="dk-label">Trade Amount</label><input class="dk-input dk-ti-amount" inputmode="decimal" placeholder="Trade Amount"></div>
+              <div class="dk-field"><label class="dk-label">ACV</label><input class="dk-input dk-ti-acv" inputmode="decimal" placeholder="ACV"></div>
+              <div class="dk-field"><label class="dk-label">Payoff</label><input class="dk-input dk-ti-payoff" inputmode="decimal" placeholder="Payoff"></div>
+              <div class="dk-field"><label class="dk-label">Cash Back</label><input class="dk-input dk-ti-cashback" inputmode="decimal" placeholder="Cash Back"></div>
+            </div>
+          </div>
+        </div>
+        <button class="dk-addbtn" onclick="dkAddTradeIn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add a Trade-In</button>
+      </div>
+
+      <!-- AFTER MARKET panel -->
+      <div class="dk-tabpanel" data-panel="aftermarket">
+        <div class="dk-card">
+          <div class="dk-prod" id="dk-am-prod">
+            <button type="button" class="dk-prod-btn" onclick="dkProdToggle(event,this)">
+              <svg class="dk-prod-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add After Market Product
+              <svg class="dk-prod-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="dk-prod-menu">
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Service Contract')">Service Contract</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','GAP Insurance')">GAP Insurance</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Optional VSI')">Optional VSI</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Theft Determent')">Theft Determent</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Debt Cancellation')">Debt Cancellation</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Tire and Wheel')">Tire and Wheel</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Pre Delivery')">Pre Delivery</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Windshield Protection')">Windshield Protection</div>
+              <div class="dk-prod-opt" onclick="dkAddProduct('aftermarket','Key Replacement')">Key Replacement</div>
+            </div>
+          </div>
+          <div id="dk-aftermarket" style="margin-top:14px;"></div>
+        </div>
+      </div>
+
+      <!-- ACCESSORIES panel -->
+      <div class="dk-tabpanel" data-panel="accessories">
+        <div class="dk-card">
+          <div class="dk-subhead">Accessories</div>
+          <div id="dk-accessories">
+            <div class="dk-item-row">
+              <input class="dk-input dk-item-desc" placeholder="Description (e.g. Floor Mats)">
+              <input class="dk-input dk-item-amt" inputmode="decimal" placeholder="0.00" oninput="dkRecalc()">
+              <button class="dk-x" title="Remove" onclick="dkRemoveItem(this)">&times;</button>
+            </div>
+          </div>
+          <button class="dk-addbtn" onclick="dkAddItem('accessories')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Accessory</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="dk-col">
+
+      <!-- Vehicle card -->
+      <div class="dk-card dk-veh" id="dk-veh-card">
+        <div class="dk-veh-img"><svg viewBox="0 0 220 110" fill="currentColor" stroke="none"><path d="M14 70l10-30a16 16 0 0 1 15-11h70a16 16 0 0 1 13 7l18 26 38 7a14 14 0 0 1 12 14v14a4 4 0 0 1-4 4h-12a18 18 0 0 1-36 0H78a18 18 0 0 1-36 0H18a4 4 0 0 1-4-4V70Z"/><circle cx="60" cy="90" r="12" fill="#0f1117"/><circle cx="60" cy="90" r="6"/><circle cx="160" cy="90" r="12" fill="#0f1117"/><circle cx="160" cy="90" r="6"/></svg></div>
+        <div class="dk-veh-empty" id="dk-veh-content">
+          No vehicle has been added to this deal.
+          <button class="dk-addveh" onclick="dkAddVehicle()">+ ADD A VEHICLE</button>
+        </div>
+      </div>
+
+      <!-- KPI boxes -->
+      <div class="dk-kpis">
+        <div class="dk-kpi"><div class="dk-kpi-val" id="dk-kpi-apr">0%</div><div class="dk-kpi-lbl">APR</div></div>
+        <div class="dk-kpi"><div class="dk-kpi-val" id="dk-kpi-finance">$0.00</div><div class="dk-kpi-lbl">Finance Charge</div></div>
+        <div class="dk-kpi"><div class="dk-kpi-val" id="dk-kpi-financed">$0.00</div><div class="dk-kpi-lbl">Amount Financed</div></div>
+        <div class="dk-kpi"><div class="dk-kpi-val" id="dk-kpi-down">$0.00</div><div class="dk-kpi-lbl">Total Down</div></div>
+        <div class="dk-kpi"><div class="dk-kpi-val" id="dk-kpi-sale">$0.00</div><div class="dk-kpi-lbl">Total Sale</div></div>
+      </div>
+
+      <!-- Summary panels -->
+      <div class="dk-sum-row2">
+        <div class="dk-card dk-sum">
+          <div class="dk-sum-title">Sales Summary</div>
+          <div class="dk-sum-line"><span class="k">Sale Price</span><span class="v" id="dk-ss-saleprice">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k lnk" onclick="dkEditFees()">Fees</span><span class="v" id="dk-ss-fees">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Taxes</span><span class="v" id="dk-ss-taxes">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">After Market</span><span class="v" id="dk-ss-aftermarket">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Accessories</span><span class="v" id="dk-ss-accessories">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Total Down</span><span class="v" id="dk-ss-down">$0.00</span></div>
+          <div class="dk-sum-line total"><span class="k">Total Sale</span><span class="v" id="dk-ss-sale">$0.00</span></div>
+        </div>
+        <div class="dk-card dk-sum">
+          <div class="dk-sum-title">Finance Summary</div>
+          <div class="dk-sum-line"><span class="k">Total Sale</span><span class="v" id="dk-fs-sale">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Total Down</span><span class="v" id="dk-fs-down">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Amount Financed</span><span class="v" id="dk-fs-financed">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">Finance Charge</span><span class="v" id="dk-fs-finance">$0.00</span></div>
+          <div class="dk-sum-line"><span class="k">APR</span><span class="v" id="dk-fs-apr">0%</span></div>
+          <div class="dk-sum-line total"><span class="k">Total Payments</span><span class="v" id="dk-fs-payments">$0.00</span></div>
+        </div>
+      </div>
+
+      <!-- Amortization -->
+      <div class="dk-card dk-amort" id="dk-amort">
+        <div class="dk-amort-head" onclick="dkToggleAmort()">
+          Amortization
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dk-amort-body">
+          <div class="dk-amort-empty" id="dk-amort-empty">No schedule generated</div>
+          <table class="dk-amort-table" id="dk-amort-table" style="display:none;">
+            <thead><tr><th>#</th><th>Payment Date</th><th>Amount</th><th>Principal</th><th>Interest</th><th>Remaining Balance</th></tr></thead>
+            <tbody id="dk-amort-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Vehicle modal -->
+<div class="dk-modal-back" id="dk-veh-modal">
+  <div class="dk-modal">
+    <div class="dk-modal-head"><span class="dk-modal-title">Add Vehicle</span><button class="dk-modal-x" onclick="dkCloseVeh()">&times;</button></div>
+    <div class="dk-modal-body">
+      <div class="dk-grid2">
+        <div class="dk-field"><label class="dk-label">Year</label><input class="dk-input" id="dkv-year" inputmode="numeric" placeholder="2024"></div>
+        <div class="dk-field"><label class="dk-label">Make</label><input class="dk-input" id="dkv-make" placeholder="e.g. Toyota"></div>
+        <div class="dk-field"><label class="dk-label">Model</label><input class="dk-input" id="dkv-model" placeholder="e.g. Camry"></div>
+        <div class="dk-field"><label class="dk-label">Trim</label><input class="dk-input" id="dkv-trim" placeholder="e.g. SE"></div>
+        <div class="dk-field"><label class="dk-label">VIN</label><input class="dk-input" id="dkv-vin" placeholder="VIN"></div>
+        <div class="dk-field"><label class="dk-label">Stock #</label><input class="dk-input" id="dkv-stock" placeholder="Stock #"></div>
+        <div class="dk-field" style="grid-column:1 / -1;"><label class="dk-label">Sale Price</label><input class="dk-input" id="dkv-price" inputmode="decimal" placeholder="0.00"></div>
+      </div>
+    </div>
+    <div class="dk-modal-foot"><button class="dk-btn dk-btn-cancel" onclick="dkCloseVeh()">Cancel</button><button class="dk-btn dk-btn-save" onclick="dkSaveVeh()">Add Vehicle</button></div>
+  </div>
+</div>
+
+<!-- Fees / Taxes value modal -->
+<div class="dk-modal-back" id="dk-val-modal">
+  <div class="dk-modal sm">
+    <div class="dk-modal-head"><span class="dk-modal-title" id="dk-val-title">Adjust</span><button class="dk-modal-x" onclick="dkCloseVal()">&times;</button></div>
+    <div class="dk-modal-body">
+      <div class="dk-field"><label class="dk-label" id="dk-val-label">Amount</label><input class="dk-input" id="dk-val-input" inputmode="decimal" placeholder="0.00"></div>
+    </div>
+    <div class="dk-modal-foot"><button class="dk-btn dk-btn-cancel" onclick="dkCloseVal()">Cancel</button><button class="dk-btn dk-btn-save" onclick="dkSaveVal()">Save</button></div>
+  </div>
+</div>
+
+<div class="dk-toast" id="dk-toast"></div>
+
+<!-- Shared date-picker calendar -->
+<div class="dk-cal" id="dk-cal">
+  <div class="dk-cal-head">
+    <button class="dk-cal-nav" onclick="dkCalPrev(event)" title="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="dk-cal-title" id="dk-cal-title"></span>
+    <button class="dk-cal-nav" onclick="dkCalNext(event)" title="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+  <div class="dk-cal-grid" id="dk-cal-grid"></div>
+</div>
+
+<script>
+// ── DESKING MODULE — Phase 2 (interactivity) ──
+var dkState={ fees:0, taxes:0, vehicle:null, valTarget:null };
+
+// ---- helpers ----
+function dkNum(v){ var n=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
+function dkMoney(n){ return '$'+(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function dkEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function showDkToast(msg){
+  var t=document.getElementById('dk-toast'); if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(showDkToast._t); showDkToast._t=setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+// ---- tabs / amortization ----
+function dkTab(key){
+  document.querySelectorAll('#dk-tabs .dk-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===key); });
+  document.querySelectorAll('.dk-tabpanel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel===key); });
+}
+function dkToggleAmort(){ document.getElementById('dk-amort').classList.toggle('open'); }
+
+// ---- Payment schedules ----
+function dkAddSchedule(){
+  var box=document.getElementById('dk-extra-schedules');
+  var n=box.children.length+2;
+  var div=document.createElement('div');
+  div.className='dk-subblock';
+  div.innerHTML='<div class="dk-subhead"><span>Schedule '+n+'</span><button class="dk-x" title="Remove" onclick="dkRemoveSchedule(this)">&times;</button></div>'+
+    '<div class="dk-grid4">'+
+      '<div class="dk-field"><label class="dk-label"># Payments</label><input class="dk-input" inputmode="numeric" placeholder="0"></div>'+
+      '<div class="dk-field"><label class="dk-label">Desired Payments</label><input class="dk-input" inputmode="decimal" placeholder="0.00"></div>'+
+      '<div class="dk-field"><label class="dk-label">Frequency</label>'+dkFreqDD('Bi-Weekly')+'</div>'+
+      '<div class="dk-field"><label class="dk-label">First Payment Date</label>'+dkDateField()+'</div>'+
+    '</div>';
+  box.appendChild(div);
+}
+function dkRemoveSchedule(btn){ var b=btn.closest('.dk-subblock'); if(b) b.remove(); dkRenumberSchedules(); }
+function dkRenumberSchedules(){
+  var box=document.getElementById('dk-extra-schedules');
+  [].forEach.call(box.children, function(c,i){ var t=c.querySelector('.dk-subhead span'); if(t) t.textContent='Schedule '+(i+2); });
+}
+
+// ---- Deferred downs ----
+function dkAddDefDown(){
+  var box=document.getElementById('dk-defdowns');
+  var div=document.createElement('div');
+  div.className='dk-card dk-defdown';
+  div.innerHTML='<div class="dk-subhead"><span class="dk-dd-title">Deferred Down</span> <button class="dk-x" title="Remove" onclick="dkRemoveDefDown(this)">&times;</button></div>'+
+    '<div class="dk-grid2">'+
+      '<div class="dk-field"><label class="dk-label">Deferred Down</label><input class="dk-input dk-dd-amt" inputmode="decimal" placeholder="0.00" oninput="dkRecalc()"></div>'+
+      '<div class="dk-field"><label class="dk-label">Due On</label>'+dkDateField()+'</div>'+
+    '</div>';
+  box.appendChild(div);
+  dkRenumberDefDowns();
+}
+function dkRemoveDefDown(btn){ var c=btn.closest('.dk-defdown'); if(c) c.remove(); dkRenumberDefDowns(); dkRecalc(); }
+
+// ---- Trade-ins ----
+function dkAddTradeIn(){
+  var box=document.getElementById('dk-tradeins');
+  var div=document.createElement('div');
+  div.className='dk-card dk-tradein-card';
+  div.innerHTML='<div class="dk-subhead"><span class="dk-ti-title">Trade-In</span><span class="dk-ti-head-right"><span class="dk-ti-total">$0.00</span><button class="dk-x" title="Remove" onclick="dkRemoveTradeIn(this)">&times;</button></span></div>'+
+    '<div class="dk-grid4">'+
+      '<div class="dk-field"><label class="dk-label">Trade Amount</label><input class="dk-input dk-ti-amount" inputmode="decimal" placeholder="Trade Amount"></div>'+
+      '<div class="dk-field"><label class="dk-label">ACV</label><input class="dk-input dk-ti-acv" inputmode="decimal" placeholder="ACV"></div>'+
+      '<div class="dk-field"><label class="dk-label">Payoff</label><input class="dk-input dk-ti-payoff" inputmode="decimal" placeholder="Payoff"></div>'+
+      '<div class="dk-field"><label class="dk-label">Cash Back</label><input class="dk-input dk-ti-cashback" inputmode="decimal" placeholder="Cash Back"></div>'+
+    '</div>';
+  box.appendChild(div);
+  dkRenumberTradeIns();
+}
+function dkRemoveTradeIn(btn){ var c=btn.closest('.dk-tradein-card'); if(c) c.remove(); dkRenumberTradeIns(); dkRecalc(); }
+function dkRenumberTradeIns(){
+  var box=document.getElementById('dk-tradeins');
+  [].forEach.call(box.querySelectorAll('.dk-ti-title'), function(t,i){ t.textContent='Trade-In '+(i+1); });
+}
+function dkRenumberDefDowns(){
+  var box=document.getElementById('dk-defdowns');
+  [].forEach.call(box.querySelectorAll('.dk-dd-title'), function(t,i){ t.textContent='Deferred Down '+(i+1); });
+}
+
+// ---- After-market / accessories items ----
+function dkAddItem(kind){
+  var box=document.getElementById('dk-'+kind);
+  var div=document.createElement('div');
+  div.className='dk-item-row';
+  div.innerHTML='<input class="dk-input dk-item-desc" placeholder="Description">'+
+    '<input class="dk-input dk-item-amt" inputmode="decimal" placeholder="0.00" oninput="dkRecalc()">'+
+    '<button class="dk-x" title="Remove" onclick="dkRemoveItem(this)">&times;</button>';
+  box.appendChild(div);
+}
+function dkRemoveItem(btn){ var r=btn.closest('.dk-item-row'); if(r) r.remove(); dkRecalc(); }
+
+// ---- Product picker (After Market) ----
+function dkProdToggle(e, btn){
+  e.stopPropagation();
+  var p=btn.closest('.dk-prod'); var was=p.classList.contains('open');
+  dkProdCloseAll(); dkddCloseAll(); dkCalClose();
+  if(!was) p.classList.add('open');
+}
+function dkProdCloseAll(){ document.querySelectorAll('.dk-prod.open').forEach(function(p){ p.classList.remove('open'); }); }
+function dkAddProduct(kind, name){
+  dkProdCloseAll();
+  var box=document.getElementById('dk-'+kind); if(!box) return;
+  var div=document.createElement('div');
+  div.className='dk-subblock dk-am-card';
+  div.innerHTML=
+    '<div class="dk-subhead"><span>'+dkEsc(name)+'</span><button class="dk-x" title="Remove" onclick="dkRemoveProduct(this)">&times;</button></div>'+
+    '<div class="dk-grid3">'+
+      '<div class="dk-field"><label class="dk-label">Price</label><input class="dk-input dk-item-amt" type="number" inputmode="decimal" placeholder="Price"></div>'+
+      '<div class="dk-field"><label class="dk-label">Cost</label><input class="dk-input" inputmode="decimal" placeholder="Cost"></div>'+
+      '<div class="dk-field"><label class="dk-label">Code</label><input class="dk-input" placeholder="Code"></div>'+
+      '<div class="dk-field"><label class="dk-label">Company</label><input class="dk-input" placeholder="Company name"></div>'+
+      '<div class="dk-field"><label class="dk-label">Mileage</label><input class="dk-input" inputmode="numeric" placeholder="Mileage"></div>'+
+      '<div class="dk-field"><label class="dk-label">Term</label><input class="dk-input" placeholder="Term"></div>'+
+    '</div>'+
+    '<div class="dk-field" style="margin-top:14px;"><label class="dk-label">Description</label><input class="dk-input" placeholder="Description"></div>';
+  box.appendChild(div);
+  dkRecalc();
+}
+function dkRemoveProduct(btn){ var c=btn.closest('.dk-am-card'); if(c) c.remove(); dkRecalc(); }
+
+// ---- Vehicle modal ----
+function dkAddVehicle(){
+  var v=dkState.vehicle||{};
+  ['year','make','model','trim','vin','stock','price'].forEach(function(k){ var el=document.getElementById('dkv-'+k); if(el) el.value=v[k]||''; });
+  document.getElementById('dk-veh-modal').classList.add('open');
+}
+function dkCloseVeh(){ document.getElementById('dk-veh-modal').classList.remove('open'); }
+function dkSaveVeh(){
+  var v={};
+  ['year','make','model','trim','vin','stock','price'].forEach(function(k){ v[k]=((document.getElementById('dkv-'+k)||{}).value||'').trim(); });
+  dkState.vehicle=v;
+  dkRenderVehicle();
+  if(v.price){ var sp=document.getElementById('dk-sales-price'); if(sp) sp.value=dkNum(v.price).toFixed(2); }
+  dkCloseVeh(); dkRecalc();
+  showDkToast('Vehicle added to deal');
+}
+function dkRemoveVehicle(){ dkState.vehicle=null; dkRenderVehicle(); dkRecalc(); showDkToast('Vehicle removed'); }
+function dkRenderVehicle(){
+  var box=document.getElementById('dk-veh-content'); if(!box) return;
+  var v=dkState.vehicle;
+  if(!v){
+    box.className='dk-veh-empty';
+    box.innerHTML='No vehicle has been added to this deal.<button class="dk-addveh" onclick="dkAddVehicle()">+ ADD A VEHICLE</button>';
+    return;
+  }
+  box.className='dk-veh-info';
+  var name=[v.year,v.make,v.model,v.trim].filter(Boolean).join(' ')||'Vehicle';
+  var meta=[]; if(v.vin) meta.push('VIN: '+v.vin); if(v.stock) meta.push('Stock #: '+v.stock);
+  box.innerHTML='<div class="dk-veh-name">'+dkEsc(name)+'</div>'+
+    (meta.length?'<div class="dk-veh-meta">'+dkEsc(meta.join('  ·  '))+'</div>':'')+
+    (v.price?'<div class="dk-veh-price">'+dkMoney(dkNum(v.price))+'</div>':'')+
+    '<div class="dk-veh-acts"><button class="dk-veh-link" onclick="dkAddVehicle()">Change</button><button class="dk-veh-link rd" onclick="dkRemoveVehicle()">Remove</button></div>';
+}
+
+// ---- Fees / Taxes value modal ----
+function dkEditFees(){ dkOpenVal('fees','Adjust Fees','Fees Amount', dkState.fees); }
+function dkEditTaxes(){ dkOpenVal('taxes','Adjust Taxes','Taxes Amount', dkState.taxes); }
+function dkOpenVal(target,title,label,cur){
+  dkState.valTarget=target;
+  document.getElementById('dk-val-title').textContent=title;
+  document.getElementById('dk-val-label').textContent=label;
+  var inp=document.getElementById('dk-val-input'); inp.value=cur?dkNum(cur).toFixed(2):'';
+  document.getElementById('dk-val-modal').classList.add('open');
+  setTimeout(function(){ inp.focus(); }, 50);
+}
+function dkCloseVal(){ document.getElementById('dk-val-modal').classList.remove('open'); dkState.valTarget=null; }
+function dkSaveVal(){
+  var v=dkNum((document.getElementById('dk-val-input')||{}).value);
+  if(dkState.valTarget==='fees'){ dkState.fees=v; var f=document.getElementById('dk-ss-fees'); if(f) f.textContent=dkMoney(v); }
+  else if(dkState.valTarget==='taxes'){ dkState.taxes=v; var t=document.getElementById('dk-ss-taxes'); if(t) t.textContent=dkMoney(v); }
+  dkCloseVal(); dkRecalc();
+}
+
+// ---- Apply ----
+function dkApply(){ showDkToast('Applied: '+dkddValue('dk-worksheet','Worksheet')); dkRecalc(); }
+
+// ── Custom popup dropdowns ──
+var DK_DD_CHEV='<svg class="dk-dd-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+function dkFreqDD(selected){
+  var opts=['Weekly','Bi-Weekly','Semi-Monthly','Monthly'];
+  var o=opts.map(function(x){ return '<div class="dk-dd-opt" data-val="'+x+'" onclick="dkddPick(this)">'+x+'</div>'; }).join('');
+  return '<div class="dk-dd" data-value="'+selected+'"><button type="button" class="dk-dd-btn" onclick="dkddToggle(event,this)"><span class="dk-dd-val">'+selected+'</span>'+DK_DD_CHEV+'</button><div class="dk-dd-menu">'+o+'</div></div>';
+}
+function dkddValue(id, fallback){ var el=document.getElementById(id); return (el && el.getAttribute('data-value')) || fallback || ''; }
+function dkddToggle(e, btn){
+  e.stopPropagation();
+  var dd=btn.closest('.dk-dd'); var wasOpen=dd.classList.contains('open');
+  dkddCloseAll(); dkCalClose(); dkProdCloseAll();
+  if(!wasOpen){
+    var val=dd.getAttribute('data-value');
+    dd.querySelectorAll('.dk-dd-opt').forEach(function(op){ op.classList.toggle('sel', op.getAttribute('data-val')===val); });
+    dd.classList.add('open');
+  }
+}
+function dkddCloseAll(){ document.querySelectorAll('.dk-dd.open').forEach(function(d){ d.classList.remove('open'); }); }
+function dkddPick(opt){
+  var dd=opt.closest('.dk-dd'); var val=opt.getAttribute('data-val');
+  dd.setAttribute('data-value', val);
+  var lbl=dd.querySelector('.dk-dd-val'); if(lbl) lbl.textContent=opt.textContent;
+  dkddCloseAll();
+  dkRecalc();
+}
+
+// ── Custom date field + shared calendar ──
+var DK_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DK_DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
+var DK_CAL_IC='<svg class="dk-date-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+var _dkCalTarget=null, _dkCalY=0, _dkCalM=0;
+function dkDateField(id){
+  return '<div class="dk-date"'+(id?' id="'+id+'"':'')+' data-value=""><button type="button" class="dk-date-btn" onclick="dkCalOpen(event,this)"><span class="dk-date-val ph">mm/dd/yyyy</span>'+DK_CAL_IC+'</button></div>';
+}
+function dkDateVal(id){ var el=document.getElementById(id); return el?(el.getAttribute('data-value')||''):''; }
+function dkCalOpen(e, btn){
+  e.stopPropagation();
+  dkddCloseAll(); dkProdCloseAll();
+  var field=btn.closest('.dk-date'); _dkCalTarget=field;
+  var iso=field.getAttribute('data-value');
+  var base=iso?_dkParseDate(iso):new Date();
+  if(!base) base=new Date();
+  _dkCalY=base.getFullYear(); _dkCalM=base.getMonth();
+  dkCalRender();
+  var cal=document.getElementById('dk-cal'); cal.classList.add('open'); field.classList.add('open');
+  var r=btn.getBoundingClientRect();
+  var cw=cal.offsetWidth||264, ch=cal.offsetHeight||300;
+  var left=r.left; if(left+cw>window.innerWidth-8) left=window.innerWidth-8-cw; if(left<8) left=8;
+  var top=r.bottom+5; if(top+ch>window.innerHeight-8) top=Math.max(8, r.top-ch-5);
+  cal.style.left=left+'px'; cal.style.top=top+'px';
+}
+function dkCalClose(){ var c=document.getElementById('dk-cal'); if(c) c.classList.remove('open'); if(_dkCalTarget) _dkCalTarget.classList.remove('open'); _dkCalTarget=null; }
+function dkCalPrev(e){ e.stopPropagation(); _dkCalM--; if(_dkCalM<0){_dkCalM=11;_dkCalY--;} dkCalRender(); }
+function dkCalNext(e){ e.stopPropagation(); _dkCalM++; if(_dkCalM>11){_dkCalM=0;_dkCalY++;} dkCalRender(); }
+function dkCalRender(){
+  var title=document.getElementById('dk-cal-title'); if(title) title.textContent=DK_MONTHS[_dkCalM]+' '+_dkCalY;
+  var grid=document.getElementById('dk-cal-grid'); if(!grid) return;
+  var html=DK_DOW.map(function(d){ return '<div class="dk-cal-dow">'+d+'</div>'; }).join('');
+  var first=new Date(_dkCalY,_dkCalM,1).getDay();
+  var days=new Date(_dkCalY,_dkCalM+1,0).getDate();
+  var sel=_dkCalTarget?_dkParseDate(_dkCalTarget.getAttribute('data-value')):null;
+  var today=new Date();
+  for(var k=0;k<first;k++) html+='<div class="dk-cal-day empty"></div>';
+  for(var d=1;d<=days;d++){
+    var cls='dk-cal-day';
+    if(sel && sel.getFullYear()===_dkCalY && sel.getMonth()===_dkCalM && sel.getDate()===d) cls+=' sel';
+    if(today.getFullYear()===_dkCalY && today.getMonth()===_dkCalM && today.getDate()===d) cls+=' today';
+    html+='<div class="'+cls+'" onclick="dkCalPick(event,'+d+')">'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+function dkCalPick(e, d){
+  e.stopPropagation();
+  if(!_dkCalTarget) return;
+  var iso=_dkCalY+'-'+('0'+(_dkCalM+1)).slice(-2)+'-'+('0'+d).slice(-2);
+  _dkCalTarget.setAttribute('data-value', iso);
+  var lbl=_dkCalTarget.querySelector('.dk-date-val'); if(lbl){ lbl.textContent=_dkFmtDate(new Date(_dkCalY,_dkCalM,d)); lbl.classList.remove('ph'); }
+  dkCalClose(); dkRecalc();
+}
+
+// ── Live calculations (Phase 3) ──
+function _dkSet(id,txt){ var el=document.getElementById(id); if(el) el.textContent=txt; }
+function _dkSetTab(key,val){ var el=document.querySelector('.dk-tab b[data-total="'+key+'"]'); if(el) el.textContent=dkMoney(val); }
+function _dkSum(sel){ var s=0; document.querySelectorAll(sel).forEach(function(i){ s+=dkNum(i.value); }); return s; }
+function dkVal(id){ return dkNum((document.getElementById(id)||{}).value); }
+function _dkPPY(freq){ return freq==='Weekly'?52 : freq==='Semi-Monthly'?24 : freq==='Monthly'?12 : 26; }
+function _dkParseDate(s){ if(!s) return null; var p=String(s).split('-'); if(p.length!==3) return null; var d=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(d.getTime())?null:d; }
+function _dkFmtDate(d){ if(!d) return '—'; return ('0'+(d.getMonth()+1)).slice(-2)+'/'+('0'+d.getDate()).slice(-2)+'/'+d.getFullYear(); }
+function _dkAddPeriod(base,freq,k){
+  var d=new Date(base.getTime());
+  if(freq==='Monthly') d.setMonth(d.getMonth()+k);
+  else if(freq==='Semi-Monthly') d.setDate(d.getDate()+15*k);
+  else if(freq==='Weekly') d.setDate(d.getDate()+7*k);
+  else d.setDate(d.getDate()+14*k);
+  return d;
+}
+
+// ── Desking Module Settings integration ──
+var DK_SET_DEFAULTS={ fees:{document:255,preDelivery:0,license:81.25,registration:10,stateInspection:18.50,title:33}, loanRate:18, apr:16.9436, tax:[] };
+var DK_TAXES=[];
+function dkApplySettings(){
+  var s; try{ s=JSON.parse(localStorage.getItem('cc_desking_settings')||'null'); }catch(e){ s=null; }
+  if(!s) s=DK_SET_DEFAULTS;
+  var f=s.fees||{};
+  dkState.fees=(+f.document||0)+(+f.preDelivery||0)+(+f.license||0)+(+f.registration||0)+(+f.stateInspection||0)+(+f.title||0);
+  if(s.loanRate!=null){ var lr=document.getElementById('dk-loan-rate'); if(lr) lr.value=s.loanRate; }
+  DK_TAXES=Array.isArray(s.tax)?s.tax:[];
+}
+function dkComputeTaxes(base){
+  if(!DK_TAXES || !DK_TAXES.length) return 0;
+  var t=0;
+  DK_TAXES.forEach(function(x){
+    var rate=+x.rate||0, amt=+x.amount||0;
+    if(rate>0) t+=base*rate/100;
+    if(amt>0) t+=amt;
+  });
+  return t;
+}
+
+function dkRecalc(){
+  var salesPrice=dkVal('dk-sales-price');
+  var cashDown=dkVal('dk-cash-down');
+  var rate=dkVal('dk-loan-rate');
+  var n=Math.max(0, Math.floor(dkVal('dk-num-payments')));
+  var freq=dkddValue('dk-frequency','Bi-Weekly');
+  var deferred=_dkSum('#dk-defdowns .dk-dd-amt');
+  var afterMarket=_dkSum('#dk-aftermarket .dk-item-amt');
+  var accessories=_dkSum('#dk-accessories .dk-item-amt');
+  var tradeNet=0;
+  document.querySelectorAll('#dk-tradeins .dk-tradein-card').forEach(function(card){
+    var net=dkNum((card.querySelector('.dk-ti-amount')||{}).value) - dkNum((card.querySelector('.dk-ti-payoff')||{}).value) - dkNum((card.querySelector('.dk-ti-cashback')||{}).value);
+    tradeNet+=net;
+    var tot=card.querySelector('.dk-ti-total'); if(tot) tot.textContent=dkMoney(net);
+  });
+  var fees=dkState.fees||0;
+  var taxes=dkComputeTaxes(salesPrice + afterMarket + accessories);
+
+  var totalSale = salesPrice + fees + taxes + afterMarket + accessories;
+  var totalDown = cashDown + deferred + tradeNet;
+  var financed  = totalSale - totalDown;
+  var P = Math.max(0, financed);
+
+  var i = (rate/100) / _dkPPY(freq);
+  var payment = 0;
+  if(n>0){ payment = (i>0) ? P*i/(1-Math.pow(1+i,-n)) : P/n; }
+  var totalPayments = payment * n;
+  var financeCharge = Math.max(0, totalPayments - P);
+  var aprTxt = rate.toFixed(2)+'%';
+
+  // KPI boxes
+  _dkSet('dk-kpi-apr', aprTxt);
+  _dkSet('dk-kpi-finance', dkMoney(financeCharge));
+  _dkSet('dk-kpi-financed', dkMoney(financed));
+  _dkSet('dk-kpi-down', dkMoney(totalDown));
+  _dkSet('dk-kpi-sale', dkMoney(totalSale));
+  // Sales Summary
+  _dkSet('dk-ss-saleprice', dkMoney(salesPrice));
+  _dkSet('dk-ss-fees', dkMoney(fees));
+  _dkSet('dk-ss-taxes', dkMoney(taxes));
+  _dkSet('dk-ss-aftermarket', dkMoney(afterMarket));
+  _dkSet('dk-ss-accessories', dkMoney(accessories));
+  _dkSet('dk-ss-down', dkMoney(totalDown));
+  _dkSet('dk-ss-sale', dkMoney(totalSale));
+  // Finance Summary
+  _dkSet('dk-fs-sale', dkMoney(totalSale));
+  _dkSet('dk-fs-down', dkMoney(totalDown));
+  _dkSet('dk-fs-financed', dkMoney(financed));
+  _dkSet('dk-fs-finance', dkMoney(financeCharge));
+  _dkSet('dk-fs-apr', aprTxt);
+  _dkSet('dk-fs-payments', dkMoney(totalPayments));
+  // Tab totals
+  _dkSetTab('defdowns', deferred);
+  _dkSetTab('tradein', tradeNet);
+  _dkSetTab('aftermarket', afterMarket);
+  _dkSetTab('accessories', accessories);
+  // Amortization
+  dkRenderAmort(P, i, n, payment, freq);
+}
+
+function dkRenderAmort(P, i, n, payment, freq){
+  var tbody=document.getElementById('dk-amort-tbody');
+  var table=document.getElementById('dk-amort-table');
+  var empty=document.getElementById('dk-amort-empty');
+  if(!tbody||!table||!empty) return;
+  if(!(n>0 && P>0 && payment>0)){ table.style.display='none'; empty.style.display='block'; tbody.innerHTML=''; return; }
+  var first=_dkParseDate(dkDateVal('dk-first-payment'));
+  var bal=P, rows='', cap=Math.min(n,600);
+  for(var k=1;k<=cap;k++){
+    var interest=bal*i;
+    var principal=payment-interest;
+    if(k===n || principal>bal) principal=bal;
+    if(principal<0) principal=0;
+    var pay=(k===n)?(bal+interest):payment;
+    bal=bal-principal; if(bal<0.005) bal=0;
+    var dt=first?_dkFmtDate(_dkAddPeriod(first,freq,k-1)):'—';
+    rows+='<tr><td>'+k+'</td><td>'+dt+'</td><td>'+dkMoney(pay)+'</td><td>'+dkMoney(principal)+'</td><td>'+dkMoney(interest)+'</td><td>'+dkMoney(bal)+'</td></tr>';
+  }
+  if(n>cap) rows+='<tr><td colspan="6" style="text-align:center;color:var(--mu);">… '+(n-cap)+' more payments</td></tr>';
+  tbody.innerHTML=rows;
+  table.style.display=''; empty.style.display='none';
+}
+
+// Recalc live on any deal input
+document.addEventListener('input', function(e){ if(e.target.closest && e.target.closest('.dk-page')) dkRecalc(); });
+document.addEventListener('change', function(e){ if(e.target.closest && e.target.closest('.dk-page')) dkRecalc(); });
+
+// Close modals / dropdowns on backdrop click / outside click / Escape
+document.addEventListener('click', function(e){
+  if(e.target.classList && e.target.classList.contains('dk-modal-back')) e.target.classList.remove('open');
+  if(!(e.target.closest && e.target.closest('.dk-dd'))) dkddCloseAll();
+  if(!(e.target.closest && (e.target.closest('.dk-cal')||e.target.closest('.dk-date')))) dkCalClose();
+  if(!(e.target.closest && e.target.closest('.dk-prod'))) dkProdCloseAll();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ dkCloseVeh(); dkCloseVal(); dkddCloseAll(); dkCalClose(); dkProdCloseAll(); } });
+
+// initial compute — apply saved Desking Module Settings, then calculate
+dkApplySettings();
+dkRecalc();
+</script>

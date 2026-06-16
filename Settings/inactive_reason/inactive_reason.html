@@ -1,4 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Inactive Reason</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -457,6 +458,7 @@
   .modal-field{display:flex;align-items:center;gap:10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:40px;transition:border-color .15s;}
   .modal-field:focus-within{border-color:var(--ac);}
   .modal-field i{color:var(--mu);font-size:15px;flex-shrink:0;}
+  .modal-field > svg{color:var(--mu);width:15px;height:15px;flex-shrink:0;}
   .modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;width:100%;height:100%;}
   .modal-field select option{background:var(--sur2);color:var(--tx);}
   .modal-field input::placeholder{color:var(--mu);}
@@ -466,67 +468,63 @@
   .modal-save{background:var(--ac);border:none;border-radius:8px;padding:0 20px;height:34px;color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
   .modal-save:hover{background:var(--ac2);}
 
-  /* Desking Module Setting modal */
-  .dks-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px;}
-  .dks-tab{height:38px;border:0.5px solid var(--brd2);border-radius:8px;background:var(--sur2);color:var(--mu);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
-  .dks-tab.active{background:var(--ac);border-color:var(--ac);color:#fff;}
-  .dks-panel{display:none;}
-  .dks-panel.active{display:block;}
-  .dks-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .dks-field{display:flex;flex-direction:column;gap:6px;min-width:0;}
-  .dks-field.full{grid-column:1 / -1;}
-  .dks-label{font-size:12px;font-weight:500;color:var(--mu);}
-  .dks-input{height:38px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
-  .dks-input:focus{border-color:var(--ac);}
-  .dks-input.dks-ro,.dks-input:disabled{background:rgba(255,255,255,.03);color:var(--mu);cursor:not-allowed;}
-  .dks-sel{height:38px;width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 30px 0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;}
-  .dks-sel:focus{border-color:var(--ac);}
-  .dks-sel option{background:var(--sur2);color:var(--tx);}
-  .dks-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:0.5px solid var(--brd);}
-  .dks-toggle-row span{font-size:13px;color:var(--tx);}
-  .dks-switch{position:relative;display:inline-block;width:40px;height:23px;flex:none;cursor:pointer;}
-  .dks-switch input{position:absolute;opacity:0;width:0;height:0;}
-  .dks-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:22px;transition:background .15s,border-color .15s;}
-  .dks-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#cfd3e0;transition:transform .15s,background .15s;}
-  .dks-switch input:checked + .dks-track{background:var(--ac);border-color:var(--ac);}
-  .dks-switch input:checked + .dks-track .dks-thumb{transform:translateX(17px);background:#fff;}
-  /* Tax list */
-  .dks-tax-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .dks-tax-title{font-size:14px;font-weight:600;color:var(--tx);}
-  .dks-addtax{height:32px;padding:0 14px;background:var(--ac);border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:background .15s;}
-  .dks-addtax:hover{background:var(--ac2);}
-  .dks-tax-wrap{border:0.5px solid var(--brd2);border-radius:9px;overflow:hidden;}
-  .dks-tax-scroll{overflow-x:auto;}
-  .dks-tax-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:540px;}
-  .dks-tax-table th{text-align:left;font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;padding:9px 10px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
-  .dks-tax-table td{padding:7px 10px;border-bottom:0.5px solid var(--brd);vertical-align:middle;color:var(--tx);}
-  .dks-tax-table tbody tr:last-child td{border-bottom:none;}
-  .dks-tax-empty td{text-align:center;color:var(--mu);padding:16px;}
-  .dks-tax-sel,.dks-tax-inp{height:32px;width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:6px;padding:0 8px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
-  .dks-tax-sel:focus,.dks-tax-inp:focus{border-color:var(--ac);}
-  .dks-tax-sel{appearance:none;-webkit-appearance:none;padding-right:22px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
-  .dks-tax-sel option{background:var(--sur2);color:var(--tx);}
-  .dks-tax-del{width:30px;height:30px;border:none;background:transparent;color:var(--rd);cursor:pointer;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
-  .dks-tax-del:hover{background:rgba(232,85,85,.12);}
-  .dks-tax-del svg{width:15px;height:15px;}
-  /* Transcript Alert Management modal */
-  .tam-textarea{height:auto;min-height:96px;padding:10px 11px;resize:vertical;line-height:1.5;}
-  .tam-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .tam-toggle-row span{font-size:13.5px;font-weight:500;color:var(--tx);}
-  @media (max-width:640px){
-    .dks-grid{grid-template-columns:1fr;}
-    .dks-input{height:44px;}
-    .dks-tab{height:44px;}
-    .tam-textarea{height:auto;flex:1;min-height:120px;}
-    /* Transcript Alert modal = full screen on mobile */
-    #tam-modal-backdrop{padding:0;}
-    #tam-modal-backdrop .modal{width:100%!important;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
-    #tam-modal-backdrop .modal-body{flex:1;}
-    /* Desking Module Setting modal = full screen on mobile */
-    #dks-modal-backdrop,#dks-tax-form{padding:0;}
-    #dks-modal-backdrop .modal,#dks-tax-form .modal{width:100%!important;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
-    #dks-modal-backdrop .modal-body,#dks-tax-form .modal-body{flex:1;}
-  }
+  /* ===== USER ROLE MODAL (two-pane: nav rail + content) ===== */
+  .role-modal{width:860px;max-width:95%;padding:0;flex-direction:row;align-items:stretch;}
+  /* Left nav rail */
+  .role-rail{width:230px;flex-shrink:0;background:var(--sur2);border-right:0.5px solid var(--brd);
+    display:flex;flex-direction:column;padding:22px 0;}
+  .role-rail-title{font-size:17px;font-weight:600;letter-spacing:-.3px;color:var(--tx);padding:0 22px 18px;}
+  .role-rail-nav{display:flex;flex-direction:column;gap:2px;}
+  .role-rail-item{display:flex;align-items:center;gap:10px;padding:11px 22px;font-size:13px;
+    font-weight:500;color:var(--mu);cursor:pointer;border:none;background:transparent;
+    font-family:var(--font);text-align:left;transition:all .12s;border-left:2px solid transparent;}
+  .role-rail-item svg{width:15px;height:15px;flex-shrink:0;}
+  .role-rail-item:hover{color:var(--tx);background:rgba(255,255,255,.03);}
+  .role-rail-item.active{color:var(--ac2);background:rgba(79,124,255,.08);border-left-color:var(--ac);}
+  .role-rail-item:disabled{opacity:.4;cursor:not-allowed;}
+  .role-rail-item:disabled:hover{color:var(--mu);background:transparent;}
+  /* Right content pane */
+  .role-pane{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .role-pane-head{display:flex;align-items:center;justify-content:space-between;
+    padding:20px 24px 0;flex-shrink:0;}
+  .role-pane-eyebrow{font-size:13px;font-weight:600;color:var(--tx);text-transform:uppercase;
+    letter-spacing:.5px;padding-bottom:7px;border-bottom:2px solid var(--ac);display:inline-block;}
+  .role-pane-body{flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:20px;}
+  .role-tab{display:none;flex-direction:column;gap:20px;}
+  .role-tab.active{display:flex;}
+  .role-tab-empty{color:var(--mu);font-size:13px;padding:30px 0;text-align:center;}
+
+  /* Permission groups (Settings tab) */
+  .perm-group{border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .perm-group-title{background:var(--sur2);padding:11px 14px;font-size:12.5px;font-weight:600;
+    color:var(--tx);letter-spacing:-.1px;text-align:center;border-bottom:0.5px solid var(--brd);}
+  .perm-table{width:100%;border-collapse:collapse;min-width:440px;}
+  .perm-scroll{overflow-x:auto;position:relative;-webkit-overflow-scrolling:touch;}
+  .perm-table thead th{font-size:10.5px;font-weight:500;color:var(--mu);text-transform:uppercase;
+    letter-spacing:.5px;padding:9px 10px;border-bottom:0.5px solid var(--brd);background:rgba(255,255,255,.02);}
+  .perm-table thead th:first-child{text-align:left;}
+  .perm-table tbody td{padding:9px 10px;border-bottom:0.5px solid var(--brd);font-size:12.5px;color:var(--tx);}
+  .perm-table tbody tr:last-child td{border-bottom:none;}
+  .perm-table .perm-name{text-align:left;color:var(--tx);min-width:180px;}
+  .perm-table .perm-cell{text-align:center;width:64px;}
+  .perm-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--ac);margin:0;vertical-align:middle;}
+  /* Field group */
+  .role-fg{display:flex;flex-direction:column;gap:8px;}
+  .role-fg-label{font-size:13px;color:var(--tx);line-height:1.4;}
+  .role-fg-hint{color:var(--mu);font-weight:400;}
+  .role-input{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:0 13px;height:42px;color:var(--tx);font-family:var(--font);font-size:13px;
+    outline:none;transition:border-color .15s;width:100%;}
+  .role-input:focus{border-color:var(--ac);}
+  .role-input::placeholder{color:var(--mu);}
+  .role-textarea{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:11px 13px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;
+    outline:none;transition:border-color .15s;width:100%;min-height:96px;resize:vertical;}
+  .role-textarea:focus{border-color:var(--ac);}
+  .role-textarea::placeholder{color:var(--mu);}
+  .role-charcount{font-size:11px;color:var(--mu);font-family:var(--mono);}
+  .role-pane-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+    padding:14px 24px;border-top:0.5px solid var(--brd);flex-shrink:0;}
 
   /* ════════════════════════════════════════════════════════════════════════════
      v78 — EXPORT MODAL
@@ -2406,7 +2404,26 @@
     .modal-cancel,.modal-save{width:100%;}
     .modal-body{padding:16px;}
 
-    /* === Phase 2F — QA touch-target fixes for floating popovers === */
+    /* User Role modal goes full-screen on phone */
+    .modal-backdrop:has(.role-modal){padding:0;align-items:stretch;justify-content:stretch;}
+    .role-modal{flex-direction:column;width:100vw;max-width:100vw;height:100vh;max-height:100vh;
+      border:none;border-radius:0;}
+    .role-rail{width:100%;border-right:none;border-bottom:0.5px solid var(--brd);padding:16px 0;flex-shrink:0;}
+    .role-rail-title{padding:0 18px 12px;font-size:16px;}
+    .role-rail-nav{flex-direction:row;overflow-x:auto;gap:0;}
+    .role-rail-item{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;padding:10px 16px;}
+    .role-rail-item.active{border-left:none;border-bottom-color:var(--ac);}
+    .role-pane{flex:1;min-height:0;}
+    .role-input{height:46px;font-size:16px;}
+    .role-textarea{font-size:16px;}
+    .role-pane-foot{flex-direction:column-reverse;gap:10px;}
+    .role-pane-foot .modal-cancel,.role-pane-foot .modal-save{width:100%;height:44px;font-size:14px;}
+    /* Permission tables scroll horizontally on phone; cue the swipe with a right-edge fade */
+    .perm-group{position:relative;}
+    .perm-group::after{content:'';position:absolute;top:36px;right:0;bottom:0;width:24px;
+      background:linear-gradient(to right, rgba(24,28,39,0), var(--sur));
+      pointer-events:none;border-radius:0 10px 10px 0;}
+    .perm-cb,.tab-cb{width:18px;height:18px;}
     /* Sort popup (toolbar Sort, bucket Sort) */
     .sort-pop{max-height:calc(100vh - 16px);min-width:calc(100vw - 32px);}
     .sort-pop-opt{min-height:44px;padding:0 12px;font-size:13px;}
@@ -2833,6 +2850,55 @@
   letter-spacing:-.2px;line-height:1.3;}
 .set-card-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4;}
 
+/* ===== USER ROLES PAGE ===== */
+/* Page head adopts set-page-head; add a right-aligned primary action button */
+.ur-head-spacer{flex:1;}
+.ur-add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ac);border:none;
+  border-radius:8px;padding:0 16px;height:36px;color:#fff;font-size:13px;font-weight:500;
+  font-family:var(--font);cursor:pointer;transition:background .15s;flex-shrink:0;}
+.ur-add-btn:hover{background:var(--ac2);}
+.ur-add-btn svg{width:15px;height:15px;}
+/* Back-to-Settings button in the page head (matches calendar-settings .cs-back) */
+.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;
+  font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
+.ur-back:hover{background:var(--sur2);color:var(--tx);}
+.ur-back svg{width:16px;height:16px;}
+
+/* Roles list section — single surface card containing rows */
+.ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;
+  border-bottom:0.5px solid var(--brd);transition:background .15s;}
+.ur-row:last-child{border-bottom:none;}
+.ur-row:hover{background:var(--sur2);}
+.ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(79,124,255,.10);color:var(--ac2);}
+.ur-row-ic svg{width:20px;height:20px;}
+.ur-row-txt{min-width:0;flex:1;}
+.ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);letter-spacing:-.2px;line-height:1.3;}
+.ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4;}
+/* Users page: role + status badges in each row */
+.u-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-right:6px;}
+.u-badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.u-role{background:rgba(79,124,255,.12);color:var(--ac2);}
+.u-status.active{background:rgba(34,200,138,.14);color:var(--gr);}
+.u-status.invited{background:rgba(245,166,35,.14);color:var(--am);}
+.u-status.inactive{background:var(--sur2);color:var(--mu);}
+@media(max-width:640px){ .u-meta{display:none;} }
+.ur-row-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.ur-act-btn{width:32px;height:32px;border-radius:8px;border:none;background:transparent;
+  color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .12s;}
+.ur-act-btn svg{width:16px;height:16px;}
+.ur-act-edit:hover{background:rgba(79,124,255,.12);color:var(--ac2);}
+.ur-act-del:hover{background:rgba(232,85,85,.12);color:var(--rd);}
+
+@media (max-width:640px){
+  .ur-add-btn{padding:0 13px;height:34px;}
+  .ur-row{padding:14px 14px;gap:11px;}
+  .ur-row-ic{width:36px;height:36px;}
+}
+
 @media (max-width:640px){
   .set-page-head{padding:14px 16px;}
   .set-page-title{font-size:16px;}
@@ -2840,11 +2906,290 @@
   .set-grid{grid-template-columns:1fr;}
 }
 
+  /* ===== Report page ===== */
+  .rpt-body{flex:1;min-height:0;overflow:hidden;padding:0;}
+  .rpt-wrap{display:flex;height:100%;min-height:0;overflow:hidden;}
+
+  /* Left: Report Folders */
+  .rpt-side{flex:none;width:236px;border-right:0.5px solid var(--brd2);display:flex;flex-direction:column;padding:16px 14px;gap:12px;overflow-y:auto;}
+  .rpt-side-head{color:var(--mu);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:0 10px;}
+  .rpt-nav{display:flex;flex-direction:column;gap:2px;}
+  .rpt-nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;background:transparent;border:none;border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .12s,color .12s;}
+  .rpt-nav-item:hover{background:rgba(255,255,255,.04);}
+  .rpt-nav-item.active{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .rpt-nav-ic{display:flex;flex:none;color:var(--mu);}
+  .rpt-nav-item.active .rpt-nav-ic{color:var(--ac2);}
+  .rpt-nav-ic svg{width:16px;height:16px;}
+  .rpt-nav-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rpt-nav-count{flex:none;min-width:20px;height:18px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;background:var(--sur2);border-radius:9px;font-size:11px;color:var(--mu);}
+  .rpt-nav-item.active .rpt-nav-count{background:rgba(79,124,255,.22);color:var(--ac2);}
+
+  /* Right: report list */
+  .rpt-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;}
+  .rpt-top{flex:none;display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:0.5px solid var(--brd2);}
+  .rpt-count{font-size:15px;font-weight:500;color:var(--tx);}
+  .rpt-count b{color:var(--ac2);font-weight:700;margin-right:3px;}
+  .rpt-create-bar{display:none;flex:none;padding:14px 20px 0;}
+  .rpt-create-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:42px;background:var(--ac);border:none;border-radius:9px;color:#fff;font-family:var(--font);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .rpt-create-btn:hover{background:var(--ac2);}
+  .rpt-create-btn svg{width:16px;height:16px;}
+
+  .rpt-table-wrap{flex:1;overflow:auto;padding:0 0 40px;}
+  .rpt-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .rpt-table thead th{position:sticky;top:0;background:var(--bg);text-align:left;font-size:11.5px;font-weight:600;color:var(--mu);padding:11px 14px;border-bottom:0.5px solid var(--brd2);white-space:nowrap;z-index:1;}
+  .rpt-th-no{width:52px;}
+  .rpt-th-act{width:150px;text-align:right;}
+  .rpt-row td{padding:12px 14px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .rpt-row:hover{background:rgba(255,255,255,.025);}
+  .rpt-no{color:var(--mu);font-family:var(--mono);font-size:12px;}
+  .rpt-name{color:var(--tx);font-weight:500;}
+  .rpt-owner{color:var(--mu);font-size:11.5px;margin-top:2px;}
+  .rpt-desc{color:var(--mu);font-size:12.5px;line-height:1.45;max-width:440px;white-space:normal;}
+  .rpt-src{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-size:11.5px;color:var(--mu);background:var(--sur2);border:0.5px solid var(--brd);white-space:nowrap;}
+  .rpt-empty{padding:54px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  .rpt-sched-badge{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:3px 8px;border-radius:6px;font-size:11px;color:var(--ac2);background:rgba(79,124,255,.12);border:0.5px solid rgba(79,124,255,.3);white-space:nowrap;}
+  .rpt-sched-badge svg{width:11px;height:11px;}
+  .rpt-sched-name{font-size:13.5px;font-weight:500;color:var(--tx);}
+  .rpt-run-dates{display:flex;gap:14px;}
+  .rpt-run-dates>div{flex:1;min-width:0;}
+  #rpt-run-backdrop input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.75);opacity:.7;cursor:pointer;}
+  .rpt-statpick{cursor:pointer;justify-content:space-between;}
+  .rpt-statpick-val{flex:1;min-width:0;font-size:13px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rpt-statpick-val.ph{color:var(--mu);}
+  .rpt-statpick-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s;}
+  .rpt-statpick.open .rpt-statpick-chev{transform:rotate(180deg);}
+  .rpt-statpick-menu{display:none;position:fixed;z-index:3100;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;min-width:160px;max-height:240px;overflow-y:auto;box-shadow:0 12px 32px rgba(0,0,0,.5);}
+  .rpt-statpick-menu.open{display:block;}
+  .rpt-statpick-item{padding:8px 11px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
+  .rpt-statpick-item:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+  .rpt-statpick-item.sel{background:rgba(79,124,255,.12);color:var(--ac2);}
+  /* Custom mini calendar (Start/End Date) */
+  .rcal-field{cursor:pointer;}
+  .rcal-val{flex:1;min-width:0;font-size:13px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rcal-val.ph{color:var(--mu);}
+  .rcal-pop{display:none;position:fixed;z-index:3100;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:12px;width:262px;box-shadow:0 12px 32px rgba(0,0,0,.5);}
+  .rcal-pop.open{display:block;}
+  .rcal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .rcal-title{font-size:13px;font-weight:600;color:var(--tx);}
+  .rcal-nav{width:28px;height:28px;border:none;background:transparent;color:var(--mu);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+  .rcal-nav:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .rcal-nav svg{width:15px;height:15px;}
+  .rcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .rcal-dow{font-size:10px;font-weight:600;color:var(--mu);text-align:center;padding:4px 0;text-transform:uppercase;}
+  .rcal-day{height:30px;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--tx);border-radius:7px;cursor:pointer;transition:background .12s;}
+  .rcal-day:hover{background:rgba(255,255,255,.06);}
+  .rcal-day.empty{visibility:hidden;cursor:default;}
+  .rcal-day.today{box-shadow:inset 0 0 0 1px var(--brd2);}
+  .rcal-day.sel{background:var(--ac);color:#fff;font-weight:600;}
+  .rcal-day.sel:hover{background:var(--ac2);}
+
+  /* Action cell */
+  .rpt-act{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;}
+  .rpt-run{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;background:rgba(79,124,255,.13);border:0.5px solid rgba(79,124,255,.32);border-radius:7px;color:var(--ac2);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:background .12s,border-color .12s;}
+  .rpt-run:hover{background:rgba(79,124,255,.22);border-color:var(--ac);}
+  .rpt-run svg{width:12px;height:12px;}
+  .rpt-star{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:7px;color:var(--mu);cursor:pointer;transition:background .12s,color .12s;}
+  .rpt-star:hover{background:rgba(255,255,255,.06);color:var(--am);}
+  .rpt-star.on{color:var(--am);}
+  .rpt-star svg{width:16px;height:16px;}
+  .rpt-kebab{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:7px;color:var(--mu);cursor:pointer;transition:background .12s,color .12s;}
+  .rpt-kebab:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .rpt-kebab svg{width:17px;height:17px;}
+
+  /* Floating row menu */
+  .rpt-menu{display:none;position:fixed;z-index:1700;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;min-width:172px;box-shadow:0 10px 28px rgba(0,0,0,.5);}
+  .rpt-menu.open{display:block;}
+  .rpt-menu-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:6px;font-size:12.5px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
+  .rpt-menu-item:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+  .rpt-menu-item svg{width:15px;height:15px;color:var(--mu);}
+  .rpt-menu-item:hover svg{color:var(--ac2);}
+
+  @media (max-width:900px){
+    .rpt-body{overflow:visible;}
+    .rpt-wrap{flex-direction:column;height:auto;overflow:visible;}
+    .rpt-side{width:100%;border-right:none;border-bottom:0.5px solid var(--brd2);gap:10px;padding:12px 14px;overflow:visible;}
+    .rpt-nav{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:7px;-webkit-overflow-scrolling:touch;}
+    .rpt-nav-item{flex:none;width:auto;border:0.5px solid var(--brd2);border-radius:22px;padding:0 16px;min-height:44px;}
+    .rpt-nav-item.active{border-color:var(--ac);}
+    .rpt-nav-count{display:none;}
+    .rpt-top{padding:13px 16px;}
+    .rpt-table-wrap{padding:0 4px 32px;}
+    .rpt-table th,.rpt-table td{padding:11px 8px;}
+    .rpt-table thead th:nth-child(3),.rpt-table tbody td:nth-child(3){display:none;}
+    .rpt-th-act{width:auto;}
+    .rpt-create-btn{height:44px;}
+    .rpt-run{height:44px;padding:0 15px;}
+    .rpt-star,.rpt-kebab{width:44px;height:44px;}
+    .rpt-star svg,.rpt-kebab svg{width:19px;height:19px;}
+    /* fat-finger: enlarge touch targets */
+    .rpt-statpick-item{padding:12px 12px;}
+    .rpt-menu-item{padding:12px 12px;}
+    .modal-close{width:40px;height:40px;}
+    .rcal-pop{width:320px;}
+    .rcal-day{height:40px;}
+    .rcal-nav{width:40px;height:40px;}
+  }
 </style>
 
 <style>
   .root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;}
   @media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
+
+  /* ── CONTACTS MODULE ── */
+  .cts-wrap{flex:1;display:flex;min-height:0;overflow:hidden;}
+  /* Left panel */
+  .cts-side{flex:none;width:236px;border-right:0.5px solid var(--brd2);display:flex;flex-direction:column;padding:16px 14px;gap:14px;overflow-y:auto;}
+  .cts-create{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:38px;background:var(--ac);border:none;border-radius:9px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .cts-create:hover{background:var(--ac2);}
+  .cts-create svg{width:15px;height:15px;}
+  .cts-nav{display:flex;flex-direction:column;gap:2px;}
+  .cts-nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;background:transparent;border:none;border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .12s;}
+  .cts-nav-item:hover{background:rgba(255,255,255,.04);}
+  .cts-nav-item.active{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .cts-nav-ic{display:flex;flex:none;}
+  .cts-nav-ic svg{width:16px;height:16px;}
+  .cts-nav-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cts-nav-count{flex:none;min-width:20px;height:18px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;background:var(--sur2);border-radius:9px;font-size:11px;color:var(--mu);}
+  .cts-nav-item.active .cts-nav-count{background:rgba(79,124,255,.22);color:var(--ac2);}
+  .cts-labels-head{display:flex;align-items:center;justify-content:space-between;padding:4px 10px 0;color:var(--mu);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+  .cts-label-add{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--ac2);font-size:17px;line-height:1;cursor:pointer;border-radius:6px;transition:background .12s;}
+  .cts-label-add:hover{background:rgba(255,255,255,.05);}
+  .cts-labels{display:flex;flex-direction:column;gap:2px;}
+  .cts-label-item{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px;background:transparent;border:none;border-radius:8px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:pointer;text-align:left;transition:background .12s;}
+  .cts-label-item:hover{background:rgba(255,255,255,.04);}
+  .cts-label-item.active{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .cts-label-dot{width:11px;height:11px;border-radius:50%;flex:none;}
+  .cts-label-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cts-label-count{flex:none;font-size:11px;color:var(--mu);}
+  .cts-labels-empty{padding:6px 10px;font-size:11.5px;color:var(--mu);}
+  /* Main */
+  .cts-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;}
+  .cts-top{flex:none;display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:0.5px solid var(--brd2);}
+  .cts-search{flex:1;display:flex;align-items:center;gap:9px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;height:38px;padding:0 12px;transition:border-color .15s;}
+  .cts-search:focus-within{border-color:var(--ac);}
+  .cts-search svg{width:15px;height:15px;color:var(--mu);flex:none;}
+  .cts-search input{flex:1;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;}
+  .cts-dir-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;}
+  .cts-dir-toggle input{display:none;}
+  .cts-dir-track{position:relative;width:36px;height:20px;border-radius:11px;background:var(--sur2);border:0.5px solid var(--brd2);transition:background .15s;flex:none;}
+  .cts-dir-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--mu);transition:transform .15s,background .15s;}
+  .cts-dir-toggle input:checked ~ .cts-dir-track{background:rgba(79,124,255,.3);border-color:var(--ac);}
+  .cts-dir-toggle input:checked ~ .cts-dir-track::after{transform:translateX(16px);background:var(--ac);}
+  .cts-dir-label{font-size:12.5px;color:var(--mu);white-space:nowrap;}
+  .cts-upload{flex:none;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);cursor:pointer;transition:border-color .12s,color .12s;}
+  .cts-upload:hover{border-color:var(--ac);color:var(--ac2);}
+  .cts-upload svg{width:16px;height:16px;}
+  /* Table */
+  .cts-table-wrap{flex:1;overflow:auto;padding:8px 20px 40px;}
+  .cts-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .cts-table thead th{position:sticky;top:0;background:var(--bg);text-align:left;font-size:11.5px;font-weight:600;color:var(--mu);padding:10px 12px;border-bottom:0.5px solid var(--brd2);white-space:nowrap;z-index:1;}
+  .cts-th-tag,.cts-th-kebab{width:38px;text-align:center;}
+  .cts-th-tag svg,.cts-th-kebab svg{width:15px;height:15px;color:var(--mu);}
+  .cts-group td{padding:10px 12px 6px;font-size:12px;font-weight:600;color:var(--ac2);}
+  .cts-row td{padding:11px 12px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .cts-row:hover{background:rgba(255,255,255,.025);}
+  .cts-name-cell{display:flex;align-items:center;gap:11px;}
+  .cts-avatar{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#fff;}
+  .cts-name{color:var(--tx);font-weight:500;}
+  .cts-sub{color:var(--mu);}
+  .cts-flag{background:transparent;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:20px;transition:background .12s;}
+  .cts-flag:hover{background:rgba(255,255,255,.05);}
+  .cts-flag svg{width:15px;height:15px;}
+  .cts-flag-name{font-size:12px;}
+  .cts-flag-empty{color:var(--mu);}
+  .cts-cell-c{text-align:center;}
+  .cts-shared{display:inline-flex;color:var(--ac2);}
+  .cts-shared svg{width:15px;height:15px;}
+  .cts-kebab{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:7px;color:var(--mu);cursor:pointer;transition:background .12s,color .12s;}
+  .cts-kebab:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .cts-kebab svg{width:16px;height:16px;}
+  .cts-empty{padding:46px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  /* Row kebab menu */
+  .cts-menu{display:none;position:fixed;z-index:1700;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;min-width:140px;box-shadow:0 10px 28px rgba(0,0,0,.5);}
+  .cts-menu.open{display:block;}
+  .cts-menu-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-size:12.5px;color:var(--tx);cursor:pointer;transition:background .12s;}
+  .cts-menu-item:hover{background:rgba(255,255,255,.05);}
+  .cts-menu-item.danger{color:var(--rd);}
+  .cts-menu-item svg{width:14px;height:14px;}
+
+  /* Contact modal: photo uploader + notes */
+  .ct-photo-row{display:flex;align-items:center;gap:14px;padding:2px 0 4px;}
+  .ct-photo{width:60px;height:60px;border-radius:50%;flex:none;background:var(--sur2);border:1px solid var(--brd2);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:600;overflow:hidden;}
+  .ct-photo-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-start;}
+  .ct-photo-btn{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;color:var(--tx);font-family:var(--font);font-size:12px;font-weight:500;padding:7px 13px;cursor:pointer;transition:border-color .12s;}
+  .ct-photo-btn:hover{border-color:var(--ac);}
+  .ct-photo-remove{background:transparent;border:none;color:var(--rd);font-family:var(--font);font-size:11.5px;cursor:pointer;padding:0 2px;}
+  .ct-notes-field textarea{flex:1;background:transparent;border:none;outline:none;resize:vertical;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.45;min-height:54px;max-height:160px;}
+  .ct-notes-field textarea::placeholder{color:var(--mu);}
+  .ct-check{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;padding:4px 2px 2px;}
+  .ct-check input{position:absolute;opacity:0;width:0;height:0;}
+  .ct-check-box{width:18px;height:18px;flex:none;border:1.5px solid var(--brd2);border-radius:5px;background:var(--sur2);display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}
+  .ct-check-box svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .12s;}
+  .ct-check input:checked ~ .ct-check-box{background:var(--ac);border-color:var(--ac);}
+  .ct-check input:checked ~ .ct-check-box svg{opacity:1;}
+  .ct-check:hover .ct-check-box{border-color:var(--ac);}
+  .ct-check input:focus-visible ~ .ct-check-box{box-shadow:0 0 0 2px rgba(79,124,255,.4);}
+  .ct-check-txt{display:flex;flex-direction:column;gap:1px;}
+  .ct-check-label{font-size:12.5px;color:var(--tx);font-weight:500;}
+  .ct-check-sub{font-size:11px;color:var(--mu);}
+
+  /* ── Label popup (assign + create) — ported from CRM leads ── */
+  .label-popup{position:fixed;z-index:1600;width:236px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;}
+  .label-popup.open{display:block;}
+  .lblp-title{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:4px 8px 8px;}
+  .lblp-sort{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px 8px;}
+  .lblp-sort-lbl{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+  .lblp-sort-seg{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:2px;gap:2px;}
+  .lblp-sort-btn{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:11px;font-weight:500;padding:4px 10px;border-radius:5px;cursor:pointer;transition:background .12s,color .12s;}
+  .lblp-sort-btn:hover{color:var(--tx);}
+  .lblp-sort-btn.on{background:var(--ac);color:#fff;}
+  .lblp-list{max-height:200px;overflow-y:auto;margin-bottom:6px;}
+  .lblp-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;transition:background .1s;}
+  .lblp-item:hover{background:rgba(255,255,255,.04);}
+  .lblp-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+  .lblp-name{flex:1;font-size:12.5px;color:var(--tx);}
+  .lblp-check{color:var(--gr);display:flex;opacity:0;}
+  .lblp-item.on .lblp-check{opacity:1;}
+  .lblp-empty{padding:10px 9px;font-size:11.5px;color:var(--mu);text-align:center;}
+  .lblp-create{border-top:0.5px solid var(--brd);padding-top:8px;margin-top:4px;}
+  .lblp-create input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;padding:7px 9px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
+  .lblp-create input:focus{border-color:var(--ac);}
+  .lblp-swatches{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+  .lblp-sw{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s;}
+  .lblp-sw:hover{transform:scale(1.12);}
+  .lblp-sw.on{border-color:var(--tx);}
+  .lblp-add-btn{width:100%;background:var(--ac);border:none;border-radius:7px;padding:8px;color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
+  .lblp-add-btn:hover{background:var(--ac2);}
+
+  /* Tablet / narrow desktop: keep the two-pane but trim the table so the kebab stays reachable */
+  @media (max-width:900px) and (min-width:641px){
+    .cts-side{width:192px;}
+    .cts-table thead th:nth-child(3),.cts-table tbody td:nth-child(3){display:none;}   /* Email */
+    .cts-th-tag,.cts-table tbody td:nth-child(5){display:none;}                          /* tag */
+  }
+  @media (max-width:640px){
+    .cts-wrap{flex-direction:column;overflow:visible;}
+    /* Left panel becomes a compact stacked block: Create + a horizontal label-chip strip */
+    .cts-side{width:100%;border-right:none;border-bottom:0.5px solid var(--brd2);flex-direction:column;gap:10px;padding:12px 14px;overflow:visible;}
+    .cts-nav-item{padding:9px 12px;}
+    .cts-labels-head{padding:2px 2px 0;}
+    .cts-labels{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:7px;padding-bottom:3px;-webkit-overflow-scrolling:touch;}
+    .cts-label-item{flex:none;width:auto;border:0.5px solid var(--brd2);border-radius:16px;padding:6px 11px;}
+    .cts-label-item.active{border-color:var(--ac);}
+    .cts-dir-label{display:none;}
+    .label-popup{width:calc(100vw - 32px);}
+    /* Top bar + table tightened to fit a phone; drop Email + tag columns, flag shows icon only */
+    .cts-top{padding:12px 14px;gap:10px;}
+    .cts-table-wrap{padding:6px 10px 32px;}
+    .cts-table th,.cts-table td{padding:10px 5px;}
+    .cts-table thead th:nth-child(3),.cts-table tbody td:nth-child(3){display:none;}   /* Email */
+    .cts-th-tag,.cts-table tbody td:nth-child(5){display:none;}                          /* tag */
+    .cts-flag-name{display:none;}
+    .cts-name{font-size:12.5px;}
+    .cts-sub{font-size:12px;}
+    .cts-name-cell{gap:8px;}
+    .cts-avatar{width:26px;height:26px;font-size:10.5px;}
+  }
 </style>
 
 <!-- TOP HEADER -->
@@ -2986,550 +3331,358 @@
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
-<div class="root main-area" id="root">
-  <div class="set-page-head"><span class="set-page-title">Settings</span></div>
-  <div class="set-scroll">
-    <section class="set-section">
-      <h3 class="set-grp">Company Setting</h3>
-      <div class="set-grid">
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../User_roles/coreconnect_user_roles.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6 1.2 0 2.3.3 3.2.9"/><circle cx="18" cy="16" r="2.2"/><path d="M18 12.5v1.3M18 18.2v1.3M21.2 16h-1.3M16.1 16h-1.3M20.3 13.7l-.9.9M16.6 17.4l-.9.9M20.3 18.3l-.9-.9M16.6 14.6l-.9-.9"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">User Roles</div>
-            <div class="set-card-sub">Manage User Roles</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../Users/coreconnect_user.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5M18 20c0-2.3-1-4.3-2.6-5.3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Users</div>
-            <div class="set-card-sub">Manage users and their info</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../contacts/coreconnect_contact.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.2"/><path d="M5.5 16c.6-1.7 2-2.7 3.5-2.7s2.9 1 3.5 2.7"/><path d="M15 9h4M15 12.5h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Contact</div>
-            <div class="set-card-sub">Go To Contact</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../reports/coreconnect_report.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Report</div>
-            <div class="set-card-sub">Go To Report</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l6 6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Google Analytics</div>
-            <div class="set-card-sub">Manage Google Analytics Charts</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.open('../desking_module/desking_module.html','_blank')">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Desking Module</div>
-            <div class="set-card-sub">Manage Desking Module</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="openDeskingSettings()">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Desking Module Setting</div>
-            <div class="set-card-sub">Change Desking Module Setting</div>
-          </div>
+<!-- Report row overflow menu (single floating menu, repositioned per row) -->
+<div class="rpt-menu" id="rpt-menu">
+  <div class="rpt-menu-item" onclick="rptMenuSchedule()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Schedule Report</div>
+  <div class="rpt-menu-item" onclick="rptMenuDuplicate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate Report</div>
+</div>
+
+<!-- Schedule Report modal -->
+<div class="modal-backdrop" id="rpt-sched-backdrop">
+  <div class="modal" style="width:380px;">
+    <div class="modal-header">
+      <span class="modal-title">Schedule Report</span>
+      <button class="modal-close" onclick="closeScheduleModal()" title="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Report</div>
+        <div class="rpt-sched-name" id="rpt-sched-name">—</div>
+      </div>
+      <div>
+        <div class="modal-section-title">Frequency</div>
+        <div class="modal-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <select id="rpt-sched-freq">
+            <option value="Daily">Daily</option>
+            <option value="Weekly" selected>Weekly</option>
+            <option value="Monthly">Monthly</option>
+          </select>
         </div>
       </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Alert Setting</h3>
-      <div class="set-grid">
-        <div class="set-card" onclick="window.location.href='../crm_alert_management/crm_alert_management.html'" style="cursor:pointer;">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="10" rx="4"/><path d="M12 8V6M9 9 7 7M15 9l2-2M8 12H4M20 12h-4M8 15l-3 2M16 15l3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Alert Management</div>
-            <div class="set-card-sub">Change CRM Alert Management</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="openTranscriptAlert()">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Transcript Alert Management</div>
-            <div class="set-card-sub">Change Transcript Alert Management</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../notification_management/notification_management.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Management</div>
-            <div class="set-card-sub">Change Notification Management</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Organizational Structure & Management</h3>
-      <div class="set-grid">
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../locations/locations.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Locations</div>
-            <div class="set-card-sub">Manage Locations</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../inactive_reason/inactive_reason.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/><path d="m4 4 16 16"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Inactive Reason</div>
-            <div class="set-card-sub">Manage Inactive Reason</div>
-          </div>
-        </div>
-        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../sold_inventory/sold_inventory.html'">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2 12.5h11l2-9H6.5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Sold Inventory</div>
-            <div class="set-card-sub">Manage Sold Inventory</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">CRM Management</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="M17 12v8M19.2 14h-3.1a1.6 1.6 0 0 0 0 3.2h2a1.6 1.6 0 0 1 0 3.2H15"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Vendors Cost</div>
-            <div class="set-card-sub">Manage CRM Vendors Cost</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6" r="2.4"/><circle cx="7" cy="15" r="2.4"/><circle cx="17" cy="15" r="2.4"/><path d="M12 8.4v3M10.4 13.6 8.6 13M13.6 13.6l1.8-.6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Google Sheet</div>
-            <div class="set-card-sub">Manage CRM Google Sheet</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V7"/><circle cx="8" cy="8" r="1.5"/><path d="m3 14 4-3 5 4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">CRM Status</div>
-            <div class="set-card-sub">Manage CRM Status</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7.5 9 1.5 1.5 2.5-2.5M7.5 15l1.5 1.5 2.5-2.5M14 9h3M14 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Lead Rule Status</div>
-            <div class="set-card-sub">Manage Lead Rule Status</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="m15 14 5 5M20 14l-5 5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Disable Rules</div>
-            <div class="set-card-sub">Manage Disable Rules</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Communication Tools & Templates</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M12 7v4M10 9.5l2 2 2-2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Greeting Message</div>
-            <div class="set-card-sub">Manage Greeting Message</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="12" cy="8.5" r="1.8"/><path d="M9 12.5c.5-1.2 1.6-2 3-2s2.5.8 3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">User SMS Template</div>
-            <div class="set-card-sub">Go To User SMS Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h14v9H7l-4 3z"/><circle cx="8" cy="8" r="1.5"/><circle cx="12" cy="8" r="1.5"/><path d="M21 8v9l-3-2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department SMS Template</div>
-            <div class="set-card-sub">Go To Department SMS Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Email Template</div>
-            <div class="set-card-sub">Go To Email Template</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="12" rx="2"/><path d="m3 7 7 5 7-5"/><path d="M16 14h6M19 11l3 3-3 3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Email Campaign</div>
-            <div class="set-card-sub">Go To Email Campaign</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Task & Workflow Automation</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Automated Task</div>
-            <div class="set-card-sub">Go To Automated Task</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Permissions & Settings</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Permission</div>
-            <div class="set-card-sub">Go To Department Permission</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v17"/><path d="M7 7h.01M10 7h.01M7 10h.01M10 10h.01M7 13h.01M10 13h.01"/><circle cx="18" cy="12" r="2"/><path d="M15 21c0-2 1.3-3.5 3-3.5s3 1.5 3 3.5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Lead Permission</div>
-            <div class="set-card-sub">Go To Department Lead Permission</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Miscellaneous</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 3 2 3H5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Label Flag</div>
-            <div class="set-card-sub">Go To Label Flag</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Video Gallery</div>
-            <div class="set-card-sub">Go To Video Gallery</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">General Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Pagination Setting</div>
-            <div class="set-card-sub">Change page size</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Personal Voice Mail File</div>
-            <div class="set-card-sub">Change Personal Voice Mail File</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Department Voice Mail File</div>
-            <div class="set-card-sub">Change Department Voice Mail File</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">CRM Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2L15 12a14 14 0 0 0 5 5l.8-1.1a2 2 0 0 1 2-.5c.8.3 1.6.5 2.5.6"/><circle cx="6" cy="6" r="3.2"/><path d="M6 4.5V6l1 .8"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">TalkTime Required</div>
-            <div class="set-card-sub">Change TalkTime Required in seconds</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Lead Assignment Rules</div>
-            <div class="set-card-sub">Change Lead Assignment Rules</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS Sent Hour</div>
-            <div class="set-card-sub">Change Mass SMS Sent Hour</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M11 18h2"/><path d="M9 8h6M12 6v4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS X Value</div>
-            <div class="set-card-sub">Change Mass SMS X Value</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Auto SMS Send</div>
-            <div class="set-card-sub">Change Auto SMS Send functionality</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">Dialpad Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Idle Time Chart Minute Setting</div>
-            <div class="set-card-sub">Change Idle Time Chart Minute Setting</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Format</div>
-            <div class="set-card-sub">Change Notification Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M9 7h6M9 10h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Tagged Chat SMS Format</div>
-            <div class="set-card-sub">Change Tagged Chat SMS Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Settings</div>
-            <div class="set-card-sub">Change Notification Settings</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10"/><path d="M7 3c0 4 5 5 5 9 0-4 5-5 5-9M7 21c0-4 5-5 5-9 0 4 5 5 5 9"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Wait While Setting</div>
-            <div class="set-card-sub">Change Wait While Setting</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="set-section">
-      <h3 class="set-grp">AI Setting</h3>
-      <div class="set-grid">
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><path d="M12 3v3M9 18v2M15 18v2"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">AI Settings</div>
-            <div class="set-card-sub">Manage AI Settings</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeScheduleModal()">Cancel</button>
+      <button class="modal-save" onclick="confirmSchedule()">Schedule</button>
+    </div>
   </div>
 </div>
 
-  <!-- v80: SEND BUSINESS CARD MODAL (ported from coreconnect_dashboard_v41.html) -->
-  <div class="modal-backdrop" id="bc-modal-backdrop" onclick="handleBcBackdropClick(event)">
-    <div class="modal bc-modal">
-      <div class="modal-header">
-        <span class="modal-title">Send Business Card</span>
-        <button class="modal-close" onclick="closeBcModal()" aria-label="Close">&#x2715;</button>
+<!-- Run report — Filter modal -->
+<div class="modal-backdrop" id="rpt-run-backdrop">
+  <div class="modal" style="width:440px;">
+    <div class="modal-header">
+      <span class="modal-title">Filter</span>
+      <button class="modal-close" onclick="closeRunFilter()" title="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Select Status</div>
+        <div class="modal-field rpt-statpick" id="rpt-run-status-field" onclick="toggleRunStatus(event)">
+          <span class="rpt-statpick-val ph" id="rpt-run-status-label">-- Select Status --</span>
+          <svg class="rpt-statpick-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="rpt-statpick-menu" id="rpt-run-status-menu"></div>
       </div>
-      <div class="modal-body">
-
-        <!-- Business card preview (branded — recreated from artwork) -->
-        <div class="bc-card">
-          <div class="bc-logo">
-            <svg class="bc-logo-car" viewBox="0 0 200 70" fill="none" aria-hidden="true">
-              <path d="M8 50 C 30 30, 70 18, 120 20 C 150 21, 175 30, 192 30 C 180 34, 150 33, 120 33 C 78 32, 38 40, 14 54 Z" fill="#d8232a"/>
-            </svg>
-            <div class="bc-logo-usa">USA</div>
-            <div class="bc-logo-sub">DIRECT AUTO</div>
-          </div>
-          <div class="bc-info">
-            <div class="bc-name-band"><span>Amin Hussain</span></div>
-            <div class="bc-detail-panel">
-              <div class="bc-lines">
-                <div class="bc-line">(254) 457-4533</div>
-                <div class="bc-line">houstondirectauto@gmail.com</div>
-                <div class="bc-line">www.usadirectauto.com</div>
-                <div class="bc-line">421 Little York Rd, Houston, TX 77076</div>
-              </div>
-            </div>
-          </div>
-          <div class="bc-icon-strip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <div class="rpt-run-dates">
+        <div>
+          <div class="modal-section-title">Start Date</div>
+          <div class="modal-field rcal-field" id="rpt-run-start-field" onclick="openRcal(event,'start')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="rcal-val ph" id="rpt-run-start-label">mm/dd/yyyy</span>
           </div>
         </div>
-
-        <!-- Form row -->
-        <div class="bc-form">
-          <div class="bc-form-col">
-            <label class="bc-flabel" for="bc-number">Customer Number</label>
-            <div class="modal-field">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <input type="tel" id="bc-number" placeholder="Number" />
-            </div>
-          </div>
-          <div class="bc-form-col bc-checks">
-            <label class="bc-check">
-              <input type="checkbox" id="bc-share-card" />
-              <span class="bc-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>Share Business Card</span>
-            </label>
-            <label class="bc-check">
-              <input type="checkbox" id="bc-share-loc" checked onchange="toggleBcLocation()" />
-              <span class="bc-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>Share Location</span>
-            </label>
-          </div>
-          <div class="bc-form-col" id="bc-location-col">
-            <label class="bc-flabel" for="bc-location">Location Address</label>
-            <div class="modal-field" style="height:40px;">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <select id="bc-location" style="appearance:none;-webkit-appearance:none;">
-                <option value="" disabled selected>Select Location</option>
-                <option>421 Little York Rd, Houston, TX 77076</option>
-                <option>5820 North Fwy, Houston, TX 77076</option>
-                <option>10250 Southwest Fwy, Houston, TX 77074</option>
-              </select>
-            </div>
+        <div>
+          <div class="modal-section-title">End Date</div>
+          <div class="modal-field rcal-field" id="rpt-run-end-field" onclick="openRcal(event,'end')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="rcal-val ph" id="rpt-run-end-label">mm/dd/yyyy</span>
           </div>
         </div>
-
       </div>
-      <div class="modal-footer">
-        <button class="modal-cancel" onclick="closeBcModal()">Cancel</button>
-        <button class="modal-save" onclick="sendBusinessCard()">Submit</button>
+      <!-- shared mini calendar popup -->
+      <div class="rcal-pop" id="rcal-pop">
+        <div class="rcal-head">
+          <button class="rcal-nav" onclick="rcalPrev(event)" title="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span class="rcal-title" id="rcal-title"></span>
+          <button class="rcal-nav" onclick="rcalNext(event)" title="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="rcal-grid" id="rcal-grid"></div>
       </div>
     </div>
-  </div>
-
-  <!-- Desking Module Setting modal -->
-  <div class="modal-backdrop" id="dks-modal-backdrop" onclick="if(event.target===this)closeDeskingSettings()">
-    <div class="modal" style="width:600px;">
-      <div class="modal-header">
-        <span class="modal-title">Desking Module Setting</span>
-        <button class="modal-close" onclick="closeDeskingSettings()" aria-label="Close">&#x2715;</button>
-      </div>
-      <div class="modal-body">
-        <div class="dks-tabs">
-          <button class="dks-tab active" data-tab="fees" onclick="dksTab('fees')">Fees</button>
-          <button class="dks-tab" data-tab="tax" onclick="dksTab('tax')">Tax</button>
-        </div>
-
-        <!-- Fees panel -->
-        <div class="dks-panel active" data-panel="fees">
-          <div class="dks-grid">
-            <div class="dks-field"><label class="dks-label">Document Fee</label><input class="dks-input" inputmode="decimal" id="dks-document"></div>
-            <div class="dks-field"><label class="dks-label">Loan Rate</label><input class="dks-input" inputmode="decimal" id="dks-loanrate"></div>
-            <div class="dks-field"><label class="dks-label">Pre-Delivery Fee</label><input class="dks-input" inputmode="decimal" id="dks-predelivery"></div>
-            <div class="dks-field"><label class="dks-label">License Fee</label><input class="dks-input" inputmode="decimal" id="dks-license"></div>
-            <div class="dks-field"><label class="dks-label">Registration Fee</label><input class="dks-input" inputmode="decimal" id="dks-registration"></div>
-            <div class="dks-field"><label class="dks-label">State Inspection Fee</label><input class="dks-input" inputmode="decimal" id="dks-inspection"></div>
-            <div class="dks-field"><label class="dks-label">Title Fee</label><input class="dks-input" inputmode="decimal" id="dks-title"></div>
-            <div class="dks-field"><label class="dks-label">APR</label><input class="dks-input" inputmode="decimal" id="dks-apr"></div>
-          </div>
-        </div>
-
-        <!-- Tax panel -->
-        <div class="dks-panel" data-panel="tax">
-          <div class="dks-tax-head">
-            <span class="dks-tax-title">Tax List</span>
-            <button class="dks-addtax" onclick="dksAddTax()">Add Tax</button>
-          </div>
-          <div class="dks-tax-wrap"><div class="dks-tax-scroll">
-            <table class="dks-tax-table">
-              <thead><tr><th>Sr</th><th>Calc Type</th><th>Category</th><th>Rate (%)</th><th>Amount</th><th>Action</th></tr></thead>
-              <tbody id="dks-tax-body"></tbody>
-            </table>
-          </div></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-save" onclick="saveDeskingSettings()">Save Changes</button>
-      </div>
+    <div class="modal-footer">
+      <button class="modal-save" onclick="runFilterNext()">Next</button>
     </div>
   </div>
+</div>
 
-  <!-- Transcript Alert Management modal -->
-  <div class="modal-backdrop" id="tam-modal-backdrop" onclick="if(event.target===this)closeTranscriptAlert()">
-    <div class="modal" style="width:480px;">
-      <div class="modal-header">
-        <span class="modal-title">Transcript Alert Management</span>
-        <button class="modal-close" onclick="closeTranscriptAlert()" aria-label="Close">&#x2715;</button>
-      </div>
-      <div class="modal-body">
-        <div class="tam-toggle-row">
-          <span>Allow To Send Transcript Alert</span>
-          <label class="dks-switch"><input type="checkbox" id="tam-allow"><span class="dks-track"><span class="dks-thumb"></span></span></label>
-        </div>
-        <div class="dks-field"><label class="dks-label">Phone Number</label><input class="dks-input" id="tam-phone" inputmode="tel" placeholder="Phone Number"></div>
-        <div class="dks-field"><label class="dks-label">Email</label><input class="dks-input" id="tam-email" placeholder="Email (comma-separated)"></div>
-        <div class="dks-field"><label class="dks-label">Keyword</label><textarea class="dks-input tam-textarea" id="tam-keyword" placeholder="Keyword" rows="4"></textarea></div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-cancel" onclick="closeTranscriptAlert()">Cancel</button>
-        <button class="modal-save" onclick="saveTranscriptAlert()">Save changes</button>
-      </div>
-    </div>
+<style>
+  /* Notification Management */
+  .nm-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:18px;}
+  /* Inactive Reason shell */
+  .ir-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  .ir-shell{border:0.5px dashed var(--brd2);border-radius:12px;background:var(--sur);min-height:200px;display:flex;align-items:center;justify-content:center;}
+  .ir-placeholder{color:var(--mu);font-size:13px;}
+  /* toolbar */
+  .ir-toolbar{display:flex;align-items:center;gap:12px;}
+  .ir-search{flex:1;max-width:420px;position:relative;display:flex;align-items:center;}
+  .ir-search svg{position:absolute;left:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .ir-search input{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 12px 0 36px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .ir-search input:focus{border-color:var(--ac);}
+  .ir-search input::placeholder{color:var(--mu);}
+  .ir-btn{height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;transition:all .15s;}
+  .ir-btn svg{width:15px;height:15px;}
+  .ir-export{margin-left:auto;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .ir-export:hover{border-color:var(--mu);}
+  .ir-add{background:var(--ac);border:none;color:#fff;}
+  .ir-add:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .ir-scroll{padding:14px;}
+    .ir-search{max-width:none;}
+    .ir-search input{height:44px;}
+    .ir-btn{height:44px;width:44px;padding:0;}
+    .ir-btn svg{width:20px;height:20px;}
+    .ir-btn-txt{display:none;}
+  }
+  /* table */
+  .nm-table.ir-table{min-width:0;table-layout:fixed;}
+  .ir-table td{word-break:break-word;white-space:normal;overflow:visible;text-overflow:clip;}
+  .ir-th-no{width:80px;}
+  .ir-th-act{text-align:right;width:120px;}
+  .ir-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
+  .ir-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .ir-icon{width:32px;height:32px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .15s;}
+  .ir-icon svg{width:15px;height:15px;}
+  .ir-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
+  .ir-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* add/edit modal */
+  .ir-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
+  .ir-modal-bk.open{display:flex;}
+  .ir-modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:420px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .ir-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--brd);}
+  .ir-modal-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .ir-modal-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .ir-modal-x:hover{border-color:var(--rd);color:var(--rd);}
+  .ir-modal-body{padding:20px;display:flex;flex-direction:column;gap:8px;}
+  .ir-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .ir-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .ir-field-input:focus{border-color:var(--ac);}
+  .ir-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .ir-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
+  .ir-btn-cancel:hover{border-color:var(--mu);}
+  .ir-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
+  .ir-btn-save:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .ir-icon{width:40px;height:40px;}
+    .ir-icon svg{width:17px;height:17px;}
+    .ir-modal-bk{padding:0;}
+    .ir-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
+    .ir-modal-body{flex:1;}
+    .ir-modal-x{width:40px;height:40px;font-size:17px;}
+    .ir-field-input{height:44px;}
+    .ir-btn-cancel,.ir-btn-save{height:44px;}
+  }
+  .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
+  .nm-add-row{display:flex;align-items:center;gap:12px;}
+  .nm-dd{position:relative;flex:1;max-width:520px;}
+  .nm-dd-btn{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;transition:border-color .15s;}
+  .nm-dd-btn:hover{border-color:var(--mu);}
+  .nm-dd.open .nm-dd-btn{border-color:var(--ac);}
+  .nm-dd-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nm-dd-val.ph{color:var(--mu);}
+  .nm-dd-btn svg{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s;}
+  .nm-dd.open .nm-dd-btn svg{transform:rotate(180deg);}
+  #nm-dd-pop{position:fixed;z-index:4000;max-height:280px;overflow:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.55);display:none;}
+  #nm-dd-pop.open{display:block;}
+  .nm-dd-opt{padding:9px 11px;border-radius:7px;font-size:13px;color:var(--tx);cursor:pointer;white-space:nowrap;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+  .nm-dd-opt:hover{background:var(--sur2);}
+  .nm-opt-sub{color:var(--mu);font-size:11.5px;}
+  .nm-dd-empty{padding:14px;text-align:center;color:var(--mu);font-size:12.5px;}
+  .nm-save{height:42px;padding:0 24px;background:var(--ac);border:none;border-radius:9px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;flex:none;}
+  .nm-save:hover{background:var(--ac2);}
+  .nm-table-wrap{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);}
+  .nm-table-scroll{overflow-x:auto;}
+  .nm-table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px;}
+  .nm-table th{text-align:left;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;padding:13px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
+  .nm-table th.nm-th-notif{text-align:right;}
+  .nm-table td{padding:13px 16px;border-bottom:0.5px solid var(--brd);color:var(--tx);vertical-align:middle;}
+  .nm-table tbody tr:last-child td{border-bottom:none;}
+  .nm-table tbody tr:hover{background:rgba(255,255,255,.02);}
+  .nm-user{font-weight:500;}
+  .nm-user-cell{display:flex;align-items:center;gap:10px;}
+  .nm-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;letter-spacing:.3px;flex:none;}
+  .nm-num{color:var(--mu);font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
+  .nm-notif-cell{display:flex;align-items:center;justify-content:flex-end;gap:24px;}
+  .nm-check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+  .nm-check input{position:absolute;opacity:0;width:0;height:0;}
+  .nm-box{width:19px;height:19px;border:1.5px solid var(--brd2);border-radius:5px;background:var(--sur2);position:relative;flex:none;transition:background .15s,border-color .15s;}
+  .nm-check input:checked + .nm-box{background:var(--ac);border-color:var(--ac);}
+  .nm-check input:checked + .nm-box::after{content:'';position:absolute;left:6px;top:2.5px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .nm-check input:focus-visible + .nm-box{box-shadow:0 0 0 3px rgba(79,124,255,.3);}
+  .nm-ck-lbl{font-size:13px;color:var(--tx);}
+  .nm-pager{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .nm-pager-info{font-size:12.5px;color:var(--mu);}
+  .nm-pager-btns{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .nm-pg{min-width:32px;height:32px;padding:0 9px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--tx);border-radius:7px;font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;}
+  .nm-pg:hover:not(:disabled){border-color:var(--mu);}
+  .nm-pg.active{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600;}
+  .nm-pg:disabled{opacity:.4;cursor:not-allowed;}
+  .nm-pg-ell{color:var(--mu);padding:0 4px;font-size:12.5px;}
+  @media (max-width:640px){
+    .nm-scroll{padding:14px;}
+    .nm-add-row{flex-wrap:wrap;}
+    .nm-dd{max-width:none;flex:1 1 100%;}
+    .nm-dd-btn,.nm-save{height:44px;}
+    .nm-save{flex:1 1 100%;}
+    .nm-box{width:24px;height:24px;}
+    .nm-check input:checked + .nm-box::after{left:8px;top:4px;width:5px;height:9px;}
+    .nm-pager{justify-content:center;}
+    .nm-pg{min-width:40px;height:40px;}
+  }
+
+  .cam-add{margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:rgba(79,124,255,.12);border:0.5px solid rgba(79,124,255,.4);border-radius:8px;color:var(--ac2);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .cam-add:hover{background:rgba(79,124,255,.2);}
+  .cam-add svg{width:15px;height:15px;}
+  .cam-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  #cam-list{display:flex;flex-direction:column;gap:16px;}
+  .cam-empty{padding:48px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  .cam-alert{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);}
+  .cam-head{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sur2);border-bottom:0.5px solid var(--brd);cursor:pointer;}
+  .cam-name{flex:1;min-width:0;height:38px;background:var(--bg);border:0.5px solid var(--brd2);border-radius:7px;padding:0 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;font-weight:600;outline:none;transition:border-color .15s;}
+  .cam-name:focus{border-color:var(--ac);}
+  .cam-chev{width:30px;height:30px;border:0.5px solid var(--brd2);background:var(--bg);border-radius:7px;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+  .cam-chev:hover{color:var(--tx);border-color:var(--mu);}
+  .cam-del{width:30px;height:30px;border:0.5px solid var(--brd2);background:var(--bg);border-radius:7px;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+  .cam-del:hover{color:var(--rd);border-color:var(--rd);}
+  .cam-del svg{width:15px;height:15px;}
+  .cam-chev svg{width:15px;height:15px;transition:transform .15s;}
+  .cam-alert.collapsed .cam-chev svg{transform:rotate(180deg);}
+  .cam-body{padding:20px;display:flex;flex-direction:column;gap:18px;}
+  .cam-alert.collapsed .cam-body{display:none;}
+  .cam-row1{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .cam-toglbl{font-size:13px;color:var(--mu);}
+  .cam-row1 .cam-freq{min-width:220px;flex:1;max-width:340px;width:auto;}
+  .cam-row1 .cam-interval{width:120px;flex:none;}
+  .cam-input,.cam-select{height:40px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
+  .cam-input:focus,.cam-select:focus{border-color:var(--ac);}
+  .cam-input::placeholder{color:var(--mu);}
+  .cam-select{appearance:none;-webkit-appearance:none;padding-right:30px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;}
+  .cam-select option{background:var(--sur2);color:var(--tx);}
+  /* custom popup dropdown */
+  .cam-dd{position:relative;width:100%;}
+  .cam-dd-btn{width:100%;height:40px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;transition:border-color .15s;}
+  .cam-dd-btn:hover{border-color:var(--mu);}
+  .cam-dd.open .cam-dd-btn{border-color:var(--ac);}
+  .cam-dd-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cam-dd-val.ph{color:var(--mu);}
+  .cam-dd-btn svg{width:13px;height:13px;color:var(--mu);flex:none;transition:transform .15s;}
+  .cam-dd.open .cam-dd-btn svg{transform:rotate(180deg);}
+  #cam-dd-pop{position:fixed;z-index:4000;min-width:150px;max-height:260px;overflow:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.55);display:none;}
+  #cam-dd-pop.open{display:block;}
+  .cam-dd-opt{padding:9px 11px;border-radius:7px;font-size:13px;color:var(--tx);cursor:pointer;white-space:nowrap;}
+  .cam-dd-opt:hover{background:var(--sur2);}
+  .cam-dd-opt.sel{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .cam-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .cam-field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .cam-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .cam-cond-head{display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:12px;margin-bottom:10px;}
+  .cam-cond-head span{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .cam-conds{display:flex;flex-direction:column;gap:12px;}
+  .cam-cond{display:grid;grid-template-columns:28px 1fr 1fr 1fr;gap:12px;align-items:center;}
+  .cam-cond-del{width:24px;height:24px;border:none;background:transparent;color:var(--rd);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .cam-cond-del svg{width:19px;height:19px;}
+  .cam-addcond{width:100%;height:44px;margin-top:4px;background:rgba(79,124,255,.08);border:0.5px solid rgba(79,124,255,.25);border-radius:8px;color:var(--ac2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  .cam-addcond:hover{background:rgba(79,124,255,.16);}
+  .cam-addcond svg{width:18px;height:18px;}
+  .cam-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
+  .cam-btn{height:38px;padding:0 18px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
+  .cam-clear{background:transparent;border:0.5px solid var(--rd);color:var(--rd);}
+  .cam-clear:hover{background:rgba(232,85,85,.12);}
+  .cam-clear svg{width:15px;height:15px;}
+  .cam-save{background:var(--ac);border:none;color:#fff;}
+  .cam-save:hover{background:var(--ac2);}
+  .cam-cancel{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .cam-cancel:hover{border-color:var(--mu);}
+  .cam-switch{position:relative;display:inline-block;width:42px;height:24px;flex:none;cursor:pointer;}
+  .cam-switch input{position:absolute;opacity:0;width:0;height:0;}
+  .cam-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:22px;transition:background .15s,border-color .15s;}
+  .cam-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#cfd3e0;transition:transform .15s,background .15s;}
+  .cam-switch input:checked + .cam-track{background:var(--gr);border-color:var(--gr);}
+  .cam-switch input:checked + .cam-track .cam-thumb{transform:translateX(18px);background:#fff;}
+  @media (max-width:640px){
+    .cam-scroll{padding:14px;}
+    .cam-grid2{grid-template-columns:1fr;}
+    .cam-freq{min-width:0;max-width:none;flex:1 1 100%;}
+    .cam-interval{width:100%;}
+    .cam-cond-head{display:none;}
+    .cam-cond{grid-template-columns:40px 1fr;align-items:start;}
+    .cam-cond .cam-cond-field,.cam-cond .cam-cond-op,.cam-cond .cam-cond-val{grid-column:2;}
+    .cam-cond-del{width:40px;height:40px;}
+    .cam-add,.cam-btn,.cam-dd-btn{height:44px;}
+    .cam-add{width:44px;padding:0;flex:none;justify-content:center;}
+    .cam-add svg{width:20px;height:20px;}
+    .cam-add .cam-add-txt{display:none;}
+    .cam-input,.cam-name{height:44px;}
+    .cam-dd-opt{padding:11px;}
+    .cam-chev,.cam-del{width:40px;height:40px;}
+  }
+</style>
+
+<div class="root main-area" id="root">
+  <div class="set-page-head">
+    <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">Inactive Reason</span>
   </div>
 
-  <!-- Add Tax form (nested) -->
-  <div class="modal-backdrop" id="dks-tax-form" style="z-index:3200;" onclick="if(event.target===this)dksCloseTaxForm()">
-    <div class="modal" style="width:520px;">
-      <div class="modal-header">
-        <span class="modal-title">Add Tax</span>
-        <button class="modal-close" onclick="dksCloseTaxForm()" aria-label="Close">&#x2715;</button>
+  <div class="ir-scroll">
+    <div class="ir-toolbar">
+      <div class="ir-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="ir-search" placeholder="Search inactive reasons..." oninput="irSearch(this.value)">
       </div>
-      <div class="modal-body">
-        <div class="dks-grid">
-          <div class="dks-field"><label class="dks-label">Calc Type</label>
-            <select class="dks-sel" id="dkt-calc"><option>Registration State</option><option>Selling State</option><option>City</option><option>County</option><option>Flat Tax</option></select></div>
-          <div class="dks-field"><label class="dks-label">Category</label>
-            <select class="dks-sel" id="dkt-cat"><option value="">Select Category</option><option>State Tax</option><option>County Tax</option><option>City Tax</option><option>Local Tax</option><option>Doc Fee Tax</option><option>Other</option></select></div>
-          <div class="dks-field"><label class="dks-label">Description</label><input class="dks-input" id="dkt-desc" placeholder="Description"></div>
-          <div class="dks-field"><label class="dks-label">Tax Variable</label>
-            <select class="dks-sel" id="dkt-var"><option>Flat Tax - No Tax Var</option><option>Variable Tax</option><option>Tiered Tax</option></select></div>
-          <div class="dks-field"><label class="dks-label">Tax Rate (%)</label><input class="dks-input" id="dkt-rate" inputmode="decimal" placeholder="0.00"></div>
-          <div class="dks-field"><label class="dks-label">Amount</label><input class="dks-input" id="dkt-amount" inputmode="decimal" placeholder="0.00"></div>
-          <div class="dks-field"><label class="dks-label">Tax Fixed</label>
-            <select class="dks-sel" id="dkt-fixed"><option>Yes</option><option>No</option></select></div>
-          <div class="dks-field"><label class="dks-label">Rate Indicator</label>
-            <select class="dks-sel" id="dkt-indicator"><option>Fixed</option><option>Percentage</option><option>Variable</option></select></div>
-          <div class="dks-field"><label class="dks-label">Tax Beginning Range</label><input class="dks-input dks-ro" value="$0.00" disabled></div>
-          <div class="dks-field"><label class="dks-label">Tax End Range</label><input class="dks-input dks-ro" value="$999,999.99" disabled></div>
-          <div class="dks-field"><label class="dks-label">Tax Base Amount</label><input class="dks-input dks-ro" value="$0.00" disabled></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-cancel" onclick="dksCloseTaxForm()">Cancel</button>
-        <button class="modal-save" onclick="dksSaveTaxForm()">Add Tax</button>
-      </div>
+      <button class="ir-btn ir-export" onclick="irExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="ir-btn-txt">Export</span></button>
+      <button class="ir-btn ir-add" onclick="irAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="ir-btn-txt">Add Reason</span></button>
+    </div>
+
+    <div class="nm-table-wrap"><div class="nm-table-scroll">
+      <table class="nm-table ir-table">
+        <thead><tr>
+          <th class="ir-th-no">No.</th>
+          <th>Reason</th>
+          <th class="ir-th-act">Action</th>
+        </tr></thead>
+        <tbody id="ir-tbody"></tbody>
+      </table>
+    </div></div>
+
+    <div class="nm-pager">
+      <div class="nm-pager-info" id="ir-pager-info"></div>
+      <div class="nm-pager-btns" id="ir-pager-btns"></div>
     </div>
   </div>
+</div>
 
+<!-- Add/Edit Reason modal -->
+<div class="ir-modal-bk" id="ir-modal" onclick="if(event.target===this)irCloseModal()">
+  <div class="ir-modal">
+    <div class="ir-modal-head">
+      <span id="ir-modal-title">Add Reason</span>
+      <button class="ir-modal-x" onclick="irCloseModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="ir-modal-body">
+      <label class="ir-field-label">Reason</label>
+      <input class="ir-field-input" id="ir-input" placeholder="Enter inactive reason" onkeydown="if(event.key==='Enter')irSaveModal()">
+    </div>
+    <div class="ir-modal-foot">
+      <button class="ir-btn-cancel" onclick="irCloseModal()">Cancel</button>
+      <button class="ir-btn-save" onclick="irSaveModal()">Save</button>
+    </div>
+  </div>
+</div>
+<script src="../../shared/leads-comms.js"></script>
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
 // Anchor "now" to match the rest of the seed data (May 23, 2026 7:00 PM)
@@ -3736,8 +3889,8 @@ document.addEventListener('keydown',(e)=>{
 });
 
 function navClick(label){
-  if(label === 'Settings') return; // already here
-  /* This page lives two folders deep (Settings/Settings_main_page/), so links use ../../ */
+  if(label === 'Settings') return; // already here (kept active)
+  /* This page lives two folders deep (Settings/User_roles/), so links use ../../ */
   var routes={
     'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
     'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
@@ -3771,54 +3924,6 @@ function closeMobileDrawer(){
   if(bd)     bd.classList.remove('open');
 }
 
-function openBcModal(){
-  const bd = document.getElementById('bc-modal-backdrop');
-  if(!bd) return;
-  bd.classList.add('open');
-  // Make sure the Location field's visibility matches the checkbox on open
-  toggleBcLocation();
-  // Focus the Customer Number input so the user can type immediately
-  setTimeout(() => {
-    const el = document.getElementById('bc-number');
-    if(el) el.focus();
-  }, 0);
-}
-
-function closeBcModal(){
-  const bd = document.getElementById('bc-modal-backdrop');
-  if(bd) bd.classList.remove('open');
-  // Reset all fields back to defaults so the next open starts clean
-  const num  = document.getElementById('bc-number');     if(num)  num.value = '';
-  const loc  = document.getElementById('bc-location');   if(loc)  loc.selectedIndex = 0;
-  const card = document.getElementById('bc-share-card'); if(card) card.checked = false;
-  const sloc = document.getElementById('bc-share-loc');  if(sloc) sloc.checked = true;
-  // Re-sync the Location column visibility with the just-reset checkbox state
-  toggleBcLocation();
-}
-
-function toggleBcLocation(){
-  // Show/hide the Location dropdown based on the "Share Location" checkbox
-  const sloc = document.getElementById('bc-share-loc');
-  const col  = document.getElementById('bc-location-col');
-  if(col) col.style.display = (sloc && sloc.checked) ? '' : 'none';
-}
-
-function handleBcBackdropClick(e){
-  // Only close when the backdrop itself is clicked, not when bubbling from inside
-  if(e.target === document.getElementById('bc-modal-backdrop')) closeBcModal();
-}
-
-function sendBusinessCard(){
-  const numEl = document.getElementById('bc-number');
-  if(!numEl) return;
-  const num = numEl.value.trim();
-  if(!num){ numEl.focus(); return; }  // require a customer number
-  closeBcModal();
-  if(typeof showNavToast === 'function'){
-    showNavToast('Business card sent', 'Sent to ' + num + '.');
-  }
-}
-
 let navToastTimer = null;
 function showNavToast(title, body){
   const t = document.getElementById('nav-toast');
@@ -3835,118 +3940,777 @@ function hideNavToast(){
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
 
-// ── Desking Module Setting ──
-var DKS_KEY='cc_desking_settings';
-var DKS_DEFAULTS={ fees:{document:255,preDelivery:0,license:81.25,registration:10,stateInspection:18.50,title:33}, loanRate:18, apr:16.9436, tax:[] };
-function dksLoad(){ try{ var s=JSON.parse(localStorage.getItem(DKS_KEY)||'null'); if(s) return s; }catch(e){} return JSON.parse(JSON.stringify(DKS_DEFAULTS)); }
-function dksNum(v){ var n=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
-function dksSetVal(id,v){ var el=document.getElementById(id); if(el) el.value=v; }
-function openDeskingSettings(){
-  var s=dksLoad();
-  dksSetVal('dks-document', s.fees.document);
-  dksSetVal('dks-loanrate', s.loanRate);
-  dksSetVal('dks-predelivery', s.fees.preDelivery);
-  dksSetVal('dks-license', s.fees.license);
-  dksSetVal('dks-registration', s.fees.registration);
-  dksSetVal('dks-inspection', s.fees.stateInspection);
-  dksSetVal('dks-title', s.fees.title);
-  dksSetVal('dks-apr', s.apr);
-  dksTaxList=Array.isArray(s.tax)?s.tax.slice():[];
-  dksRenderTax();
-  dksTab('fees');
-  var bd=document.getElementById('dks-modal-backdrop'); if(bd) bd.classList.add('open');
+// ── REPORTS ─────────────────────────────────────────────
+var RPT_KEY='cc_reports';
+var REPORTS;                 // array of report objects
+var _rptFolder='standard';   // current folder filter
+var _rptMenuId=null;         // id of report whose kebab menu is open
+
+// Inline SVGs used by the table rows
+var RPT_PLAY_SVG='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
+var RPT_STAR_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+var RPT_STAR_FILLED_SVG='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+var RPT_KEBAB_SVG='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>';
+
+function _rptEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function _rptSave(){ try{ localStorage.setItem(RPT_KEY, JSON.stringify(REPORTS)); }catch(e){} }
+
+(function _rptInit(){
+  try{ REPORTS=JSON.parse(localStorage.getItem(RPT_KEY)||'null'); }catch(e){ REPORTS=null; }
+  if(!REPORTS || !REPORTS.length){
+    REPORTS=[
+      {id:'r1',  no:1,  name:'Active-Inactive Lead Report',    owner:'System', desc:'Get Active or Inactive Leads',                                                                                source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r2',  no:2,  name:'Lead Source Report',             owner:'System', desc:'Get filtered Sourse Leads',                                                                                  source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r3',  no:3,  name:'Lead Aging Report',              owner:'System', desc:'Get leads based on aging days',                                                                              source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r4',  no:4,  name:'Lost Lead Analysis Report',      owner:'System', desc:'Get Lost (Inactive) Leads Analysis Report',                                                                  source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r5',  no:5,  name:'Lead Response Time Report',      owner:'System', desc:'Get Response Time Report',                                                                                   source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r6',  no:6,  name:'Lead Volume Report',             owner:'System', desc:'Get filtered Volume Leads',                                                                                  source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r7',  no:7,  name:'Sales Activity Report',          owner:'System', desc:'Get Report of Sales Activity',                                                                               source:'Sales',        folder:'standard', fav:false, scheduled:false},
+      {id:'r8',  no:8,  name:'Appointment Set Rate Report',    owner:'System', desc:'Get filtered Appintment Leads',                                                                              source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r9',  no:9,  name:'Salesperson Performance Report', owner:'System', desc:'Get Salesperson Performance Report',                                                                         source:'Sales',        folder:'standard', fav:false, scheduled:false},
+      {id:'r10', no:10, name:'Delivered Units Report',         owner:'System', desc:'Get Vehicles Sold within timeframe Report',                                                                  source:'Sales Source', folder:'standard', fav:false, scheduled:false},
+      {id:'r11', no:11, name:'Gross Profit Report',            owner:'System', desc:'Provides details of gross profit earned from vehicle sales',                                                 source:'Sales Source', folder:'standard', fav:false, scheduled:false},
+      {id:'r12', no:12, name:'Appointment Set vs Show Report', owner:'System', desc:'Displays the number of appointments scheduled versus customers who actually showed up, along with the show rate percentage.', source:'Appointment', folder:'standard', fav:false, scheduled:false},
+      {id:'r13', no:13, name:'Appointment Show Rate Report',   owner:'System', desc:'Displays the percentage of scheduled appointments where customers actually showed up, helping evaluate appointment effectiveness.', source:'Appointment', folder:'standard', fav:false, scheduled:false},
+      {id:'r14', no:14, name:'No-Show Report',                 owner:'System', desc:'Shows scheduled appointments where customers did not appear after the appointment time.',                     source:'Appointment',  folder:'standard', fav:false, scheduled:false},
+      {id:'r15', no:15, name:'Lead Conversion Funnel Report',  owner:'System', desc:'Tracks lead progression from new to sold across funnel stages',                                              source:'Lead Source',  folder:'standard', fav:false, scheduled:false},
+      {id:'r16', no:16, name:'Sales Forecast Report',          owner:'System', desc:'Projects expected sales and revenue for the upcoming period',                                                source:'Sales',        folder:'standard', fav:false, scheduled:false}
+    ];
+    _rptSave();
+  }
+})();
+
+function getFilteredReports(){
+  if(_rptFolder==='favorite')  return REPORTS.filter(function(r){ return r.fav; });
+  if(_rptFolder==='scheduled') return REPORTS.filter(function(r){ return r.scheduled; });
+  return REPORTS.filter(function(r){ return r.folder===_rptFolder; });
 }
-function closeDeskingSettings(){ var bd=document.getElementById('dks-modal-backdrop'); if(bd) bd.classList.remove('open'); }
-function dksTab(key){
-  document.querySelectorAll('#dks-modal-backdrop .dks-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===key); });
-  document.querySelectorAll('#dks-modal-backdrop .dks-panel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel===key); });
+
+function updateReportCounts(){
+  var counts={
+    favorite:  REPORTS.filter(function(r){ return r.fav; }).length,
+    standard:  REPORTS.filter(function(r){ return r.folder==='standard'; }).length,
+    custom:    REPORTS.filter(function(r){ return r.folder==='custom'; }).length,
+    scheduled: REPORTS.filter(function(r){ return r.scheduled; }).length
+  };
+  Object.keys(counts).forEach(function(k){
+    var el=document.querySelector('.rpt-nav-count[data-count="'+k+'"]');
+    if(el) el.textContent=counts[k];
+  });
 }
-// Tax list (rows are read-only; entries created via the Add Tax form)
-var DKS_TAX_TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
-var dksTaxList=[];
-function dksMoney(n){ n=+n||0; return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function dksEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-function dksRenderTax(){
-  var tb=document.getElementById('dks-tax-body'); if(!tb) return;
-  if(!dksTaxList.length){ tb.innerHTML='<tr class="dks-tax-empty"><td colspan="6">No Taxes Found</td></tr>'; return; }
-  tb.innerHTML=dksTaxList.map(function(r,i){
-    return '<tr><td>'+(i+1)+'</td><td>'+dksEsc(r.calcType||'—')+'</td><td>'+dksEsc(r.category||'—')+'</td><td>'+(r.rate||0)+'</td><td>'+dksMoney(r.amount)+'</td>'+
-      '<td><button class="dks-tax-del" title="Remove" onclick="dksRemoveTax('+i+')">'+DKS_TAX_TRASH+'</button></td></tr>';
+
+function renderReports(){
+  var tb=document.getElementById('rpt-tbody'); if(!tb) return;
+  var list=getFilteredReports();
+  updateReportCounts();
+  var hdr=document.getElementById('rpt-count');
+  if(hdr) hdr.innerHTML='<b>'+list.length+'</b> Report Found';
+  var cbar=document.getElementById('rpt-create-bar');
+  if(cbar) cbar.style.display = _rptFolder==='custom' ? 'block' : 'none';
+  if(!list.length){
+    var msg = _rptFolder==='favorite'  ? 'No favorite reports yet — star a report to add it here.'
+            : _rptFolder==='custom'    ? 'No custom reports yet — click Create New Report to add one.'
+            : _rptFolder==='scheduled' ? 'No scheduled reports yet — schedule a report to see it here.'
+            : 'No reports found.';
+    tb.innerHTML='<tr><td colspan="5"><div class="rpt-empty">'+msg+'</div></td></tr>';
+    return;
+  }
+  tb.innerHTML=list.map(function(r){
+    return '<tr class="rpt-row" data-id="'+r.id+'">'+
+      '<td><span class="rpt-no">'+r.no+'</span></td>'+
+      '<td><div class="rpt-name">'+_rptEsc(r.name)+'</div>'+(r.owner?'<div class="rpt-owner">'+_rptEsc(r.owner)+'</div>':'')+'</td>'+
+      '<td><div class="rpt-desc">'+_rptEsc(r.desc)+'</div></td>'+
+      '<td><span class="rpt-src">'+_rptEsc(r.source)+'</span>'+(r.scheduled?'<span class="rpt-sched-badge">'+RPT_SCHED_SVG+_rptEsc(r.schedFreq||'Scheduled')+'</span>':'')+'</td>'+
+      '<td><div class="rpt-act">'+
+        '<button class="rpt-run" onclick="event.stopPropagation(); runReport(\''+r.id+'\')" title="Run report">'+RPT_PLAY_SVG+'Run</button>'+
+        '<button class="rpt-star'+(r.fav?' on':'')+'" onclick="event.stopPropagation(); toggleReportFav(\''+r.id+'\')" title="'+(r.fav?'Unfavorite':'Add to favorites')+'">'+(r.fav?RPT_STAR_FILLED_SVG:RPT_STAR_SVG)+'</button>'+
+        '<button class="rpt-kebab" onclick="openRptMenu(event,\''+r.id+'\')" title="More actions">'+RPT_KEBAB_SVG+'</button>'+
+      '</div></td>'+
+    '</tr>';
   }).join('');
 }
-function dksReadTax(){ return dksTaxList; }
-function dksRemoveTax(i){ dksTaxList.splice(i,1); dksRenderTax(); }
 
-// Add Tax form (nested modal)
-function dksAddTax(){
-  dksSetVal('dkt-calc','Registration State'); dksSetVal('dkt-cat',''); dksSetVal('dkt-desc',''); dksSetVal('dkt-var','Flat Tax - No Tax Var');
-  dksSetVal('dkt-rate',''); dksSetVal('dkt-amount',''); dksSetVal('dkt-fixed','Yes'); dksSetVal('dkt-indicator','Fixed');
-  var bd=document.getElementById('dks-tax-form'); if(bd) bd.classList.add('open');
-}
-function dksCloseTaxForm(){ var bd=document.getElementById('dks-tax-form'); if(bd) bd.classList.remove('open'); }
-function dksSaveTaxForm(){
-  dksTaxList.push({
-    calcType:(document.getElementById('dkt-calc')||{}).value||'',
-    category:(document.getElementById('dkt-cat')||{}).value||'',
-    description:(document.getElementById('dkt-desc')||{}).value||'',
-    taxVariable:(document.getElementById('dkt-var')||{}).value||'',
-    rate:dksNum((document.getElementById('dkt-rate')||{}).value),
-    amount:dksNum((document.getElementById('dkt-amount')||{}).value),
-    taxFixed:(document.getElementById('dkt-fixed')||{}).value||'',
-    rateIndicator:(document.getElementById('dkt-indicator')||{}).value||''
+function setReportFolder(folder){
+  _rptFolder=folder;
+  document.querySelectorAll('#rpt-nav .rpt-nav-item').forEach(function(b){
+    b.classList.toggle('active', b.dataset.folder===folder);
   });
-  dksRenderTax();
-  dksCloseTaxForm();
+  if(typeof closeRptMenu==='function') closeRptMenu();
+  renderReports();
 }
-function saveDeskingSettings(){
-  var s={
-    fees:{
-      document:dksNum((document.getElementById('dks-document')||{}).value),
-      preDelivery:dksNum((document.getElementById('dks-predelivery')||{}).value),
-      license:dksNum((document.getElementById('dks-license')||{}).value),
-      registration:dksNum((document.getElementById('dks-registration')||{}).value),
-      stateInspection:dksNum((document.getElementById('dks-inspection')||{}).value),
-      title:dksNum((document.getElementById('dks-title')||{}).value)
-    },
-    loanRate:dksNum((document.getElementById('dks-loanrate')||{}).value),
-    apr:dksNum((document.getElementById('dks-apr')||{}).value),
-    tax:dksReadTax()
-  };
-  try{ localStorage.setItem(DKS_KEY, JSON.stringify(s)); }catch(e){}
-  closeDeskingSettings();
-  if(typeof showNavToast==='function') showNavToast('Settings saved','Desking module settings updated.');
+
+// ── Row actions ────────────────────────────────────────
+var _rptSchedId=null;
+var RPT_SCHED_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+
+var _rptRunId=null;
+var _rptRunStatus='';
+var RUN_STATUSES=['Active','Inactive'];
+function runReport(id){
+  var r=REPORTS.find(function(x){ return x.id===id; }); if(!r) return;
+  _rptRunId=id;
+  pickRunStatus('');
+  _rptRunStart=null; _rptRunEnd=null;
+  ['start','end'].forEach(function(w){ var l=document.getElementById('rpt-run-'+w+'-label'); if(l){ l.textContent='mm/dd/yyyy'; l.classList.add('ph'); } });
+  closeRcal();
+  var bd=document.getElementById('rpt-run-backdrop'); if(bd) bd.classList.add('open');
 }
-document.addEventListener('keydown', function(e){
-  if(e.key!=='Escape') return;
-  var tf=document.getElementById('dks-tax-form');
-  if(tf && tf.classList.contains('open')){ dksCloseTaxForm(); return; }
-  var tam=document.getElementById('tam-modal-backdrop');
-  if(tam && tam.classList.contains('open')){ closeTranscriptAlert(); return; }
-  closeDeskingSettings();
+function closeRunFilter(){ closeRunStatus(); closeRcal(); var bd=document.getElementById('rpt-run-backdrop'); if(bd) bd.classList.remove('open'); }
+function runFilterNext(){
+  var r=REPORTS.find(function(x){ return x.id===_rptRunId; });
+  closeRunFilter();
+  if(r && typeof showNavToast==='function') showNavToast('Running report', r.name+(_rptRunStatus?' — '+_rptRunStatus:''));
+}
+
+// Custom Select Status dropdown (consistent with app popups)
+function toggleRunStatus(e){
+  if(e) e.stopPropagation();
+  var menu=document.getElementById('rpt-run-status-menu');
+  var field=document.getElementById('rpt-run-status-field');
+  if(!menu||!field) return;
+  if(menu.classList.contains('open')){ closeRunStatus(); return; }
+  menu.innerHTML=['<div class="rpt-statpick-item'+(_rptRunStatus===''?' sel':'')+'" onclick="pickRunStatus(\'\')">-- Select Status --</div>']
+    .concat(RUN_STATUSES.map(function(s){ return '<div class="rpt-statpick-item'+(_rptRunStatus===s?' sel':'')+'" onclick="pickRunStatus(\''+s+'\')">'+s+'</div>'; })).join('');
+  var r=field.getBoundingClientRect();
+  menu.style.left=r.left+'px'; menu.style.top=(r.bottom+5)+'px'; menu.style.width=r.width+'px';
+  menu.classList.add('open'); field.classList.add('open');
+}
+function closeRunStatus(){
+  var m=document.getElementById('rpt-run-status-menu'); if(m) m.classList.remove('open');
+  var f=document.getElementById('rpt-run-status-field'); if(f) f.classList.remove('open');
+}
+function pickRunStatus(v){
+  _rptRunStatus=v;
+  var lbl=document.getElementById('rpt-run-status-label');
+  if(lbl){ lbl.textContent=v||'-- Select Status --'; lbl.classList.toggle('ph', v===''); }
+  closeRunStatus();
+}
+document.addEventListener('mousedown', function(e){
+  var menu=document.getElementById('rpt-run-status-menu');
+  var field=document.getElementById('rpt-run-status-field');
+  if(menu && menu.classList.contains('open')){
+    if(menu.contains(e.target) || (field && field.contains(e.target))) return;
+    closeRunStatus();
+  }
 });
 
-// ── Transcript Alert Management ──
-var TAM_KEY='cc_transcript_alert';
-function openTranscriptAlert(){
-  var s={}; try{ s=JSON.parse(localStorage.getItem(TAM_KEY)||'{}')||{}; }catch(e){ s={}; }
-  document.getElementById('tam-allow').checked = s.allow!==false;
-  document.getElementById('tam-phone').value = s.phone||'';
-  document.getElementById('tam-email').value = s.email||'';
-  document.getElementById('tam-keyword').value = s.keyword||'';
-  var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.add('open');
+// Custom Start/End Date mini-calendar (consistent with app popups)
+var _rptRunStart=null, _rptRunEnd=null, _rcalTarget=null, _rcalY=0, _rcalM=0;
+var RCAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var RCAL_DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
+function _rcalPad(n){ return (n<10?'0':'')+n; }
+function _rcalFmt(d){ return _rcalPad(d.getMonth()+1)+'/'+_rcalPad(d.getDate())+'/'+d.getFullYear(); }
+function openRcal(e, which){
+  if(e) e.stopPropagation();
+  closeRunStatus();
+  _rcalTarget=which;
+  var sel = which==='start'?_rptRunStart:_rptRunEnd;
+  var base = sel || new Date();
+  _rcalY=base.getFullYear(); _rcalM=base.getMonth();
+  renderRcal();
+  var field=document.getElementById('rpt-run-'+which+'-field');
+  var pop=document.getElementById('rcal-pop'); if(!field||!pop) return;
+  pop.classList.add('open');
+  var r=field.getBoundingClientRect();
+  var pw=pop.offsetWidth||262, ph=pop.offsetHeight||300;
+  var left=r.left; if(left+pw>window.innerWidth-8) left=window.innerWidth-8-pw; if(left<8) left=8;
+  var top=r.bottom+5; if(top+ph>window.innerHeight-8) top=Math.max(8, r.top-ph-5);
+  pop.style.left=left+'px'; pop.style.top=top+'px';
 }
-function closeTranscriptAlert(){ var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); }
-function saveTranscriptAlert(){
-  var data={
-    allow: document.getElementById('tam-allow').checked,
-    phone: document.getElementById('tam-phone').value.trim(),
-    email: document.getElementById('tam-email').value.trim(),
-    keyword: document.getElementById('tam-keyword').value.trim()
-  };
-  try{ localStorage.setItem(TAM_KEY, JSON.stringify(data)); }catch(e){}
-  closeTranscriptAlert();
-  if(typeof showNavToast==='function') showNavToast('Transcript Alert saved','Your transcript alert settings were updated.');
+function closeRcal(){ var p=document.getElementById('rcal-pop'); if(p) p.classList.remove('open'); _rcalTarget=null; }
+function rcalPrev(e){ if(e) e.stopPropagation(); _rcalM--; if(_rcalM<0){ _rcalM=11; _rcalY--; } renderRcal(); }
+function rcalNext(e){ if(e) e.stopPropagation(); _rcalM++; if(_rcalM>11){ _rcalM=0; _rcalY++; } renderRcal(); }
+function renderRcal(){
+  var title=document.getElementById('rcal-title'); if(title) title.textContent=RCAL_MONTHS[_rcalM]+' '+_rcalY;
+  var grid=document.getElementById('rcal-grid'); if(!grid) return;
+  var html=RCAL_DOW.map(function(d){ return '<div class="rcal-dow">'+d+'</div>'; }).join('');
+  var first=new Date(_rcalY,_rcalM,1).getDay();
+  var days=new Date(_rcalY,_rcalM+1,0).getDate();
+  var sel=_rcalTarget==='start'?_rptRunStart:_rptRunEnd;
+  var today=new Date();
+  for(var i=0;i<first;i++) html+='<div class="rcal-day empty"></div>';
+  for(var d=1;d<=days;d++){
+    var cls='rcal-day';
+    if(sel && sel.getFullYear()===_rcalY && sel.getMonth()===_rcalM && sel.getDate()===d) cls+=' sel';
+    if(today.getFullYear()===_rcalY && today.getMonth()===_rcalM && today.getDate()===d) cls+=' today';
+    html+='<div class="'+cls+'" onclick="rcalPick(event,'+d+')">'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+function rcalPick(e, d){
+  if(e) e.stopPropagation();
+  var date=new Date(_rcalY,_rcalM,d);
+  var w=_rcalTarget;
+  if(w==='start') _rptRunStart=date; else _rptRunEnd=date;
+  var lbl=document.getElementById('rpt-run-'+w+'-label');
+  if(lbl){ lbl.textContent=_rcalFmt(date); lbl.classList.remove('ph'); }
+  closeRcal();
+}
+document.addEventListener('mousedown', function(e){
+  var pop=document.getElementById('rcal-pop');
+  if(pop && pop.classList.contains('open')){
+    var sf=document.getElementById('rpt-run-start-field');
+    var ef=document.getElementById('rpt-run-end-field');
+    if(pop.contains(e.target) || (sf&&sf.contains(e.target)) || (ef&&ef.contains(e.target))) return;
+    closeRcal();
+  }
+});
+
+function toggleReportFav(id){
+  var r=REPORTS.find(function(x){ return x.id===id; }); if(!r) return;
+  r.fav=!r.fav; _rptSave(); renderReports();
+  if(typeof showNavToast==='function') showNavToast(r.fav?'Added to favorites':'Removed from favorites', r.name);
 }
 
-document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });
+// Floating per-row kebab menu (single menu, repositioned at the clicked button)
+function openRptMenu(e, id){
+  e.stopPropagation(); _rptMenuId=id;
+  var menu=document.getElementById('rpt-menu'); if(!menu) return;
+  menu.classList.add('open');
+  var rect=e.currentTarget.getBoundingClientRect();
+  var mw=menu.offsetWidth||172, mh=menu.offsetHeight||92;
+  var left=rect.right-mw; if(left<8) left=8;
+  var top=rect.bottom+6; if(top+mh>window.innerHeight-8) top=Math.max(8, rect.top-mh-6);
+  menu.style.left=left+'px'; menu.style.top=top+'px';
+}
+function closeRptMenu(){ var m=document.getElementById('rpt-menu'); if(m) m.classList.remove('open'); _rptMenuId=null; }
+
+function rptMenuDuplicate(){
+  var id=_rptMenuId; closeRptMenu();
+  var r=REPORTS.find(function(x){ return x.id===id; }); if(!r) return;
+  window.location.href='../duplicate_report/duplicate_report.html?id='+encodeURIComponent(r.id)+'&name='+encodeURIComponent(r.name);
+}
+
+function createNewReport(){ window.location.href='../create_report/create_report.html'; }
+
+function rptMenuSchedule(){
+  var id=_rptMenuId; closeRptMenu();
+  var r=REPORTS.find(function(x){ return x.id===id; }); if(!r) return;
+  window.location.href='../schedule_report/schedule_report.html?id='+encodeURIComponent(r.id)+'&name='+encodeURIComponent(r.name);
+}
+
+function openScheduleModal(id){
+  var r=REPORTS.find(function(x){ return x.id===id; }); if(!r) return;
+  _rptSchedId=id;
+  var nm=document.getElementById('rpt-sched-name'); if(nm) nm.textContent=r.name;
+  var fr=document.getElementById('rpt-sched-freq'); if(fr) fr.value=r.schedFreq||'Weekly';
+  var bd=document.getElementById('rpt-sched-backdrop'); if(bd) bd.classList.add('open');
+}
+function closeScheduleModal(){ var bd=document.getElementById('rpt-sched-backdrop'); if(bd) bd.classList.remove('open'); _rptSchedId=null; }
+function confirmSchedule(){
+  var id=_rptSchedId;
+  var r=REPORTS.find(function(x){ return x.id===id; });
+  var freq=(document.getElementById('rpt-sched-freq')||{}).value||'Weekly';
+  closeScheduleModal();
+  if(!r) return;
+  r.scheduled=true; r.schedFreq=freq; _rptSave(); renderReports();
+  if(typeof showNavToast==='function') showNavToast('Report scheduled', r.name+' — '+freq+'.');
+}
+
+// Close the floating menu on outside click / Escape
+document.addEventListener('mousedown', function(e){
+  var menu=document.getElementById('rpt-menu');
+  if(menu && menu.classList.contains('open') && !menu.contains(e.target) && !(e.target.closest&&e.target.closest('.rpt-kebab'))) closeRptMenu();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRptMenu(); closeScheduleModal(); } });
+
+document.addEventListener('DOMContentLoaded', function(){
+  if(typeof renderNotifications==='function') renderNotifications();
+  irInit();
+});
+
+/* ===== Inactive Reason ===== */
+var IR_KEY='cc_inactive_reasons';
+var IR_PER=10;
+var irItems=[];
+var irPage=1;
+var _irEditId=null;
+var _irQuery='';
+function irEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function irDefaults(){
+  return ['Test Reason','By mistake reason','Mistackly added','For Live Test','Not In Market',
+    'Customer Bought Car Already','Duplicate Reason','Wrong Number','No Longer Interested',
+    'Out of Budget','Purchased Elsewhere','Unresponsive','Bad Credit'].map(function(n,i){ return {id:'r'+(i+1), name:n}; });
+}
+function irLoad(){ try{ var s=JSON.parse(localStorage.getItem(IR_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return irDefaults(); }
+function irPersist(){ try{ localStorage.setItem(IR_KEY, JSON.stringify(irItems)); }catch(e){} }
+function irInit(){ if(!document.getElementById('ir-tbody')) return; irItems=irLoad(); irRender(); }
+function irSearch(q){ _irQuery=(q||'').toLowerCase().trim(); irPage=1; irRender(); }
+function irFiltered(){ return irItems.filter(function(it){ return !_irQuery || it.name.toLowerCase().indexOf(_irQuery)>=0; }); }
+function irRender(){
+  var tb=document.getElementById('ir-tbody'); if(!tb) return;
+  var list=irFiltered();
+  var tp=Math.max(1, Math.ceil(list.length/IR_PER));
+  if(irPage>tp) irPage=tp;
+  var start=(irPage-1)*IR_PER, rows=list.slice(start, start+IR_PER);
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_irQuery?'No reasons match your search.':'No inactive reasons yet — click Add Reason.')+'</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(it,i){
+      var no=start+i+1;
+      return '<tr>'+
+        '<td class="ir-no">'+no+'</td>'+
+        '<td>'+irEsc(it.name)+'</td>'+
+        '<td><div class="ir-actions">'+
+          '<button class="ir-icon edit" onclick="irEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
+          '<button class="ir-icon del" onclick="irDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  irRenderPager(list.length, tp);
+}
+function irRenderPager(total, tp){
+  var start=total?((irPage-1)*IR_PER+1):0, end=Math.min(irPage*IR_PER,total);
+  var info=document.getElementById('ir-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(irPage<=1?'disabled':'')+' onclick="irGo('+(irPage-1)+')">Prev</button>');
+  irPageList(irPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===irPage?' active':'')+'" onclick="irGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(irPage>=tp?'disabled':'')+' onclick="irGo('+(irPage+1)+')">Next</button>');
+  var bb=document.getElementById('ir-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function irPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function irGo(p){ var tp=Math.max(1,Math.ceil(irFiltered().length/IR_PER)); if(p<1||p>tp) return; irPage=p; irRender(); }
+function irOpenModal(){ document.getElementById('ir-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('ir-input'); if(i) i.focus(); }, 40); }
+function irCloseModal(){ document.getElementById('ir-modal').classList.remove('open'); }
+function irAdd(){ _irEditId=null; document.getElementById('ir-modal-title').textContent='Add Reason'; document.getElementById('ir-input').value=''; irOpenModal(); }
+function irEdit(id){ var it=irItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _irEditId=id; document.getElementById('ir-modal-title').textContent='Edit Reason'; document.getElementById('ir-input').value=it.name; irOpenModal(); }
+function irSaveModal(){
+  var name=document.getElementById('ir-input').value.trim();
+  if(!name){ if(typeof showNavToast==='function') showNavToast('Reason required','Enter a reason name.'); return; }
+  var editing=!!_irEditId;
+  if(editing){ var it=irItems.filter(function(x){ return x.id===_irEditId; })[0]; if(it) it.name=name; }
+  else { irItems.push({id:'r'+Date.now(), name:name}); _irQuery=''; var si=document.getElementById('ir-search'); if(si) si.value=''; irPage=Math.max(1,Math.ceil(irItems.length/IR_PER)); }
+  irPersist(); irCloseModal(); irRender();
+  if(typeof showNavToast==='function') showNavToast(editing?'Reason updated':'Reason added', name);
+}
+function irDelete(id){
+  var it=irItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  irItems=irItems.filter(function(x){ return x.id!==id; });
+  irPersist(); irRender();
+  if(typeof showNavToast==='function') showNavToast('Reason deleted', it.name+' was removed.');
+}
+function irExport(){
+  if(!irItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no inactive reasons to export.'); return; }
+  var rows=[['No.','Reason']].concat(irItems.map(function(it,i){ return [String(i+1), it.name]; }));
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='inactive_reasons.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(typeof showNavToast==='function') showNavToast('Exported', irItems.length+' inactive reason'+(irItems.length===1?'':'s')+' exported to CSV.');
+}
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var m=document.getElementById('ir-modal'); if(m && m.classList.contains('open')) irCloseModal(); }
+});
+
+/* ===== Notification Management ===== */
+var NM_KEY='cc_notif_recipients';
+var NM_PER=10;
+var nmPage=1;
+var nmRecipients=[];
+var NM_ROSTER=[
+  {name:'Ralph Edwards',number:'923 105 5609',role:'Sales'},
+  {name:'Lori McCoy',number:'245 113 8907',role:'Management'},
+  {name:'Kathryn Murphy',number:'468 764 1250',role:'Marketing'},
+  {name:'Annette Black',number:'135 978 6423',role:'Human Resources'},
+  {name:'Darlene Robertson',number:'789 432 1567',role:'Finance'},
+  {name:'Esther Howard',number:'567 890 2341',role:'Customer Support'},
+  {name:'Cody Fisher',number:'412 345 6789',role:'Product Development'},
+  {name:'Albert Flores',number:'876 543 2109',role:'IT'},
+  {name:'Wade Warren',number:'345 678 9012',role:'Legal'},
+  {name:'Guy Hawkins',number:'234 567 8901',role:'Operations'},
+  {name:'Jane Cooper',number:'612 778 4421',role:'Sales'},
+  {name:'Robert Fox',number:'998 220 7745',role:'Management'},
+  {name:'Jenny Wilson',number:'445 102 3389',role:'Marketing'},
+  {name:'Leslie Alexander',number:'772 654 1190',role:'Customer Support'},
+  {name:'Devon Lane',number:'330 887 2256',role:'Finance'},
+  {name:'Jacob Jones',number:'561 433 9087',role:'IT'},
+  {name:'Marvin McKinney',number:'209 765 4432',role:'Operations'},
+  {name:'Floyd Miles',number:'884 221 6678',role:'Product Development'},
+  {name:'Dianne Russell',number:'117 902 5534',role:'Human Resources'},
+  {name:'Courtney Henry',number:'640 318 7799',role:'Legal'},
+  {name:'Theresa Webb',number:'503 226 4410',role:'Sales'},
+  {name:'Brooklyn Simmons',number:'729 845 1123',role:'Marketing'},
+  {name:'Cameron Williamson',number:'318 660 2287',role:'Management'},
+  {name:'Savannah Nguyen',number:'905 412 7768',role:'Customer Support'},
+  {name:'Eleanor Pena',number:'214 778 9930',role:'Finance'},
+  {name:'Bessie Cooper',number:'667 339 1102',role:'IT'}
+];
+function nmEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var NM_AV_COLORS=[
+  {bg:'rgba(139,92,246,.18)',fg:'#b794ff'},
+  {bg:'rgba(20,184,166,.18)',fg:'#2dd4bf'},
+  {bg:'rgba(245,166,35,.18)',fg:'#f5a623'},
+  {bg:'rgba(79,124,255,.20)',fg:'#6e9dff'},
+  {bg:'rgba(34,200,138,.18)',fg:'#22c88a'},
+  {bg:'rgba(232,85,85,.18)',fg:'#e85555'},
+  {bg:'rgba(236,72,153,.18)',fg:'#f472b6'}
+];
+function nmAvatar(name){
+  var parts=String(name||'').trim().split(/\s+/);
+  var ini=((parts[0]&&parts[0][0])||'')+((parts.length>1&&parts[parts.length-1][0])||'');
+  ini=ini.toUpperCase();
+  var h=0; for(var i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0;
+  var c=NM_AV_COLORS[h%NM_AV_COLORS.length];
+  return '<span class="nm-av" style="background:'+c.bg+';color:'+c.fg+';">'+nmEsc(ini)+'</span>';
+}
+function nmAttr(s){ return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function nmDefaults(){ return NM_ROSTER.slice(0,12).map(function(p){ return {name:p.name,number:p.number,role:p.role,sms:true,email:true}; }); }
+function nmLoad(){ try{ var s=JSON.parse(localStorage.getItem(NM_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return nmDefaults(); }
+function nmPersist(){ try{ localStorage.setItem(NM_KEY, JSON.stringify(nmRecipients)); }catch(e){} }
+
+function nmInit(){
+  if(!document.getElementById('nm-tbody')) return;
+  nmRecipients=nmLoad();
+  nmRender();
+}
+function nmTotalPages(){ return Math.max(1, Math.ceil(nmRecipients.length/NM_PER)); }
+function nmRender(){
+  if(nmPage>nmTotalPages()) nmPage=nmTotalPages();
+  var start=(nmPage-1)*NM_PER, rows=nmRecipients.slice(start,start+NM_PER);
+  var tb=document.getElementById('nm-tbody'); if(!tb) return;
+  if(!nmRecipients.length){
+    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">No recipients yet — add one above.</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(r,i){
+      var idx=start+i;
+      return '<tr>'+
+        '<td class="nm-user"><div class="nm-user-cell">'+nmAvatar(r.name)+'<span>'+nmEsc(r.name)+'</span></div></td>'+
+        '<td class="nm-num">'+nmEsc(r.number)+'</td>'+
+        '<td>'+nmEsc(r.role)+'</td>'+
+        '<td><div class="nm-notif-cell">'+nmCheck(idx,'sms',r.sms)+nmCheck(idx,'email',r.email)+'</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  nmRenderPager();
+}
+function nmCheck(idx,ch,on){
+  return '<label class="nm-check"><input type="checkbox" data-idx="'+idx+'" data-ch="'+ch+'"'+(on?' checked':'')+' onchange="nmToggle(this)"><span class="nm-box"></span><span class="nm-ck-lbl">'+(ch==='sms'?'SMS':'Email')+'</span></label>';
+}
+function nmToggle(cb){
+  var idx=+cb.getAttribute('data-idx'), ch=cb.getAttribute('data-ch');
+  if(nmRecipients[idx]){ nmRecipients[idx][ch]=cb.checked; nmPersist(); }
+}
+function nmRenderPager(){
+  var total=nmRecipients.length, tp=nmTotalPages();
+  var start=total?((nmPage-1)*NM_PER+1):0, end=Math.min(nmPage*NM_PER,total);
+  var info=document.getElementById('nm-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(nmPage<=1?'disabled':'')+' onclick="nmGo('+(nmPage-1)+')">Prev</button>');
+  nmPageList(nmPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===nmPage?' active':'')+'" onclick="nmGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(nmPage>=tp?'disabled':'')+' onclick="nmGo('+(nmPage+1)+')">Next</button>');
+  var bb=document.getElementById('nm-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function nmPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function nmGo(p){ var tp=nmTotalPages(); if(p<1||p>tp) return; nmPage=p; nmRender(); }
+
+/* recipient dropdown */
+var _nmDD=null;
+function nmAvailable(){
+  var have={}; nmRecipients.forEach(function(r){ have[r.name]=1; });
+  return NM_ROSTER.filter(function(p){ return !have[p.name]; });
+}
+function nmDDPop(){ var p=document.getElementById('nm-dd-pop'); if(!p){ p=document.createElement('div'); p.id='nm-dd-pop'; document.body.appendChild(p); } return p; }
+function nmDDToggle(btn){
+  var dd=btn.closest('.nm-dd');
+  if(dd.classList.contains('open')){ nmDDClose(); return; }
+  nmDDClose(); _nmDD=dd; dd.classList.add('open');
+  var pop=nmDDPop(), avail=nmAvailable();
+  pop.innerHTML = avail.length
+    ? avail.map(function(p){ return '<div class="nm-dd-opt" onclick="nmDDPick(\''+nmAttr(p.name)+'\')"><span>'+nmEsc(p.name)+'</span><span class="nm-opt-sub">'+nmEsc(p.role)+'</span></div>'; }).join('')
+    : '<div class="nm-dd-empty">All users have been added</div>';
+  pop.classList.add('open');
+  var r=btn.getBoundingClientRect();
+  pop.style.width=r.width+'px';
+  var ph=pop.offsetHeight, left=r.left, top=r.bottom+4;
+  if(top+ph>window.innerHeight-8) top=Math.max(8, r.top-4-ph);
+  if(left+r.width>window.innerWidth-8) left=window.innerWidth-8-r.width;
+  if(left<8) left=8;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+}
+function nmDDPick(name){
+  if(!_nmDD) return;
+  _nmDD.setAttribute('data-value',name);
+  var lbl=_nmDD.querySelector('.nm-dd-val'); lbl.textContent=name; lbl.classList.remove('ph');
+  nmDDClose();
+}
+function nmDDClose(){
+  var pop=document.getElementById('nm-dd-pop'); if(pop) pop.classList.remove('open');
+  document.querySelectorAll('.nm-dd.open').forEach(function(d){ d.classList.remove('open'); });
+  _nmDD=null;
+}
+document.addEventListener('mousedown', function(e){
+  if(e.target.closest && (e.target.closest('.nm-dd')||e.target.closest('#nm-dd-pop'))) return;
+  nmDDClose();
+});
+window.addEventListener('keydown', function(e){ if(e.key==='Escape') nmDDClose(); });
+window.addEventListener('scroll', function(){ nmDDClose(); }, true);
+
+function nmAddRecipient(){
+  var dd=document.getElementById('nm-recip');
+  var name=dd.getAttribute('data-value')||'';
+  if(!name){ if(typeof showNavToast==='function') showNavToast('No recipient selected','Choose a recipient from the dropdown first.'); return; }
+  if(nmRecipients.some(function(r){ return r.name===name; })){
+    if(typeof showNavToast==='function') showNavToast('Already added', name+' is already a recipient.');
+    return;
+  }
+  var person=NM_ROSTER.filter(function(p){ return p.name===name; })[0];
+  if(!person) return;
+  nmRecipients.push({name:person.name,number:person.number,role:person.role,sms:true,email:true});
+  nmPersist();
+  dd.setAttribute('data-value','');
+  var lbl=dd.querySelector('.nm-dd-val'); lbl.textContent='Select a recipient'; lbl.classList.add('ph');
+  nmPage=nmTotalPages();
+  nmRender();
+  if(typeof showNavToast==='function') showNavToast('Recipient added', person.name+' will now receive notifications.');
+}
+
+/* ===== CRM Alert Management ===== */
+var CAM_KEY='cc_crm_alerts';
+var CAM_FIELDS=['Total In Call','Total Out Call','Total In SMS','Total Out SMS','Total Talk Time','Total Email','Lead Count','Appointment Count','No-Show Count','Sold Count'];
+var CAM_OPS=['Less Than','Greater Than','Equals','Not Equals','Greater Than or Equal','Less Than or Equal'];
+var CAM_FREQ=['Real-Time','Every 15 Minutes','Every 30 Minutes','Every hour','Every Day','Every Week'];
+
+function camEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function camOpt(list, sel, ph){ var h=ph?'<option value="">'+ph+'</option>':''; return h+list.map(function(o){return '<option'+(o===sel?' selected':'')+'>'+camEsc(o)+'</option>';}).join(''); }
+function camFieldOptions(sel){ return camOpt(CAM_FIELDS, sel, 'Select Field'); }
+function camOpOptions(sel){ return camOpt(CAM_OPS, sel, 'Select Operator'); }
+function camFreqOptions(sel){ return camOpt(CAM_FREQ, sel||'Every hour', null); }
+
+/* ----- custom popup dropdown ----- */
+function camDDList(type){ return type==='freq'?CAM_FREQ : (type==='field'?CAM_FIELDS : (type==='op'?CAM_OPS : [])); }
+function camDDPlaceholder(type){ return type==='field'?'Select Field' : (type==='op'?'Select Operator' : ''); }
+function camDDHTML(type, extraClass, value){
+  var ph=camDDPlaceholder(type);
+  var hasVal = value!=null && value!=='';
+  var label = hasVal ? value : (ph||'Select');
+  return '<div class="cam-dd '+extraClass+'" data-type="'+type+'" data-value="'+camEsc(hasVal?value:'')+'">'+
+    '<button type="button" class="cam-dd-btn" onclick="camDDToggle(this)">'+
+      '<span class="cam-dd-val'+(hasVal?'':' ph')+'">'+camEsc(label)+'</span>'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
+    '</button>'+
+  '</div>';
+}
+var _camDD=null;
+function camDDPop(){
+  var p=document.getElementById('cam-dd-pop');
+  if(!p){ p=document.createElement('div'); p.id='cam-dd-pop'; document.body.appendChild(p); }
+  return p;
+}
+function camDDToggle(btn){
+  var dd=btn.closest('.cam-dd');
+  if(dd.classList.contains('open')){ camDDClose(); return; }
+  camDDClose();
+  _camDD=dd; dd.classList.add('open');
+  var type=dd.getAttribute('data-type'), cur=dd.getAttribute('data-value')||'';
+  var pop=camDDPop();
+  pop.innerHTML=camDDList(type).map(function(o){
+    return '<div class="cam-dd-opt'+(o===cur?' sel':'')+'" onclick="camDDPick(this)">'+camEsc(o)+'</div>';
+  }).join('');
+  pop.classList.add('open');
+  var r=btn.getBoundingClientRect();
+  pop.style.width=r.width+'px';
+  var ph=pop.offsetHeight, left=r.left, top=r.bottom+4;
+  if(top+ph>window.innerHeight-8) top=Math.max(8, r.top-4-ph);
+  if(left+r.width>window.innerWidth-8) left=window.innerWidth-8-r.width;
+  if(left<8) left=8;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+}
+function camDDPick(opt){
+  if(!_camDD) return;
+  var val=opt.textContent;
+  _camDD.setAttribute('data-value', val);
+  var lbl=_camDD.querySelector('.cam-dd-val');
+  lbl.textContent=val; lbl.classList.remove('ph');
+  camDDClose();
+}
+function camDDClose(){
+  var pop=document.getElementById('cam-dd-pop');
+  if(pop) pop.classList.remove('open');
+  document.querySelectorAll('.cam-dd.open').forEach(function(d){ d.classList.remove('open'); });
+  _camDD=null;
+}
+function camDDReset(dd){
+  if(!dd) return;
+  var ph=camDDPlaceholder(dd.getAttribute('data-type'))||'Select';
+  dd.setAttribute('data-value','');
+  var lbl=dd.querySelector('.cam-dd-val');
+  if(lbl){ lbl.textContent=ph; lbl.classList.add('ph'); }
+}
+document.addEventListener('mousedown', function(e){
+  if(e.target.closest && (e.target.closest('.cam-dd')||e.target.closest('#cam-dd-pop'))) return;
+  camDDClose();
+});
+window.addEventListener('keydown', function(e){ if(e.key==='Escape') camDDClose(); });
+window.addEventListener('scroll', function(){ camDDClose(); }, true);
+
+function camCondHTML(c){
+  c=c||{};
+  return '<div class="cam-cond">'+
+    '<button class="cam-cond-del" onclick="camRemoveCond(this)" title="Remove condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>'+
+    camDDHTML('field','cam-cond-field', c.field)+
+    camDDHTML('op','cam-cond-op', c.op)+
+    '<input class="cam-input cam-cond-val" value="'+camEsc(c.val)+'" placeholder="Enter value">'+
+  '</div>';
+}
+
+function camAlertHTML(a){
+  a=a||{};
+  var conds=(a.conditions&&a.conditions.length?a.conditions:[{}]).map(camCondHTML).join('');
+  return '<div class="cam-alert'+(a.collapsed?' collapsed':'')+'">'+
+    '<div class="cam-head" onclick="camToggle(this)">'+
+      '<input class="cam-name" value="'+camEsc(a.name)+'" placeholder="Alert name" onclick="event.stopPropagation()">'+
+      '<button class="cam-del" onclick="event.stopPropagation();camDeleteAlert(this)" title="Delete alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+      '<button class="cam-chev" onclick="event.stopPropagation();camToggle(this)" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>'+
+    '</div>'+
+    '<div class="cam-body">'+
+      '<div class="cam-row1">'+
+        '<span class="cam-toglbl">Alert</span>'+
+        '<label class="cam-switch"><input type="checkbox"'+(a.enabled===false?'':' checked')+'><span class="cam-track"><span class="cam-thumb"></span></span></label>'+
+        camDDHTML('freq','cam-freq', a.freq||'Every hour')+
+        '<input class="cam-input cam-interval" inputmode="numeric" value="'+camEsc(a.interval!=null?a.interval:'')+'" placeholder="No.">'+
+      '</div>'+
+      '<div class="cam-grid2">'+
+        '<div class="cam-field"><label class="cam-label">Alert Number</label><input class="cam-input cam-number" value="'+camEsc(a.number)+'" placeholder="Alert Number"></div>'+
+        '<div class="cam-field"><label class="cam-label">Alert Email</label><input class="cam-input cam-email" value="'+camEsc(a.email)+'" placeholder="Alert Email"></div>'+
+      '</div>'+
+      '<div>'+
+        '<div class="cam-cond-head"><span></span><span>Select Field</span><span>Operator</span><span>Value</span></div>'+
+        '<div class="cam-conds">'+conds+'</div>'+
+      '</div>'+
+      '<button class="cam-addcond" onclick="camAddCond(this)" title="Add condition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>'+
+    '</div>'+
+  '</div>';
+}
+
+function camToggle(el){ var a=el.closest('.cam-alert'); if(a) a.classList.toggle('collapsed'); }
+
+function camAddAlert(){
+  var list=document.getElementById('cam-list');
+  var empty=list.querySelector('.cam-empty'); if(empty) empty.remove();
+  list.insertAdjacentHTML('beforeend', camAlertHTML({name:'', collapsed:false, conditions:[{}]}));
+  var card=list.lastElementChild;
+  if(card && card.scrollIntoView) card.scrollIntoView({behavior:'smooth', block:'nearest'});
+  var nm=card&&card.querySelector('.cam-name'); if(nm) nm.focus();
+}
+
+function camDeleteAlert(btn){
+  var card=btn.closest('.cam-alert');
+  if(!card) return;
+  card.remove();
+  var list=document.getElementById('cam-list');
+  if(!list.querySelector('.cam-alert')){
+    list.innerHTML='<div class="cam-empty">No alerts — click <b>Add New Alert</b> to create one.</div>';
+  }
+  camPersist(camReadAlerts());
+  if(typeof showNavToast==='function') showNavToast('Alert deleted','The alert rule was removed.');
+}
+
+function camAddCond(btn){
+  var conds=btn.closest('.cam-body').querySelector('.cam-conds');
+  conds.insertAdjacentHTML('beforeend', camCondHTML({}));
+}
+function camRemoveCond(btn){
+  var conds=btn.closest('.cam-conds');
+  var row=btn.closest('.cam-cond');
+  if(conds.querySelectorAll('.cam-cond').length<=1){ // keep at least one — just clear it
+    camDDReset(row.querySelector('.cam-cond-field'));
+    camDDReset(row.querySelector('.cam-cond-op'));
+    row.querySelector('.cam-cond-val').value='';
+    return;
+  }
+  row.remove();
+}
+
+function camReadAlerts(){
+  var out=[];
+  document.querySelectorAll('#cam-list .cam-alert').forEach(function(card){
+    var conds=[];
+    card.querySelectorAll('.cam-cond').forEach(function(row){
+      conds.push({
+        field: row.querySelector('.cam-cond-field').getAttribute('data-value')||'',
+        op: row.querySelector('.cam-cond-op').getAttribute('data-value')||'',
+        val: row.querySelector('.cam-cond-val').value
+      });
+    });
+    out.push({
+      name: card.querySelector('.cam-name').value,
+      enabled: card.querySelector('.cam-switch input').checked,
+      freq: card.querySelector('.cam-freq').getAttribute('data-value')||'Every hour',
+      interval: card.querySelector('.cam-interval').value,
+      number: card.querySelector('.cam-number').value,
+      email: card.querySelector('.cam-email').value,
+      collapsed: card.classList.contains('collapsed'),
+      conditions: conds
+    });
+  });
+  return out;
+}
+function camPersist(data){
+  try{ localStorage.setItem(CAM_KEY, JSON.stringify(data)); return true; }
+  catch(e){ return false; }
+}
+
+function camClearAll(){
+  document.getElementById('cam-list').innerHTML='<div class="cam-empty">No alerts — click <b>Add New Alert</b> to create one.</div>';
+  camPersist([]);
+  if(typeof showNavToast==='function') showNavToast('Alerts cleared','All alert rules were removed.');
+}
+function camCancel(){ window.location.href='../Settings_main_page/coreconnect_settings.html'; }
+function camSave(){
+  var data=camReadAlerts();
+  var ok=camPersist(data);
+  if(typeof showNavToast==='function'){
+    if(ok) showNavToast('Alerts saved', data.length+' alert rule'+(data.length===1?'':'s')+' saved successfully.');
+    else showNavToast('Save failed','Could not store alerts in this browser.');
+  }
+}
+
+function camInit(){
+  var list=document.getElementById('cam-list');
+  if(!list) return;
+  var saved=null;
+  try{ saved=JSON.parse(localStorage.getItem(CAM_KEY)||'null'); }catch(e){ saved=null; }
+  if(Array.isArray(saved)){
+    list.innerHTML = saved.length
+      ? saved.map(camAlertHTML).join('')
+      : '<div class="cam-empty">No alerts — click <b>Add New Alert</b> to create one.</div>';
+  } else {
+    // First visit — seed a sample alert
+    list.innerHTML = camAlertHTML({
+      name:'Sample', enabled:true, freq:'Every hour', interval:3,
+      conditions:[{field:'Total In Call', op:'Less Than', val:'23'}, {}]
+    });
+  }
+}
 </script>

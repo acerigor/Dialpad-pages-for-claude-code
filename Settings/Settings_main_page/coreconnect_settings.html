@@ -466,6 +466,68 @@
   .modal-save{background:var(--ac);border:none;border-radius:8px;padding:0 20px;height:34px;color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
   .modal-save:hover{background:var(--ac2);}
 
+  /* Desking Module Setting modal */
+  .dks-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px;}
+  .dks-tab{height:38px;border:0.5px solid var(--brd2);border-radius:8px;background:var(--sur2);color:var(--mu);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+  .dks-tab.active{background:var(--ac);border-color:var(--ac);color:#fff;}
+  .dks-panel{display:none;}
+  .dks-panel.active{display:block;}
+  .dks-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .dks-field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .dks-field.full{grid-column:1 / -1;}
+  .dks-label{font-size:12px;font-weight:500;color:var(--mu);}
+  .dks-input{height:38px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .15s;}
+  .dks-input:focus{border-color:var(--ac);}
+  .dks-input.dks-ro,.dks-input:disabled{background:rgba(255,255,255,.03);color:var(--mu);cursor:not-allowed;}
+  .dks-sel{height:38px;width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 30px 0 11px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;}
+  .dks-sel:focus{border-color:var(--ac);}
+  .dks-sel option{background:var(--sur2);color:var(--tx);}
+  .dks-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:0.5px solid var(--brd);}
+  .dks-toggle-row span{font-size:13px;color:var(--tx);}
+  .dks-switch{position:relative;display:inline-block;width:40px;height:23px;flex:none;cursor:pointer;}
+  .dks-switch input{position:absolute;opacity:0;width:0;height:0;}
+  .dks-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:22px;transition:background .15s,border-color .15s;}
+  .dks-thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#cfd3e0;transition:transform .15s,background .15s;}
+  .dks-switch input:checked + .dks-track{background:var(--ac);border-color:var(--ac);}
+  .dks-switch input:checked + .dks-track .dks-thumb{transform:translateX(17px);background:#fff;}
+  /* Tax list */
+  .dks-tax-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .dks-tax-title{font-size:14px;font-weight:600;color:var(--tx);}
+  .dks-addtax{height:32px;padding:0 14px;background:var(--ac);border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:background .15s;}
+  .dks-addtax:hover{background:var(--ac2);}
+  .dks-tax-wrap{border:0.5px solid var(--brd2);border-radius:9px;overflow:hidden;}
+  .dks-tax-scroll{overflow-x:auto;}
+  .dks-tax-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:540px;}
+  .dks-tax-table th{text-align:left;font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;padding:9px 10px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
+  .dks-tax-table td{padding:7px 10px;border-bottom:0.5px solid var(--brd);vertical-align:middle;color:var(--tx);}
+  .dks-tax-table tbody tr:last-child td{border-bottom:none;}
+  .dks-tax-empty td{text-align:center;color:var(--mu);padding:16px;}
+  .dks-tax-sel,.dks-tax-inp{height:32px;width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:6px;padding:0 8px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
+  .dks-tax-sel:focus,.dks-tax-inp:focus{border-color:var(--ac);}
+  .dks-tax-sel{appearance:none;-webkit-appearance:none;padding-right:22px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
+  .dks-tax-sel option{background:var(--sur2);color:var(--tx);}
+  .dks-tax-del{width:30px;height:30px;border:none;background:transparent;color:var(--rd);cursor:pointer;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
+  .dks-tax-del:hover{background:rgba(232,85,85,.12);}
+  .dks-tax-del svg{width:15px;height:15px;}
+  /* Transcript Alert Management modal */
+  .tam-textarea{height:auto;min-height:96px;padding:10px 11px;resize:vertical;line-height:1.5;}
+  .tam-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .tam-toggle-row span{font-size:13.5px;font-weight:500;color:var(--tx);}
+  @media (max-width:640px){
+    .dks-grid{grid-template-columns:1fr;}
+    .dks-input{height:44px;}
+    .dks-tab{height:44px;}
+    .tam-textarea{height:auto;flex:1;min-height:120px;}
+    /* Transcript Alert modal = full screen on mobile */
+    #tam-modal-backdrop{padding:0;}
+    #tam-modal-backdrop .modal{width:100%!important;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
+    #tam-modal-backdrop .modal-body{flex:1;}
+    /* Desking Module Setting modal = full screen on mobile */
+    #dks-modal-backdrop,#dks-tax-form{padding:0;}
+    #dks-modal-backdrop .modal,#dks-tax-form .modal{width:100%!important;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
+    #dks-modal-backdrop .modal-body,#dks-tax-form .modal-body{flex:1;}
+  }
+
   /* ════════════════════════════════════════════════════════════════════════════
      v78 — EXPORT MODAL
      Triggered from the toolbar kebab "Export" and bucket "Export" menu items.
@@ -2965,14 +3027,14 @@
             <div class="set-card-sub">Manage Google Analytics Charts</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.open('../desking_module/desking_module.html','_blank')">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Desking Module</div>
             <div class="set-card-sub">Manage Desking Module</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="openDeskingSettings()">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Desking Module Setting</div>
@@ -2984,21 +3046,21 @@
     <section class="set-section">
       <h3 class="set-grp">Alert Setting</h3>
       <div class="set-grid">
-        <div class="set-card">
+        <div class="set-card" onclick="window.location.href='../crm_alert_management/crm_alert_management.html'" style="cursor:pointer;">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="10" rx="4"/><path d="M12 8V6M9 9 7 7M15 9l2-2M8 12H4M20 12h-4M8 15l-3 2M16 15l3 2"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">CRM Alert Management</div>
             <div class="set-card-sub">Change CRM Alert Management</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="openTranscriptAlert()">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Transcript Alert Management</div>
             <div class="set-card-sub">Change Transcript Alert Management</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../notification_management/notification_management.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Notification Management</div>
@@ -3010,21 +3072,21 @@
     <section class="set-section">
       <h3 class="set-grp">Organizational Structure & Management</h3>
       <div class="set-grid">
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../locations/locations.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Locations</div>
             <div class="set-card-sub">Manage Locations</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../inactive_reason/inactive_reason.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/><path d="m4 4 16 16"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Inactive Reason</div>
             <div class="set-card-sub">Manage Inactive Reason</div>
           </div>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../sold_inventory/sold_inventory.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2 12.5h11l2-9H6.5"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Sold Inventory</div>
@@ -3364,6 +3426,110 @@
     </div>
   </div>
 
+  <!-- Desking Module Setting modal -->
+  <div class="modal-backdrop" id="dks-modal-backdrop" onclick="if(event.target===this)closeDeskingSettings()">
+    <div class="modal" style="width:600px;">
+      <div class="modal-header">
+        <span class="modal-title">Desking Module Setting</span>
+        <button class="modal-close" onclick="closeDeskingSettings()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="dks-tabs">
+          <button class="dks-tab active" data-tab="fees" onclick="dksTab('fees')">Fees</button>
+          <button class="dks-tab" data-tab="tax" onclick="dksTab('tax')">Tax</button>
+        </div>
+
+        <!-- Fees panel -->
+        <div class="dks-panel active" data-panel="fees">
+          <div class="dks-grid">
+            <div class="dks-field"><label class="dks-label">Document Fee</label><input class="dks-input" inputmode="decimal" id="dks-document"></div>
+            <div class="dks-field"><label class="dks-label">Loan Rate</label><input class="dks-input" inputmode="decimal" id="dks-loanrate"></div>
+            <div class="dks-field"><label class="dks-label">Pre-Delivery Fee</label><input class="dks-input" inputmode="decimal" id="dks-predelivery"></div>
+            <div class="dks-field"><label class="dks-label">License Fee</label><input class="dks-input" inputmode="decimal" id="dks-license"></div>
+            <div class="dks-field"><label class="dks-label">Registration Fee</label><input class="dks-input" inputmode="decimal" id="dks-registration"></div>
+            <div class="dks-field"><label class="dks-label">State Inspection Fee</label><input class="dks-input" inputmode="decimal" id="dks-inspection"></div>
+            <div class="dks-field"><label class="dks-label">Title Fee</label><input class="dks-input" inputmode="decimal" id="dks-title"></div>
+            <div class="dks-field"><label class="dks-label">APR</label><input class="dks-input" inputmode="decimal" id="dks-apr"></div>
+          </div>
+        </div>
+
+        <!-- Tax panel -->
+        <div class="dks-panel" data-panel="tax">
+          <div class="dks-tax-head">
+            <span class="dks-tax-title">Tax List</span>
+            <button class="dks-addtax" onclick="dksAddTax()">Add Tax</button>
+          </div>
+          <div class="dks-tax-wrap"><div class="dks-tax-scroll">
+            <table class="dks-tax-table">
+              <thead><tr><th>Sr</th><th>Calc Type</th><th>Category</th><th>Rate (%)</th><th>Amount</th><th>Action</th></tr></thead>
+              <tbody id="dks-tax-body"></tbody>
+            </table>
+          </div></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-save" onclick="saveDeskingSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcript Alert Management modal -->
+  <div class="modal-backdrop" id="tam-modal-backdrop" onclick="if(event.target===this)closeTranscriptAlert()">
+    <div class="modal" style="width:480px;">
+      <div class="modal-header">
+        <span class="modal-title">Transcript Alert Management</span>
+        <button class="modal-close" onclick="closeTranscriptAlert()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tam-toggle-row">
+          <span>Allow To Send Transcript Alert</span>
+          <label class="dks-switch"><input type="checkbox" id="tam-allow"><span class="dks-track"><span class="dks-thumb"></span></span></label>
+        </div>
+        <div class="dks-field"><label class="dks-label">Phone Number</label><input class="dks-input" id="tam-phone" inputmode="tel" placeholder="Phone Number"></div>
+        <div class="dks-field"><label class="dks-label">Email</label><input class="dks-input" id="tam-email" placeholder="Email (comma-separated)"></div>
+        <div class="dks-field"><label class="dks-label">Keyword</label><textarea class="dks-input tam-textarea" id="tam-keyword" placeholder="Keyword" rows="4"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" onclick="closeTranscriptAlert()">Cancel</button>
+        <button class="modal-save" onclick="saveTranscriptAlert()">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Tax form (nested) -->
+  <div class="modal-backdrop" id="dks-tax-form" style="z-index:3200;" onclick="if(event.target===this)dksCloseTaxForm()">
+    <div class="modal" style="width:520px;">
+      <div class="modal-header">
+        <span class="modal-title">Add Tax</span>
+        <button class="modal-close" onclick="dksCloseTaxForm()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="dks-grid">
+          <div class="dks-field"><label class="dks-label">Calc Type</label>
+            <select class="dks-sel" id="dkt-calc"><option>Registration State</option><option>Selling State</option><option>City</option><option>County</option><option>Flat Tax</option></select></div>
+          <div class="dks-field"><label class="dks-label">Category</label>
+            <select class="dks-sel" id="dkt-cat"><option value="">Select Category</option><option>State Tax</option><option>County Tax</option><option>City Tax</option><option>Local Tax</option><option>Doc Fee Tax</option><option>Other</option></select></div>
+          <div class="dks-field"><label class="dks-label">Description</label><input class="dks-input" id="dkt-desc" placeholder="Description"></div>
+          <div class="dks-field"><label class="dks-label">Tax Variable</label>
+            <select class="dks-sel" id="dkt-var"><option>Flat Tax - No Tax Var</option><option>Variable Tax</option><option>Tiered Tax</option></select></div>
+          <div class="dks-field"><label class="dks-label">Tax Rate (%)</label><input class="dks-input" id="dkt-rate" inputmode="decimal" placeholder="0.00"></div>
+          <div class="dks-field"><label class="dks-label">Amount</label><input class="dks-input" id="dkt-amount" inputmode="decimal" placeholder="0.00"></div>
+          <div class="dks-field"><label class="dks-label">Tax Fixed</label>
+            <select class="dks-sel" id="dkt-fixed"><option>Yes</option><option>No</option></select></div>
+          <div class="dks-field"><label class="dks-label">Rate Indicator</label>
+            <select class="dks-sel" id="dkt-indicator"><option>Fixed</option><option>Percentage</option><option>Variable</option></select></div>
+          <div class="dks-field"><label class="dks-label">Tax Beginning Range</label><input class="dks-input dks-ro" value="$0.00" disabled></div>
+          <div class="dks-field"><label class="dks-label">Tax End Range</label><input class="dks-input dks-ro" value="$999,999.99" disabled></div>
+          <div class="dks-field"><label class="dks-label">Tax Base Amount</label><input class="dks-input dks-ro" value="$0.00" disabled></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" onclick="dksCloseTaxForm()">Cancel</button>
+        <button class="modal-save" onclick="dksSaveTaxForm()">Add Tax</button>
+      </div>
+    </div>
+  </div>
+
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
 // Anchor "now" to match the rest of the seed data (May 23, 2026 7:00 PM)
@@ -3667,6 +3833,119 @@ function hideNavToast(){
   const t = document.getElementById('nav-toast');
   if(t) t.classList.remove('show');
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
+}
+
+// ── Desking Module Setting ──
+var DKS_KEY='cc_desking_settings';
+var DKS_DEFAULTS={ fees:{document:255,preDelivery:0,license:81.25,registration:10,stateInspection:18.50,title:33}, loanRate:18, apr:16.9436, tax:[] };
+function dksLoad(){ try{ var s=JSON.parse(localStorage.getItem(DKS_KEY)||'null'); if(s) return s; }catch(e){} return JSON.parse(JSON.stringify(DKS_DEFAULTS)); }
+function dksNum(v){ var n=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
+function dksSetVal(id,v){ var el=document.getElementById(id); if(el) el.value=v; }
+function openDeskingSettings(){
+  var s=dksLoad();
+  dksSetVal('dks-document', s.fees.document);
+  dksSetVal('dks-loanrate', s.loanRate);
+  dksSetVal('dks-predelivery', s.fees.preDelivery);
+  dksSetVal('dks-license', s.fees.license);
+  dksSetVal('dks-registration', s.fees.registration);
+  dksSetVal('dks-inspection', s.fees.stateInspection);
+  dksSetVal('dks-title', s.fees.title);
+  dksSetVal('dks-apr', s.apr);
+  dksTaxList=Array.isArray(s.tax)?s.tax.slice():[];
+  dksRenderTax();
+  dksTab('fees');
+  var bd=document.getElementById('dks-modal-backdrop'); if(bd) bd.classList.add('open');
+}
+function closeDeskingSettings(){ var bd=document.getElementById('dks-modal-backdrop'); if(bd) bd.classList.remove('open'); }
+function dksTab(key){
+  document.querySelectorAll('#dks-modal-backdrop .dks-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===key); });
+  document.querySelectorAll('#dks-modal-backdrop .dks-panel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel===key); });
+}
+// Tax list (rows are read-only; entries created via the Add Tax form)
+var DKS_TAX_TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+var dksTaxList=[];
+function dksMoney(n){ n=+n||0; return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function dksEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function dksRenderTax(){
+  var tb=document.getElementById('dks-tax-body'); if(!tb) return;
+  if(!dksTaxList.length){ tb.innerHTML='<tr class="dks-tax-empty"><td colspan="6">No Taxes Found</td></tr>'; return; }
+  tb.innerHTML=dksTaxList.map(function(r,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+dksEsc(r.calcType||'—')+'</td><td>'+dksEsc(r.category||'—')+'</td><td>'+(r.rate||0)+'</td><td>'+dksMoney(r.amount)+'</td>'+
+      '<td><button class="dks-tax-del" title="Remove" onclick="dksRemoveTax('+i+')">'+DKS_TAX_TRASH+'</button></td></tr>';
+  }).join('');
+}
+function dksReadTax(){ return dksTaxList; }
+function dksRemoveTax(i){ dksTaxList.splice(i,1); dksRenderTax(); }
+
+// Add Tax form (nested modal)
+function dksAddTax(){
+  dksSetVal('dkt-calc','Registration State'); dksSetVal('dkt-cat',''); dksSetVal('dkt-desc',''); dksSetVal('dkt-var','Flat Tax - No Tax Var');
+  dksSetVal('dkt-rate',''); dksSetVal('dkt-amount',''); dksSetVal('dkt-fixed','Yes'); dksSetVal('dkt-indicator','Fixed');
+  var bd=document.getElementById('dks-tax-form'); if(bd) bd.classList.add('open');
+}
+function dksCloseTaxForm(){ var bd=document.getElementById('dks-tax-form'); if(bd) bd.classList.remove('open'); }
+function dksSaveTaxForm(){
+  dksTaxList.push({
+    calcType:(document.getElementById('dkt-calc')||{}).value||'',
+    category:(document.getElementById('dkt-cat')||{}).value||'',
+    description:(document.getElementById('dkt-desc')||{}).value||'',
+    taxVariable:(document.getElementById('dkt-var')||{}).value||'',
+    rate:dksNum((document.getElementById('dkt-rate')||{}).value),
+    amount:dksNum((document.getElementById('dkt-amount')||{}).value),
+    taxFixed:(document.getElementById('dkt-fixed')||{}).value||'',
+    rateIndicator:(document.getElementById('dkt-indicator')||{}).value||''
+  });
+  dksRenderTax();
+  dksCloseTaxForm();
+}
+function saveDeskingSettings(){
+  var s={
+    fees:{
+      document:dksNum((document.getElementById('dks-document')||{}).value),
+      preDelivery:dksNum((document.getElementById('dks-predelivery')||{}).value),
+      license:dksNum((document.getElementById('dks-license')||{}).value),
+      registration:dksNum((document.getElementById('dks-registration')||{}).value),
+      stateInspection:dksNum((document.getElementById('dks-inspection')||{}).value),
+      title:dksNum((document.getElementById('dks-title')||{}).value)
+    },
+    loanRate:dksNum((document.getElementById('dks-loanrate')||{}).value),
+    apr:dksNum((document.getElementById('dks-apr')||{}).value),
+    tax:dksReadTax()
+  };
+  try{ localStorage.setItem(DKS_KEY, JSON.stringify(s)); }catch(e){}
+  closeDeskingSettings();
+  if(typeof showNavToast==='function') showNavToast('Settings saved','Desking module settings updated.');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key!=='Escape') return;
+  var tf=document.getElementById('dks-tax-form');
+  if(tf && tf.classList.contains('open')){ dksCloseTaxForm(); return; }
+  var tam=document.getElementById('tam-modal-backdrop');
+  if(tam && tam.classList.contains('open')){ closeTranscriptAlert(); return; }
+  closeDeskingSettings();
+});
+
+// ── Transcript Alert Management ──
+var TAM_KEY='cc_transcript_alert';
+function openTranscriptAlert(){
+  var s={}; try{ s=JSON.parse(localStorage.getItem(TAM_KEY)||'{}')||{}; }catch(e){ s={}; }
+  document.getElementById('tam-allow').checked = s.allow!==false;
+  document.getElementById('tam-phone').value = s.phone||'';
+  document.getElementById('tam-email').value = s.email||'';
+  document.getElementById('tam-keyword').value = s.keyword||'';
+  var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.add('open');
+}
+function closeTranscriptAlert(){ var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); }
+function saveTranscriptAlert(){
+  var data={
+    allow: document.getElementById('tam-allow').checked,
+    phone: document.getElementById('tam-phone').value.trim(),
+    email: document.getElementById('tam-email').value.trim(),
+    keyword: document.getElementById('tam-keyword').value.trim()
+  };
+  try{ localStorage.setItem(TAM_KEY, JSON.stringify(data)); }catch(e){}
+  closeTranscriptAlert();
+  if(typeof showNavToast==='function') showNavToast('Transcript Alert saved','Your transcript alert settings were updated.');
 }
 
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });

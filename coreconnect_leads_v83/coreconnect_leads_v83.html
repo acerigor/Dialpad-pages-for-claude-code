@@ -1650,6 +1650,44 @@
 
   .cp-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px;}
 
+  /* Conversation Summary — pinned at bottom of thread, above compose */
+  .cp-summary{flex-shrink:0;border-top:0.5px solid var(--brd2);background:var(--sur2);}
+  .cp-summary-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;}
+  .cp-summary-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--tx);letter-spacing:.2px;}
+  .cp-summary-title .cp-summary-spark{color:var(--ac2);font-size:13px;}
+  .cp-summary-acts{display:flex;align-items:center;gap:4px;}
+  .cp-summary-refresh{width:26px;height:26px;border:0.5px solid var(--brd2);background:var(--sur);border-radius:6px;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;transition:all .15s;}
+  .cp-summary-refresh:hover{color:var(--ac2);border-color:var(--ac);}
+  .cp-summary-refresh .cp-refresh-ic{display:inline-block;line-height:1;}
+  .cp-summary-refresh.spin .cp-refresh-ic{animation:cpSpin .5s linear;}
+  @keyframes cpSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .cp-summary-chev{color:var(--mu);font-size:11px;transition:transform .18s;}
+  .cp-summary.collapsed .cp-summary-chev{transform:rotate(-90deg);}
+  .cp-summary-body{padding:0 14px 12px;max-height:280px;overflow-y:auto;}
+  .cp-summary.collapsed .cp-summary-body{display:none;}
+  .cp-summary-text{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:var(--tx);}
+  .cp-summary-text .cp-sum-em{color:var(--ac2);font-weight:600;}
+  .cp-summary-empty{margin:0 0 2px;font-size:12.5px;color:var(--mu);font-style:italic;}
+  .cp-summary-stats{display:flex;flex-wrap:wrap;align-items:center;gap:7px;}
+  .cp-sum-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:7px;background:var(--sur);border:0.5px solid var(--brd2);font-size:11.5px;color:var(--tx);white-space:nowrap;}
+  .cp-sum-chip .cp-sum-ic{font-size:12px;line-height:1;}
+  .cp-sum-chip .cp-sum-ct{font-family:var(--mono);font-weight:600;color:var(--ac2);}
+  .cp-sum-last{font-size:11px;color:var(--mu);margin-left:2px;white-space:nowrap;}
+  /* Actionable suggestions ("Help me with this") */
+  .cp-help{margin-top:12px;}
+  .cp-help-btn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px;border-radius:8px;background:rgba(79,124,255,.12);border:0.5px solid rgba(79,124,255,.4);color:var(--ac2);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .cp-help-btn:hover{background:rgba(79,124,255,.2);}
+  .cp-help-ic{font-size:13px;}
+  .cp-suggestions{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+  .cp-sug-head{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  .cp-sug-loading{display:flex;align-items:center;justify-content:flex-start;gap:7px;font-size:12px;color:var(--ac2);padding:6px 0;animation:cpPulse 1s ease-in-out infinite;}
+  @keyframes cpPulse{0%,100%{opacity:.5}50%{opacity:1}}
+  .cp-sug-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;}
+  .cp-sug-ic{font-size:14px;line-height:1.4;flex:none;}
+  .cp-sug-text{flex:1;min-width:0;font-size:12.5px;line-height:1.45;color:var(--tx);}
+  .cp-sug-act{flex:none;align-self:center;height:26px;padding:0 11px;border-radius:6px;background:var(--ac);border:none;color:#fff;font-family:var(--font);font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;}
+  .cp-sug-act:hover{background:var(--ac2);}
+
   /* date divider pill */
   .cp-date-pill{align-self:center;background:var(--sur2);border:0.5px solid var(--brd2);
     border-radius:12px;padding:4px 14px;font-size:10.5px;font-weight:500;color:var(--mu);
@@ -4119,6 +4157,23 @@
           <div class="cp-tab" onclick="setCPTab(this,'activity')">Activity</div>
         </div>
         <div class="cp-messages" id="cp-messages"></div>
+        <div class="cp-summary" id="cp-summary">
+          <div class="cp-summary-head" onclick="toggleCPSummary()">
+            <span class="cp-summary-title"><span class="cp-summary-spark">✦</span>Conversation Summary</span>
+            <div class="cp-summary-acts">
+              <button class="cp-summary-refresh" id="cp-summary-refresh" onclick="event.stopPropagation();renderCPSummary(true)" title="Regenerate summary" aria-label="Regenerate"><span class="cp-refresh-ic">⟳</span></button>
+              <span class="cp-summary-chev">▾</span>
+            </div>
+          </div>
+          <div class="cp-summary-body">
+            <p class="cp-summary-text" id="cp-summary-text"></p>
+            <div class="cp-summary-stats" id="cp-summary-stats"></div>
+            <div class="cp-help" id="cp-help-row">
+              <button class="cp-help-btn" onclick="cpHelpMe()"><span class="cp-help-ic">✦</span>Suggested Next Actions</button>
+            </div>
+            <div class="cp-suggestions" id="cp-suggestions" style="display:none;"></div>
+          </div>
+        </div>
         <div class="cp-compose">
           <div class="cp-compose-row1">
             <select class="cp-type-sel" id="cp-type-select" onchange="onCPTypeChange(this.value)"><option>SMS</option><option>Email</option><option>Notes</option></select>
@@ -8416,11 +8471,196 @@ function cpIsNeverContacted(lead){
   return (lead.calls === '0/0') && (lead.sms === '0/0');
 }
 
+/* ===== Conversation Summary (pinned card, AI-style heuristic) ===== */
+var _cpSumCollapsed = false;
+var _cpSumLeadNo = null;
+var _cpHelpTimer = null, _cpSugCache = [];
+function escapeHtmlCP(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toggleCPSummary(){
+  var el = document.getElementById('cp-summary');
+  if(!el) return;
+  _cpSumCollapsed = !_cpSumCollapsed;
+  el.classList.toggle('collapsed', _cpSumCollapsed);
+}
+// Merge seed + stored messages for a channel (mirrors renderCPMessages sourcing).
+function cpChannelMsgs(lead, channel){
+  if(!lead) return [];
+  var stored = (cpMessages[lead.no] && cpMessages[lead.no][channel]) ? cpMessages[lead.no][channel] : [];
+  var base = cpIsNeverContacted(lead) ? [] : (sampleMessages[channel] || []);
+  return base.concat(stored);
+}
+function _cpCounts(lead){
+  var C = window.CCLeads || {};
+  var sms = (C.smsCountsForLead && C.smsCountsForLead(lead)) || {out:0,in:0};
+  var calls = (C.callCountsForLead && C.callCountsForLead(lead)) || {out:0,in:0,missed:0};
+  var email = (lead && lead.email && C.emailCountsForLead && C.emailCountsForLead(lead)) || {out:0,in:0};
+  return {sms:sms, calls:calls, email:email};
+}
+function buildConversationSummary(lead){
+  if(!lead) return null;
+  var first = (lead.name||'').trim().split(/\s+/)[0] || 'This lead';
+  if(cpIsNeverContacted(lead)){
+    return {empty:true, stats:[{ic:'💬',label:'SMS',ct:0},{ic:'✉️',label:'Email',ct:0},{ic:'📞',label:'Calls',ct:0},{ic:'🎙️',label:'VM',ct:0}], last:lead.lastAttempt||''};
+  }
+  var c = _cpCounts(lead);
+  // Base counts from the shared store + any messages sent live in this session.
+  var liveStore = cpMessages[lead.no] || {};
+  var smsTotal = c.sms.out + c.sms.in + ((liveStore.sms||[]).length);
+  var emailTotal = c.email.out + c.email.in + ((liveStore.email||[]).length);
+  var callTotal = c.calls.out + c.calls.in;
+  // Voicemails synthesized from missed calls (no real per-lead VM data in this prototype).
+  var vm = Math.min(c.calls.missed || 0, 3);
+  var touches = smsTotal + emailTotal + callTotal;
+
+  var corpus = [].concat(cpChannelMsgs(lead,'sms'), cpChannelMsgs(lead,'email'), cpChannelMsgs(lead,'notes'))
+    .map(function(m){ return (m.subject?m.subject+' ':'')+(m.text||''); }).join(' ').toLowerCase();
+  var intents = [];
+  if(/financ|\bapr\b|\brate\b|credit|loan|down payment/.test(corpus)) intents.push('financing options');
+  if(/test drive|test-drive|come in|visit|appointment|saturday|schedule/.test(corpus)) intents.push('scheduling a test drive');
+  if(/trade-?in/.test(corpus)) intents.push('a trade-in');
+  if(/price|quote|budget|\bcost\b|how much/.test(corpus)) intents.push('pricing');
+  var cooling = /not interested|no longer|unsubscribe|already (bought|purchased)/.test(corpus);
+  var warm = /still considering|interested|looking|ready|sounds good|great|thanks/.test(corpus);
+  var tone = cooling ? 'cooling off' : (warm ? 'positive' : 'neutral');
+  var level = touches >= 8 ? 'highly engaged' : (touches >= 3 ? 'actively engaged' : 'lightly engaged');
+
+  var parts = [];
+  if(smsTotal) parts.push(smsTotal + ' SMS');
+  if(emailTotal) parts.push(emailTotal + ' email' + (emailTotal===1?'':'s'));
+  if(callTotal) parts.push(callTotal + ' call' + (callTotal===1?'':'s') + (vm? ' ('+vm+' voicemail'+(vm===1?'':'s')+')':''));
+  var breakdown = parts.length ? parts.join(', ').replace(/,([^,]*)$/, ' and$1') : 'no logged activity yet';
+
+  function lastIn(channel){
+    var arr = cpChannelMsgs(lead, channel).filter(function(m){ return m.dir==='in' && m.text; });
+    return arr.length ? arr[arr.length-1].text : '';
+  }
+  var quote = lastIn('sms') || lastIn('email');
+  if(quote && quote.length > 90) quote = quote.slice(0,87).trim() + '…';
+
+  var s1 = '<span class="cp-sum-em">'+escapeHtmlCP(first)+'</span> is '+level+' — '+escapeHtmlCP(breakdown)+'.';
+  var s2 = intents.length ? (' Conversation centers on '+escapeHtmlCP(intents.slice(0,2).join(' and '))+'; overall tone is '+tone+'.') : (' Overall tone is '+tone+'.');
+  var s3 = quote ? (' Last reply: “'+escapeHtmlCP(quote)+'”.') : (lead.lastAttempt ? (' Last contact '+escapeHtmlCP(lead.lastAttempt)+'.') : '');
+
+  return {
+    empty:false,
+    narrative: s1 + s2 + s3,
+    stats:[{ic:'💬',label:'SMS',ct:smsTotal},{ic:'✉️',label:'Email',ct:emailTotal},{ic:'📞',label:'Calls',ct:callTotal},{ic:'🎙️',label:'VM',ct:vm}],
+    last: lead.lastAttempt || ''
+  };
+}
+function renderCPSummary(regen){
+  var card = document.getElementById('cp-summary');
+  var txt = document.getElementById('cp-summary-text');
+  var statsEl = document.getElementById('cp-summary-stats');
+  if(!card || !txt || !statsEl) return;
+  if(!cpLead){ card.style.display='none'; return; }
+  card.style.display='';
+  card.classList.toggle('collapsed', _cpSumCollapsed);
+  // Reset actionable suggestions when switching to a different lead
+  if(_cpSumLeadNo !== cpLead.no){
+    _cpSumLeadNo = cpLead.no;
+    var sw=document.getElementById('cp-suggestions'); if(sw){ sw.style.display='none'; sw.innerHTML=''; }
+  }
+  if(regen){ var btn=document.getElementById('cp-summary-refresh'); if(btn){ btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin'); } }
+  var sum = buildConversationSummary(cpLead);
+  if(!sum){ txt.textContent=''; statsEl.innerHTML=''; return; }
+  if(sum.empty){
+    txt.className='cp-summary-empty';
+    txt.textContent='No conversation yet — start reaching out to build engagement history.';
+  } else {
+    txt.className='cp-summary-text';
+    txt.innerHTML = sum.narrative;
+  }
+  var chips = sum.stats.map(function(s){
+    return '<span class="cp-sum-chip"><span class="cp-sum-ic">'+s.ic+'</span>'+s.label+' <span class="cp-sum-ct">'+s.ct+'</span></span>';
+  }).join('');
+  if(sum.last) chips += '<span class="cp-sum-last">· Last: '+escapeHtmlCP(sum.last)+'</span>';
+  statsEl.innerHTML = chips;
+}
+
+// Actionable suggestions — "Help me with this". Heuristic stand-in for a real AI
+// integration (the analysis would be performed by AI; that integration is out of scope).
+function buildActionableSuggestions(lead){
+  if(!lead || cpIsNeverContacted(lead)){
+    return [{ic:'📨', text:'No engagement yet — open the conversation with a friendly intro text or a first call.', action:'draft', draft:'Hi, this is CoreConnect Auto — we saw you were interested in a vehicle. How can we help you today?'}];
+  }
+  var c=_cpCounts(lead);
+  var corpus=[].concat(cpChannelMsgs(lead,'sms'),cpChannelMsgs(lead,'email'),cpChannelMsgs(lead,'notes'))
+    .map(function(m){ return (m.subject?m.subject+' ':'')+(m.text||''); }).join(' ').toLowerCase();
+  var sms=cpChannelMsgs(lead,'sms');
+  var lastSms=sms.length?sms[sms.length-1]:null;
+  var awaiting=lastSms && lastSms.dir==='in';
+  var first=escapeHtmlCP((lead.name||'').trim().split(/\s+/)[0]||'the lead');
+  var sug=[];
+  if(awaiting){
+    sug.push({ic:'↩️', text:first+' is awaiting a reply — respond now to keep the conversation moving.', action:'draft', draft:''});
+  }
+  if(/financ|\bapr\b|\brate\b|credit|loan|down payment/.test(corpus)){
+    if(lead.email){
+      sug.push({ic:'✉️', text:'Financing came up — email the rate breakdown and a pre-qualification link (easier to read in writing).', action:'email', subject:'Your financing options & pre-qualification', draft:'Hi '+first+',\n\nThanks for your interest! Here are our current financing rates along with a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\n• Competitive APR options\n• Flexible terms\n• Pre-qualify in 2 minutes: [link]\n\nHappy to walk through the numbers whenever works for you.'});
+    } else {
+      sug.push({ic:'💳', text:'Financing came up — send current rates and a pre-qualification link.', action:'draft', draft:'Here are our current financing rates, plus a quick pre-qualification link so we can tailor a payment for you:'});
+    }
+  }
+  if(/test drive|test-drive|saturday|come in|appointment|schedule|visit/.test(corpus)){
+    sug.push({ic:'📅', text:"A test drive was mentioned — book it on the calendar so it doesn't slip.", action:'appointment'});
+  }
+  if(/trade-?in/.test(corpus)){
+    sug.push({ic:'🚗', text:'They have a trade-in — ask for year, make, model and mileage to prep a quote.', action:'draft', draft:'Happy to value your trade-in! Could you share the year, make, model, and approximate mileage?'});
+  }
+  if((c.calls.out+c.calls.in) < 2){
+    sug.push({ic:'📞', text:'Call activity is low — a quick call often converts faster than text. Notes suggest reaching out after 5 PM.', action:'call'});
+  }
+  if(!sug.length){
+    sug.push({ic:'✍️', text:'Send a friendly follow-up to re-engage and surface the next step.', action:'draft', draft:'Hi '+first+', just checking in — anything I can help with on your vehicle search?'});
+  }
+  return sug.slice(0,4);
+}
+function cpHelpMe(){
+  var wrap=document.getElementById('cp-suggestions');
+  if(!wrap || !cpLead) return;
+  wrap.style.display='block';
+  wrap.innerHTML='<div class="cp-sug-loading"><span class="cp-help-ic">✦</span>Analyzing conversation…</div>';
+  clearTimeout(_cpHelpTimer);
+  _cpHelpTimer=setTimeout(function(){
+    var sug=buildActionableSuggestions(cpLead);
+    _cpSugCache=sug;
+    var labels={draft:'Draft reply', email:'Draft email', appointment:'Book', call:'Call'};
+    var rows=sug.map(function(s,i){
+      var lbl=labels[s.action]||'';
+      var act=lbl ? '<button class="cp-sug-act" onclick="cpSugAction('+i+')">'+lbl+'</button>' : '';
+      return '<div class="cp-sug-item"><span class="cp-sug-ic">'+s.ic+'</span><span class="cp-sug-text">'+s.text+'</span>'+act+'</div>';
+    }).join('');
+    wrap.innerHTML='<div class="cp-sug-head">Suggested next steps</div>'+rows;
+  }, 650);
+}
+function cpSugAction(i){
+  var s=_cpSugCache[i]; if(!s) return;
+  if(s.action==='call'){ openDialerFromContact(); return; }
+  if(s.action==='appointment'){
+    window.location.href='../coreconnect_appointments/coreconnect_appointments.html?new=appointment'+(cpLead?('&lead='+cpLead.no):'');
+    return;
+  }
+  if(s.action==='email'){
+    if(typeof switchCPTabTo==='function') switchCPTabTo('email');
+    var subj=document.getElementById('cp-email-subject'); if(subj) subj.value=s.subject||'';
+    var body=document.getElementById('cp-email-body');
+    if(body){ body.innerHTML=(s.draft||'').split('\n').map(function(l){ return escapeHtmlCP(l); }).join('<br>'); }
+    if(subj) subj.focus();
+    return;
+  }
+  // default: SMS draft
+  if(typeof switchCPTabTo==='function') switchCPTabTo('sms');
+  var ta=document.getElementById('cp-textarea');
+  if(ta){ ta.value=s.draft||''; if(typeof autoResizeTA==='function') autoResizeTA(ta); ta.focus(); }
+}
+
 function renderCPMessages() {
   const container = document.getElementById('cp-messages');
   container.innerHTML = '';
 
   const leadKey = cpLead ? cpLead.no : 0;
+  renderCPSummary();
 
   // The All tab uses the day → channel section view.
   if(cpTab === 'all'){

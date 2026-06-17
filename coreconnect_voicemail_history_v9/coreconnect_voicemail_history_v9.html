@@ -498,6 +498,43 @@
   .dp-sum-val{font-size:12.5px;color:var(--tx);display:flex;align-items:center;gap:7px;}
   .dp-sum-val.mono{font-family:var(--mono);}
 
+  /* AI conversation summary card */
+  .dp-ai{margin:0 22px 18px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .dp-ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;border-bottom:0.5px solid var(--brd);}
+  .dp-ai.collapsed .dp-ai-head{border-bottom:none;}
+  .dp-ai-title{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;}
+  .dp-ai-spark{color:var(--ac2);font-size:13px;flex:none;}
+  .dp-ai-acts{display:flex;align-items:center;gap:4px;}
+  .dp-ai-refresh{width:26px;height:26px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:6px;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;transition:all .15s;}
+  .dp-ai-refresh:hover{color:var(--ac2);border-color:var(--ac);}
+  .dp-ai-refresh .ic{display:inline-block;}
+  .dp-ai-refresh.spin .ic{animation:dpSpin .5s linear;}
+  @keyframes dpSpin{to{transform:rotate(360deg)}}
+  .dp-ai-chev{color:var(--mu);font-size:11px;transition:transform .18s;}
+  .dp-ai.collapsed .dp-ai-chev{transform:rotate(-90deg);}
+  .dp-ai-body{padding:14px 16px;}
+  .dp-ai.collapsed .dp-ai-body{display:none;}
+  .dp-ai-text{margin:0 0 12px;font-size:12.5px;line-height:1.55;color:var(--tx);}
+  .dp-ai-text .em{color:var(--ac2);font-weight:600;}
+  .dp-ai-empty{margin:0;font-size:12.5px;color:var(--mu);font-style:italic;}
+  .dp-ai-stats{display:flex;flex-wrap:wrap;align-items:center;gap:7px;}
+  .dp-ai-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:7px;background:var(--sur2);border:0.5px solid var(--brd2);font-size:11.5px;color:var(--tx);}
+  .dp-ai-chip .ic{font-size:12px;line-height:1;}
+  .dp-ai-chip .ct{font-family:var(--mono);font-weight:600;color:var(--ac2);}
+  .dp-ai-last{font-size:11px;color:var(--mu);}
+  .dp-ai-help{margin-top:12px;}
+  .dp-ai-help-btn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px;border-radius:8px;background:rgba(79,124,255,.12);border:0.5px solid rgba(79,124,255,.4);color:var(--ac2);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .dp-ai-help-btn:hover{background:rgba(79,124,255,.2);}
+  .dp-ai-sugs{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+  .dp-ai-sug-head{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  .dp-ai-loading{display:flex;align-items:center;justify-content:flex-start;gap:7px;font-size:12px;color:var(--ac2);padding:6px 0;animation:dpPulse 1s ease-in-out infinite;}
+  @keyframes dpPulse{0%,100%{opacity:.5}50%{opacity:1}}
+  .dp-ai-sug{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;}
+  .dp-ai-sug .ic{font-size:14px;line-height:1.4;flex:none;}
+  .dp-ai-sug .tx{flex:1;min-width:0;font-size:12.5px;line-height:1.45;color:var(--tx);}
+  .dp-ai-sug-act{flex:none;align-self:center;height:26px;padding:0 11px;border-radius:6px;background:var(--ac);border:none;color:#fff;font-family:var(--font);font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;}
+  .dp-ai-sug-act:hover{background:var(--ac2);}
+
   /* recording player */
   .dp-rec{margin:0 22px 18px;background:var(--sur);border:0.5px solid var(--brd2);
     border-radius:10px;padding:14px 16px;}
@@ -3006,6 +3043,9 @@ let state = {
   speed: 1,
   playing: false,
   playProgress: 0,
+  aiCollapsed: false,
+  aiLoading: false,
+  aiOpen: false,
 };
 
 // Period sharing with the dashboard / leads (shared/leads-comms.js 'cc_period').
@@ -3190,6 +3230,9 @@ function selectCall(id, e){
   state.selectedId = id;
   state.playing = false;
   state.playProgress = 0;
+  state.aiOpen = false;
+  state.aiLoading = false;
+  state.aiCollapsed = false;
   renderList();
   renderDetail();
 }
@@ -3214,6 +3257,127 @@ function renderBulkBar(){
 }
 
 /* ============ DETAIL PANE ============ */
+/* ===== AI Conversation Summary + Suggested Next Actions (ported from CRM contact panel) ===== */
+function chEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function chLeadFor(c){ return (window.CCLeads && CCLeads.LEADS && typeof c.leadIndex==='number') ? CCLeads.LEADS[c.leadIndex] : null; }
+function chCounts(lead){
+  var C=window.CCLeads||{};
+  var sms=(lead&&C.smsCountsForLead&&C.smsCountsForLead(lead))||{out:0,in:0};
+  var calls=(lead&&C.callCountsForLead&&C.callCountsForLead(lead))||{out:0,in:0,missed:0};
+  var email=(lead&&lead.email&&C.emailCountsForLead&&C.emailCountsForLead(lead))||{out:0,in:0};
+  return {sms:sms,calls:calls,email:email};
+}
+function chCorpus(c){ return (c.transcript||[]).map(function(t){return t.t||'';}).join(' ').toLowerCase(); }
+function chSummaryData(c){
+  var lead=chLeadFor(c);
+  var name=(c.contact&&c.contact.name)||(lead&&lead.name)||'This lead';
+  var first=name.trim().split(/\s+/)[0]||'This lead';
+  var cc=chCounts(lead);
+  var smsT=cc.sms.out+cc.sms.in, emailT=cc.email.out+cc.email.in, callT=cc.calls.out+cc.calls.in;
+  var vm=Math.max(1, Math.min(cc.calls.missed||0,3));
+  var touches=smsT+emailT+callT;
+  if(!touches){ return {empty:true, stats:[{ic:'💬',l:'SMS',ct:0},{ic:'✉️',l:'Email',ct:0},{ic:'📞',l:'Calls',ct:0},{ic:'🎙️',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''}; }
+  var corpus=chCorpus(c);
+  var intents=[];
+  if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|listing|dropped/.test(corpus)) intents.push('pricing & financing');
+  if(/test drive|come in|visit|tour|see it|saturday|schedule|appointment|call me back|give me a call/.test(corpus)) intents.push('scheduling a visit');
+  if(/trade-?in/.test(corpus)) intents.push('a trade-in');
+  var cooling=/not interested|no longer|stop calling|already (bought|purchased)/.test(corpus);
+  var warm=/interested|sounds good|great|perfect|call you back|yeah|sure/.test(corpus);
+  var tone=cooling?'cooling off':(warm?'positive':'neutral');
+  var level=touches>=8?'highly engaged':(touches>=3?'actively engaged':'lightly engaged');
+  var parts=[];
+  if(smsT)parts.push(smsT+' SMS');
+  if(emailT)parts.push(emailT+' email'+(emailT===1?'':'s'));
+  if(callT)parts.push(callT+' call'+(callT===1?'':'s')+(vm?' ('+vm+' voicemail'+(vm===1?'':'s')+')':''));
+  var breakdown=parts.length?parts.join(', ').replace(/,([^,]*)$/,' and$1'):'no logged activity yet';
+  var inb=(c.transcript||[]).filter(function(t){return t.s==='in'&&t.t;});
+  var quote=inb.length?inb[inb.length-1].t:'';
+  if(quote&&quote.length>90) quote=quote.slice(0,87).trim()+'…';
+  var s1='<span class="em">'+chEsc(first)+'</span> is '+level+' — '+chEsc(breakdown)+'.';
+  var s2=intents.length?(' Recent conversation touched on '+chEsc(intents.slice(0,2).join(' and '))+'; tone is '+tone+'.'):(' Overall tone is '+tone+'.');
+  var s3=quote?(' In the voicemail they said: “'+chEsc(quote)+'”.'):'';
+  return {empty:false, narrative:s1+s2+s3, stats:[{ic:'💬',l:'SMS',ct:smsT},{ic:'✉️',l:'Email',ct:emailT},{ic:'📞',l:'Calls',ct:callT},{ic:'🎙️',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''};
+}
+function chBuildSuggestions(c){
+  var lead=chLeadFor(c);
+  var corpus=chCorpus(c);
+  var first=chEsc(((c.contact&&c.contact.name)||'the lead').trim().split(/\s+/)[0]);
+  var hasEmail=!!(c.contact&&c.contact.email);
+  var sug=[];
+  // a voicemail always warrants a call back
+  sug.push({ic:'📞', tx:first+' left a voicemail — call them back to keep momentum.', action:'call'});
+  if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|listing|dropped/.test(corpus)){
+    if(hasEmail) sug.push({ic:'✉️', tx:'They asked about pricing/financing — email the figures and a pre-qualification link in writing.', action:'email', subject:'Your pricing & financing details', draft:'Hi '+first+',\n\nThanks for your voicemail! Here are the figures we discussed, along with current financing options and a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\n• Out-the-door price breakdown\n• Competitive APR options\n• Pre-qualify in 2 minutes: [link]\n\nHappy to walk through any of it — just let me know.'});
+    else sug.push({ic:'💬', tx:'They asked about pricing/financing — text the numbers and next steps.', action:'sms'});
+  }
+  if(/test drive|come in|visit|tour|see it|saturday|schedule|appointment/.test(corpus)){
+    sug.push({ic:'📅', tx:'A visit/test drive came up — book it on the calendar so it doesn\'t slip.', action:'appointment'});
+  }
+  if(/trade-?in/.test(corpus)){
+    sug.push({ic:'🚗', tx:'They mentioned a trade-in — text for year, make, model and mileage to prep a quote.', action:'sms'});
+  }
+  return sug.slice(0,4);
+}
+function chSugsHtml(c){
+  var sug=chBuildSuggestions(c);
+  var labels={sms:'Draft SMS', email:'Draft email', appointment:'Book', call:'Call back'};
+  var rows=sug.map(function(s,i){
+    var lbl=labels[s.action]||'';
+    var act=lbl?'<button class="dp-ai-sug-act" onclick="chSugAct('+i+')">'+lbl+'</button>':'';
+    return '<div class="dp-ai-sug"><span class="ic">'+s.ic+'</span><span class="tx">'+s.tx+'</span>'+act+'</div>';
+  }).join('');
+  return '<div class="dp-ai-sug-head">Suggested next steps</div>'+rows;
+}
+function chSummaryHtml(c){
+  if(!c) return '';
+  var d=chSummaryData(c);
+  var collapsed=state.aiCollapsed?' collapsed':'';
+  var bodyInner;
+  if(d.empty){
+    bodyInner='<p class="dp-ai-empty">No prior engagement logged — this voicemail is an early touch. Follow up to start building history.</p>';
+  } else {
+    var chips=d.stats.map(function(s){return '<span class="dp-ai-chip"><span class="ic">'+s.ic+'</span>'+s.l+' <span class="ct">'+s.ct+'</span></span>';}).join('');
+    if(d.last) chips+='<span class="dp-ai-last">· Last: '+chEsc(d.last)+'</span>';
+    var help='<div class="dp-ai-help"><button class="dp-ai-help-btn" onclick="chHelp()"><span class="dp-ai-spark">✦</span>Suggested Next Actions</button></div>';
+    var sugsBlock='';
+    if(state.aiLoading){ sugsBlock='<div class="dp-ai-sugs"><div class="dp-ai-loading"><span class="dp-ai-spark">✦</span>Analyzing conversation…</div></div>'; }
+    else if(state.aiOpen){ sugsBlock='<div class="dp-ai-sugs">'+chSugsHtml(c)+'</div>'; }
+    bodyInner='<p class="dp-ai-text">'+d.narrative+'</p><div class="dp-ai-stats">'+chips+'</div>'+help+sugsBlock;
+  }
+  return '<div class="dp-ai'+collapsed+'">'+
+    '<div class="dp-ai-head" onclick="chToggleAi()">'+
+      '<span class="dp-ai-title"><span class="dp-ai-spark">✦</span>Conversation Summary</span>'+
+      '<div class="dp-ai-acts">'+
+        '<button class="dp-ai-refresh" onclick="event.stopPropagation();chRegen()" title="Regenerate"><span class="ic">⟳</span></button>'+
+        '<span class="dp-ai-chev">▾</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="dp-ai-body">'+bodyInner+'</div>'+
+  '</div>';
+}
+function chCurrentCall(){ return ALL_CALLS.find(function(x){return x.id===state.selectedId;}); }
+function chToggleAi(){ state.aiCollapsed=!state.aiCollapsed; renderDetail(); }
+function chHelp(){ state.aiLoading=true; renderDetail(); setTimeout(function(){ state.aiLoading=false; state.aiOpen=true; renderDetail(); }, 650); }
+function chRegen(){ chHelp(); }
+function chSugAct(i){
+  var c=chCurrentCall(); if(!c) return;
+  var s=chBuildSuggestions(c)[i]; if(!s) return;
+  if(s.action==='call'){ if(typeof dpCallBack==='function') dpCallBack(c.id); return; }
+  if(s.action==='sms'){ if(typeof openSmsModal==='function') openSmsModal(c.id); return; }
+  if(s.action==='email'){
+    if(typeof openEmailModal==='function') openEmailModal(c.id);
+    var subj=document.getElementById('em-subject'); if(subj && s.subject) subj.value=s.subject;
+    var bodyEl=document.getElementById('em-content');
+    if(bodyEl && s.draft){ bodyEl.innerHTML=s.draft.split('\n').map(function(l){ return chEsc(l); }).join('<br>'); }
+    return;
+  }
+  if(s.action==='appointment'){
+    var lead=chLeadFor(c);
+    window.location.href='../coreconnect_appointments/coreconnect_appointments.html?new=appointment'+(lead?('&lead='+lead.no):'');
+  }
+}
+
 function renderDetail(){
   const dp = document.getElementById('dp');
   const empty = document.getElementById('dp-empty');
@@ -3362,6 +3526,8 @@ function renderDetail(){
           <div class="dp-sum-val"><a href="#" onclick="event.preventDefault();" style="color:var(--ac2);text-decoration:none;">${c.contact.lead} · ${c.contact.name}</a></div>
         </div>
       </div>
+
+      ${chSummaryHtml(c)}
 
       <div class="dp-rec">
         <div class="dp-rec-head">

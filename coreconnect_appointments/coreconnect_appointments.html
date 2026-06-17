@@ -4557,6 +4557,19 @@ function sendBusinessCard(){
 
 renderActive();
 renderNotifications();
+
+// Deep-link: open a prefilled "New appointment" when arriving from a contact-panel suggestion
+// e.g. ...coreconnect_appointments.html?new=appointment&lead=12
+(function(){
+  try{
+    var p = new URLSearchParams(location.search);
+    if(p.get('new') === 'appointment' && typeof openApptCreate === 'function'){
+      openApptCreate('appointment');
+      var ln = parseInt(p.get('lead'), 10);
+      if(!isNaN(ln) && typeof aePickLead === 'function') aePickLead(ln);
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

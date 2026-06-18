@@ -873,6 +873,61 @@
      WIDGETS MENU (dropdown attached to the toolbar's Widgets button)
      Reuses the .pm-item / mobile-sheet DNA from the period dropdown.
      ════════════════════════════════════════════════════════════════════════════ */
+  /* Dashboard Filter — two-pane (Users / Departments), modeled on the CRM filter */
+  .df-outer{position:relative;flex-shrink:0;}
+  .df-btn .df-chev{transition:transform .15s;}
+  .df-btn.active{border-color:var(--ac);color:var(--ac2);}
+  .df-badge{width:7px;height:7px;border-radius:50%;background:var(--ac);flex:none;}
+  .df-menu{position:fixed;top:0;left:0;z-index:200;display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;max-height:calc(100vh - 32px);}
+  .df-menu.open{display:flex;}
+  .df-mobile-header{display:none;align-items:center;gap:6px;padding:10px 12px;border-bottom:0.5px solid var(--brd2);background:var(--sur);flex-shrink:0;}
+  .df-mobile-back{width:40px;height:40px;border-radius:8px;background:transparent;border:none;color:var(--tx);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;display:none;}
+  .df-menu.show-opts .df-mobile-back{display:flex;}
+  .df-mobile-title{flex:1;font-size:15px;font-weight:600;color:var(--tx);text-align:center;}
+  .df-mobile-close{width:40px;height:40px;border-radius:8px;background:transparent;border:none;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .df-left{width:190px;display:flex;flex-direction:column;border-right:0.5px solid var(--brd2);background:var(--sur);}
+  .df-catlist{flex:1;padding:6px;overflow-y:auto;min-height:0;}
+  .df-cat{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;border-radius:7px;cursor:pointer;border:none;background:transparent;color:var(--tx);font-size:12.5px;font-family:var(--font);text-align:left;transition:background .12s,color .12s;}
+  .df-cat:hover{background:var(--sur2);color:var(--ac2);}
+  .df-cat.active{background:rgba(79,124,255,.10);color:var(--ac2);}
+  .df-cat-label{flex:1;}
+  .df-cat-chev{color:var(--mu);font-size:13px;}
+  .df-cat:hover .df-cat-chev,.df-cat.active .df-cat-chev{color:var(--ac2);}
+  .df-foot{padding:9px 12px;border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .df-clear{font-size:11.5px;color:var(--mu);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0;}
+  .df-clear:hover{color:var(--rd);}
+  .df-foot-hint{font-size:10.5px;color:var(--mu);font-family:var(--mono);}
+  .df-right{width:300px;display:flex;flex-direction:column;background:var(--sur2);}
+  .df-search{display:flex;align-items:center;gap:7px;padding:11px 12px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+  .df-search svg{color:var(--mu);width:14px;height:14px;flex:none;}
+  .df-search input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;}
+  .df-search input::placeholder{color:var(--mu);}
+  .df-opts{flex:1;overflow-y:auto;padding:6px;min-height:0;max-height:440px;}
+  .df-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:7px;cursor:pointer;border:none;background:transparent;text-align:left;transition:background .12s;}
+  .df-opt:hover{background:rgba(255,255,255,.04);}
+  .df-radio{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--brd2);flex:none;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+  .df-opt.chosen .df-radio{background:var(--ac);border-color:var(--ac);}
+  .df-opt.chosen .df-radio::after{content:'';width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-1px;}
+  .df-opt-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex:none;color:#fff;}
+  .df-opt-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;color:var(--tx);}
+  .df-opt.chosen .df-opt-label{color:var(--ac2);}
+  .df-opt-meta{font-size:11px;color:var(--mu);flex:none;}
+  .df-opts-empty{padding:16px 12px;text-align:center;font-size:12px;color:var(--mu);}
+  @media (max-width:640px){
+    .df-menu{top:0!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;max-height:none;border-radius:0;border:none;flex-direction:column;}
+    .df-mobile-header{display:flex;}
+    .df-left,.df-right{position:absolute;top:61px;left:0;right:0;bottom:0;width:100%;border:none;transition:transform .22s ease;}
+    .df-left{transform:translateX(0);}
+    .df-menu.show-opts .df-left{transform:translateX(-100%);}
+    .df-right{display:flex;transform:translateX(100%);}
+    .df-menu.show-opts .df-right{transform:translateX(0);}
+    .df-cat{padding:14px;font-size:14px;}
+    .df-opt{padding:13px 12px;}
+    .df-opt-label{font-size:14px;}
+    .df-search input{font-size:16px;}
+    .df-foot{padding:12px 16px;}
+  }
+
   .wm-outer{position:relative;flex-shrink:0;}
 
   .widgets-menu{display:none;position:absolute;top:calc(100% + 5px);right:0;
@@ -1483,6 +1538,44 @@
           <button type="button" class="cal-foot-btn" onclick="calJumpToToday()">Today</button>
           <button type="button" class="cal-foot-btn primary" onclick="closeCalendar()">Done</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Filter by user / department -->
+    <div class="df-outer" id="df-outer">
+      <button class="tbtn df-btn" id="df-btn" onclick="dashFilterToggle(event)" aria-haspopup="menu" aria-expanded="false" title="Filter by user or department">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span id="df-btn-label">Filter</span>
+        <span class="df-badge" id="df-badge" style="display:none;"></span>
+        <svg class="df-chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+    <div class="df-menu" id="df-menu" role="dialog" aria-label="Filter by user or department" onclick="event.stopPropagation()">
+      <div class="df-mobile-header">
+        <button class="df-mobile-back" id="df-mback" onclick="dashFilterBack()" aria-label="Back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <span class="df-mobile-title" id="df-mtitle">Filter</span>
+        <button class="df-mobile-close" onclick="dashFilterClose()" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="df-left">
+        <div class="df-catlist">
+          <button class="df-cat" data-cat="users" onclick="dashFilterCat('users')"><span class="df-cat-label">Users</span><span class="df-cat-chev">›</span></button>
+          <button class="df-cat" data-cat="depts" onclick="dashFilterCat('depts')"><span class="df-cat-label">Departments</span><span class="df-cat-chev">›</span></button>
+        </div>
+        <div class="df-foot">
+          <button class="df-clear" onclick="dashFilterClear()">Clear all</button>
+          <span class="df-foot-hint">Esc to close</span>
+        </div>
+      </div>
+      <div class="df-right" id="df-right">
+        <div class="df-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="df-search" placeholder="Search Filter" oninput="dashFilterRenderOpts()">
+        </div>
+        <div class="df-opts" id="df-opts"></div>
       </div>
     </div>
 
@@ -3055,11 +3148,157 @@ const CA_ICON_OUT = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none"
 // kind: 'missed' | 'answered' | 'returned' | 'inbound' | 'outbound'
 // Synced to the CRM leads page (shared/leads-comms.js): derived from each lead's "out/in" calls field,
 // period-aware. Falls back to the local callRecords seed if the shared file failed to load.
+/* ===== Dashboard Filter: scope by user or department ===== */
+var dashScope = { type:'all', values:[] };   // type: 'all' | 'users' | 'depts'; values = agent keys or dept names
+function dashScopeActive(){ return dashScope.type!=='all' && dashScope.values.length>0; }
+function dashCanon(){ return ({Today:'today',Week:'week',Month:'month',All:'all'})[currentPeriod] || 'all'; }
+function dashTeam(){ return (window.CCLeads && CCLeads.TEAM) || []; }
+function dashMember(key){ return dashTeam().filter(function(u){ return u.key===key; })[0] || null; }
+function dashDeptOf(key){ var m=dashMember(key); return m ? m.dept : null; }
+function dashDepts(){ var s=[]; dashTeam().forEach(function(u){ if(u.dept && s.indexOf(u.dept)<0) s.push(u.dept); }); return s.sort(); }
+function dashLeadMatches(l){
+  if(!dashScopeActive()) return true;
+  if(dashScope.type==='users') return dashScope.values.indexOf(l.assign)>=0;
+  if(dashScope.type==='depts') return dashScope.values.indexOf(dashDeptOf(l.assign))>=0;
+  return true;
+}
+// Scoped KPI totals. 'all' delegates to CCLeads (identical to prior behavior); otherwise sums the
+// per-lead count helpers over the period-filtered leads matching the active user/department scope.
+function dashTotals(period){
+  var C=window.CCLeads;
+  var empty={calls:{outbound:0,inbound:0,missed:0,answered:0,returned:0},sms:{outbound:0,inbound:0},email:{outbound:0,inbound:0}};
+  if(!C) return empty;
+  if(!dashScopeActive()) return {calls:C.callTotals(period), sms:C.smsTotals(period), email:C.emailTotals(period)};
+  var r={calls:{outbound:0,inbound:0,missed:0,answered:0,returned:0},sms:{outbound:0,inbound:0},email:{outbound:0,inbound:0}};
+  C.LEADS.forEach(function(l,i){
+    if(!C.leadInPeriod(i,period)) return;
+    if(!dashLeadMatches(l)) return;
+    var cc=C.callCountsForLead(l); r.calls.outbound+=cc.out; r.calls.inbound+=cc.in; r.calls.missed+=cc.missed; r.calls.answered+=cc.answered; r.calls.returned+=cc.returned;
+    var s=C.smsCountsForLead(l); r.sms.outbound+=s.out; r.sms.inbound+=s.in;
+    var e=C.emailCountsForLead(l); r.email.outbound+=e.out; r.email.inbound+=e.in;
+  });
+  return r;
+}
+// Per-channel ratio of scoped vs all (1 when 'all') — used to scale the synthetic chart series.
+function dashScopeRatio(period){
+  if(!dashScopeActive() || !window.CCLeads) return {calls:1,sms:1,email:1,leads:1};
+  var C=window.CCLeads, all={calls:0,sms:0,email:0,leads:0}, sc={calls:0,sms:0,email:0,leads:0};
+  C.LEADS.forEach(function(l,i){
+    if(!C.leadInPeriod(i,period)) return;
+    var cc=C.callCountsForLead(l), s=C.smsCountsForLead(l), e=C.emailCountsForLead(l);
+    var cT=cc.out+cc.in, sT=s.out+s.in, eT=e.out+e.in;
+    all.calls+=cT; all.sms+=sT; all.email+=eT; all.leads+=1;
+    if(dashLeadMatches(l)){ sc.calls+=cT; sc.sms+=sT; sc.email+=eT; sc.leads+=1; }
+  });
+  function rr(a,b){ return a>0 ? b/a : 0; }
+  return {calls:rr(all.calls,sc.calls), sms:rr(all.sms,sc.sms), email:rr(all.email,sc.email), leads:rr(all.leads,sc.leads)};
+}
+
+/* Filter popup — two-pane (Users / Departments), single-select, live apply */
+var dashFilterCatKey = 'users';   // active left category
+function dashFilterToggle(e){ if(e) e.stopPropagation(); var m=document.getElementById('df-menu'); if(!m) return; if(m.classList.contains('open')) dashFilterClose(); else dashFilterOpen(); }
+function dashFilterOpen(){
+  var m=document.getElementById('df-menu'), b=document.getElementById('df-btn'); if(!m||!b) return;
+  if(m.parentElement!==document.body) document.body.appendChild(m);
+  dashFilterCatKey = (dashScope.type==='depts') ? 'depts' : 'users';
+  m.classList.remove('show-opts');               // mobile: start at the category list
+  var t=document.getElementById('df-mtitle'); if(t) t.textContent='Filter';
+  var s=document.getElementById('df-search'); if(s) s.value='';
+  dashFilterSyncCats();
+  dashFilterRenderOpts();
+  m.classList.add('open'); b.setAttribute('aria-expanded','true');
+  dashFilterPosition();
+}
+function dashFilterClose(){ var m=document.getElementById('df-menu'), b=document.getElementById('df-btn'); if(m){ m.classList.remove('open'); m.classList.remove('show-opts'); } if(b) b.setAttribute('aria-expanded','false'); }
+function dashFilterPosition(){
+  var m=document.getElementById('df-menu'), b=document.getElementById('df-btn'); if(!m||!b) return;
+  if(window.innerWidth<=640) return;             // full-screen sheet via CSS on phone
+  m.style.right='auto'; m.style.bottom='auto';
+  var r=b.getBoundingClientRect(), w=m.offsetWidth||490;
+  var left=r.left;                               // align the dropdown's left edge to the button
+  var maxLeft=window.innerWidth-w-8; if(left>maxLeft) left=maxLeft; if(left<8) left=8;
+  m.style.left=left+'px'; m.style.top=(r.bottom+6)+'px';
+}
+function dashFilterSyncCats(){
+  document.querySelectorAll('#df-menu .df-cat').forEach(function(c){ c.classList.toggle('active', c.getAttribute('data-cat')===dashFilterCatKey); });
+}
+function dashFilterCat(cat){
+  dashFilterCatKey = cat;
+  var s=document.getElementById('df-search'); if(s) s.value='';
+  dashFilterSyncCats();
+  dashFilterRenderOpts();
+  var m=document.getElementById('df-menu');
+  if(window.innerWidth<=640 && m){
+    m.classList.add('show-opts');
+    var t=document.getElementById('df-mtitle'); if(t) t.textContent = (cat==='depts'?'Departments':'Users');
+  } else {
+    var s2=document.getElementById('df-search'); if(s2) setTimeout(function(){ s2.focus(); },20);
+  }
+}
+function dashFilterBack(){
+  var m=document.getElementById('df-menu'); if(m) m.classList.remove('show-opts');
+  var t=document.getElementById('df-mtitle'); if(t) t.textContent='Filter';
+}
+function dashFilterRenderOpts(){
+  var box=document.getElementById('df-opts'); if(!box) return;
+  var q=((document.getElementById('df-search')||{}).value||'').toLowerCase().trim();
+  var html='';
+  if(dashFilterCatKey==='depts'){
+    var depts=dashDepts().filter(function(d){ return !q || d.toLowerCase().indexOf(q)>=0; });
+    if(!depts.length){ box.innerHTML='<div class="df-opts-empty">No departments match.</div>'; return; }
+    depts.forEach(function(d){
+      var on=dashScope.type==='depts'&&dashScope.values.indexOf(d)>=0;
+      var n=dashTeam().filter(function(u){return u.dept===d;}).length;
+      html+='<button class="df-opt'+(on?' chosen':'')+'" onclick="dashFilterToggleVal(\'depts\',\''+d+'\')">'+
+        '<span class="df-radio"></span><span class="df-opt-label">'+d+'</span><span class="df-opt-meta">'+n+' user'+(n===1?'':'s')+'</span></button>';
+    });
+  } else {
+    var members=dashTeam().filter(function(u){ return !q || u.name.toLowerCase().indexOf(q)>=0 || (u.dept||'').toLowerCase().indexOf(q)>=0; });
+    if(!members.length){ box.innerHTML='<div class="df-opts-empty">No users match.</div>'; return; }
+    members.forEach(function(u){
+      var on=dashScope.type==='users'&&dashScope.values.indexOf(u.key)>=0;
+      var ini=u.name.trim().split(/\s+/).map(function(p){return p[0];}).join('').slice(0,2).toUpperCase();
+      html+='<button class="df-opt'+(on?' chosen':'')+'" onclick="dashFilterToggleVal(\'users\',\''+u.key+'\')">'+
+        '<span class="df-radio"></span>'+
+        '<span class="df-opt-av" style="background:'+(u.color||'#4f7cff')+';">'+ini+'</span>'+
+        '<span class="df-opt-label">'+u.name+'</span>'+
+        '<span class="df-opt-meta">'+(u.dept||'')+'</span></button>';
+    });
+  }
+  box.innerHTML=html;
+}
+// Multi-select toggle. Switching category overrides the other category's selection.
+function dashFilterToggleVal(cat, value){
+  if(dashScope.type !== cat){ dashScope={type:cat, values:[]}; }
+  var i=dashScope.values.indexOf(value);
+  if(i>=0) dashScope.values.splice(i,1); else dashScope.values.push(value);
+  if(!dashScope.values.length){ dashScope={type:'all', values:[]}; }
+  dashFilterRenderOpts(); dashFilterSyncBtn(); refreshWidgets();
+}
+function dashFilterClear(){ dashScope={type:'all', values:[]}; dashFilterRenderOpts(); dashFilterSyncBtn(); refreshWidgets(); }
+function dashFilterSyncBtn(){
+  var label=document.getElementById('df-btn-label'), badge=document.getElementById('df-badge'), btn=document.getElementById('df-btn');
+  if(!label||!badge||!btn) return;
+  if(!dashScopeActive()){ label.textContent='Filter'; badge.style.display='none'; btn.classList.remove('active'); return; }
+  var n=dashScope.values.length, txt;
+  if(dashScope.type==='users') txt = (n===1) ? ((dashMember(dashScope.values[0])||{}).name || '1 user') : (n+' users');
+  else txt = (n===1) ? dashScope.values[0] : (n+' departments');
+  label.textContent='Filter: '+txt; badge.style.display=''; btn.classList.add('active');
+}
+document.addEventListener('click', function(ev){
+  var outer=document.getElementById('df-outer'), menu=document.getElementById('df-menu');
+  if(!menu || !menu.classList.contains('open')) return;
+  if((outer && outer.contains(ev.target)) || menu.contains(ev.target)) return;
+  dashFilterClose();
+});
+document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ var m=document.getElementById('df-menu'); if(m && m.classList.contains('open')) dashFilterClose(); } });
+window.addEventListener('resize', function(){ var m=document.getElementById('df-menu'); if(m && m.classList.contains('open')) dashFilterPosition(); });
+
 function renderCallKpi(body, win, kind, icon, sub){
   let value;
   if(window.CCLeads && window.CCLeads.callTotals){
     const canon = ({Today:'today',Week:'week',Month:'month',All:'all'})[currentPeriod] || 'all';
-    const t = window.CCLeads.callTotals(canon);
+    const t = dashTotals(canon).calls;
     value = (kind === 'inbound') ? t.inbound : (kind === 'outbound') ? t.outbound : t[kind];
   } else {
     const c = countCalls(win);
@@ -3168,7 +3407,7 @@ function renderSmsKpi(body, win, kind, icon, sub){
   let inbound, outbound, chip;
   if(window.CCLeads && window.CCLeads.smsTotals){
     const canon = ({Today:'today',Week:'week',Month:'month',All:'all'})[currentPeriod] || 'all';
-    const t = window.CCLeads.smsTotals(canon);
+    const t = dashTotals(canon).sms;
     inbound = t.inbound; outbound = t.outbound; chip = win.label;
   } else {
     const c = countSms(win);
@@ -3308,7 +3547,7 @@ function renderEmailKpi(body, win, kind, icon, sub){
   let inbound, outbound, chip;
   if(window.CCLeads && window.CCLeads.emailTotals){
     const canon = ({Today:'today',Week:'week',Month:'month',All:'all'})[currentPeriod] || 'all';
-    const t = window.CCLeads.emailTotals(canon);
+    const t = dashTotals(canon).email;
     inbound = t.inbound; outbound = t.outbound; chip = win.label;
   } else {
     const c = countEmail(win);
@@ -3443,6 +3682,13 @@ function renderActivityChart(body, win){
     sms:   buckets.map(b => countInBucket(smsRecords, b)),
     email: buckets.map(b => countInBucket(emailRecords, b))
   };
+  // When a user/department filter is active, scale each channel to the filtered share.
+  if(dashScopeActive()){
+    const _R = dashScopeRatio(dashCanon());
+    series.calls = series.calls.map(v => Math.round(v * _R.calls));
+    series.sms   = series.sms.map(v => Math.round(v * _R.sms));
+    series.email = series.email.map(v => Math.round(v * _R.email));
+  }
 
   const totalAll = series.calls.concat(series.sms, series.email).reduce((a,c)=>a+c,0);
   if(totalAll === 0){
@@ -3822,6 +4068,11 @@ function bucketLeadsByStatus(buckets){
 function renderLeadsChart(body, win){
   const { buckets, granularity } = buildBuckets(win);
   const data = bucketLeadsByStatus(buckets);
+  // Scale lead bars to the filtered share when a user/department filter is active.
+  if(dashScopeActive()){
+    const _rl = dashScopeRatio(dashCanon()).leads;
+    data.forEach(row => { let t=0; LEAD_STATUSES.forEach(s => { row[s.key]=Math.round((row[s.key]||0)*_rl); t+=row[s.key]; }); row.total=t; });
+  }
 
   const totalAll = data.reduce((acc, row) => acc + row.total, 0);
   if(totalAll === 0){

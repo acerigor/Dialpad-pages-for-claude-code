@@ -183,24 +183,24 @@
   // One list shared by the CRM (lead assignment + create-activity modals) and the
   // Appointments page (edit-modal team-member picker). {key,name,role,color}.
   const TEAM = [
-    {key:'DP', name:'David Park',       role:'Sales Manager', color:'#4f7cff'},
-    {key:'JD', name:'James Donovan',    role:'Sales Rep',     color:'#22c88a'},
-    {key:'MR', name:'Maria Rodriguez',  role:'Sales Rep',     color:'#f5a623'},
-    {key:'TK', name:'Tom Keller',       role:'BDC Agent',     color:'#a78bfa'},
-    {key:'SL', name:'Sarah Lambert',    role:'Sales Rep',     color:'#e85555'},
-    {key:'AB', name:'Andre Brooks',     role:'BDC Agent',     color:'#0F6E56'},
-    {key:'NC', name:'Nina Castro',      role:'Sales Manager', color:'#534AB7'},
-    {key:'RG', name:'Raj Gupta',        role:'Sales Rep',     color:'#185FA5'},
-    {key:'EW', name:'Emma Walsh',       role:'BDC Agent',     color:'#993C1D'},
-    {key:'LP', name:'Liam Patterson',   role:'Sales Rep',     color:'#3B6D11'},
-    {key:'OH', name:'Olivia Hayes',     role:'Sales Rep',     color:'#72243E'},
-    {key:'MK', name:'Marcus King',      role:'BDC Agent',     color:'#854F0B'},
-    {key:'PN', name:'Priya Nair',       role:'Sales Manager', color:'#4f7cff'},
-    {key:'CT', name:'Chris Tanaka',     role:'Sales Rep',     color:'#22c88a'},
-    {key:'DV', name:'Diana Vega',       role:'Sales Rep',     color:'#f5a623'},
-    {key:'FA', name:'Felix Anderson',   role:'BDC Agent',     color:'#a78bfa'},
-    {key:'GS', name:'Grace Sullivan',   role:'Sales Rep',     color:'#e85555'},
-    {key:'HM', name:'Henry Morales',    role:'BDC Agent',     color:'#0F6E56'},
+    {key:'DP', name:'David Park',       role:'Sales Manager', dept:'Sales',   color:'#4f7cff'},
+    {key:'JD', name:'James Donovan',    role:'Sales Rep',     dept:'Sales',   color:'#22c88a'},
+    {key:'MR', name:'Maria Rodriguez',  role:'Sales Rep',     dept:'Sales',   color:'#f5a623'},
+    {key:'TK', name:'Tom Keller',       role:'BDC Agent',     dept:'BDC',     color:'#a78bfa'},
+    {key:'SL', name:'Sarah Lambert',    role:'Sales Rep',     dept:'Sales',   color:'#e85555'},
+    {key:'AB', name:'Andre Brooks',     role:'BDC Agent',     dept:'BDC',     color:'#0F6E56'},
+    {key:'NC', name:'Nina Castro',      role:'Sales Manager', dept:'Finance', color:'#534AB7'},
+    {key:'RG', name:'Raj Gupta',        role:'Sales Rep',     dept:'Sales',   color:'#185FA5'},
+    {key:'EW', name:'Emma Walsh',       role:'BDC Agent',     dept:'BDC',     color:'#993C1D'},
+    {key:'LP', name:'Liam Patterson',   role:'Sales Rep',     dept:'Finance', color:'#3B6D11'},
+    {key:'OH', name:'Olivia Hayes',     role:'Sales Rep',     dept:'Finance', color:'#72243E'},
+    {key:'MK', name:'Marcus King',      role:'BDC Agent',     dept:'BDC',     color:'#854F0B'},
+    {key:'PN', name:'Priya Nair',       role:'Sales Manager', dept:'Service', color:'#4f7cff'},
+    {key:'CT', name:'Chris Tanaka',     role:'Sales Rep',     dept:'Sales',   color:'#22c88a'},
+    {key:'DV', name:'Diana Vega',       role:'Sales Rep',     dept:'Service', color:'#f5a623'},
+    {key:'FA', name:'Felix Anderson',   role:'BDC Agent',     dept:'BDC',     color:'#a78bfa'},
+    {key:'GS', name:'Grace Sullivan',   role:'Sales Rep',     dept:'Sales',   color:'#e85555'},
+    {key:'HM', name:'Henry Morales',    role:'BDC Agent',     dept:'BDC',     color:'#0F6E56'},
   ];
 
   // Persist + enrich the roster so it's the live source for Assign, the appointment team-picker,
@@ -217,6 +217,7 @@
     u.phone  = u.phone  || '(555) ' + (100 + i*10) + '-' + (2000 + i);
     u.email  = u.email  || (u.name.toLowerCase().replace(/[^a-z]+/g,'.').replace(/^\.+|\.+$/g,'') + '@coreconnect.io');
     u.status = u.status || 'Active';
+    u.dept   = u.dept   || ({'Sales Manager':'Sales','Sales Rep':'Sales','BDC Agent':'BDC'}[u.role] || 'Sales');
   });
   function saveTeam(){ try { localStorage.setItem(TEAM_KEY, JSON.stringify(TEAM)); } catch(e){} }
   function _teamKeyFor(name){

@@ -3360,7 +3360,6 @@
     <aside class="cs-nav" id="cs-nav">
       <div class="cs-nav-group">General</div>
         <a class="cs-nav-item" href="#language-region" data-target="language-region">Language and region</a>
-        <a class="cs-nav-item" href="#time-zone" data-target="time-zone">Time zone</a>
         <a class="cs-nav-item" href="#alert-settings" data-target="alert-settings">Alert settings</a>
         <a class="cs-nav-item" href="#notification-settings" data-target="notification-settings">Notification settings</a>
     </aside>
@@ -3376,46 +3375,6 @@
             <span class="cs-fld-label">Country</span>
             <div class="modal-field cs-select"><select><option>Philippines</option><option>United States</option><option>Canada</option><option>United Kingdom</option></select><svg class="cs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
           </div>
-          <div class="cs-fld">
-            <span class="cs-fld-label">Date format</span>
-            <div class="modal-field cs-select"><select><option>12/31/2026</option><option>31/12/2026</option><option>2026/12/31</option></select><svg class="cs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-          <div class="cs-fld">
-            <span class="cs-fld-label">Time format</span>
-            <div class="modal-field cs-select"><select><option>1:00pm</option><option>13:00</option></select><svg class="cs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div></section>
-        <section class="cs-sec" id="time-zone"><h3 class="cs-sec-title">Time zone</h3><div class="cs-sec-body">
-          <label class="cs-toggle">
-            <span class="bc-check cs-cbx"><input type="checkbox" id="cs-show-secondary" onchange="toggleSecondaryTz(this.checked)" /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
-            <span class="cs-toggle-text">Display secondary time zone</span>
-          </label>
-          <div class="cs-tz-row">
-            <div class="cs-tz-grid">
-              <div class="cs-fld">
-                <span class="cs-fld-label">Primary time zone</span>
-                <div class="modal-field cs-select"><select id="cs-primary-tz"><option>(GMT+08:00) Philippine Standard Time</option><option>(GMT+00:00) Greenwich Mean Time</option><option>(GMT-05:00) Eastern Standard Time</option><option>(GMT-06:00) Central Standard Time</option><option>(GMT-08:00) Pacific Standard Time</option><option>(GMT+01:00) Central European Time</option><option>(GMT+09:00) Japan Standard Time</option><option>(GMT+10:00) Australian Eastern Time</option></select><svg class="cs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-              </div>
-              <div class="cs-fld">
-                <span class="cs-fld-label cs-spacer-label">&nbsp;</span>
-                <div class="modal-field"><input type="text" placeholder="Label" /></div>
-              </div>
-              <div class="cs-fld cs-secondary-tz is-disabled">
-                <span class="cs-fld-label">Secondary time zone</span>
-                <div class="modal-field cs-select"><select id="cs-secondary-input" onchange="refreshSwapState()" disabled><option value="" selected>Select time zone</option><option>(GMT+08:00) Philippine Standard Time</option><option>(GMT+00:00) Greenwich Mean Time</option><option>(GMT-05:00) Eastern Standard Time</option><option>(GMT-06:00) Central Standard Time</option><option>(GMT-08:00) Pacific Standard Time</option><option>(GMT+01:00) Central European Time</option><option>(GMT+09:00) Japan Standard Time</option><option>(GMT+10:00) Australian Eastern Time</option></select><svg class="cs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-              </div>
-              <div class="cs-fld cs-secondary-tz is-disabled">
-                <span class="cs-fld-label cs-spacer-label">&nbsp;</span>
-                <div class="modal-field"><input type="text" placeholder="Label" id="cs-secondary-label" disabled /></div>
-              </div>
-            </div>
-            <button class="cs-tz-swap" id="cs-tz-swap" aria-label="Swap time zones" title="Swap" onclick="swapTimeZones()" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 7 7 3 3 7"/><line x1="7" y1="3" x2="7" y2="15"/><polyline points="13 17 17 21 21 17"/><line x1="17" y1="21" x2="17" y2="9"/></svg></button>
-          </div>
-          <label class="cs-toggle">
-            <span class="bc-check cs-cbx"><input type="checkbox" checked /><span class="bc-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
-            <span class="cs-toggle-text">Ask to update my primary time zone to current location</span>
-          </label>
-          <p class="cs-help">Learn more about how the calendar works across time zones.</p>
         </div></section>
         <section class="cs-sec" id="alert-settings"><h3 class="cs-sec-title">Alert settings</h3><div class="cs-sec-body">
 
@@ -3535,45 +3494,6 @@ function markAllNotificationsRead(){NOTIFS.forEach(function(n){n.read=true;});re
 document.addEventListener('click',function(e){var p=document.getElementById('notif-panel'),bell=document.getElementById('header-bell');if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!bell.contains(e.target))closeNotifications();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeNotifications();closeMobileDrawer();closeLeaveModal();closeBcModal();}});
 function saveSettings(){showNavToast('Settings saved','Your calendar settings have been updated.');csResetDirty();}
-
-/* ---- Time zone: enable/disable secondary fields with the checkbox ---- */
-function toggleSecondaryTz(on){
-  var input=document.getElementById('cs-secondary-input');
-  var label=document.getElementById('cs-secondary-label');
-  if(input) input.disabled=!on;
-  if(label) label.disabled=!on;
-  document.querySelectorAll('.cs-secondary-tz').forEach(function(el){ el.classList.toggle('is-disabled', !on); });
-  refreshSwapState();
-}
-
-/* ---- Time zone: swap Primary <-> Secondary values (labels stay put) ---- */
-function tzText(sel){ var o=sel.options[sel.selectedIndex]; return o.value===''?'':o.text; }
-function setSelectValue(sel, val){
-  if(val===''){ // select the placeholder if present, else add one
-    for(var k=0;k<sel.options.length;k++){ if(sel.options[k].value===''){ sel.selectedIndex=k; return; } }
-    var ph=document.createElement('option'); ph.value=''; ph.text='Select time zone'; sel.insertBefore(ph, sel.firstChild); sel.value=''; return;
-  }
-  for(var i=0;i<sel.options.length;i++){ if(sel.options[i].text===val){ sel.selectedIndex=i; return; } }
-  var o=document.createElement('option'); o.text=val; sel.add(o); sel.value=val;
-}
-function swapTimeZones(){
-  var prim=document.getElementById('cs-primary-tz');
-  var sec=document.getElementById('cs-secondary-input');
-  if(!prim||!sec||sec.disabled) return;
-  var pVal=tzText(prim), sVal=tzText(sec);
-  if(sVal===''){ return; }  // no secondary time zone selected — swap not allowed
-  setSelectValue(prim, sVal);
-  setSelectValue(sec, pVal);
-  csCheckDirty();
-}
-/* keep the swap button enabled only when secondary is on AND has a real selection */
-function refreshSwapState(){
-  var sec=document.getElementById('cs-secondary-input');
-  var swap=document.getElementById('cs-tz-swap');
-  if(!sec||!swap) return;
-  var hasZone = !sec.disabled && tzText(sec)!=='';
-  swap.disabled = !hasZone;
-}
 
 /* ---- Settings left-nav: scroll-jump + scroll-spy ---- */
 (function(){

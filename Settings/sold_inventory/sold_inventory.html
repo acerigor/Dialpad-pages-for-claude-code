@@ -3455,13 +3455,15 @@
   .si-th.si-sorted.desc .si-arrow{border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid currentColor;}
   /* frozen first two columns */
   .si-table th:first-child, .si-table td:first-child{position:sticky;left:0;z-index:2;width:56px;min-width:56px;max-width:56px;}
-  .si-table th:nth-child(2), .si-table td:nth-child(2){position:sticky;left:56px;z-index:2;width:190px;min-width:190px;max-width:190px;border-right:0.5px solid var(--brd2);}
+  .si-table th:nth-child(2), .si-table td:nth-child(2){position:sticky;left:56px;z-index:2;width:190px;min-width:190px;max-width:190px;box-shadow:6px 0 12px -4px rgba(0,0,0,0);transition:box-shadow .15s;}
+  /* shadow on the pinned edge only once the table is scrolled horizontally */
+  #si-xscroll.is-scrolled .si-table th:nth-child(2), #si-xscroll.is-scrolled .si-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
   .si-table thead th:first-child, .si-table thead th:nth-child(2){z-index:12;background:var(--sur2);}
   .si-table tbody td:first-child{background:var(--sur);color:var(--mu);font-family:var(--mono);font-size:12.5px;}
   .si-table tbody td:nth-child(2){background:var(--sur);}
-  /* mobile: freeze only the No. column so the rest has room to scroll */
+  /* mobile: keep both the No. and Customer name columns frozen; narrow the 2nd so the rest still scrolls */
   @media (max-width:640px){
-    .si-table th:nth-child(2), .si-table td:nth-child(2){position:static;left:auto;width:auto;min-width:140px;max-width:200px;border-right:none;z-index:auto;}
+    .si-table th:nth-child(2), .si-table td:nth-child(2){width:140px;min-width:140px;max-width:140px;}
   }
   .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
   .nm-add-row{display:flex;align-items:center;gap:12px;}
@@ -3627,7 +3629,7 @@
       <button class="si-btn si-export" onclick="siExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="si-btn-txt">Export</span></button>
     </div>
 
-    <div class="nm-table-wrap"><div class="nm-table-scroll">
+    <div class="nm-table-wrap"><div class="nm-table-scroll" id="si-xscroll">
       <table class="nm-table si-table">
         <thead><tr id="si-thead"></tr></thead>
         <tbody id="si-tbody"></tbody>
@@ -4188,6 +4190,13 @@ function siInit(){
   if(typeof SI_DATA!=='undefined' && SI_DATA){ siCols=SI_DATA.cols||[]; siRows=SI_DATA.rows||[]; }
   siRenderHead();
   siRender();
+  siBindScrollShadow();
+}
+function siBindScrollShadow(){
+  var xs=document.getElementById('si-xscroll'); if(!xs) return;
+  var upd=function(){ xs.classList.toggle('is-scrolled', xs.scrollLeft>0); };
+  xs.addEventListener('scroll', upd, {passive:true});
+  upd();
 }
 function siRenderHead(){
   var th=document.getElementById('si-thead'); if(!th) return;

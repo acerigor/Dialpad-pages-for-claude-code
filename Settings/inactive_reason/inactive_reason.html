@@ -3445,7 +3445,7 @@
     .ir-btn-txt{display:none;}
   }
   /* table */
-  .nm-table.ir-table{min-width:0;table-layout:fixed;}
+  .nm-table.ir-table{min-width:0;}
   .ir-table td{word-break:break-word;white-space:normal;overflow:visible;text-overflow:clip;}
   .ir-th-no{width:80px;}
   .ir-th-act{text-align:right;width:120px;}
@@ -3455,6 +3455,17 @@
   .ir-icon svg{width:15px;height:15px;}
   .ir-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
   .ir-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* === Standard: pin first two columns on mobile (+ scroll shadow). Dormant unless the table overflows. === */
+  @media (max-width:640px){
+    .nm-table-scroll .nm-table th:first-child,
+    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:56px;min-width:56px;max-width:56px;}
+    .nm-table-scroll .nm-table thead th:first-child{z-index:13;background:var(--sur2);}
+    .nm-table-scroll .nm-table th:nth-child(2),
+    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:56px;z-index:3;background:var(--sur);width:200px;min-width:200px;max-width:200px;}
+    .nm-table-scroll .nm-table thead th:nth-child(2){z-index:13;background:var(--sur2);}
+    .nm-table-scroll.is-scrolled .nm-table th:nth-child(2),
+    .nm-table-scroll.is-scrolled .nm-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
+  }
   /* add/edit modal */
   .ir-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
   .ir-modal-bk.open{display:flex;}
@@ -4217,7 +4228,16 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRpt
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderNotifications==='function') renderNotifications();
   irInit();
+  if(typeof bindPinShadow==='function') bindPinShadow();
 });
+
+/* Standard: show the pinned-column scroll shadow only once the table scrolls horizontally. */
+function bindPinShadow(){
+  var xs=document.querySelector('.nm-table-scroll'); if(!xs) return;
+  var upd=function(){ xs.classList.toggle('is-scrolled', xs.scrollLeft>0); };
+  xs.addEventListener('scroll', upd, {passive:true});
+  upd();
+}
 
 /* ===== Inactive Reason ===== */
 var IR_KEY='cc_inactive_reasons';

@@ -914,13 +914,14 @@
   .df-opt-meta{font-size:11px;color:var(--mu);flex:none;}
   .df-opts-empty{padding:16px 12px;text-align:center;font-size:12px;color:var(--mu);}
   @media (max-width:640px){
-    .df-menu{top:0!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;max-height:none;border-radius:0;border:none;flex-direction:column;}
+    .df-menu{top:0!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;max-height:none;border-radius:0;border:none;flex-direction:column;z-index:9500;}
     .df-mobile-header{display:flex;}
     .df-left,.df-right{position:absolute;top:61px;left:0;right:0;bottom:0;width:100%;border:none;transition:transform .22s ease;}
     .df-left{transform:translateX(0);}
     .df-menu.show-opts .df-left{transform:translateX(-100%);}
     .df-right{display:flex;transform:translateX(100%);}
     .df-menu.show-opts .df-right{transform:translateX(0);}
+    .df-opts{max-height:none;}
     .df-cat{padding:14px;font-size:14px;}
     .df-opt{padding:13px 12px;}
     .df-opt-label{font-size:14px;}

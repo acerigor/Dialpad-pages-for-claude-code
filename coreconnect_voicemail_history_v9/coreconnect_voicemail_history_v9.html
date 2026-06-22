@@ -705,6 +705,28 @@
 
   /* Textarea sits as its own area above the footer */
   .sms-textarea-wrap{padding:10px 14px 8px;flex-shrink:0;border-top:0.5px solid var(--brd);}
+  /* ── Composer file-attachment module (SMS + Email) ── */
+  .att-clip{width:30px;height:30px;border-radius:7px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:color .15s;flex:none;}
+  .att-clip:hover{color:var(--ac2);}
+  .att-clip svg{width:16px;height:16px;}
+  .att-tray{display:none;flex-wrap:wrap;gap:6px;margin:0;padding:0 14px 8px;}
+  .att-tray.has{display:flex;}
+  .att-chip{display:inline-flex;align-items:center;gap:7px;max-width:200px;height:34px;padding:0 6px 0 10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;font-size:12px;color:var(--tx);}
+  .att-chip .att-ic{color:var(--ac2);flex:none;display:flex;}
+  .att-chip .att-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .att-chip .att-sz{color:var(--mu);font-size:11px;flex:none;}
+  .att-x{width:22px;height:22px;border-radius:5px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;transition:all .15s;}
+  .att-x:hover{background:rgba(232,85,85,.14);color:var(--rd);}
+  .att-list{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+  .att-thumb{max-width:220px;max-height:220px;border-radius:8px;border:0.5px solid var(--brd2);display:block;cursor:pointer;}
+  .att-audio{width:240px;max-width:100%;height:36px;color-scheme:dark;}
+  .att-video{max-width:260px;border-radius:8px;border:0.5px solid var(--brd2);}
+  .att-file{display:inline-flex;align-items:center;gap:9px;max-width:260px;padding:8px 11px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-size:12px;text-decoration:none;cursor:pointer;transition:border-color .15s;}
+  .att-file:hover{border-color:var(--ac);}
+  .att-file .att-ic{color:var(--ac2);flex:none;display:flex;}
+  .att-file .att-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .att-file .att-sz{color:var(--mu);font-size:11px;flex:none;}
+  @media (max-width:640px){ .att-clip{width:40px;height:40px;} .att-chip{height:40px;} .att-x{width:40px;height:40px;} }
   .sms-textarea{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);
     border-radius:10px;padding:10px 12px;color:var(--tx);font-family:var(--font);
     font-size:13px;line-height:1.5;resize:none;outline:none;
@@ -2107,19 +2129,6 @@
         <span class="bulk-clear" onclick="clearBulk()">Clear</span>
       </div>
 
-      <!-- LIST FOOTER -->
-      <div class="list-footer">
-        <div>Showing <strong style="color:var(--tx)" id="showing">1\u201325</strong> of <strong style="color:var(--tx)" id="total">0</strong></div>
-        <div class="pgn" id="pgn"></div>
-        <div style="display:flex;align-items:center;gap:7px;">
-          <span>Rows</span>
-          <select id="rows-select" onchange="changeRowsPerPage(this.value)">
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-      </div>
     </div>
 
     <!-- DETAIL PANE -->
@@ -2300,11 +2309,14 @@
       oninput="onSmsInputChange()"
       onkeydown="onSmsKeyDown(event)"></textarea>
   </div>
+  <input type="file" id="sms-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('sms',this.files);this.value='';">
+  <div class="att-tray" id="sms-att-tray"></div>
   <div class="sms-foot">
     <button class="sg-ai-btn" onclick="aiSmsCompose()" title="AI compose suggestion" aria-label="AI Compose">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
       AI Compose
     </button>
+    <button class="att-clip" type="button" onclick="document.getElementById('sms-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
     <div class="sms-foot-meta">
       <span class="sms-counter" id="sms-counter">0/160</span>
       <span class="sms-hint">⌘+Enter to send</span>
@@ -2363,11 +2375,14 @@
     </div>
     <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your email…"></div>
   </div>
+  <input type="file" id="em-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('em',this.files);this.value='';">
+  <div class="att-tray" id="em-att-tray"></div>
   <div class="em-foot">
     <button class="sg-ai-btn" onclick="aiEmailCompose()" title="AI compose suggestion" aria-label="AI Compose">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
       AI Compose
     </button>
+    <button class="att-clip" type="button" onclick="document.getElementById('em-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
     <span class="em-hint">⌘+Enter to send</span>
     <button class="em-send-btn" id="em-send-btn" onclick="sendEmailMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -3137,9 +3152,7 @@ function renderList(){
   if(!document.getElementById('list-scroll')) return; // Phase 1: list-pane not present yet
   const filtered = getFiltered();
   const total = filtered.length;
-  const start = (state.page-1)*state.perPage;
-  const end = Math.min(start+state.perPage, total);
-  const slice = filtered.slice(start, end);
+  const slice = filtered;
 
   // group by day
   const groups = [];
@@ -3190,44 +3203,8 @@ function renderList(){
     `).join('');
   }
 
-  // footer
-  document.getElementById('showing').textContent = total===0?'0':((start+1)+'–'+end);
-  document.getElementById('total').textContent = total;
-  renderPagination(total);
   renderBulkBar();
 }
-
-function renderPagination(total){
-  const pages = Math.max(1, Math.ceil(total/state.perPage));
-  const cur = state.page;
-  const pgn = document.getElementById('pgn');
-  let html = `<div class="pb" onclick="goPage(${cur-1})" ${cur===1?'style="opacity:.4;pointer-events:none"':''}>‹</div>`;
-  const window_ = [];
-  if(pages<=5){ for(let i=1;i<=pages;i++) window_.push(i); }
-  else {
-    window_.push(1);
-    if(cur>3) window_.push('…');
-    for(let i=Math.max(2,cur-1);i<=Math.min(pages-1,cur+1);i++) window_.push(i);
-    if(cur<pages-2) window_.push('…');
-    window_.push(pages);
-  }
-  window_.forEach(p=>{
-    if(p==='…') html += `<div class="pb" style="border:none;background:none;cursor:default;">…</div>`;
-    else html += `<div class="pb ${p===cur?'on':''}" onclick="goPage(${p})">${p}</div>`;
-  });
-  html += `<div class="pb" onclick="goPage(${cur+1})" ${cur===pages?'style="opacity:.4;pointer-events:none"':''}>›</div>`;
-  pgn.innerHTML = html;
-}
-
-function goPage(p){
-  const total = getFiltered().length;
-  const pages = Math.max(1, Math.ceil(total/state.perPage));
-  if(p<1||p>pages) return;
-  state.page = p;
-  renderList();
-  document.getElementById('list-scroll').scrollTop = 0;
-}
-function changeRowsPerPage(n){ state.perPage = parseInt(n,10); state.page=1; renderList(); }
 
 /* ============ SELECTION + BULK ============ */
 function selectCall(id, e){
@@ -4854,6 +4831,7 @@ function smsDayLabel(d){
 function openSmsModal(callId){
   const c = ALL_CALLS.find(x => x.id === callId);
   if(!c) return;
+  if(typeof attClear==='function') attClear('sms');
   smsState.contact = {
     name: c.contact.name,
     num: c.contact.num,
@@ -4920,7 +4898,8 @@ function renderSmsBody(){
     const isNew = m.isNew ? ' new' : '';
     if(m.isNew) delete m.isNew;
     html += `<div class="sms-msg ${m.dir}${isNew}">
-      <div class="sms-bubble">${escapeHtml(m.text)}</div>
+      ${m.text ? `<div class="sms-bubble">${escapeHtml(m.text)}</div>` : ''}
+      ${attListHtml(m.attachments)}
       <div class="sms-meta">${smsFormatTime(m.time)}${deliveredTag}</div>
     </div>`;
   });
@@ -4956,17 +4935,50 @@ function onSmsKeyDown(e){
   }
 }
 
+/* ===== Composer file attachments (SMS + Email) ===== */
+var ATT = { sms:[], em:[] };
+var _attSeq = 0;
+var ATT_ICONS = {
+  image:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+  audio:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  video:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+  file:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+};
+function attKind(t){ if(/^image\//.test(t))return'image'; if(/^audio\//.test(t))return'audio'; if(/^video\//.test(t))return'video'; return'file'; }
+function attSize(b){ b=b||0; if(b<1024)return b+' B'; var k=b/1024; if(k<1024)return Math.round(k)+' KB'; return (k/1024).toFixed(1)+' MB'; }
+function attIcon(k){ return ATT_ICONS[k]||ATT_ICONS.file; }
+function attPick(ch, files){ if(!files||!files.length)return; [].forEach.call(files,function(f){ var rd=new FileReader(); rd.onload=function(){ ATT[ch].push({id:'a'+(++_attSeq),name:f.name,type:f.type||'',size:f.size,kind:attKind(f.type||''),url:rd.result}); attRenderTray(ch); }; rd.readAsDataURL(f); }); }
+function attRemove(ch,id){ ATT[ch]=ATT[ch].filter(function(a){return a.id!==id;}); attRenderTray(ch); }
+function attClear(ch){ ATT[ch]=[]; attRenderTray(ch); }
+function attRenderTray(ch){
+  var tray=document.getElementById(ch+'-att-tray'); if(!tray)return;
+  if(!ATT[ch].length){ tray.classList.remove('has'); tray.innerHTML=''; return; }
+  tray.classList.add('has');
+  tray.innerHTML=ATT[ch].map(function(a){ return '<span class="att-chip" title="'+escapeHtml(a.name)+'"><span class="att-ic">'+attIcon(a.kind)+'</span><span class="att-nm">'+escapeHtml(a.name)+'</span><span class="att-sz">'+attSize(a.size)+'</span><button class="att-x" onclick="attRemove(\''+ch+'\',\''+a.id+'\')" title="Remove" aria-label="Remove attachment">&#x2715;</button></span>'; }).join('');
+}
+function attListHtml(arr){
+  if(!arr||!arr.length)return'';
+  var items=arr.map(function(a){
+    if(a.kind==='image')return '<img class="att-thumb" src="'+a.url+'" alt="'+escapeHtml(a.name)+'" onclick="window.open(\''+a.url+'\',\'_blank\')">';
+    if(a.kind==='audio')return '<audio class="att-audio" controls preload="metadata" src="'+a.url+'"></audio>';
+    if(a.kind==='video')return '<video class="att-video" controls preload="metadata" src="'+a.url+'"></video>';
+    return '<a class="att-file" href="'+a.url+'" download="'+escapeHtml(a.name)+'" target="_blank" rel="noopener"><span class="att-ic">'+attIcon('file')+'</span><span class="att-nm">'+escapeHtml(a.name)+'</span><span class="att-sz">'+attSize(a.size)+'</span></a>';
+  }).join('');
+  return '<div class="att-list">'+items+'</div>';
+}
 function sendSmsMessage(){
   const ta = document.getElementById('sms-textarea');
   const text = ta.value.trim();
-  if(!text) return;
+  if(!text && !ATT.sms.length) return;
   smsState.messages.push({
     dir: 'out',
     text,
     time: new Date(),
     delivered: false,
     isNew: true,
+    attachments: ATT.sms.slice(),
   });
+  attClear('sms');
   // Clear input
   ta.value = '';
   ta.style.height = '';
@@ -5031,6 +5043,7 @@ let aiEmailIdx = 0;
 function openEmailModal(callId){
   const c = ALL_CALLS.find(x => x.id === callId);
   if(!c) return;
+  if(typeof attClear==='function') attClear('em');
   const contactEmail = c.contact.email || null;
   emState.contact = {
     name: c.contact.name,
@@ -5136,7 +5149,7 @@ function sendEmailMessage(){
   const subject = document.getElementById('em-subject').value.trim();
   const bodyEl  = document.getElementById('em-content');
   const text    = (bodyEl.innerText || '').trim();
-  if(!subject && !text) return;
+  if(!subject && !text && !ATT.em.length) return;
 
   const callId = emState.contact.id;
   if(!emThreads[callId]) emThreads[callId] = [];
@@ -5144,11 +5157,12 @@ function sendEmailMessage(){
   const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' +
                   now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   const agentName = document.getElementById('em-from-agent').textContent.trim() || 'Angel Garcia';
-  emThreads[callId].push({ dir:'out', subject, text, time: timeStr, agent: agentName });
+  emThreads[callId].push({ dir:'out', subject, text, time: timeStr, agent: agentName, attachments: ATT.em.slice() });
 
   // Clear compose fields
   document.getElementById('em-subject').value = '';
   bodyEl.innerHTML = '';
+  attClear('em');
 
   // Re-render thread + scroll to bottom
   renderEmThread(callId, emState.contact.clr);
@@ -5243,6 +5257,7 @@ function buildEmThreadNode(m, contactClr) {
         <div class="em-card-body">
           ${subjHtml}
           ${bodyHtml}
+          ${attListHtml(m.attachments)}
         </div>
       </div>
       <div class="em-msg-meta">

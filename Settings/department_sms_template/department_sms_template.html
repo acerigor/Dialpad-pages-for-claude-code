@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Notification Management</title>
+<title>CoreConnect — Department SMS Template</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -3417,6 +3417,89 @@
 </div>
 
 <style>
+  /* Department SMS Template shell + toolbar */
+  .dst-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  .dst-shell{border:0.5px dashed var(--brd2);border-radius:12px;background:var(--sur);min-height:200px;display:flex;align-items:center;justify-content:center;}
+  .dst-placeholder{color:var(--mu);font-size:13px;}
+  .dst-toolbar{display:flex;align-items:center;gap:12px;}
+  .dst-search{flex:1;max-width:420px;position:relative;display:flex;align-items:center;}
+  .dst-search svg{position:absolute;left:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .dst-search input{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 12px 0 36px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .dst-search input:focus{border-color:var(--ac);}
+  .dst-search input::placeholder{color:var(--mu);}
+  .dst-btn{height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;transition:all .15s;}
+  .dst-btn svg{width:15px;height:15px;}
+  .dst-add{margin-left:auto;background:var(--ac);border:none;color:#fff;}
+  .dst-add:hover{background:var(--ac2);}
+  .dst-export{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .dst-export:hover{border-color:var(--mu);}
+  @media (max-width:640px){
+    .dst-scroll{padding:14px;}
+    .dst-search{max-width:none;}
+    .dst-search input{height:44px;}
+    .dst-btn{height:44px;width:44px;padding:0;}
+    .dst-btn svg{width:20px;height:20px;}
+    .dst-btn-txt{display:none;}
+  }
+  /* table */
+  .dst-th-no{width:80px;}
+  .dst-th-dept{width:180px;}
+  .dst-th-title{width:200px;}
+  .dst-th-act{text-align:right;width:120px;}
+  .dst-dept{color:var(--tx);}
+  /* department popup dropdown (modal) */
+  .dst-dd{position:relative;width:100%;}
+  .dst-dd-btn{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;transition:border-color .15s;}
+  .dst-dd-btn:hover{border-color:var(--mu);}
+  .dst-dd.open .dst-dd-btn{border-color:var(--ac);}
+  .dst-dd-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dst-dd-val.ph{color:var(--mu);}
+  .dst-dd-btn svg{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s;}
+  .dst-dd.open .dst-dd-btn svg{transform:rotate(180deg);}
+  #dst-dd-pop{position:fixed;z-index:4000;max-height:280px;overflow:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.55);display:none;}
+  #dst-dd-pop.open{display:block;}
+  .dst-dd-opt{padding:9px 11px;border-radius:7px;font-size:13px;color:var(--tx);cursor:pointer;white-space:nowrap;}
+  .dst-dd-opt:hover{background:var(--sur2);}
+  .dst-dd-opt.sel{background:rgba(79,124,255,.14);color:var(--ac2);}
+  .dst-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
+  .dst-msg{color:var(--tx);white-space:normal;word-break:break-word;max-width:560px;line-height:1.5;}
+  .dst-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .dst-icon{width:32px;height:32px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .15s;}
+  .dst-icon svg{width:15px;height:15px;}
+  .dst-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
+  .dst-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* add/edit modal */
+  .dst-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
+  .dst-modal-bk.open{display:flex;}
+  .dst-modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:480px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .dst-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--brd);}
+  .dst-modal-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .dst-modal-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .dst-modal-x:hover{border-color:var(--rd);color:var(--rd);}
+  .dst-modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .dst-field{display:flex;flex-direction:column;gap:8px;}
+  .dst-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .dst-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .dst-field-input:focus{border-color:var(--ac);}
+  .dst-field-textarea{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:11px 13px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.55;outline:none;resize:vertical;min-height:96px;transition:border-color .15s;}
+  .dst-field-textarea:focus{border-color:var(--ac);}
+  .dst-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .dst-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
+  .dst-btn-cancel:hover{border-color:var(--mu);}
+  .dst-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
+  .dst-btn-save:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .dst-icon{width:40px;height:40px;}
+    .dst-icon svg{width:17px;height:17px;}
+    .dst-modal-bk{padding:0;}
+    .dst-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
+    .dst-modal-body{flex:1;}
+    .dst-modal-x{width:40px;height:40px;font-size:17px;}
+    .dst-field-input{height:44px;}
+    .dst-dd-btn{height:44px;}
+    .dst-dd-opt{padding:11px;}
+    .dst-btn-cancel,.dst-btn-save{height:44px;}
+  }
   /* Notification Management */
   .nm-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:18px;}
   .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
@@ -3452,11 +3535,10 @@
   /* === Standard: pin first two columns on mobile (+ scroll shadow) === */
   @media (max-width:640px){
     .nm-table-scroll .nm-table th:first-child,
-    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:170px;min-width:170px;max-width:170px;overflow:hidden;}
+    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:56px;min-width:56px;max-width:56px;}
     .nm-table-scroll .nm-table thead th:first-child{z-index:13;background:var(--sur2);}
-    .nm-table-scroll .nm-table td:first-child .nm-user{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nm-table-scroll .nm-table th:nth-child(2),
-    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:170px;z-index:3;background:var(--sur);}
+    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:56px;z-index:3;background:var(--sur);width:200px;min-width:200px;max-width:200px;}
     .nm-table-scroll .nm-table thead th:nth-child(2){z-index:13;background:var(--sur2);}
     .nm-table-scroll.is-scrolled .nm-table th:nth-child(2),
     .nm-table-scroll.is-scrolled .nm-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
@@ -3583,38 +3665,71 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Notification Management</span>
+    <span class="set-page-title">Department SMS Template</span>
   </div>
 
-  <div class="nm-scroll">
-    <div class="nm-add">
-      <label class="nm-add-label">Add Recipient</label>
-      <div class="nm-add-row">
-        <div class="nm-dd" id="nm-recip" data-value="">
-          <button type="button" class="nm-dd-btn" onclick="nmDDToggle(this)"><span class="nm-dd-val ph">Select a recipient</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        </div>
-        <button class="nm-save" onclick="nmAddRecipient()">Save</button>
+  <div class="dst-scroll">
+    <div class="dst-toolbar">
+      <div class="dst-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="dst-search" placeholder="Search SMS templates..." oninput="dstSearch(this.value)">
       </div>
+      <button class="dst-btn dst-add" onclick="dstAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="dst-btn-txt">Add Template</span></button>
+      <button class="dst-btn dst-export" onclick="dstExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="dst-btn-txt">Export</span></button>
     </div>
 
     <div class="nm-table-wrap"><div class="nm-table-scroll">
-      <table class="nm-table">
+      <table class="nm-table dst-table">
         <thead><tr>
-          <th>Users</th>
-          <th>Number</th>
-          <th>Role</th>
-          <th class="nm-th-notif">Notifications</th>
+          <th class="dst-th-no">No.</th>
+          <th class="dst-th-dept">Department</th>
+          <th class="dst-th-title">SMS Title</th>
+          <th>SMS Message</th>
+          <th class="dst-th-act">Action</th>
         </tr></thead>
-        <tbody id="nm-tbody"></tbody>
+        <tbody id="dst-tbody"></tbody>
       </table>
     </div></div>
 
     <div class="nm-pager">
-      <div class="nm-pager-info" id="nm-pager-info"></div>
-      <div class="nm-pager-btns" id="nm-pager-btns"></div>
+      <div class="nm-pager-info" id="dst-pager-info"></div>
+      <div class="nm-pager-btns" id="dst-pager-btns"></div>
     </div>
   </div>
 </div>
+
+<!-- Add/Edit Template modal -->
+<div class="dst-modal-bk" id="dst-modal" onclick="if(event.target===this)dstCloseModal()">
+  <div class="dst-modal">
+    <div class="dst-modal-head">
+      <span id="dst-modal-title">Add Template</span>
+      <button class="dst-modal-x" onclick="dstCloseModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="dst-modal-body">
+      <div class="dst-field">
+        <label class="dst-field-label">Department</label>
+        <div class="dst-dd" id="dst-dd" data-value="">
+          <button type="button" class="dst-dd-btn" onclick="dstDDToggle()"><span class="dst-dd-val ph" id="dst-dd-val">Select Department</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+      </div>
+      <div class="dst-field">
+        <label class="dst-field-label">SMS Title</label>
+        <input class="dst-field-input" id="dst-input-title" placeholder="Enter template title" onkeydown="if(event.key==='Enter')document.getElementById('dst-input-msg').focus()">
+      </div>
+      <div class="dst-field">
+        <label class="dst-field-label">SMS Message</label>
+        <textarea class="dst-field-textarea" id="dst-input-msg" rows="5" placeholder="Enter SMS message"></textarea>
+      </div>
+    </div>
+    <div class="dst-modal-foot">
+      <button class="dst-btn-cancel" onclick="dstCloseModal()">Cancel</button>
+      <button class="dst-btn-save" onclick="dstSaveModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Department popup-dropdown options (body-appended, fixed-positioned) -->
+<div class="dst-dd-pop" id="dst-dd-pop"></div>
 <script src="../../shared/leads-comms.js"></script>
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
@@ -4149,8 +4264,154 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRpt
 
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderNotifications==='function') renderNotifications();
-  nmInit();
+  if(typeof dstInit==='function') dstInit();
   if(typeof bindPinShadow==='function') bindPinShadow();
+});
+
+/* ===== Department SMS Template ===== */
+var DST_KEY='cc_department_sms_templates';
+var DST_PER=10;
+var dstItems=[];
+var dstPage=1;
+var _dstEditId=null;
+var _dstQuery='';
+function dstEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var DST_DEPARTMENTS=['accounting','operations','parts','Carwash','overnight-team','buyers-department','photography','C&G Mercedes','bdc-department','Sales','Service','Finance'];
+var _dstDept='';
+/* custom popup dropdown for Department (matches the app's nm-dd/cam-dd pattern) */
+function dstFillDept(sel){
+  _dstDept=sel||'';
+  var dd=document.getElementById('dst-dd'); if(dd) dd.setAttribute('data-value', _dstDept);
+  var lbl=document.getElementById('dst-dd-val'); if(!lbl) return;
+  if(_dstDept){ lbl.textContent=_dstDept; lbl.classList.remove('ph'); }
+  else { lbl.textContent='Select Department'; lbl.classList.add('ph'); }
+}
+function dstDDList(){ var list=DST_DEPARTMENTS.slice(); if(_dstDept && list.indexOf(_dstDept)<0) list=[_dstDept].concat(list); return list; }
+function dstDDToggle(){
+  var dd=document.getElementById('dst-dd');
+  if(dd.classList.contains('open')){ dstDDClose(); return; }
+  dstDDClose(); dd.classList.add('open');
+  var pop=document.getElementById('dst-dd-pop');
+  pop.innerHTML=dstDDList().map(function(n){ return '<div class="dst-dd-opt'+(n===_dstDept?' sel':'')+'" onclick="dstDDPick(\''+n.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'+dstEsc(n)+'</div>'; }).join('');
+  pop.classList.add('open');
+  var btn=dd.querySelector('.dst-dd-btn'), r=btn.getBoundingClientRect();
+  pop.style.width=r.width+'px';
+  var ph=pop.offsetHeight, left=r.left, top=r.bottom+4;
+  if(top+ph>window.innerHeight-8) top=Math.max(8, r.top-4-ph);
+  if(left+r.width>window.innerWidth-8) left=window.innerWidth-8-r.width;
+  if(left<8) left=8;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+}
+function dstDDPick(name){ dstFillDept(name); dstDDClose(); }
+function dstDDClose(){
+  var pop=document.getElementById('dst-dd-pop'); if(pop) pop.classList.remove('open');
+  var dd=document.getElementById('dst-dd'); if(dd) dd.classList.remove('open');
+}
+document.addEventListener('mousedown', function(e){
+  if(e.target.closest && (e.target.closest('.dst-dd')||e.target.closest('#dst-dd-pop'))) return;
+  dstDDClose();
+});
+window.addEventListener('scroll', function(){ dstDDClose(); }, true);
+window.addEventListener('resize', function(){ dstDDClose(); });
+function dstDefaults(){
+  return [
+    {id:'t1', dept:'Sales',     title:'Test', message:'hi this is a test'},
+    {id:'t2', dept:'Sales',     title:'Appointment Reminder', message:'Hi {name}, this is a reminder for your appointment on {date} at {time}. Reply YES to confirm.'},
+    {id:'t3', dept:'bdc-department', title:'Follow Up', message:'Hi {name}, just following up on your recent inquiry. Let me know if you have any questions!'},
+    {id:'t4', dept:'Service',   title:'Thank You', message:'Thank you for visiting us today, {name}! We appreciate your business.'}
+  ];
+}
+function dstLoad(){ try{ var s=JSON.parse(localStorage.getItem(DST_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return dstDefaults(); }
+function dstPersist(){ try{ localStorage.setItem(DST_KEY, JSON.stringify(dstItems)); }catch(e){} }
+function dstInit(){ if(!document.getElementById('dst-tbody')) return; dstItems=dstLoad(); dstRender(); }
+function dstSearch(q){ _dstQuery=(q||'').toLowerCase().trim(); dstPage=1; dstRender(); }
+function dstFiltered(){ return dstItems.filter(function(it){ return !_dstQuery || String(it.dept||'').toLowerCase().indexOf(_dstQuery)>=0 || String(it.title||'').toLowerCase().indexOf(_dstQuery)>=0 || String(it.message||'').toLowerCase().indexOf(_dstQuery)>=0; }); }
+function dstRender(){
+  var tb=document.getElementById('dst-tbody'); if(!tb) return;
+  var list=dstFiltered();
+  var tp=Math.max(1, Math.ceil(list.length/DST_PER));
+  if(dstPage>tp) dstPage=tp;
+  var start=(dstPage-1)*DST_PER, rows=list.slice(start, start+DST_PER);
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:30px;">'+(_dstQuery?'No templates match your search.':'No SMS templates yet — click Add Template.')+'</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(it,i){
+      var no=start+i+1;
+      return '<tr>'+
+        '<td class="dst-no">'+no+'</td>'+
+        '<td class="dst-dept">'+(it.dept?dstEsc(it.dept):'<span style="color:var(--mu);">—</span>')+'</td>'+
+        '<td>'+dstEsc(it.title)+'</td>'+
+        '<td class="dst-msg">'+dstEsc(it.message)+'</td>'+
+        '<td><div class="dst-actions">'+
+          '<button class="dst-icon edit" onclick="dstEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
+          '<button class="dst-icon del" onclick="dstDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  dstRenderPager(list.length, tp);
+}
+function dstRenderPager(total, tp){
+  var start=total?((dstPage-1)*DST_PER+1):0, end=Math.min(dstPage*DST_PER,total);
+  var info=document.getElementById('dst-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(dstPage<=1?'disabled':'')+' onclick="dstGo('+(dstPage-1)+')">Prev</button>');
+  dstPageList(dstPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===dstPage?' active':'')+'" onclick="dstGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(dstPage>=tp?'disabled':'')+' onclick="dstGo('+(dstPage+1)+')">Next</button>');
+  var bb=document.getElementById('dst-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function dstPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function dstGo(p){ var tp=Math.max(1,Math.ceil(dstFiltered().length/DST_PER)); if(p<1||p>tp) return; dstPage=p; dstRender(); }
+function dstOpenModal(){ document.getElementById('dst-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('dst-input-title'); if(i) i.focus(); }, 40); }
+function dstCloseModal(){ dstDDClose(); document.getElementById('dst-modal').classList.remove('open'); }
+function dstAdd(){ _dstEditId=null; document.getElementById('dst-modal-title').textContent='Add Template'; dstFillDept(''); document.getElementById('dst-input-title').value=''; document.getElementById('dst-input-msg').value=''; dstOpenModal(); }
+function dstEdit(id){ var it=dstItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _dstEditId=id; document.getElementById('dst-modal-title').textContent='Edit Template'; dstFillDept(it.dept||''); document.getElementById('dst-input-title').value=it.title||''; document.getElementById('dst-input-msg').value=it.message||''; dstOpenModal(); }
+function dstSaveModal(){
+  var dept=(document.getElementById('dst-dd').getAttribute('data-value')||'');
+  var title=document.getElementById('dst-input-title').value.trim();
+  var message=document.getElementById('dst-input-msg').value.trim();
+  if(!dept){ if(typeof showNavToast==='function') showNavToast('Department required','Select a department.'); return; }
+  if(!title){ if(typeof showNavToast==='function') showNavToast('Title required','Enter a template title.'); return; }
+  if(!message){ if(typeof showNavToast==='function') showNavToast('Message required','Enter the SMS message.'); return; }
+  var editing=!!_dstEditId;
+  if(editing){ var it=dstItems.filter(function(x){ return x.id===_dstEditId; })[0]; if(it){ it.dept=dept; it.title=title; it.message=message; } }
+  else { dstItems.push({id:'t'+Date.now(), dept:dept, title:title, message:message}); _dstQuery=''; var si=document.getElementById('dst-search'); if(si) si.value=''; dstPage=Math.max(1,Math.ceil(dstItems.length/DST_PER)); }
+  dstPersist(); dstCloseModal(); dstRender();
+  if(typeof showNavToast==='function') showNavToast(editing?'Template updated':'Template added', dept+' · '+title);
+}
+function dstDelete(id){
+  var it=dstItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  dstItems=dstItems.filter(function(x){ return x.id!==id; });
+  dstPersist(); dstRender();
+  if(typeof showNavToast==='function') showNavToast('Template deleted', (it.title||'Template')+' was removed.');
+}
+function dstExport(){
+  if(!dstItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no SMS templates to export.'); return; }
+  var rows=[['No.','Department','SMS Title','SMS Message']].concat(dstItems.map(function(it,i){ return [String(i+1), it.dept||'', it.title||'', it.message||'']; }));
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='department_sms_templates.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(typeof showNavToast==='function') showNavToast('Exported', dstItems.length+' SMS template'+(dstItems.length===1?'':'s')+' exported to CSV.');
+}
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var dd=document.getElementById('dst-dd'); if(dd && dd.classList.contains('open')){ dstDDClose(); return; } var m=document.getElementById('dst-modal'); if(m && m.classList.contains('open')) dstCloseModal(); }
 });
 
 /* Standard: show the pinned-column scroll shadow only once the table scrolls horizontally. */

@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Notification Management</title>
+<title>CoreConnect — CRM Status</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -3417,6 +3417,74 @@
 </div>
 
 <style>
+  /* CRM Status shell + toolbar */
+  .cst-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  .cst-shell{border:0.5px dashed var(--brd2);border-radius:12px;background:var(--sur);min-height:200px;display:flex;align-items:center;justify-content:center;}
+  .cst-placeholder{color:var(--mu);font-size:13px;}
+  .cst-toolbar{display:flex;align-items:center;gap:12px;}
+  .cst-search{flex:1;max-width:420px;position:relative;display:flex;align-items:center;}
+  .cst-search svg{position:absolute;left:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .cst-search input{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 12px 0 36px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .cst-search input:focus{border-color:var(--ac);}
+  .cst-search input::placeholder{color:var(--mu);}
+  .cst-btn{height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;transition:all .15s;}
+  .cst-btn svg{width:15px;height:15px;}
+  .cst-add{margin-left:auto;background:var(--ac);border:none;color:#fff;}
+  .cst-add:hover{background:var(--ac2);}
+  .cst-export{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .cst-export:hover{border-color:var(--mu);}
+  @media (max-width:640px){
+    .cst-scroll{padding:14px;}
+    .cst-search{max-width:none;}
+    .cst-search input{height:44px;}
+    .cst-btn{height:44px;width:44px;padding:0;}
+    .cst-btn svg{width:20px;height:20px;}
+    .cst-btn-txt{display:none;}
+  }
+  /* table */
+  .cst-th-no{width:80px;}
+  .cst-th-def{width:150px;}
+  .cst-th-act{text-align:right;width:120px;}
+  .cst-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
+  .cst-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .cst-icon{width:32px;height:32px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .15s;}
+  .cst-icon svg{width:15px;height:15px;}
+  .cst-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
+  .cst-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* default-status checkbox (single-select) */
+  .cst-check{width:20px;height:20px;border:1.5px solid var(--brd2);border-radius:5px;background:var(--sur2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex:none;}
+  .cst-check svg{width:12px;height:12px;color:#fff;opacity:0;transition:opacity .12s;}
+  .cst-check.on{background:var(--ac);border-color:var(--ac);}
+  .cst-check.on svg{opacity:1;}
+  .cst-modal-check{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13px;color:var(--tx);}
+  /* add/edit modal */
+  .cst-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
+  .cst-modal-bk.open{display:flex;}
+  .cst-modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:440px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .cst-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--brd);}
+  .cst-modal-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .cst-modal-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .cst-modal-x:hover{border-color:var(--rd);color:var(--rd);}
+  .cst-modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .cst-field{display:flex;flex-direction:column;gap:8px;}
+  .cst-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .cst-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .cst-field-input:focus{border-color:var(--ac);}
+  .cst-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .cst-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
+  .cst-btn-cancel:hover{border-color:var(--mu);}
+  .cst-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
+  .cst-btn-save:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .cst-icon{width:40px;height:40px;}
+    .cst-icon svg{width:17px;height:17px;}
+    .cst-modal-bk{padding:0;}
+    .cst-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
+    .cst-modal-body{flex:1;}
+    .cst-modal-x{width:40px;height:40px;font-size:17px;}
+    .cst-field-input{height:44px;}
+    .cst-btn-cancel,.cst-btn-save{height:44px;}
+  }
   /* Notification Management */
   .nm-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:18px;}
   .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
@@ -3451,15 +3519,19 @@
   .nm-num{color:var(--mu);font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
   /* === Standard: pin first two columns on mobile (+ scroll shadow) === */
   @media (max-width:640px){
+    /* honor exact column widths (all 4 columns are fixed-width, so the 680 min would inflate them) */
+    .nm-table-scroll .nm-table{min-width:0;}
     .nm-table-scroll .nm-table th:first-child,
-    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:170px;min-width:170px;max-width:170px;overflow:hidden;}
+    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:56px;min-width:56px;max-width:56px;}
     .nm-table-scroll .nm-table thead th:first-child{z-index:13;background:var(--sur2);}
-    .nm-table-scroll .nm-table td:first-child .nm-user{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nm-table-scroll .nm-table th:nth-child(2),
-    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:170px;z-index:3;background:var(--sur);}
+    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:56px;z-index:3;background:var(--sur);width:200px;min-width:200px;max-width:200px;}
     .nm-table-scroll .nm-table thead th:nth-child(2){z-index:13;background:var(--sur2);}
     .nm-table-scroll.is-scrolled .nm-table th:nth-child(2),
     .nm-table-scroll.is-scrolled .nm-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
+    /* fat-finger: expand the default-status checkbox tap target to 44px without changing its look */
+    .cst-check{position:relative;}
+    .cst-check::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;}
   }
   .nm-notif-cell{display:flex;align-items:center;justify-content:flex-end;gap:24px;}
   .nm-check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
@@ -3583,35 +3655,58 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Notification Management</span>
+    <span class="set-page-title">CRM Status</span>
   </div>
 
-  <div class="nm-scroll">
-    <div class="nm-add">
-      <label class="nm-add-label">Add Recipient</label>
-      <div class="nm-add-row">
-        <div class="nm-dd" id="nm-recip" data-value="">
-          <button type="button" class="nm-dd-btn" onclick="nmDDToggle(this)"><span class="nm-dd-val ph">Select a recipient</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        </div>
-        <button class="nm-save" onclick="nmAddRecipient()">Save</button>
+  <div class="cst-scroll">
+    <div class="cst-toolbar">
+      <div class="cst-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="cst-search" placeholder="Search status..." oninput="cstSearch(this.value)">
       </div>
+      <button class="cst-btn cst-add" onclick="cstAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="cst-btn-txt">Add Status</span></button>
+      <button class="cst-btn cst-export" onclick="cstExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="cst-btn-txt">Export</span></button>
     </div>
 
     <div class="nm-table-wrap"><div class="nm-table-scroll">
-      <table class="nm-table">
+      <table class="nm-table cst-table">
         <thead><tr>
-          <th>Users</th>
-          <th>Number</th>
-          <th>Role</th>
-          <th class="nm-th-notif">Notifications</th>
+          <th class="cst-th-no">No.</th>
+          <th>CRM Status</th>
+          <th class="cst-th-def">Default Status</th>
+          <th class="cst-th-act">Action</th>
         </tr></thead>
-        <tbody id="nm-tbody"></tbody>
+        <tbody id="cst-tbody"></tbody>
       </table>
     </div></div>
 
     <div class="nm-pager">
-      <div class="nm-pager-info" id="nm-pager-info"></div>
-      <div class="nm-pager-btns" id="nm-pager-btns"></div>
+      <div class="nm-pager-info" id="cst-pager-info"></div>
+      <div class="nm-pager-btns" id="cst-pager-btns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Status modal -->
+<div class="cst-modal-bk" id="cst-modal" onclick="if(event.target===this)cstCloseModal()">
+  <div class="cst-modal">
+    <div class="cst-modal-head">
+      <span id="cst-modal-title">Add Status</span>
+      <button class="cst-modal-x" onclick="cstCloseModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="cst-modal-body">
+      <div class="cst-field">
+        <label class="cst-field-label">CRM Status</label>
+        <input class="cst-field-input" id="cst-input-name" placeholder="Enter status name" onkeydown="if(event.key==='Enter')cstSaveModal()">
+      </div>
+      <label class="cst-modal-check" id="cst-input-default-row" onclick="cstModalToggleDefault()">
+        <span class="cst-check" id="cst-input-default"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Set as default status</span>
+      </label>
+    </div>
+    <div class="cst-modal-foot">
+      <button class="cst-btn-cancel" onclick="cstCloseModal()">Cancel</button>
+      <button class="cst-btn-save" onclick="cstSaveModal()">Save</button>
     </div>
   </div>
 </div>
@@ -4149,8 +4244,123 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRpt
 
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderNotifications==='function') renderNotifications();
-  nmInit();
+  if(typeof cstInit==='function') cstInit();
   if(typeof bindPinShadow==='function') bindPinShadow();
+});
+
+/* ===== CRM Status ===== */
+var CST_KEY='cc_crm_status';
+var CST_PER=10;
+var cstItems=[];
+var cstPage=1;
+var _cstEditId=null;
+var _cstQuery='';
+var _cstModalDefault=false;
+function cstEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function cstDefaults(){
+  var names=['Dead','Active','Follow Up','Sold','Deposit','BDC - Show','BDC - No Show','BDC - Reschedule','BDC - Follow Up','BDC - Appt Set'];
+  return names.map(function(n,i){ return {id:'s'+(i+1), name:n, def:(n==='Active')}; });
+}
+function cstLoad(){ try{ var s=JSON.parse(localStorage.getItem(CST_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return cstDefaults(); }
+function cstPersist(){ try{ localStorage.setItem(CST_KEY, JSON.stringify(cstItems)); }catch(e){} }
+function cstInit(){ if(!document.getElementById('cst-tbody')) return; cstItems=cstLoad(); cstRender(); }
+function cstSearch(q){ _cstQuery=(q||'').toLowerCase().trim(); cstPage=1; cstRender(); }
+function cstFiltered(){ return cstItems.filter(function(it){ return !_cstQuery || it.name.toLowerCase().indexOf(_cstQuery)>=0; }); }
+var CST_CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+function cstRender(){
+  var tb=document.getElementById('cst-tbody'); if(!tb) return;
+  var list=cstFiltered();
+  var tp=Math.max(1, Math.ceil(list.length/CST_PER));
+  if(cstPage>tp) cstPage=tp;
+  var start=(cstPage-1)*CST_PER, rows=list.slice(start, start+CST_PER);
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_cstQuery?'No statuses match your search.':'No CRM statuses yet — click Add Status.')+'</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(it,i){
+      var no=start+i+1;
+      return '<tr>'+
+        '<td class="cst-no">'+no+'</td>'+
+        '<td>'+cstEsc(it.name)+'</td>'+
+        '<td><span class="cst-check'+(it.def?' on':'')+'" onclick="cstToggleDefault(\''+it.id+'\')" title="'+(it.def?'Default status':'Set as default')+'">'+CST_CHK+'</span></td>'+
+        '<td><div class="cst-actions">'+
+          '<button class="cst-icon edit" onclick="cstEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
+          '<button class="cst-icon del" onclick="cstDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  cstRenderPager(list.length, tp);
+}
+function cstRenderPager(total, tp){
+  var start=total?((cstPage-1)*CST_PER+1):0, end=Math.min(cstPage*CST_PER,total);
+  var info=document.getElementById('cst-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(cstPage<=1?'disabled':'')+' onclick="cstGo('+(cstPage-1)+')">Prev</button>');
+  cstPageList(cstPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===cstPage?' active':'')+'" onclick="cstGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(cstPage>=tp?'disabled':'')+' onclick="cstGo('+(cstPage+1)+')">Next</button>');
+  var bb=document.getElementById('cst-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function cstPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function cstGo(p){ var tp=Math.max(1,Math.ceil(cstFiltered().length/CST_PER)); if(p<1||p>tp) return; cstPage=p; cstRender(); }
+/* single default: checking one clears the rest; clicking the current default clears it */
+function cstToggleDefault(id){
+  var it=cstItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  var makeDefault=!it.def;
+  cstItems.forEach(function(x){ x.def=false; });
+  it.def=makeDefault;
+  cstPersist(); cstRender();
+  if(typeof showNavToast==='function') showNavToast(makeDefault?'Default status set':'Default cleared', makeDefault?(it.name+' is now the default.'):(it.name+' is no longer the default.'));
+}
+function cstModalToggleDefault(){ _cstModalDefault=!_cstModalDefault; var el=document.getElementById('cst-input-default'); if(el) el.classList.toggle('on', _cstModalDefault); }
+function cstOpenModal(){ document.getElementById('cst-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('cst-input-name'); if(i) i.focus(); }, 40); }
+function cstCloseModal(){ document.getElementById('cst-modal').classList.remove('open'); }
+function cstSetModalDefault(v){ _cstModalDefault=!!v; var el=document.getElementById('cst-input-default'); if(el) el.classList.toggle('on', _cstModalDefault); }
+function cstAdd(){ _cstEditId=null; document.getElementById('cst-modal-title').textContent='Add Status'; document.getElementById('cst-input-name').value=''; cstSetModalDefault(false); cstOpenModal(); }
+function cstEdit(id){ var it=cstItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _cstEditId=id; document.getElementById('cst-modal-title').textContent='Edit Status'; document.getElementById('cst-input-name').value=it.name; cstSetModalDefault(!!it.def); cstOpenModal(); }
+function cstSaveModal(){
+  var name=document.getElementById('cst-input-name').value.trim();
+  if(!name){ if(typeof showNavToast==='function') showNavToast('Status required','Enter a CRM status name.'); return; }
+  var editing=!!_cstEditId;
+  var makeDefault=_cstModalDefault;
+  if(makeDefault){ cstItems.forEach(function(x){ x.def=false; }); }
+  if(editing){ var it=cstItems.filter(function(x){ return x.id===_cstEditId; })[0]; if(it){ it.name=name; it.def=makeDefault; } }
+  else { cstItems.push({id:'s'+Date.now(), name:name, def:makeDefault}); _cstQuery=''; var si=document.getElementById('cst-search'); if(si) si.value=''; cstPage=Math.max(1,Math.ceil(cstItems.length/CST_PER)); }
+  cstPersist(); cstCloseModal(); cstRender();
+  if(typeof showNavToast==='function') showNavToast(editing?'Status updated':'Status added', name);
+}
+function cstDelete(id){
+  var it=cstItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  cstItems=cstItems.filter(function(x){ return x.id!==id; });
+  cstPersist(); cstRender();
+  if(typeof showNavToast==='function') showNavToast('Status deleted', it.name+' was removed.');
+}
+function cstExport(){
+  if(!cstItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no CRM statuses to export.'); return; }
+  var rows=[['No.','CRM Status','Default Status']].concat(cstItems.map(function(it,i){ return [String(i+1), it.name, it.def?'Yes':'No']; }));
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='crm_status.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(typeof showNavToast==='function') showNavToast('Exported', cstItems.length+' CRM status'+(cstItems.length===1?'':'es')+' exported to CSV.');
+}
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var m=document.getElementById('cst-modal'); if(m && m.classList.contains('open')) cstCloseModal(); }
 });
 
 /* Standard: show the pinned-column scroll shadow only once the table scrolls horizontally. */

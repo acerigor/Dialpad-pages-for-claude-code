@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Notification Management</title>
+<title>CoreConnect — Disable Rules</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -3417,6 +3417,68 @@
 </div>
 
 <style>
+  /* Disable Rules shell + toolbar */
+  .dr-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  .dr-shell{border:0.5px dashed var(--brd2);border-radius:12px;background:var(--sur);min-height:200px;display:flex;align-items:center;justify-content:center;}
+  .dr-placeholder{color:var(--mu);font-size:13px;}
+  .dr-toolbar{display:flex;align-items:center;gap:12px;}
+  .dr-search{flex:1;max-width:420px;position:relative;display:flex;align-items:center;}
+  .dr-search svg{position:absolute;left:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .dr-search input{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 12px 0 36px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .dr-search input:focus{border-color:var(--ac);}
+  .dr-search input::placeholder{color:var(--mu);}
+  .dr-btn{height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;transition:all .15s;}
+  .dr-btn svg{width:15px;height:15px;}
+  .dr-add{margin-left:auto;background:var(--ac);border:none;color:#fff;}
+  .dr-add:hover{background:var(--ac2);}
+  .dr-export{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .dr-export:hover{border-color:var(--mu);}
+  @media (max-width:640px){
+    .dr-scroll{padding:14px;}
+    .dr-search{max-width:none;}
+    .dr-search input{height:44px;}
+    .dr-btn{height:44px;width:44px;padding:0;}
+    .dr-btn svg{width:20px;height:20px;}
+    .dr-btn-txt{display:none;}
+  }
+  /* table */
+  .dr-th-no{width:80px;}
+  .dr-th-act{text-align:right;width:120px;}
+  .dr-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
+  .dr-num{font-family:var(--mono);font-size:12.5px;color:var(--tx);}
+  .dr-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .dr-icon{width:32px;height:32px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .15s;}
+  .dr-icon svg{width:15px;height:15px;}
+  .dr-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
+  .dr-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* add/edit modal */
+  .dr-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
+  .dr-modal-bk.open{display:flex;}
+  .dr-modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:420px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .dr-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--brd);}
+  .dr-modal-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .dr-modal-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .dr-modal-x:hover{border-color:var(--rd);color:var(--rd);}
+  .dr-modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .dr-field{display:flex;flex-direction:column;gap:8px;}
+  .dr-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .dr-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;color-scheme:dark;}
+  .dr-field-input:focus{border-color:var(--ac);}
+  .dr-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .dr-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
+  .dr-btn-cancel:hover{border-color:var(--mu);}
+  .dr-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
+  .dr-btn-save:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .dr-icon{width:40px;height:40px;}
+    .dr-icon svg{width:17px;height:17px;}
+    .dr-modal-bk{padding:0;}
+    .dr-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
+    .dr-modal-body{flex:1;}
+    .dr-modal-x{width:40px;height:40px;font-size:17px;}
+    .dr-field-input{height:44px;}
+    .dr-btn-cancel,.dr-btn-save{height:44px;}
+  }
   /* Notification Management */
   .nm-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:18px;}
   .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
@@ -3451,12 +3513,13 @@
   .nm-num{color:var(--mu);font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
   /* === Standard: pin first two columns on mobile (+ scroll shadow) === */
   @media (max-width:640px){
+    /* honor exact column widths (narrow columns; the 680 min would inflate them) */
+    .nm-table-scroll .nm-table{min-width:0;}
     .nm-table-scroll .nm-table th:first-child,
-    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:170px;min-width:170px;max-width:170px;overflow:hidden;}
+    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:56px;min-width:56px;max-width:56px;}
     .nm-table-scroll .nm-table thead th:first-child{z-index:13;background:var(--sur2);}
-    .nm-table-scroll .nm-table td:first-child .nm-user{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nm-table-scroll .nm-table th:nth-child(2),
-    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:170px;z-index:3;background:var(--sur);}
+    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:56px;z-index:3;background:var(--sur);width:200px;min-width:200px;max-width:200px;}
     .nm-table-scroll .nm-table thead th:nth-child(2){z-index:13;background:var(--sur2);}
     .nm-table-scroll.is-scrolled .nm-table th:nth-child(2),
     .nm-table-scroll.is-scrolled .nm-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
@@ -3583,35 +3646,58 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Notification Management</span>
+    <span class="set-page-title">Disable Rules</span>
   </div>
 
-  <div class="nm-scroll">
-    <div class="nm-add">
-      <label class="nm-add-label">Add Recipient</label>
-      <div class="nm-add-row">
-        <div class="nm-dd" id="nm-recip" data-value="">
-          <button type="button" class="nm-dd-btn" onclick="nmDDToggle(this)"><span class="nm-dd-val ph">Select a recipient</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        </div>
-        <button class="nm-save" onclick="nmAddRecipient()">Save</button>
+  <div class="dr-scroll">
+    <div class="dr-toolbar">
+      <div class="dr-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="dr-search" placeholder="Search disable rules..." oninput="drSearch(this.value)">
       </div>
+      <button class="dr-btn dr-add" onclick="drAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="dr-btn-txt">Add Rule</span></button>
+      <button class="dr-btn dr-export" onclick="drExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="dr-btn-txt">Export</span></button>
     </div>
 
     <div class="nm-table-wrap"><div class="nm-table-scroll">
-      <table class="nm-table">
+      <table class="nm-table dr-table">
         <thead><tr>
-          <th>Users</th>
-          <th>Number</th>
-          <th>Role</th>
-          <th class="nm-th-notif">Notifications</th>
+          <th class="dr-th-no">No.</th>
+          <th>Disable Rule time</th>
+          <th>Total Phone Calls</th>
+          <th class="dr-th-act">Action</th>
         </tr></thead>
-        <tbody id="nm-tbody"></tbody>
+        <tbody id="dr-tbody"></tbody>
       </table>
     </div></div>
 
     <div class="nm-pager">
-      <div class="nm-pager-info" id="nm-pager-info"></div>
-      <div class="nm-pager-btns" id="nm-pager-btns"></div>
+      <div class="nm-pager-info" id="dr-pager-info"></div>
+      <div class="nm-pager-btns" id="dr-pager-btns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Disable Rule modal -->
+<div class="dr-modal-bk" id="dr-modal" onclick="if(event.target===this)drCloseModal()">
+  <div class="dr-modal">
+    <div class="dr-modal-head">
+      <span id="dr-modal-title">Add Rule</span>
+      <button class="dr-modal-x" onclick="drCloseModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="dr-modal-body">
+      <div class="dr-field">
+        <label class="dr-field-label">Disable Rule time</label>
+        <input class="dr-field-input" id="dr-input-time" type="time" onkeydown="if(event.key==='Enter')drSaveModal()">
+      </div>
+      <div class="dr-field">
+        <label class="dr-field-label">Total Phone Calls</label>
+        <input class="dr-field-input" id="dr-input-calls" type="number" min="0" step="1" placeholder="0" onkeydown="if(event.key==='Enter')drSaveModal()">
+      </div>
+    </div>
+    <div class="dr-modal-foot">
+      <button class="dr-btn-cancel" onclick="drCloseModal()">Cancel</button>
+      <button class="dr-btn-save" onclick="drSaveModal()">Save</button>
     </div>
   </div>
 </div>
@@ -4149,8 +4235,127 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRpt
 
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderNotifications==='function') renderNotifications();
-  nmInit();
+  if(typeof drInit==='function') drInit();
   if(typeof bindPinShadow==='function') bindPinShadow();
+});
+
+/* ===== Disable Rules ===== */
+var DR_KEY='cc_disable_rules';
+var DR_PER=10;
+var drItems=[];
+var drPage=1;
+var _drEditId=null;
+var _drQuery='';
+function drEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* "HH:MM" (24h) -> "h:MM AM/PM" for display */
+function drFmtTime(t){
+  if(!t) return '';
+  var p=String(t).split(':'); if(p.length<2) return t;
+  var h=parseInt(p[0],10), m=p[1];
+  if(isNaN(h)) return t;
+  var ap=h<12?'AM':'PM'; var h12=h%12; if(h12===0) h12=12;
+  return h12+':'+m+' '+ap;
+}
+function drDefaults(){
+  return [
+    {id:'d1', time:'08:00', calls:50},
+    {id:'d2', time:'12:30', calls:100},
+    {id:'d3', time:'17:00', calls:25},
+    {id:'d4', time:'20:00', calls:10}
+  ];
+}
+function drLoad(){ try{ var s=JSON.parse(localStorage.getItem(DR_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return drDefaults(); }
+function drPersist(){ try{ localStorage.setItem(DR_KEY, JSON.stringify(drItems)); }catch(e){} }
+function drInit(){ if(!document.getElementById('dr-tbody')) return; drItems=drLoad(); drRender(); }
+function drSearch(q){ _drQuery=(q||'').toLowerCase().trim(); drPage=1; drRender(); }
+function drFiltered(){
+  return drItems.filter(function(it){
+    if(!_drQuery) return true;
+    return String(it.time||'').toLowerCase().indexOf(_drQuery)>=0 || drFmtTime(it.time).toLowerCase().indexOf(_drQuery)>=0 || String(it.calls).indexOf(_drQuery)>=0;
+  });
+}
+function drRender(){
+  var tb=document.getElementById('dr-tbody'); if(!tb) return;
+  var list=drFiltered();
+  var tp=Math.max(1, Math.ceil(list.length/DR_PER));
+  if(drPage>tp) drPage=tp;
+  var start=(drPage-1)*DR_PER, rows=list.slice(start, start+DR_PER);
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_drQuery?'No rules match your search.':'No disable rules yet — click Add Rule.')+'</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(it,i){
+      var no=start+i+1;
+      return '<tr>'+
+        '<td class="dr-no">'+no+'</td>'+
+        '<td class="dr-num">'+drEsc(drFmtTime(it.time)||'—')+'</td>'+
+        '<td class="dr-num">'+(parseInt(it.calls,10)||0)+'</td>'+
+        '<td><div class="dr-actions">'+
+          '<button class="dr-icon edit" onclick="drEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
+          '<button class="dr-icon del" onclick="drDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  drRenderPager(list.length, tp);
+}
+function drRenderPager(total, tp){
+  var start=total?((drPage-1)*DR_PER+1):0, end=Math.min(drPage*DR_PER,total);
+  var info=document.getElementById('dr-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(drPage<=1?'disabled':'')+' onclick="drGo('+(drPage-1)+')">Prev</button>');
+  drPageList(drPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===drPage?' active':'')+'" onclick="drGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(drPage>=tp?'disabled':'')+' onclick="drGo('+(drPage+1)+')">Next</button>');
+  var bb=document.getElementById('dr-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function drPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function drGo(p){ var tp=Math.max(1,Math.ceil(drFiltered().length/DR_PER)); if(p<1||p>tp) return; drPage=p; drRender(); }
+function drOpenModal(){ document.getElementById('dr-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('dr-input-time'); if(i) i.focus(); }, 40); }
+function drCloseModal(){ document.getElementById('dr-modal').classList.remove('open'); }
+function drAdd(){ _drEditId=null; document.getElementById('dr-modal-title').textContent='Add Rule'; document.getElementById('dr-input-time').value=''; document.getElementById('dr-input-calls').value=''; drOpenModal(); }
+function drEdit(id){ var it=drItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _drEditId=id; document.getElementById('dr-modal-title').textContent='Edit Rule'; document.getElementById('dr-input-time').value=it.time||''; document.getElementById('dr-input-calls').value=it.calls; drOpenModal(); }
+function drSaveModal(){
+  var time=document.getElementById('dr-input-time').value;
+  var calls=Math.max(0, parseInt(document.getElementById('dr-input-calls').value,10)||0);
+  if(!time){ if(typeof showNavToast==='function') showNavToast('Time required','Set the disable rule time.'); return; }
+  var editing=!!_drEditId;
+  if(editing){ var it=drItems.filter(function(x){ return x.id===_drEditId; })[0]; if(it){ it.time=time; it.calls=calls; } }
+  else { drItems.push({id:'d'+Date.now(), time:time, calls:calls}); _drQuery=''; var si=document.getElementById('dr-search'); if(si) si.value=''; drPage=Math.max(1,Math.ceil(drItems.length/DR_PER)); }
+  drPersist(); drCloseModal(); drRender();
+  if(typeof showNavToast==='function') showNavToast(editing?'Rule updated':'Rule added', drFmtTime(time)+' · '+calls+' calls');
+}
+function drDelete(id){
+  var it=drItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  drItems=drItems.filter(function(x){ return x.id!==id; });
+  drPersist(); drRender();
+  if(typeof showNavToast==='function') showNavToast('Rule deleted', drFmtTime(it.time)+' was removed.');
+}
+function drExport(){
+  if(!drItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no disable rules to export.'); return; }
+  var rows=[['No.','Disable Rule Time','Total Phone Calls']].concat(drItems.map(function(it,i){ return [String(i+1), drFmtTime(it.time)||'', String(it.calls||0)]; }));
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='disable_rules.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(typeof showNavToast==='function') showNavToast('Exported', drItems.length+' disable rule'+(drItems.length===1?'':'s')+' exported to CSV.');
+}
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var m=document.getElementById('dr-modal'); if(m && m.classList.contains('open')) drCloseModal(); }
 });
 
 /* Standard: show the pinned-column scroll shadow only once the table scrolls horizontally. */

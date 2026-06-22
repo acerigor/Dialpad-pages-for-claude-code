@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Notification Management</title>
+<title>CoreConnect — Lead Rule Status</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -3417,6 +3417,75 @@
 </div>
 
 <style>
+  /* Lead Rule Status shell + toolbar */
+  .lrs-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:16px;}
+  .lrs-shell{border:0.5px dashed var(--brd2);border-radius:12px;background:var(--sur);min-height:200px;display:flex;align-items:center;justify-content:center;}
+  .lrs-placeholder{color:var(--mu);font-size:13px;}
+  .lrs-toolbar{display:flex;align-items:center;gap:12px;}
+  .lrs-search{flex:1;max-width:420px;position:relative;display:flex;align-items:center;}
+  .lrs-search svg{position:absolute;left:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .lrs-search input{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 12px 0 36px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .lrs-search input:focus{border-color:var(--ac);}
+  .lrs-search input::placeholder{color:var(--mu);}
+  .lrs-btn{height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;transition:all .15s;}
+  .lrs-btn svg{width:15px;height:15px;}
+  .lrs-add{margin-left:auto;background:var(--ac);border:none;color:#fff;}
+  .lrs-add:hover{background:var(--ac2);}
+  .lrs-export{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);}
+  .lrs-export:hover{border-color:var(--mu);}
+  @media (max-width:640px){
+    .lrs-scroll{padding:14px;}
+    .lrs-search{max-width:none;}
+    .lrs-search input{height:44px;}
+    .lrs-btn{height:44px;width:44px;padding:0;}
+    .lrs-btn svg{width:20px;height:20px;}
+    .lrs-btn-txt{display:none;}
+  }
+  /* table */
+  .lrs-th-no{width:80px;}
+  .lrs-th-act{text-align:right;width:120px;}
+  .lrs-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
+  .lrs-num{font-family:var(--mono);font-size:12.5px;color:var(--tx);}
+  .lrs-status{display:inline-flex;align-items:center;padding:3px 11px;border-radius:999px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-size:12px;font-weight:500;white-space:nowrap;}
+  /* status select (modal) */
+  .lrs-select{position:relative;display:flex;align-items:center;}
+  .lrs-select select{width:100%;height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 36px 0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color .15s;}
+  .lrs-select select:focus{border-color:var(--ac);}
+  .lrs-select-chev{position:absolute;right:12px;width:15px;height:15px;color:var(--mu);pointer-events:none;}
+  .lrs-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+  .lrs-icon{width:32px;height:32px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .15s;}
+  .lrs-icon svg{width:15px;height:15px;}
+  .lrs-icon.edit:hover{color:var(--ac2);border-color:var(--ac);}
+  .lrs-icon.del:hover{color:var(--rd);border-color:var(--rd);}
+  /* add/edit modal */
+  .lrs-modal-bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;}
+  .lrs-modal-bk.open{display:flex;}
+  .lrs-modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:420px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .lrs-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:0.5px solid var(--brd);}
+  .lrs-modal-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .lrs-modal-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .lrs-modal-x:hover{border-color:var(--rd);color:var(--rd);}
+  .lrs-modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .lrs-field{display:flex;flex-direction:column;gap:8px;}
+  .lrs-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .lrs-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
+  .lrs-field-input:focus{border-color:var(--ac);}
+  .lrs-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .lrs-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
+  .lrs-btn-cancel:hover{border-color:var(--mu);}
+  .lrs-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
+  .lrs-btn-save:hover{background:var(--ac2);}
+  @media (max-width:640px){
+    .lrs-icon{width:40px;height:40px;}
+    .lrs-icon svg{width:17px;height:17px;}
+    .lrs-modal-bk{padding:0;}
+    .lrs-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
+    .lrs-modal-body{flex:1;}
+    .lrs-modal-x{width:40px;height:40px;font-size:17px;}
+    .lrs-field-input{height:44px;}
+    .lrs-select select{height:44px;}
+    .lrs-btn-cancel,.lrs-btn-save{height:44px;}
+  }
   /* Notification Management */
   .nm-scroll{flex:1;overflow:auto;padding:20px 24px 36px;display:flex;flex-direction:column;gap:18px;}
   .nm-add-label{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;display:block;}
@@ -3451,12 +3520,13 @@
   .nm-num{color:var(--mu);font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
   /* === Standard: pin first two columns on mobile (+ scroll shadow) === */
   @media (max-width:640px){
+    /* honor exact column widths (narrow columns; the 680 min would inflate them) */
+    .nm-table-scroll .nm-table{min-width:0;}
     .nm-table-scroll .nm-table th:first-child,
-    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:170px;min-width:170px;max-width:170px;overflow:hidden;}
+    .nm-table-scroll .nm-table td:first-child{position:sticky;left:0;z-index:3;background:var(--sur);width:56px;min-width:56px;max-width:56px;}
     .nm-table-scroll .nm-table thead th:first-child{z-index:13;background:var(--sur2);}
-    .nm-table-scroll .nm-table td:first-child .nm-user{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .nm-table-scroll .nm-table th:nth-child(2),
-    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:170px;z-index:3;background:var(--sur);}
+    .nm-table-scroll .nm-table td:nth-child(2){position:sticky;left:56px;z-index:3;background:var(--sur);width:200px;min-width:200px;max-width:200px;}
     .nm-table-scroll .nm-table thead th:nth-child(2){z-index:13;background:var(--sur2);}
     .nm-table-scroll.is-scrolled .nm-table th:nth-child(2),
     .nm-table-scroll.is-scrolled .nm-table td:nth-child(2){box-shadow:6px 0 12px -4px rgba(0,0,0,.6);}
@@ -3583,35 +3653,63 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Notification Management</span>
+    <span class="set-page-title">Lead Rule Status</span>
   </div>
 
-  <div class="nm-scroll">
-    <div class="nm-add">
-      <label class="nm-add-label">Add Recipient</label>
-      <div class="nm-add-row">
-        <div class="nm-dd" id="nm-recip" data-value="">
-          <button type="button" class="nm-dd-btn" onclick="nmDDToggle(this)"><span class="nm-dd-val ph">Select a recipient</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-        </div>
-        <button class="nm-save" onclick="nmAddRecipient()">Save</button>
+  <div class="lrs-scroll">
+    <div class="lrs-toolbar">
+      <div class="lrs-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="lrs-search" placeholder="Search lead rule status..." oninput="lrsSearch(this.value)">
       </div>
+      <button class="lrs-btn lrs-add" onclick="lrsAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="lrs-btn-txt">Add Rule</span></button>
+      <button class="lrs-btn lrs-export" onclick="lrsExport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="lrs-btn-txt">Export</span></button>
     </div>
 
     <div class="nm-table-wrap"><div class="nm-table-scroll">
-      <table class="nm-table">
+      <table class="nm-table lrs-table">
         <thead><tr>
-          <th>Users</th>
-          <th>Number</th>
-          <th>Role</th>
-          <th class="nm-th-notif">Notifications</th>
+          <th class="lrs-th-no">No.</th>
+          <th>Status</th>
+          <th>Hour</th>
+          <th>Minutes</th>
+          <th class="lrs-th-act">Action</th>
         </tr></thead>
-        <tbody id="nm-tbody"></tbody>
+        <tbody id="lrs-tbody"></tbody>
       </table>
     </div></div>
 
     <div class="nm-pager">
-      <div class="nm-pager-info" id="nm-pager-info"></div>
-      <div class="nm-pager-btns" id="nm-pager-btns"></div>
+      <div class="nm-pager-info" id="lrs-pager-info"></div>
+      <div class="nm-pager-btns" id="lrs-pager-btns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Rule modal -->
+<div class="lrs-modal-bk" id="lrs-modal" onclick="if(event.target===this)lrsCloseModal()">
+  <div class="lrs-modal">
+    <div class="lrs-modal-head">
+      <span id="lrs-modal-title">Add Rule</span>
+      <button class="lrs-modal-x" onclick="lrsCloseModal()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="lrs-modal-body">
+      <div class="lrs-field">
+        <label class="lrs-field-label">Status</label>
+        <div class="lrs-select"><select id="lrs-input-status"></select><svg class="lrs-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="lrs-field">
+        <label class="lrs-field-label">Hour</label>
+        <input class="lrs-field-input" id="lrs-input-hour" type="number" min="0" step="1" placeholder="0" onkeydown="if(event.key==='Enter')lrsSaveModal()">
+      </div>
+      <div class="lrs-field">
+        <label class="lrs-field-label">Minutes</label>
+        <input class="lrs-field-input" id="lrs-input-min" type="number" min="0" max="59" step="1" placeholder="0" onkeydown="if(event.key==='Enter')lrsSaveModal()">
+      </div>
+    </div>
+    <div class="lrs-modal-foot">
+      <button class="lrs-btn-cancel" onclick="lrsCloseModal()">Cancel</button>
+      <button class="lrs-btn-save" onclick="lrsSaveModal()">Save</button>
     </div>
   </div>
 </div>
@@ -4149,8 +4247,140 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRpt
 
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderNotifications==='function') renderNotifications();
-  nmInit();
+  if(typeof lrsInit==='function') lrsInit();
   if(typeof bindPinShadow==='function') bindPinShadow();
+});
+
+/* ===== Lead Rule Status ===== */
+var LRS_KEY='cc_lead_rule_status';
+var LRS_PER=10;
+var lrsItems=[];
+var lrsPage=1;
+var _lrsEditId=null;
+var _lrsQuery='';
+/* CRM statuses — pulled live from the CRM Status settings page (cc_crm_status),
+   falling back to the CRM page's built-in status list. */
+var LRS_STATUS_FALLBACK=['Dead','Active','Follow Up','Sold','Deposit','BDC - Show','BDC - No Show','BDC - Reschedule','BDC - Follow Up','BDC - Appt Set'];
+function lrsStatuses(){
+  try{
+    var s=JSON.parse(localStorage.getItem('cc_crm_status')||'null');
+    if(Array.isArray(s) && s.length){ var names=s.map(function(x){ return x.name; }).filter(Boolean); if(names.length) return names; }
+  }catch(e){}
+  return LRS_STATUS_FALLBACK.slice();
+}
+function lrsDefaults(){
+  return [
+    {id:'lr1', status:'Active',        hour:1, minutes:0},
+    {id:'lr2', status:'Follow Up',     hour:2, minutes:30},
+    {id:'lr3', status:'BDC - No Show', hour:0, minutes:15},
+    {id:'lr4', status:'Deposit',       hour:4, minutes:0},
+    {id:'lr5', status:'Sold',          hour:0, minutes:45}
+  ];
+}
+function lrsFillStatusSelect(sel){
+  var el=document.getElementById('lrs-input-status'); if(!el) return;
+  var list=lrsStatuses();
+  if(sel && list.indexOf(sel)<0) list=[sel].concat(list); // keep an unknown saved status selectable
+  el.innerHTML=list.map(function(n){ return '<option value="'+n.replace(/"/g,'&quot;')+'"'+(n===sel?' selected':'')+'>'+n+'</option>'; }).join('');
+}
+function lrsLoad(){ try{ var s=JSON.parse(localStorage.getItem(LRS_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return lrsDefaults(); }
+function lrsPersist(){ try{ localStorage.setItem(LRS_KEY, JSON.stringify(lrsItems)); }catch(e){} }
+function lrsInit(){ if(!document.getElementById('lrs-tbody')) return; lrsItems=lrsLoad(); lrsRender(); }
+function lrsSearch(q){ _lrsQuery=(q||'').toLowerCase().trim(); lrsPage=1; lrsRender(); }
+function lrsEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function lrsFiltered(){
+  return lrsItems.filter(function(it){
+    if(!_lrsQuery) return true;
+    return String(it.status||'').toLowerCase().indexOf(_lrsQuery)>=0 || (String(it.hour)+':'+String(it.minutes)).indexOf(_lrsQuery)>=0 || String(it.hour).indexOf(_lrsQuery)>=0 || String(it.minutes).indexOf(_lrsQuery)>=0;
+  });
+}
+function lrsRender(){
+  var tb=document.getElementById('lrs-tbody'); if(!tb) return;
+  var list=lrsFiltered();
+  var tp=Math.max(1, Math.ceil(list.length/LRS_PER));
+  if(lrsPage>tp) lrsPage=tp;
+  var start=(lrsPage-1)*LRS_PER, rows=list.slice(start, start+LRS_PER);
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:30px;">'+(_lrsQuery?'No rules match your search.':'No lead rules yet — click Add Rule.')+'</td></tr>';
+  } else {
+    tb.innerHTML=rows.map(function(it,i){
+      var no=start+i+1;
+      return '<tr>'+
+        '<td class="lrs-no">'+no+'</td>'+
+        '<td>'+(it.status?'<span class="lrs-status">'+lrsEsc(it.status)+'</span>':'<span style="color:var(--mu);">—</span>')+'</td>'+
+        '<td class="lrs-num">'+(parseInt(it.hour,10)||0)+'</td>'+
+        '<td class="lrs-num">'+(parseInt(it.minutes,10)||0)+'</td>'+
+        '<td><div class="lrs-actions">'+
+          '<button class="lrs-icon edit" onclick="lrsEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
+          '<button class="lrs-icon del" onclick="lrsDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  lrsRenderPager(list.length, tp);
+}
+function lrsRenderPager(total, tp){
+  var start=total?((lrsPage-1)*LRS_PER+1):0, end=Math.min(lrsPage*LRS_PER,total);
+  var info=document.getElementById('lrs-pager-info');
+  if(info) info.textContent='Showing '+start+' to '+end+' of '+total+' Results';
+  var btns=[];
+  btns.push('<button class="nm-pg" '+(lrsPage<=1?'disabled':'')+' onclick="lrsGo('+(lrsPage-1)+')">Prev</button>');
+  lrsPageList(lrsPage,tp).forEach(function(p){
+    if(p==='...') btns.push('<span class="nm-pg-ell">…</span>');
+    else btns.push('<button class="nm-pg'+(p===lrsPage?' active':'')+'" onclick="lrsGo('+p+')">'+p+'</button>');
+  });
+  btns.push('<button class="nm-pg" '+(lrsPage>=tp?'disabled':'')+' onclick="lrsGo('+(lrsPage+1)+')">Next</button>');
+  var bb=document.getElementById('lrs-pager-btns'); if(bb) bb.innerHTML=btns.join('');
+}
+function lrsPageList(cur,tp){
+  var out=[];
+  if(tp<=7){ for(var i=1;i<=tp;i++) out.push(i); return out; }
+  out.push(1);
+  var s=Math.max(2,cur-1), e=Math.min(tp-1,cur+1);
+  if(s>2) out.push('...');
+  for(var i=s;i<=e;i++) out.push(i);
+  if(e<tp-1) out.push('...');
+  out.push(tp);
+  return out;
+}
+function lrsGo(p){ var tp=Math.max(1,Math.ceil(lrsFiltered().length/LRS_PER)); if(p<1||p>tp) return; lrsPage=p; lrsRender(); }
+function lrsOpenModal(){ document.getElementById('lrs-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('lrs-input-hour'); if(i) i.focus(); }, 40); }
+function lrsCloseModal(){ document.getElementById('lrs-modal').classList.remove('open'); }
+function lrsAdd(){ _lrsEditId=null; document.getElementById('lrs-modal-title').textContent='Add Rule'; lrsFillStatusSelect(''); document.getElementById('lrs-input-hour').value=''; document.getElementById('lrs-input-min').value=''; lrsOpenModal(); }
+function lrsEdit(id){ var it=lrsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _lrsEditId=id; document.getElementById('lrs-modal-title').textContent='Edit Rule'; lrsFillStatusSelect(it.status||''); document.getElementById('lrs-input-hour').value=it.hour; document.getElementById('lrs-input-min').value=it.minutes; lrsOpenModal(); }
+function lrsSaveModal(){
+  var status=document.getElementById('lrs-input-status').value;
+  var hourRaw=document.getElementById('lrs-input-hour').value.trim();
+  var minRaw=document.getElementById('lrs-input-min').value.trim();
+  if(!status){ if(typeof showNavToast==='function') showNavToast('Status required','Select a CRM status.'); return; }
+  if(hourRaw===''&&minRaw===''){ if(typeof showNavToast==='function') showNavToast('Value required','Enter an hour and/or minutes.'); return; }
+  var hour=Math.max(0, parseInt(hourRaw,10)||0);
+  var minutes=Math.min(59, Math.max(0, parseInt(minRaw,10)||0));
+  var editing=!!_lrsEditId;
+  if(editing){ var it=lrsItems.filter(function(x){ return x.id===_lrsEditId; })[0]; if(it){ it.status=status; it.hour=hour; it.minutes=minutes; } }
+  else { lrsItems.push({id:'lr'+Date.now(), status:status, hour:hour, minutes:minutes}); _lrsQuery=''; var si=document.getElementById('lrs-search'); if(si) si.value=''; lrsPage=Math.max(1,Math.ceil(lrsItems.length/LRS_PER)); }
+  lrsPersist(); lrsCloseModal(); lrsRender();
+  if(typeof showNavToast==='function') showNavToast(editing?'Rule updated':'Rule added', status+' · '+hour+'h '+minutes+'m');
+}
+function lrsDelete(id){
+  var it=lrsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+  lrsItems=lrsItems.filter(function(x){ return x.id!==id; });
+  lrsPersist(); lrsRender();
+  if(typeof showNavToast==='function') showNavToast('Rule deleted', it.hour+'h '+it.minutes+'m was removed.');
+}
+function lrsExport(){
+  if(!lrsItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no lead rules to export.'); return; }
+  var rows=[['No.','Status','Hour','Minutes']].concat(lrsItems.map(function(it,i){ return [String(i+1), String(it.status||''), String(it.hour||0), String(it.minutes||0)]; }));
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='lead_rule_status.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(typeof showNavToast==='function') showNavToast('Exported', lrsItems.length+' lead rule'+(lrsItems.length===1?'':'s')+' exported to CSV.');
+}
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var m=document.getElementById('lrs-modal'); if(m && m.classList.contains('open')) lrsCloseModal(); }
 });
 
 /* Standard: show the pinned-column scroll shadow only once the table scrolls horizontally. */

@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Dashboard</title>
+<title>CoreConnect â€” Dashboard</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     DESIGN TOKENS — lifted verbatim from coreconnect_leads_v78.html
-     ════════════════════════════════════════════════════════════════════════════ */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     DESIGN TOKENS â€” lifted verbatim from coreconnect_leads_v78.html
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   :root{
     --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;
     --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
@@ -23,9 +23,9 @@
   }
   .root{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:93vh;display:flex;flex-direction:column;position:relative;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      TOP HEADER (full width, fixed 64px)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .top-header{position:fixed;top:0;left:0;right:0;height:64px;
     background:var(--bg);border-bottom:0.5px solid var(--brd);
     display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
@@ -38,7 +38,7 @@
   /* Top-header left group (hamburger + logo) */
   .th-left{display:flex;align-items:center;gap:10px;}
 
-  /* Hamburger — hidden on desktop, visible on phone */
+  /* Hamburger â€” hidden on desktop, visible on phone */
   .hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;
     border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;
     flex-shrink:0;transition:background .12s;}
@@ -62,9 +62,9 @@
     opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
   .header-bell:hover::after{opacity:1;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      NOTIFICATIONS PANEL (dropdown anchored to bell)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .notif-panel{display:none;position:fixed;top:0;left:0;width:380px;max-height:560px;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     box-shadow:0 12px 36px rgba(0,0,0,.55);z-index:9999;
@@ -108,9 +108,9 @@
     padding:14px 8px;min-height:48px;border-radius:8px;transition:background .12s;}
   .notif-seeall:hover{background:rgba(79,124,255,.08);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SIDEBAR NAVIGATION (64px fixed, starts below header)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .sidebar{position:fixed;top:64px;left:0;width:64px;height:calc(100vh - 64px);
     background:var(--bg);border-right:0.5px solid var(--brd);
     display:flex;flex-direction:column;align-items:center;
@@ -143,9 +143,9 @@
   /* Main content shifts right (past sidebar) and down (past header) */
   .main-area{margin-left:64px;margin-top:64px;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      PAGE-LEVEL "COMING SOON" TOAST
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;
@@ -162,9 +162,9 @@
     cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
   .nav-toast-close:hover{opacity:1;color:var(--tx);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      ADD LEAD MODAL (ported from coreconnect_leads_v80, SVG icons)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;
     align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
   .modal-backdrop.open{display:flex;}
@@ -198,11 +198,11 @@
     color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
   .modal-save:hover{background:var(--ac2);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     SEND BUSINESS CARD MODAL — wider, with branded card preview
-     ════════════════════════════════════════════════════════════════════════════ */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     SEND BUSINESS CARD MODAL â€” wider, with branded card preview
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .bc-modal{width:640px;}
-  /* Card preview — branded artwork, fixed colors (not theme tokens) */
+  /* Card preview â€” branded artwork, fixed colors (not theme tokens) */
   .bc-card{display:flex;border:1px solid #2a2e3a;border-radius:6px;overflow:hidden;
     background:#fff;min-height:210px;}
   .bc-logo{width:38%;background:#fff;display:flex;flex-direction:column;
@@ -251,9 +251,9 @@
     .bc-checks{justify-content:flex-start;}
   }
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MOBILE DRAWER (hidden on desktop, slides in on phone)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .mobile-drawer-backdrop{display:none;position:fixed;inset:0;z-index:9000;
     background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s ease;pointer-events:none;}
   .mobile-drawer-backdrop.open{opacity:1;pointer-events:auto;}
@@ -276,9 +276,9 @@
     display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
   .md-account .md-account-av{margin-right:-4px;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      DIALER PANEL (vertical tab + slide-in panel)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .dialer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1600;
     background:var(--ac);color:#fff;border-radius:10px 0 0 10px;
     padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -399,15 +399,15 @@
   @keyframes pulse{0%{transform:scale(1);opacity:.6;}100%{transform:scale(1.7);opacity:0;}}
   .dialer-calling-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:88px;height:88px;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      TOOLBAR (row below header, contains period toggle + future actions)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;overflow:visible;
     position:relative;z-index:55;background:var(--bg);
     border-bottom:0.5px solid var(--brd);}
   .toolbar .sp{flex:1;}
 
-  /* Toolbar buttons — lifted from style-guide § 04 (Buttons).
+  /* Toolbar buttons â€” lifted from style-guide Â§ 04 (Buttons).
      Sized at 40px tall for comfortable touch targets while staying compact. */
   .tbtn{display:flex;align-items:center;gap:5px;background:var(--sur2);
     border:0.5px solid var(--brd2);border-radius:8px;padding:0 14px;height:40px;
@@ -417,7 +417,7 @@
   /* Icon-only variant (square, no padding, centered icon) */
   .icon-btn{width:40px;padding:0;justify-content:center;}
 
-  /* Calendar button — icon-only with hover tooltip anchored below the taller button */
+  /* Calendar button â€” icon-only with hover tooltip anchored below the taller button */
   .calendar-btn::after{content:attr(data-label);position:absolute;top:48px;left:50%;
     transform:translateX(-50%);background:var(--sur2);color:var(--ac2);
     font-size:12px;font-weight:500;padding:6px 12px;border-radius:8px;
@@ -425,16 +425,16 @@
     opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
   .calendar-btn:hover::after{opacity:1;}
 
-  /* Widgets dropdown button — gap + chevron variant (matches View button DNA) */
+  /* Widgets dropdown button â€” gap + chevron variant (matches View button DNA) */
   .widgets-btn{gap:6px;}
   .widgets-btn .wb-chev{margin-left:1px;color:var(--mu);transition:transform .15s;}
   .widgets-btn:hover .wb-chev{color:var(--ac2);}
   .widgets-btn.open{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
   .widgets-btn.open .wb-chev{transform:rotate(180deg);color:var(--ac2);}
 
-  /* Period toggle — segmented control (pattern: style-guide cc-mobile-tabs).
+  /* Period toggle â€” segmented control (pattern: style-guide cc-mobile-tabs).
      Container = 40px tall to match other toolbar buttons; segments sit at 32px
-     inside the 4px padding ring — comfortable tap area per segment. */
+     inside the 4px padding ring â€” comfortable tap area per segment. */
   .period-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;
     flex-shrink:0;}
@@ -448,7 +448,7 @@
   .pt-seg.active:hover{color:#fff;}
   .pt-seg:focus-visible{outline:2px solid var(--ac);outline-offset:1px;}
 
-  /* Period dropdown — phone-only alternative (hidden on desktop) */
+  /* Period dropdown â€” phone-only alternative (hidden on desktop) */
   .period-mobile{display:none;position:relative;flex-shrink:0;}
   .period-btn{display:flex;align-items:center;gap:6px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
@@ -467,7 +467,7 @@
     box-shadow:0 8px 24px rgba(0,0,0,.35);}
   .period-menu.open{display:block;}
 
-  /* Mobile-only sheet header — hidden by default, shown on phone */
+  /* Mobile-only sheet header â€” hidden by default, shown on phone */
   .pm-mobile-header{display:none;align-items:center;justify-content:space-between;
     padding:14px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .pm-mobile-title{font-size:15px;font-weight:600;color:var(--tx);}
@@ -490,10 +490,10 @@
   .pm-item[aria-checked="true"]{color:var(--ac2);}
   .pm-item[aria-checked="true"] .pm-check{opacity:1;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      CALENDAR PICKER (single-date, past-dates only)
      Anchored under the calendar button; full-screen sheet on phone.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .cal-outer{position:relative;flex-shrink:0;}
   .calendar-btn.open{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
 
@@ -504,7 +504,7 @@
     flex-direction:column;}
   .cal-panel.open{display:flex;}
 
-  /* Mobile-only header — hidden on desktop */
+  /* Mobile-only header â€” hidden on desktop */
   .cal-mobile-header{display:none;align-items:center;justify-content:space-between;
     padding:14px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .cal-mobile-title{font-size:15px;font-weight:600;color:var(--tx);}
@@ -513,7 +513,7 @@
     display:flex;align-items:center;justify-content:center;transition:all .12s;}
   .cal-mobile-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
 
-  /* Month-nav header (prev / month-year label / next) — buttons now 40 for touch */
+  /* Month-nav header (prev / month-year label / next) â€” buttons now 40 for touch */
   .cal-nav{display:flex;align-items:center;justify-content:space-between;
     padding:12px 14px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .cal-nav-btn{width:40px;height:40px;border-radius:8px;
@@ -524,13 +524,13 @@
   .cal-nav-btn:disabled{opacity:.3;cursor:not-allowed;}
   .cal-nav-label{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 
-  /* Weekday strip — narrower padding so the grid math fits the wider cells */
+  /* Weekday strip â€” narrower padding so the grid math fits the wider cells */
   .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;
     padding:8px 10px 4px;flex-shrink:0;}
   .cal-wd{font-family:var(--mono);font-size:10.5px;color:var(--mu);
     text-align:center;text-transform:uppercase;letter-spacing:.5px;padding:4px 0;}
 
-  /* Day grid — 40px cells for comfortable tap targets even on desktop */
+  /* Day grid â€” 40px cells for comfortable tap targets even on desktop */
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;
     padding:0 10px 12px;flex:0 0 auto;}
   .cal-day{height:40px;display:flex;align-items:center;justify-content:center;
@@ -545,7 +545,7 @@
   .cal-day.selected:hover{background:var(--ac2);}
   .cal-day.disabled{opacity:.25;cursor:not-allowed;}
 
-  /* Footer with Today + Done — taller buttons */
+  /* Footer with Today + Done â€” taller buttons */
   .cal-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;
     padding:10px 12px;background:var(--sur2);border-top:0.5px solid var(--brd);
     flex-shrink:0;}
@@ -557,26 +557,26 @@
   .cal-foot-btn.primary{background:var(--ac);border-color:var(--ac);color:#fff;}
   .cal-foot-btn.primary:hover{background:var(--ac2);border-color:var(--ac2);color:#fff;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     WIDGET FRAMEWORK — grid container, card shell, drag/hide affordances,
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     WIDGET FRAMEWORK â€” grid container, card shell, drag/hide affordances,
      Widgets menu, empty state.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .widget-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
     gap:16px;padding:24px;}
-  /* Chart zone sits below the KPI zone — strict 2-column grid so charts
+  /* Chart zone sits below the KPI zone â€” strict 2-column grid so charts
      pair up two-per-row. Trim the top padding so the gap between zones
      is a single comfortable space rather than doubled padding. */
   .widget-grid-chart{padding-top:0;
     grid-template-columns:repeat(2, minmax(0, 1fr));}
 
-  /* Card shell — every widget shares this chrome */
+  /* Card shell â€” every widget shares this chrome */
   .widget{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     padding:0;overflow:hidden;position:relative;
     transition:border-color .15s, box-shadow .15s, opacity .15s, transform .15s;
     display:flex;flex-direction:column;}
   .widget:hover{border-color:rgba(255,255,255,.18);}
   .widget.dragging{opacity:.35;transform:scale(.98);cursor:grabbing;}
-  /* Touch-drag — a "ghost" clone of the card follows the finger.
+  /* Touch-drag â€” a "ghost" clone of the card follows the finger.
      The original sits in place at the same .35 opacity used for mouse drag. */
   .widget.touch-source{opacity:.35;}
   .widget.touch-ghost{position:fixed;top:0;left:0;z-index:9000;
@@ -588,7 +588,7 @@
   .widget.drop-target{border-color:var(--ac);background:rgba(79,124,255,.04);
     box-shadow:0 0 0 2px rgba(79,124,255,.18) inset;}
 
-  /* Header — drag handle (left), title (center), kebab (right).
+  /* Header â€” drag handle (left), title (center), kebab (right).
      Bigger touch targets while keeping header compact via tighter padding. */
   .w-head{display:flex;align-items:center;gap:6px;padding:6px 10px;
     border-bottom:0.5px solid var(--brd);min-height:52px;}
@@ -605,11 +605,11 @@
     border-radius:8px;transition:color .12s,background .12s;flex-shrink:0;}
   .w-kebab:hover{color:var(--ac2);background:rgba(255,255,255,.05);}
 
-  /* Body — each widget's render function fills this */
+  /* Body â€” each widget's render function fills this */
   .w-body{flex:1;padding:18px 18px 20px;}
   .w-body:has(.kpi){padding:16px 16px 16px;}
 
-  /* Kebab popover (per-card menu) — anchor below the bigger header */
+  /* Kebab popover (per-card menu) â€” anchor below the bigger header */
   .w-menu{display:none;position:absolute;top:50px;right:10px;z-index:80;
     min-width:160px;background:var(--sur);border:0.5px solid var(--brd2);
     border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5);}
@@ -624,7 +624,7 @@
   .w-menu-item svg{width:14px;height:14px;color:var(--mu);flex-shrink:0;}
   .w-menu-item:hover svg{color:var(--ac2);}
 
-  /* Empty state — zero visible widgets */
+  /* Empty state â€” zero visible widgets */
   .widget-empty{grid-column:1/-1;padding:64px 24px;text-align:center;
     background:var(--sur);border:0.5px dashed var(--brd2);border-radius:12px;}
   .widget-empty-icon{width:48px;height:48px;border-radius:12px;margin:0 auto 14px;
@@ -640,11 +640,11 @@
     cursor:pointer;transition:background .15s;}
   .widget-empty-cta:hover{background:var(--ac2);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGET: Single call-stat KPI card (Missed / Answered / Returned)
-     Roomy layout — big colored number, icon, window-label footer.
+     Roomy layout â€” big colored number, icon, window-label footer.
      Color is set per-instance via the .kpi-missed / .kpi-answered / .kpi-returned class.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .kpi{display:flex;flex-direction:column;gap:10px;}
   .kpi-icon{width:34px;height:34px;border-radius:9px;display:flex;
     align-items:center;justify-content:center;flex-shrink:0;}
@@ -676,10 +676,10 @@
     font-family:var(--mono);font-size:10.5px;color:var(--mu);}
   .ca-window-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);flex-shrink:0;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     WIDGET: Activity Over Time (3-line area chart — Calls / SMS / Email)
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     WIDGET: Activity Over Time (3-line area chart â€” Calls / SMS / Email)
      Spans 2 grid columns. SVG-drawn, themed, with hover tracer + tooltip.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   /* In the 2-column chart zone, widget-wide just occupies 1 of 2 columns
      (the zone itself enforces the 2-per-row layout). Keep the class so
      existing widget registrations keep working without changes. */
@@ -687,9 +687,9 @@
   /* widget-full spans both columns of the 2-col chart grid */
   .widget.widget-full{grid-column:1 / -1;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     WIDGET: Talk Time (vertical bars per lead, scrollable, 45° rotated labels)
-     ════════════════════════════════════════════════════════════════════════════ */
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     WIDGET: Talk Time (vertical bars per lead, scrollable, 45Â° rotated labels)
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .tt-scroll{overflow-x:auto;overflow-y:hidden;
     scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
   .tt-scroll::-webkit-scrollbar{height:6px;}
@@ -698,11 +698,11 @@
   .tt-bar{fill:var(--ac);transition:opacity .12s, fill .12s;}
   .tt-bar:hover{fill:var(--ac2);}
   .tt-bar.dim{opacity:.3;}
-  /* Idle Time — amber variant of tt-bar */
+  /* Idle Time â€” amber variant of tt-bar */
   .idle-bar{fill:var(--am);transition:opacity .12s, fill .12s;}
   .idle-bar:hover{fill:#fbbf24;}   /* slightly brighter amber on hover */
   .idle-bar.dim{opacity:.3;}
-  /* Sold Inventory — green variant of tt-bar */
+  /* Sold Inventory â€” green variant of tt-bar */
   .sold-bar{fill:var(--gr);transition:opacity .12s, fill .12s;}
   .sold-bar:hover{fill:#10b981;}
   .sold-bar.dim{opacity:.3;}
@@ -748,7 +748,7 @@
   .chart-dot.sms{fill:var(--teal);}
   .chart-dot.email{fill:var(--am);}
 
-  /* Tooltip — position is JS-computed (left edge) and clamped within chart-wrap
+  /* Tooltip â€” position is JS-computed (left edge) and clamped within chart-wrap
      so it never extends off the card. */
   .chart-tip{position:absolute;pointer-events:none;z-index:5;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;
@@ -756,7 +756,7 @@
     opacity:0;transition:opacity .12s;
     min-width:120px;}
   .chart-tip.on{opacity:1;}
-  /* Desktop with mouse/trackpad — smoothly slide between positions as the
+  /* Desktop with mouse/trackpad â€” smoothly slide between positions as the
      cursor moves along the chart. Touch is excluded so tooltips on touch
      devices remain instant (no laggy follow). */
   @media (hover: hover) and (pointer: fine){
@@ -770,7 +770,7 @@
       transition: opacity .12s;
     }
   }
-  /* Respect reduced motion — fall back to the original instant snap. */
+  /* Respect reduced motion â€” fall back to the original instant snap. */
   @media (prefers-reduced-motion: reduce){
     .chart-tip{transition: opacity .12s !important;}
   }
@@ -789,10 +789,10 @@
     height:200px;color:var(--mu);font-size:12.5px;gap:8px;}
   .chart-empty-icon{opacity:.4;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGET: Leads Bar Chart (stacked-bar by status)
      Reuses .chart-legend / .chart-wrap / .chart-svg / .chart-tip from the line chart.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   /* 8 status colors */
   .leg-active   .chart-leg-dot{background:var(--ac);}
   .leg-bdcShow  .chart-leg-dot{background:var(--teal);}
@@ -813,7 +813,7 @@
   .seg-sold      {fill:var(--gr);}
   .seg-dead      {fill:var(--rd);}
 
-  /* Bar rect — soft rounded top (via rx, but we'll apply only to topmost via JS) */
+  /* Bar rect â€” soft rounded top (via rx, but we'll apply only to topmost via JS) */
   .lead-bar-seg{stroke:var(--bg);stroke-width:1;transition:opacity .12s;}
   .lead-bar-seg.dim{opacity:.25;}
 
@@ -832,10 +832,10 @@
   .ld-tip-total-lbl{color:var(--tx);font-weight:500;}
   .ld-tip-total-val{font-family:var(--mono);font-weight:600;color:var(--tx);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
-     WIDGET: Call Volume (grouped bars — Inbound vs Outbound)
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     WIDGET: Call Volume (grouped bars â€” Inbound vs Outbound)
      Two bars per bucket, side by side. Reuses .chart-* shells.
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .leg-cvIn  .chart-leg-dot{background:var(--gr);}
   .leg-cvOut .chart-leg-dot{background:var(--ac);}
   .cv-bar.in  {fill:var(--gr);}
@@ -850,18 +850,18 @@
   .cv-tip-total-lbl{color:var(--tx);font-weight:500;}
   .cv-tip-total-val{font-family:var(--mono);font-weight:600;color:var(--tx);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGETS: SMS Volume + Email Volume (same shell as Call Volume, different colors)
      Each volume chart uses a 'theme' class on its bars + legend dots.
-     ════════════════════════════════════════════════════════════════════════════ */
-  /* SMS Volume — teal in / purple out (matches SMS KPI cards) */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  /* SMS Volume â€” teal in / purple out (matches SMS KPI cards) */
   .cv-theme-sms   .leg-cvIn  .chart-leg-dot{background:var(--teal);}
   .cv-theme-sms   .leg-cvOut .chart-leg-dot{background:var(--purple);}
   .cv-theme-sms   .cv-bar.in  {fill:var(--teal);}
   .cv-theme-sms   .cv-bar.out {fill:var(--purple);}
   .cv-theme-sms   .cv-tip-dot.in {background:var(--teal);}
   .cv-theme-sms   .cv-tip-dot.out{background:var(--purple);}
-  /* Email Volume — amber in / sky out (matches Email KPI cards) */
+  /* Email Volume â€” amber in / sky out (matches Email KPI cards) */
   .cv-theme-email .leg-cvIn  .chart-leg-dot{background:var(--am);}
   .cv-theme-email .leg-cvOut .chart-leg-dot{background:#38bdf8;}
   .cv-theme-email .cv-bar.in  {fill:var(--am);}
@@ -869,11 +869,11 @@
   .cv-theme-email .cv-tip-dot.in {background:var(--am);}
   .cv-theme-email .cv-tip-dot.out{background:#38bdf8;}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGETS MENU (dropdown attached to the toolbar's Widgets button)
      Reuses the .pm-item / mobile-sheet DNA from the period dropdown.
-     ════════════════════════════════════════════════════════════════════════════ */
-  /* Dashboard Filter — two-pane (Users / Departments), modeled on the CRM filter */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  /* Dashboard Filter â€” two-pane (Users / Departments), modeled on the CRM filter */
   .df-outer{position:relative;flex-shrink:0;}
   .df-btn .df-chev{transition:transform .15s;}
   .df-btn.active{border-color:var(--ac);color:var(--ac2);}
@@ -976,15 +976,15 @@
     padding:6px 10px;border-radius:6px;transition:background .12s;}
   .wm-reset:hover{background:rgba(79,124,255,.10);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      RESPONSIVE
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   @media (max-width: 1024px){
     .top-header{padding:0 16px;}
     .toolbar{padding:8px 14px;}
   }
 
-  /* Tablet — chart zone collapses to a single column so two charts stop
+  /* Tablet â€” chart zone collapses to a single column so two charts stop
      squeezing side by side once the row gets too narrow. */
   @media (max-width: 900px){
     .widget-grid-chart{grid-template-columns:1fr;}
@@ -1007,7 +1007,7 @@
     .mobile-drawer-backdrop{display:flex;}
     .mobile-drawer{display:flex;}
 
-    /* Dialer panel — full-screen on phone */
+    /* Dialer panel â€” full-screen on phone */
     .dialer-panel{
       width:100%;right:-100%;
       box-shadow:none;border-left:none;
@@ -1018,7 +1018,7 @@
     .dialer-close{width:44px;height:44px;border-radius:8px;}
     .dialer-title{font-size:16px;}
 
-    /* Notifications panel — full-screen on phone */
+    /* Notifications panel â€” full-screen on phone */
     .notif-panel{
       top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
       width:100% !important;max-height:none !important;height:100vh;
@@ -1030,14 +1030,14 @@
     .notif-close{display:flex;width:48px;height:48px;}
     .notif-tab{padding:14px 14px;font-size:13.5px;min-height:48px;}
 
-    /* Toolbar — tighter horizontal padding on phone */
+    /* Toolbar â€” tighter horizontal padding on phone */
     .toolbar{padding:8px 12px;gap:6px;}
 
-    /* Period toggle — swap segmented for dropdown on phone */
+    /* Period toggle â€” swap segmented for dropdown on phone */
     .period-toggle{display:none;}
     .period-mobile{display:block;}
 
-    /* Period dropdown — full-screen sheet on phone (matches view-menu mobile takeover) */
+    /* Period dropdown â€” full-screen sheet on phone (matches view-menu mobile takeover) */
     .period-menu.open{display:flex;flex-direction:column;
       position:fixed !important;top:0;left:0;right:0;bottom:0;
       width:100%;height:100vh;min-width:0;
@@ -1046,7 +1046,7 @@
     .pm-item{padding:18px 18px;font-size:15px;min-height:54px;}
     .pm-check{width:18px;height:18px;}
 
-    /* Calendar picker — full-screen sheet on phone */
+    /* Calendar picker â€” full-screen sheet on phone */
     .cal-panel.open{display:flex;flex-direction:column;
       position:fixed !important;top:0;left:0;right:0;bottom:0;
       width:100%;height:100vh;min-width:0;
@@ -1066,22 +1066,22 @@
     .cal-footer{padding:14px 16px;gap:10px;}
     .cal-foot-btn{flex:1;height:48px;font-size:14px;}
 
-    /* Widget grid — tighter outer padding on phone */
+    /* Widget grid â€” tighter outer padding on phone */
     .widget-grid{padding:16px 12px;gap:12px;}
     /* Drag handle full opacity on phone (no hover) */
     .widget .w-drag{opacity:1;}
-    /* Drag + kebab — bump to 44 for phone touch */
+    /* Drag + kebab â€” bump to 44 for phone touch */
     .w-drag{width:44px;height:44px;}
     .w-kebab{width:44px;height:44px;}
     .w-head{padding:6px 10px;min-height:56px;}
 
-    /* KPI cards — number sizing on phone */
+    /* KPI cards â€” number sizing on phone */
     .kpi-num{font-size:34px;}
 
-    /* Wide chart widget — full width on phone */
+    /* Wide chart widget â€” full width on phone */
     .widget.widget-wide{grid-column:span 1;}
 
-    /* Widgets menu — full-screen sheet on phone */
+    /* Widgets menu â€” full-screen sheet on phone */
     .widgets-menu.open{display:flex;flex-direction:column;
       position:fixed !important;top:0;left:0;right:0;bottom:0;
       width:100%;height:100vh;min-width:0;
@@ -1099,9 +1099,9 @@
     .wm-reset{padding:10px 14px;min-height:40px;font-size:13px;}
   }
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGET: Lead Conversion Funnel (horizontal tapering stage bars)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .funnel{display:flex;flex-direction:column;gap:10px;}
   .funnel-stage{display:flex;flex-direction:column;gap:5px;}
   .funnel-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
@@ -1121,9 +1121,9 @@
     align-self:flex-end;margin-top:-1px;}
   .funnel-drop.warn{color:var(--am);}
 
-  /* ════════════════════════════════════════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WIDGET: Rep Leaderboard (ranked rep activity table)
-     ════════════════════════════════════════════════════════════════════════════ */
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .lb{display:flex;flex-direction:column;}
   .lb-head{display:grid;grid-template-columns:26px 1fr 46px 46px 46px 58px;gap:8px;
     padding:0 4px 8px;border-bottom:0.5px solid var(--brd);
@@ -1155,9 +1155,9 @@
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      TOP HEADER
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="top-header">
   <div class="th-left">
     <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
@@ -1183,9 +1183,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      NOTIFICATIONS PANEL
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="notif-panel" id="notif-panel">
   <div class="notif-header">
     <span class="notif-title">Notifications</span>
@@ -1202,7 +1202,7 @@
   </div>
   <div class="notif-body" id="notif-body">
     <div class="notif-empty">
-      <div class="notif-empty-icon">🔔</div>
+      <div class="notif-empty-icon">ðŸ””</div>
       You're all caught up
     </div>
   </div>
@@ -1211,9 +1211,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SIDEBAR NAVIGATION (desktop / tablet)
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="sidebar">
   <div class="sidebar-nav">
     <div class="sb-item active" data-nav="home" data-label="Dashboard" onclick="navClick('Dashboard')">
@@ -1237,6 +1237,9 @@
     <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
+    <div class="sb-item" data-nav="reputation" data-label="Reputation" onclick="navClick('Reputation')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
     <div class="sidebar-nav-spacer"></div>
     <div class="sb-divider"></div>
     <div class="sb-item" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
@@ -1246,9 +1249,9 @@
   <div class="sb-account" onclick="navClick('Account')" title="Account">DP</div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      MOBILE NAVIGATION DRAWER (phone only)
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <div class="md-nav">
@@ -1280,6 +1283,10 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Appointments</span>
     </div>
+    <div class="md-item" data-nav="reputation" onclick="window.open('../reputation/reputation_dashboard/Dashboard.html','_blank');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>Reputation</span>
+    </div>
     <div class="md-divider"></div>
     <div class="md-item" data-nav="settings" onclick="navClick('Settings');closeMobileDrawer();">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
@@ -1292,9 +1299,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      "COMING SOON" NAV TOAST
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -1306,9 +1313,9 @@
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      ADD LEAD MODAL (opened from the dialer's "Add new lead" button)
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="modal-backdrop" id="modal-backdrop" onclick="handleModalBackdropClick(event)">
   <div class="modal">
     <div class="modal-header">
@@ -1366,9 +1373,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SEND BUSINESS CARD MODAL (opened from the "Business card" nav item)
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="modal-backdrop" id="bc-modal-backdrop" onclick="handleBcBackdropClick(event)">
   <div class="modal bc-modal">
     <div class="modal-header">
@@ -1377,7 +1384,7 @@
     </div>
     <div class="modal-body">
 
-      <!-- Business card preview (branded — recreated from artwork) -->
+      <!-- Business card preview (branded â€” recreated from artwork) -->
       <div class="bc-card">
         <div class="bc-logo">
           <svg class="bc-logo-car" viewBox="0 0 200 70" fill="none" aria-hidden="true">
@@ -1448,9 +1455,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
-     MAIN CONTENT AREA — placeholder until dashboard zones are built
-     ════════════════════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+     MAIN CONTENT AREA â€” placeholder until dashboard zones are built
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="root main-area" id="root">
 
   <!-- TOOLBAR -->
@@ -1495,7 +1502,7 @@
       </div>
     </div>
 
-    <!-- Calendar — opens a date picker so the user can view past dates -->
+    <!-- Calendar â€” opens a date picker so the user can view past dates -->
     <div class="cal-outer" id="cal-outer">
       <button class="tbtn icon-btn calendar-btn" id="calendar-btn" data-label="Pick a date" onclick="toggleCalendar(event)" aria-haspopup="dialog" aria-expanded="false" aria-label="Pick a date">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1520,7 +1527,7 @@
           <button type="button" class="cal-nav-btn" id="cal-prev" onclick="calStepMonth(-1)" aria-label="Previous month">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
-          <span class="cal-nav-label" id="cal-nav-label">—</span>
+          <span class="cal-nav-label" id="cal-nav-label">â€”</span>
           <button type="button" class="cal-nav-btn" id="cal-next" onclick="calStepMonth(1)" aria-label="Next month">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
@@ -1563,8 +1570,8 @@
       </div>
       <div class="df-left">
         <div class="df-catlist">
-          <button class="df-cat" data-cat="users" onclick="dashFilterCat('users')"><span class="df-cat-label">Users</span><span class="df-cat-chev">›</span></button>
-          <button class="df-cat" data-cat="depts" onclick="dashFilterCat('depts')"><span class="df-cat-label">Departments</span><span class="df-cat-chev">›</span></button>
+          <button class="df-cat" data-cat="users" onclick="dashFilterCat('users')"><span class="df-cat-label">Users</span><span class="df-cat-chev">â€º</span></button>
+          <button class="df-cat" data-cat="depts" onclick="dashFilterCat('depts')"><span class="df-cat-label">Departments</span><span class="df-cat-chev">â€º</span></button>
         </div>
         <div class="df-foot">
           <button class="df-clear" onclick="dashFilterClear()">Clear all</button>
@@ -1582,7 +1589,7 @@
 
     <div class="sp"></div>
 
-    <!-- Widgets dropdown — manages visibility/order of dashboard widgets -->
+    <!-- Widgets dropdown â€” manages visibility/order of dashboard widgets -->
     <div class="wm-outer" id="wm-outer">
       <button class="tbtn widgets-btn" id="widgets-btn" onclick="toggleWidgetsMenu(event)" aria-haspopup="menu" aria-expanded="false">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1614,14 +1621,14 @@
     </div>
   </div>
 
-  <!-- WIDGET ZONES — KPIs render in the kpi grid, charts in the chart grid -->
+  <!-- WIDGET ZONES â€” KPIs render in the kpi grid, charts in the chart grid -->
   <div class="widget-grid" id="widget-grid-kpi" data-section="kpi"></div>
   <div class="widget-grid widget-grid-chart" id="widget-grid-chart" data-section="chart"></div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      DIALER (vertical tab + slide-in panel)
-     ════════════════════════════════════════════════════════════════════════════ -->
+     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="dialer-tab" id="dialer-tab" onclick="toggleDialer()" title="Open Dialer">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
@@ -1644,10 +1651,10 @@
   <div class="dialer-contact-bar" id="dialer-contact-bar" style="display:none;">
     <div class="dialer-contact-label">Calling</div>
     <div class="dialer-contact-row">
-      <div class="dialer-contact-av" id="dialer-contact-av">—</div>
+      <div class="dialer-contact-av" id="dialer-contact-av">â€”</div>
       <div>
-        <div class="dialer-contact-name" id="dialer-contact-name">—</div>
-        <div class="dialer-contact-num" id="dialer-contact-num">—</div>
+        <div class="dialer-contact-name" id="dialer-contact-name">â€”</div>
+        <div class="dialer-contact-num" id="dialer-contact-num">â€”</div>
       </div>
       <button class="dialer-contact-clear" onclick="clearDialerContact()" title="Clear contact">&#x2715;</button>
     </div>
@@ -1689,7 +1696,7 @@
     <!-- Number display -->
     <div class="dialer-display">
       <div class="dialer-number" id="dialer-number">
-        <span class="dialer-number-placeholder">Enter number…</span>
+        <span class="dialer-number-placeholder">Enter numberâ€¦</span>
       </div>
     </div>
 
@@ -1737,11 +1744,11 @@
   <div class="dialer-calling-overlay" id="dialer-calling-overlay">
     <div class="dialer-calling-wrap">
       <div class="pulse-ring"></div>
-      <div class="dialer-calling-av" id="calling-av" style="background:var(--ac);">—</div>
+      <div class="dialer-calling-av" id="calling-av" style="background:var(--ac);">â€”</div>
     </div>
     <div>
-      <div class="dialer-calling-name" id="calling-name">—</div>
-      <div class="dialer-calling-status" id="calling-status" style="text-align:center;">Calling…</div>
+      <div class="dialer-calling-name" id="calling-name">â€”</div>
+      <div class="dialer-calling-status" id="calling-status" style="text-align:center;">Callingâ€¦</div>
     </div>
     <div class="dialer-calling-timer" id="calling-timer" style="display:none;">0:00</div>
     <div style="display:flex;gap:16px;margin-top:8px;">
@@ -1764,9 +1771,9 @@
 
 <script src="../shared/leads-comms.js"></script>
 <script>
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    STATE
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 let dialerOpen     = false;
 let dialerNumber   = '';
 let isCalling      = false;
@@ -1778,7 +1785,7 @@ let navToastTimer  = null;
 let notifTab       = 'all';
 let currentPeriod  = 'Today';   // 'Today' | 'Week' | 'Month'
 
-/* Calendar state — single-date picker, past dates only */
+/* Calendar state â€” single-date picker, past dates only */
 const calToday     = new Date(); calToday.setHours(0,0,0,0);
 let calViewYear    = calToday.getFullYear();
 let calViewMonth   = calToday.getMonth();   // 0-11
@@ -1795,9 +1802,9 @@ const dialerContacts = [
   {name:'Rachel Kim',    num:'(346) 555-0344', av:'RK', ac:'#993C56'},
 ];
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MOBILE DRAWER
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function toggleMobileDrawer(){
   const drawer = document.getElementById('mobile-drawer');
   const bd     = document.getElementById('mobile-drawer-backdrop');
@@ -1814,9 +1821,9 @@ function closeMobileDrawer(){
   document.getElementById('mobile-drawer-backdrop').classList.remove('open');
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NAV CLICK + "COMING SOON" TOAST
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function navClick(label){
   if(label === 'Dashboard') return; // already here
   if(label === 'CRM'){ window.location.href = '../coreconnect_leads_v83/coreconnect_leads_v83.html'; return; }
@@ -1824,6 +1831,7 @@ function navClick(label){
   if(label === 'Message'){ window.location.href = '../coreconnect_message_history_v41/coreconnect_message_history_v41.html'; return; }
   if(label === 'Voice mail'){ window.location.href = '../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html'; return; }
   if(label === 'Appointments'){ window.location.href = '../coreconnect_appointments/coreconnect_appointments.html'; return; }
+  if(label === 'Reputation'){ window.open('../reputation/reputation_dashboard/Dashboard.html','_blank'); return; }
   if(label === 'Settings'){ window.location.href = '../Settings/Settings_main_page/coreconnect_settings.html'; return; }
   showNavToast(label + ' is coming soon', 'This feature is under construction.');
 }
@@ -1842,11 +1850,11 @@ function hideNavToast(){
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ADD LEAD MODAL
    Ported from coreconnect_leads_v80. The dashboard has no leads table, so on
-   Save we just confirm via the existing nav-toast — no record is persisted.
-   ════════════════════════════════════════════════════════════════════════════ */
+   Save we just confirm via the existing nav-toast â€” no record is persisted.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function openAddModal(){
   document.getElementById('modal-backdrop').classList.add('open');
   document.getElementById('new-name').focus();
@@ -1869,11 +1877,11 @@ function saveNewLead(){
   showNavToast('Lead added', name + ' has been added.');
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SEND BUSINESS CARD MODAL
-   Opened from the "Business card" nav item. No real SMS is sent — Submit
+   Opened from the "Business card" nav item. No real SMS is sent â€” Submit
    validates the customer number, closes, and confirms via the nav-toast.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function openBcModal(){
   document.getElementById('bc-modal-backdrop').classList.add('open');
   toggleBcLocation();
@@ -1902,11 +1910,11 @@ function sendBusinessCard(){
   showNavToast('Business card sent', 'Sent to ' + num + '.');
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   PERIOD TOGGLE (Today / Week / Month — radio-style, exactly one active)
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PERIOD TOGGLE (Today / Week / Month â€” radio-style, exactly one active)
    On desktop/tablet: segmented control. On phone: dropdown + full-screen sheet.
    Both surfaces share state via currentPeriod; selectPeriod() updates both.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function selectPeriod(val, fromMenu){
   if(val !== 'Today' && val !== 'Week' && val !== 'Month' && val !== 'All') return;
 
@@ -1995,9 +2003,9 @@ document.addEventListener('keydown', (ev) => {
   if(menu && menu.classList.contains('open')) closePeriodMenu();
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CALENDAR PICKER (single-date, past dates only)
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const CAL_MONTHS = ['January','February','March','April','May','June',
                     'July','August','September','October','November','December'];
 
@@ -2099,7 +2107,7 @@ function renderCalendar(){
   const grid = document.getElementById('cal-grid');
   if(!grid) return;
   const firstOfMonth = new Date(calViewYear, calViewMonth, 1);
-  const firstWeekday = firstOfMonth.getDay();  // 0=Sun … 6=Sat
+  const firstWeekday = firstOfMonth.getDay();  // 0=Sun â€¦ 6=Sat
   const daysInMonth  = new Date(calViewYear, calViewMonth + 1, 0).getDate();
   const daysInPrev   = new Date(calViewYear, calViewMonth,     0).getDate();
 
@@ -2112,7 +2120,7 @@ function renderCalendar(){
   for(let d = 1; d <= daysInMonth; d++){
     cells.push({d: d, m: calViewMonth, other: false});
   }
-  // Next-month spillover — fill to a multiple of 7 (avoid jumping height between months)
+  // Next-month spillover â€” fill to a multiple of 7 (avoid jumping height between months)
   const targetLen = cells.length <= 35 ? 35 : 42;
   let nd = 1;
   while(cells.length < targetLen){
@@ -2157,18 +2165,18 @@ document.addEventListener('keydown', (ev) => {
   if(panel && panel.classList.contains('open')) closeCalendar();
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET FRAMEWORK
-   • widgetRegistry — single source of truth for what widgets exist
-   • getActiveWindow() — resolves period+calendar into a {start,end,label,mode}
-   • refreshWidgets() — re-renders the grid; called by period/calendar/menu changes
-   • Drag-and-drop via HTML5 native (handle gates draggable attribute, leads-page pattern)
-   ════════════════════════════════════════════════════════════════════════════ */
+   â€¢ widgetRegistry â€” single source of truth for what widgets exist
+   â€¢ getActiveWindow() â€” resolves period+calendar into a {start,end,label,mode}
+   â€¢ refreshWidgets() â€” re-renders the grid; called by period/calendar/menu changes
+   â€¢ Drag-and-drop via HTML5 native (handle gates draggable attribute, leads-page pattern)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// Registry — each widget registers itself by pushing into this array.
+// Registry â€” each widget registers itself by pushing into this array.
 // Default order is the array order; visibility toggles via the Widgets menu.
 const widgetRegistry = [
-  // Example shape (kept commented — actual entries added by individual widget files):
+  // Example shape (kept commented â€” actual entries added by individual widget files):
   // { id:'calls-summary', title:'Calls', visible:true, order:0, render:fnCallsCard }
 ];
 
@@ -2181,7 +2189,7 @@ function captureWidgetDefaults(){
   widgetDefaults = widgetRegistry.map(w => ({ id: w.id, visible: w.visible, order: w.order, section: w.section }));
 }
 
-/* ── Active window (Rule 1) ───────────────────────────────────────────────── */
+/* â”€â”€ Active window (Rule 1) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function startOfDay(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
 function endOfDay(d){   const x = new Date(d); x.setHours(23,59,59,999); return x; }
 
@@ -2206,7 +2214,7 @@ function getActiveWindow(){
   }
   if(currentPeriod === 'All'){
     // Data only spans the last ~35 days; anchor "All" to the earliest record so buckets stay daily
-    // and bounded (epoch→now produced ~20k empty buckets and an unreadable chart).
+    // and bounded (epochâ†’now produced ~20k empty buckets and an unreadable chart).
     const recs = [].concat(callRecords, smsRecords, emailRecords);
     let earliest = today.getTime();
     for(const r of recs){ const t = r.at.getTime(); if(t < earliest) earliest = t; }
@@ -2217,7 +2225,7 @@ function getActiveWindow(){
   return { start: start, end: endOfDay(today), label: 'This Month', mode: 'period' };
 }
 
-/* ── Grid rendering ──────────────────────────────────────────────────────── */
+/* â”€â”€ Grid rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function refreshWidgets(){
   renderZone('kpi',   'widget-grid-kpi',   'No KPI widgets to show');
   renderZone('chart', 'widget-grid-chart', 'No chart widgets to show');
@@ -2304,7 +2312,7 @@ function buildWidgetShell(w){
     </div>`;
 }
 
-/* ── Per-widget kebab menu ───────────────────────────────────────────────── */
+/* â”€â”€ Per-widget kebab menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function toggleWidgetMenu(e, id){
   if(e) e.stopPropagation();
   // Close any other open widget menu first
@@ -2322,7 +2330,7 @@ document.addEventListener('click', (ev) => {
   });
 });
 
-/* ── Hide / show ─────────────────────────────────────────────────────────── */
+/* â”€â”€ Hide / show â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function hideWidget(id){
   const w = getWidget(id);
   if(!w) return;
@@ -2352,7 +2360,7 @@ function toggleWidgetVisibility(id, ev){
   else          showWidget(id);
 }
 
-/* ── Reset to defaults ───────────────────────────────────────────────────── */
+/* â”€â”€ Reset to defaults â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function resetWidgets(){
   if(!widgetDefaults) return;
   widgetDefaults.forEach(d => {
@@ -2362,7 +2370,7 @@ function resetWidgets(){
   refreshWidgets();
 }
 
-/* ── Widgets menu (toolbar dropdown) ─────────────────────────────────────── */
+/* â”€â”€ Widgets menu (toolbar dropdown) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function toggleWidgetsMenu(e){
   if(e) e.stopPropagation();
   const menu = document.getElementById('widgets-menu');
@@ -2375,7 +2383,7 @@ function openWidgetsMenu(){
   const btn  = document.getElementById('widgets-btn');
   const outer= document.getElementById('wm-outer');
   if(!menu || !btn || !outer) return;
-  // On phone (≤640px) the menu is a full-screen sheet, so detach it to body
+  // On phone (â‰¤640px) the menu is a full-screen sheet, so detach it to body
   // to escape the toolbar's z-index:55 stacking context (otherwise the sheet
   // renders behind the top header and the close button is unreachable).
   // On desktop, keep it anchored to the button container.
@@ -2449,7 +2457,7 @@ window.addEventListener('resize', () => {
   if(menu && menu.classList.contains('open')) closeWidgetsMenu();
 });
 
-/* ── Drag & drop (HTML5 native; handle-gated like leads page) ────────────── */
+/* â”€â”€ Drag & drop (HTML5 native; handle-gated like leads page) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let wDraggedId = null;
 
 // Two cards are in the same draggable scope only if they share a section.
@@ -2489,7 +2497,7 @@ function onCardDragStart(e){
   }
   // Defer the .dragging class by one tick so the browser's drag-image
   // snapshot (taken synchronously at dragstart) stays full-opacity/crisp.
-  // Only the original in-place card fades — not the floating ghost.
+  // Only the original in-place card fades â€” not the floating ghost.
   const card = this;
   setTimeout(() => card.classList.add('dragging'), 0);
 }
@@ -2502,7 +2510,7 @@ function onCardDragEnd(){
 }
 function onCardDragOver(e){
   // Only permit the drop when the target is in the SAME section as the dragged
-  // widget. Cross-section drops are rejected (no preventDefault → no drop).
+  // widget. Cross-section drops are rejected (no preventDefault â†’ no drop).
   if(!wDraggedId || this.dataset.wid === wDraggedId) return;
   if(!sameSection(wDraggedId, this.dataset.wid)) return;  // reject cross-zone
   e.preventDefault();
@@ -2514,7 +2522,7 @@ function onCardDragEnter(e){
   this.classList.add('drop-target');
 }
 function onCardDragLeave(e){
-  // dragleave fires when moving over child elements too — only clear the
+  // dragleave fires when moving over child elements too â€” only clear the
   // highlight when the pointer genuinely leaves this card (relatedTarget
   // is outside it). Prevents flicker as you move across the card's contents.
   if(!this.contains(e.relatedTarget)){
@@ -2534,12 +2542,12 @@ function onCardDrop(e){
   reorderWidgets(wDraggedId, targetId);
 }
 
-/* ── Touch-drag (custom path; HTML5 native drag doesn't fire on touch) ──────
+/* â”€â”€ Touch-drag (custom path; HTML5 native drag doesn't fire on touch) â”€â”€â”€â”€â”€â”€
    Long-press the drag handle for ~250ms to "lift" the card; while held, a
    ghost clone follows the finger, the original stays in place at .35 opacity,
    and the card under the finger is highlighted as a drop target. Release to
    drop (with FLIP glide) or, if invalid, snap back.
-   ──────────────────────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const TOUCH_DRAG_HOLD_MS = 250;
 const TOUCH_DRAG_MOVE_THRESHOLD = 8;     // px finger can drift during the hold
 const TOUCH_AUTOSCROLL_EDGE = 60;        // px from viewport edge that triggers autoscroll
@@ -2752,11 +2760,11 @@ function reorderWidgets(draggedId, targetId){
   });
 }
 
-/* ── FLIP animation ──────────────────────────────────────────────────────────
+/* â”€â”€ FLIP animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    First: record each card's screen rect. Last: run the mutation (rebuilds the
    grid). Invert: instantly translate each card back to its old spot. Play:
    transition the translate away so cards glide to their new positions.
-   Respects prefers-reduced-motion. ─────────────────────────────────────────── */
+   Respects prefers-reduced-motion. â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function flipReorder(mutate){
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce){
@@ -2767,28 +2775,28 @@ function flipReorder(mutate){
     return;
   }
 
-  // FIRST — measure old positions of every card across both zones, keyed by id
+  // FIRST â€” measure old positions of every card across both zones, keyed by id
   const firstRects = {};
   document.querySelectorAll('.widget-grid .widget').forEach(card => {
     firstRects[card.dataset.wid] = card.getBoundingClientRect();
   });
 
-  // Capture scroll BEFORE the DOM rebuild — innerHTML replacement can destroy
+  // Capture scroll BEFORE the DOM rebuild â€” innerHTML replacement can destroy
   // the focused element / element-under-cursor and cause the browser to
   // auto-scroll to find a new anchor, which jumps the viewport.
   const savedX = window.scrollX, savedY = window.scrollY;
 
-  // LAST — apply the reorder (this rebuilds the grid DOM)
+  // LAST â€” apply the reorder (this rebuilds the grid DOM)
   mutate();
 
   // Restore scroll synchronously right after the rebuild, before paint.
   window.scrollTo(savedX, savedY);
 
-  // INVERT + PLAY — for each card that existed before, offset it back then release
+  // INVERT + PLAY â€” for each card that existed before, offset it back then release
   document.querySelectorAll('.widget-grid .widget').forEach(card => {
     const id = card.dataset.wid;
     const first = firstRects[id];
-    if(!first) return;                 // newly added card — no glide
+    if(!first) return;                 // newly added card â€” no glide
     const last = card.getBoundingClientRect();
     const dx = first.left - last.left;
     const dy = first.top  - last.top;
@@ -2816,9 +2824,9 @@ function flipReorder(mutate){
   });
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NOTIFICATIONS PANEL
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function toggleNotifications(e){
   if(e) e.stopPropagation();
   const panel = document.getElementById('notif-panel');
@@ -2865,7 +2873,7 @@ function setNotifTab(tab){
   });
 }
 function markAllNotificationsRead(){
-  // No notifications wired yet — placeholder
+  // No notifications wired yet â€” placeholder
   document.getElementById('header-bell-dot').classList.remove('show');
 }
 
@@ -2887,9 +2895,9 @@ document.addEventListener('keydown',(e)=>{
   if(panel && panel.classList.contains('open')) closeNotifications();
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DIALER
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function toggleDialer(){
   dialerOpen = !dialerOpen;
   document.getElementById('dialer-panel').classList.toggle('open', dialerOpen);
@@ -2920,7 +2928,7 @@ function updateDialerDisplay(){
     const d = dialerNumber.replace(/\D/g,'');
     let fmt = dialerNumber;
     if(d.length === dialerNumber.length){
-      // Pure digits — format as phone number
+      // Pure digits â€” format as phone number
       if(d.length > 6)      fmt = '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6,10);
       else if(d.length > 3) fmt = '(' + d.slice(0,3) + ') ' + d.slice(3);
       else                  fmt = d;
@@ -2928,7 +2936,7 @@ function updateDialerDisplay(){
     el.textContent = fmt;
     el.style.fontSize = dialerNumber.length > 12 ? '18px' : '24px';
   } else {
-    el.innerHTML = '<span class="dialer-number-placeholder">Enter number…</span>';
+    el.innerHTML = '<span class="dialer-number-placeholder">Enter numberâ€¦</span>';
   }
 }
 
@@ -2950,7 +2958,7 @@ function dialerInputChanged(v){
 
 function sortDialerContacts(){
   dialerSortAsc = !dialerSortAsc;
-  document.getElementById('dialer-sort-label').textContent = dialerSortAsc ? 'Sort' : 'Sort ↓';
+  document.getElementById('dialer-sort-label').textContent = dialerSortAsc ? 'Sort' : 'Sort â†“';
   renderDialerContacts();
 }
 
@@ -3007,7 +3015,7 @@ function initiateCall(){
   document.getElementById('calling-name').textContent = name;
   document.getElementById('calling-av').textContent = av;
   document.getElementById('calling-av').style.background = bg;
-  document.getElementById('calling-status').textContent = 'Calling…';
+  document.getElementById('calling-status').textContent = 'Callingâ€¦';
   document.getElementById('calling-timer').style.display = 'none';
   // Hide main, show overlay
   document.getElementById('dialer-main').style.display = 'none';
@@ -3050,19 +3058,19 @@ function toggleKeypad(){
     collapsed ? 'rotate(0deg)' : 'rotate(180deg)';
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Call Activity
    Counts Missed / Answered / Returned calls within the active window.
-   • Missed   = inbound call not answered
-   • Answered = inbound call picked up
-   • Returned = outbound follow-up to a number that previously missed-called us
+   â€¢ Missed   = inbound call not answered
+   â€¢ Answered = inbound call picked up
+   â€¢ Returned = outbound follow-up to a number that previously missed-called us
    Data is seeded in-file for now; swap callRecords[] for real data later.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// ── Seed call records ──────────────────────────────────────────────────────
+// â”€â”€ Seed call records â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Deterministic pseudo-random so numbers are stable across reloads within a session.
 const callRecords = (function seedCalls(){
-  // Roster of lead names — drawn from the leads-page kanban data.
+  // Roster of lead names â€” drawn from the leads-page kanban data.
   // Embedding here keeps the call seed independent of leadRecords order.
   const LEAD_ROSTER = [
     'Ac Thakur','Kristina Stuf','Taylor Dang','Gage Quarles','Jason Stark',
@@ -3079,14 +3087,14 @@ const callRecords = (function seedCalls(){
   let seed2 = 19470115;
   function rnd2(){ seed2 = (seed2 * 1103515245 + 12345) & 0x7fffffff; return seed2 / 0x7fffffff; }
   function pickLead(){ return LEAD_ROSTER[Math.floor(rnd2() * LEAD_ROSTER.length)]; }
-  // Sales-realistic duration in seconds. Missed = 0. Most connected calls 30s–4min,
+  // Sales-realistic duration in seconds. Missed = 0. Most connected calls 30sâ€“4min,
   // with a long tail to ~12min.
   function duration(connected){
     if(!connected) return 0;
     const r = rnd2();
-    if(r < 0.45) return 30 + Math.floor(rnd2() * 90);   // 30s–2m (45%)
-    if(r < 0.80) return 120 + Math.floor(rnd2() * 180); // 2m–5m  (35%)
-    return 300 + Math.floor(rnd2() * 420);              // 5m–12m (20%)
+    if(r < 0.45) return 30 + Math.floor(rnd2() * 90);   // 30sâ€“2m (45%)
+    if(r < 0.80) return 120 + Math.floor(rnd2() * 180); // 2mâ€“5m  (35%)
+    return 300 + Math.floor(rnd2() * 420);              // 5mâ€“12m (20%)
   }
   const today = new Date(); today.setHours(0,0,0,0);
   // Walk back 35 days; give each day a believable spread of calls.
@@ -3096,7 +3104,7 @@ const callRecords = (function seedCalls(){
     // Fewer calls on weekends, more midweek
     const dow = day.getDay();
     const weekendDamp = (dow === 0 || dow === 6) ? 0.4 : 1;
-    const baseCalls = Math.round((6 + rnd() * 12) * weekendDamp);  // ~3–18/day
+    const baseCalls = Math.round((6 + rnd() * 12) * weekendDamp);  // ~3â€“18/day
     for(let i = 0; i < baseCalls; i++){
       const r = rnd();
       let type, dir, connected;
@@ -3111,7 +3119,7 @@ const callRecords = (function seedCalls(){
     // Add extra outbound calls not tied to a missed inbound (cold calls,
     // follow-ups initiated by us). Sales-realistic: ~30-50% more outbound
     // than what's captured by "returned" alone.
-    const extraOut = Math.round((3 + rnd() * 6) * weekendDamp);  // ~1–9/day
+    const extraOut = Math.round((3 + rnd() * 6) * weekendDamp);  // ~1â€“9/day
     for(let i = 0; i < extraOut; i++){
       const at = new Date(day);
       at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
@@ -3123,7 +3131,7 @@ const callRecords = (function seedCalls(){
   return out;
 })();
 
-// ── Count helper ───────────────────────────────────────────────────────────
+// â”€â”€ Count helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function countCalls(win){
   let missed = 0, answered = 0, returned = 0;
   for(const rec of callRecords){
@@ -3137,7 +3145,7 @@ function countCalls(win){
   return { missed, answered, returned };
 }
 
-// ── SVG icons ──────────────────────────────────────────────────────────────
+// â”€â”€ SVG icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CA_ICON_MISSED = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/></svg>';
 const CA_ICON_ANSWERED = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
 const CA_ICON_RETURNED = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>';
@@ -3145,7 +3153,7 @@ const CA_ICON_RETURNED = '<svg width="19" height="19" viewBox="0 0 24 24" fill="
 const CA_ICON_IN  = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><polyline points="15 9 19 5 19 9"/><line x1="19" y1="5" x2="14" y2="10"/></svg>';
 const CA_ICON_OUT = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><polyline points="19 9 19 5 15 5"/><line x1="14" y1="10" x2="19" y2="5"/></svg>';
 
-// ── Shared KPI renderer ──────────────────────────────────────────────────────
+// â”€â”€ Shared KPI renderer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // kind: 'missed' | 'answered' | 'returned' | 'inbound' | 'outbound'
 // Synced to the CRM leads page (shared/leads-comms.js): derived from each lead's "out/in" calls field,
 // period-aware. Falls back to the local callRecords seed if the shared file failed to load.
@@ -3180,7 +3188,7 @@ function dashTotals(period){
   });
   return r;
 }
-// Per-channel ratio of scoped vs all (1 when 'all') — used to scale the synthetic chart series.
+// Per-channel ratio of scoped vs all (1 when 'all') â€” used to scale the synthetic chart series.
 function dashScopeRatio(period){
   if(!dashScopeActive() || !window.CCLeads) return {calls:1,sms:1,email:1,leads:1};
   var C=window.CCLeads, all={calls:0,sms:0,email:0,leads:0}, sc={calls:0,sms:0,email:0,leads:0};
@@ -3195,7 +3203,7 @@ function dashScopeRatio(period){
   return {calls:rr(all.calls,sc.calls), sms:rr(all.sms,sc.sms), email:rr(all.email,sc.email), leads:rr(all.leads,sc.leads)};
 }
 
-/* Filter popup — two-pane (Users / Departments), single-select, live apply */
+/* Filter popup â€” two-pane (Users / Departments), single-select, live apply */
 var dashFilterCatKey = 'users';   // active left category
 function dashFilterToggle(e){ if(e) e.stopPropagation(); var m=document.getElementById('df-menu'); if(!m) return; if(m.classList.contains('open')) dashFilterClose(); else dashFilterOpen(); }
 function dashFilterOpen(){
@@ -3328,7 +3336,7 @@ function openLeadsForCall(kind){
   window.location.href = '../coreconnect_leads_v83/coreconnect_leads_v83.html?call=' + tok + '&period=' + canon;
 }
 
-// ── Register the call widgets (Missed/Answered/Returned + the Inbound/Outbound roll-ups) ─────────────
+// â”€â”€ Register the call widgets (Missed/Answered/Returned + the Inbound/Outbound roll-ups) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'calls-missed', title: 'Missed Calls', visible: true, order: 0, section: 'kpi',
   render: (body, win) => renderCallKpi(body, win, 'missed', CA_ICON_MISSED, 'Inbound, not answered')
@@ -3350,16 +3358,16 @@ widgetRegistry.push({
   render: (body, win) => renderCallKpi(body, win, 'outbound', CA_ICON_OUT, 'Calls made')
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: SMS (Inbound / Outbound)
    Counts text messages within the active window.
-   • Inbound  = messages received  (teal)
-   • Outbound = messages sent      (purple)
+   â€¢ Inbound  = messages received  (teal)
+   â€¢ Outbound = messages sent      (purple)
    Sales-realistic balance: ~60% outbound / 40% inbound.
    Swap smsRecords[] for real data later.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// ── Seed SMS records ───────────────────────────────────────────────────────
+// â”€â”€ Seed SMS records â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const smsRecords = (function seedSms(){
   const out = [];
   let seed = 19840712;
@@ -3370,7 +3378,7 @@ const smsRecords = (function seedSms(){
     day.setDate(day.getDate() - dayOffset);
     const dow = day.getDay();
     const weekendDamp = (dow === 0 || dow === 6) ? 0.5 : 1;
-    const baseMsgs = Math.round((10 + rnd() * 16) * weekendDamp);  // ~5–26/day
+    const baseMsgs = Math.round((10 + rnd() * 16) * weekendDamp);  // ~5â€“26/day
     for(let i = 0; i < baseMsgs; i++){
       // ~60% outbound, ~40% inbound
       const dir = rnd() < 0.60 ? 'out' : 'in';
@@ -3382,7 +3390,7 @@ const smsRecords = (function seedSms(){
   return out;
 })();
 
-// ── Count helper ───────────────────────────────────────────────────────────
+// â”€â”€ Count helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function countSms(win){
   let inbound = 0, outbound = 0;
   for(const rec of smsRecords){
@@ -3395,11 +3403,11 @@ function countSms(win){
   return { inbound, outbound };
 }
 
-// ── SVG icons ──────────────────────────────────────────────────────────────
+// â”€â”€ SVG icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SMS_ICON_IN = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><polyline points="12 8 9 11 12 14"/><line x1="15" y1="11" x2="9" y2="11"/></svg>';
 const SMS_ICON_OUT = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><polyline points="12 8 15 11 12 14"/><line x1="9" y1="11" x2="15" y2="11"/></svg>';
 
-// ── Shared SMS renderer ──────────────────────────────────────────────────────
+// â”€â”€ Shared SMS renderer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // kind: 'inbound' | 'outbound'
 function renderSmsKpi(body, win, kind, icon, sub){
   // SMS totals are synced to the CRM leads page (shared/leads-comms.js): the sum of each in-scope
@@ -3431,14 +3439,14 @@ function renderSmsKpi(body, win, kind, icon, sub){
 }
 
 // Clicking an SMS KPI opens the leads page filtered to the leads with that SMS direction, for the
-// current period. dir = 'in' (received) | 'out' (sent) — these are genuinely different lead sets.
+// current period. dir = 'in' (received) | 'out' (sent) â€” these are genuinely different lead sets.
 function openLeadsForSms(dir){
   const canon = ({Today:'today',Week:'week',Month:'month',All:'all'})[currentPeriod] || 'all';
   if(window.CCLeads) window.CCLeads.setPeriod(canon);
   window.location.href = '../coreconnect_leads_v83/coreconnect_leads_v83.html?sms=' + dir + '&period=' + canon;
 }
 
-// ── Register two independent widgets ─────────────────────────────────────────
+// â”€â”€ Register two independent widgets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'sms-inbound', title: 'Inbound SMS', visible: true, order: 5, section: 'kpi',
   render: (body, win) => renderSmsKpi(body, win, 'inbound', SMS_ICON_IN, 'Messages received')
@@ -3448,15 +3456,15 @@ widgetRegistry.push({
   render: (body, win) => renderSmsKpi(body, win, 'outbound', SMS_ICON_OUT, 'Messages sent')
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Email (Inbound / Outbound)
    Counts emails within the active window.
-   • Inbound  = emails received (amber)
-   • Outbound = emails sent     (sky)
+   â€¢ Inbound  = emails received (amber)
+   â€¢ Outbound = emails sent     (sky)
    Roughly even balance. Swap emailRecords[] for real data later.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// ── Seed email records ─────────────────────────────────────────────────────
+// â”€â”€ Seed email records â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const emailRecords = (function seedEmail(){
   const out = [];
   let seed = 20011225;
@@ -3467,7 +3475,7 @@ const emailRecords = (function seedEmail(){
     day.setDate(day.getDate() - dayOffset);
     const dow = day.getDay();
     const weekendDamp = (dow === 0 || dow === 6) ? 0.35 : 1;  // email quieter on weekends
-    const baseMsgs = Math.round((7 + rnd() * 11) * weekendDamp);  // ~3–18/day
+    const baseMsgs = Math.round((7 + rnd() * 11) * weekendDamp);  // ~3â€“18/day
     for(let i = 0; i < baseMsgs; i++){
       // roughly even in/out
       const dir = rnd() < 0.50 ? 'in' : 'out';
@@ -3479,12 +3487,12 @@ const emailRecords = (function seedEmail(){
   return out;
 })();
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    USER ROSTER + linking activity records to users
    8 fake sales reps. Each call/SMS/email gets a userId assigned via a
    deterministic hash of (timestamp + index) so the main seed RNG isn't
    perturbed (existing KPI/chart numbers stay stable).
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const USER_ROSTER = [
   { id:'u1', name:'Dave Park',     initials:'DP' },
   { id:'u2', name:'Jenny Liu',     initials:'JL' },
@@ -3496,7 +3504,7 @@ const USER_ROSTER = [
   { id:'u8', name:'Priya Shah',    initials:'PS' }
 ];
 
-// Non-uniform activity weights — top performers handle more (Pareto-ish).
+// Non-uniform activity weights â€” top performers handle more (Pareto-ish).
 const USER_ACTIVITY_WEIGHTS = [0.22, 0.18, 0.15, 0.13, 0.11, 0.09, 0.07, 0.05];
 
 const _userCumWeights = (() => {
@@ -3515,12 +3523,12 @@ function pickUserForRecord(timestampMs, idx){
   return USER_ROSTER[USER_ROSTER.length - 1].id;
 }
 
-// Apply userId additively — existing fields untouched, other widgets unaffected.
+// Apply userId additively â€” existing fields untouched, other widgets unaffected.
 callRecords.forEach((r, i)  => { r.userId = pickUserForRecord(r.at.getTime(), i); });
 smsRecords.forEach((r, i)   => { r.userId = pickUserForRecord(r.at.getTime(), i); });
 emailRecords.forEach((r, i) => { r.userId = pickUserForRecord(r.at.getTime(), i); });
 
-// ── Count helper ───────────────────────────────────────────────────────────
+// â”€â”€ Count helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function countEmail(win){
   let inbound = 0, outbound = 0;
   for(const rec of emailRecords){
@@ -3533,15 +3541,15 @@ function countEmail(win){
   return { inbound, outbound };
 }
 
-// ── SVG icons (envelope + arrow) ────────────────────────────────────────────
+// â”€â”€ SVG icons (envelope + arrow) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const EMAIL_ICON_IN = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="15" rx="2"/><path d="M2.5 6.5l9.5 7 9.5-7"/><polyline points="9 11 12 14 15 11"/></svg>';
 const EMAIL_ICON_OUT = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="15" rx="2"/><path d="M2.5 6.5l9.5 7 9.5-7"/><polyline points="9 14 12 11 15 14"/></svg>';
 
-// ── Shared email renderer ────────────────────────────────────────────────────
+// â”€â”€ Shared email renderer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // kind: 'email-in' | 'email-out'
 function renderEmailKpi(body, win, kind, icon, sub){
   // Email totals are synced to the CRM leads page (shared/leads-comms.js): the sum of each
-  // in-scope lead's inbound/outbound email counts. Period-aware — the CRM leads are filtered by
+  // in-scope lead's inbound/outbound email counts. Period-aware â€” the CRM leads are filtered by
   // the active Today/Week/Month/All window (createdAt), so this responds to the period selector
   // just like the other cards. Falls back to the local emailRecords seed if the shared file
   // failed to load.
@@ -3578,7 +3586,7 @@ function openLeadsForEmail(dir){
   window.location.href = '../coreconnect_leads_v83/coreconnect_leads_v83.html?email=' + dir + '&period=' + canon;
 }
 
-// ── Register two independent widgets ─────────────────────────────────────────
+// â”€â”€ Register two independent widgets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'email-inbound', title: 'Inbound Email', visible: true, order: 7, section: 'kpi',
   render: (body, win) => renderEmailKpi(body, win, 'email-in', EMAIL_ICON_IN, 'Emails received')
@@ -3588,14 +3596,14 @@ widgetRegistry.push({
   render: (body, win) => renderEmailKpi(body, win, 'email-out', EMAIL_ICON_OUT, 'Emails sent')
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Activity Over Time (3-line area chart)
    Plots total Calls / SMS / Email volume across the active window.
-   • Today / single date → hourly buckets (8am–7pm)
-   • Week                → 7 daily buckets
-   • Month               → 30 daily buckets (x-labels thinned)
+   â€¢ Today / single date â†’ hourly buckets (8amâ€“7pm)
+   â€¢ Week                â†’ 7 daily buckets
+   â€¢ Month               â†’ 30 daily buckets (x-labels thinned)
    SVG-drawn; hover tracer + tooltip; per-channel legend toggles.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 // Per-chart-instance hidden-series state (persists across re-renders in a session)
 const chartHidden = { calls: false, sms: false, email: false };
@@ -3607,7 +3615,7 @@ function buildBuckets(win){
   const buckets = [];
 
   if(spanMs <= oneDayMs * 1.5){
-    // Hourly — business-ish hours 8..19 (12 buckets), based on the window's day
+    // Hourly â€” business-ish hours 8..19 (12 buckets), based on the window's day
     const base = new Date(win.start); base.setHours(0,0,0,0);
     for(let h = 8; h <= 19; h++){
       const s = new Date(base); s.setHours(h, 0, 0, 0);
@@ -3655,7 +3663,7 @@ function chartScrollW(measuredW, granularity, n, padL, padR){
   return Math.max(measuredW, natural);
 }
 
-// Catmull-Rom → cubic Bézier smoothing for a set of [x,y] points
+// Catmull-Rom â†’ cubic BÃ©zier smoothing for a set of [x,y] points
 function smoothPath(pts){
   if(pts.length === 0) return '';
   if(pts.length === 1) return `M ${pts[0][0]} ${pts[0][1]}`;
@@ -3744,9 +3752,9 @@ function renderActivityChart(body, win){
     grid += `<text class="chart-axis-label" x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${val}</text>`;
   }
 
-  // X labels — thin them based on measured plot width and approximate label width.
+  // X labels â€” thin them based on measured plot width and approximate label width.
   // Longer labels ("24 May", "12 PM") need more room than the old short format.
-  // Reserve ~52px per label (9px font × ~6 chars + breathing room).
+  // Reserve ~52px per label (9px font Ã— ~6 chars + breathing room).
   // Hourly labels ('8 AM') are narrower than daily ('24 May'); allow more per row.
   const approxLabelW = (granularity === 'hour') ? 36 : 52;
   const maxLabels = Math.max(2, Math.floor(plotW / approxLabelW));
@@ -3777,7 +3785,7 @@ function renderActivityChart(body, win){
     </g>`;
   });
 
-  // Hover dots (one per channel) + tracer — created hidden, moved via JS
+  // Hover dots (one per channel) + tracer â€” created hidden, moved via JS
   const dots = ['calls','sms','email'].map(k =>
     `<circle class="chart-dot ${k}" data-dot="${k}" r="3.5" cx="0" cy="0"/>`
   ).join('');
@@ -3831,7 +3839,7 @@ function toggleChartSeries(key, el){
 }
 
 // Show a chart tooltip at the computed (clamped) left position. When the tip
-// is transitioning from hidden→visible, suppress the slide for one frame so
+// is transitioning from hiddenâ†’visible, suppress the slide for one frame so
 // it doesn't race across the chart from its last resting spot. On subsequent
 // calls (while the cursor is still inside the chart), the slide animation
 // runs normally on desktop. Touch + reduced-motion already opt out via CSS.
@@ -3865,7 +3873,7 @@ function wireChartHover(body, geo){
 
   function nearestIndex(clientX){
     const rect = svg.getBoundingClientRect();
-    // Map client x → viewBox x. Since viewBox W is measured to match the
+    // Map client x â†’ viewBox x. Since viewBox W is measured to match the
     // rendered width, this is effectively 1:1 (within rounding).
     const vbX = (clientX - rect.left) / rect.width * geo.W;
     // Find nearest bucket index
@@ -3901,7 +3909,7 @@ function wireChartHover(body, geo){
       rows += `<div class="chart-tip-row"><span class="chart-tip-left"><span class="chart-tip-dot ${k}"></span>${labelName}</span><span class="chart-tip-val">${val}</span></div>`;
     });
 
-    // Position tooltip — center on the data point, then clamp inside the wrap
+    // Position tooltip â€” center on the data point, then clamp inside the wrap
     // so it never extends past either edge of the card.
     const rect = svg.getBoundingClientRect();
     const wrapRect = wrap.getBoundingClientRect();
@@ -3932,7 +3940,7 @@ function wireChartHover(body, geo){
   hit.addEventListener('touchend', onLeave);
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'activity-chart', title: 'Activity Over Time', visible: true, order: 0, section: 'chart',
   wide: true, render: renderActivityChart
@@ -3950,17 +3958,17 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Leads Bar Chart (stacked by status)
    Counts leads per time bucket within the active window, stacked into 8 statuses.
    Bars match the kanban statuses on the leads page (subset of 8 most meaningful).
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// Status taxonomy — order = stack order from bottom up
+// Status taxonomy â€” order = stack order from bottom up
 const LEAD_STATUSES = [
   { key:'active',     label:'Active',         segClass:'seg-active',     legClass:'leg-active',     dotClass:'active'    },
-  { key:'bdcShow',    label:'BDC — Show',     segClass:'seg-bdcShow',    legClass:'leg-bdcShow',    dotClass:'bdcShow'   },
-  { key:'bdcNoShow',  label:'BDC — No Show',  segClass:'seg-bdcNoShow',  legClass:'leg-bdcNoShow',  dotClass:'bdcNoShow' },
+  { key:'bdcShow',    label:'BDC â€” Show',     segClass:'seg-bdcShow',    legClass:'leg-bdcShow',    dotClass:'bdcShow'   },
+  { key:'bdcNoShow',  label:'BDC â€” No Show',  segClass:'seg-bdcNoShow',  legClass:'leg-bdcNoShow',  dotClass:'bdcNoShow' },
   { key:'followUp',   label:'Follow Up',      segClass:'seg-followUp',   legClass:'leg-followUp',   dotClass:'followUp'  },
   { key:'apptSet',    label:'Appt Set',       segClass:'seg-apptSet',    legClass:'leg-apptSet',    dotClass:'apptSet'   },
   { key:'deposit',    label:'Deposit',        segClass:'seg-deposit',    legClass:'leg-deposit',    dotClass:'deposit'   },
@@ -3972,16 +3980,16 @@ const LEAD_STATUSES = [
 const leadStatusHidden = {};
 LEAD_STATUSES.forEach(s => { leadStatusHidden[s.key] = false; });
 
-// ── Seed lead records (deterministic) ──────────────────────────────────────
+// â”€â”€ Seed lead records (deterministic) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const leadRecords = (function seedLeads(){
   const out = [];
   let seed = 20140907;
   function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-  // Independent rng for the new vehicle field on sold leads — keeps the main
+  // Independent rng for the new vehicle field on sold leads â€” keeps the main
   // rnd() sequence unchanged so the Leads chart's existing counts don't drift.
   let seed2 = 19840115;
   function rnd2(){ seed2 = (seed2 * 1103515245 + 12345) & 0x7fffffff; return seed2 / 0x7fffffff; }
-  // Vehicle roster — drawn from v78 leads + common-make expansion. Used only
+  // Vehicle roster â€” drawn from v78 leads + common-make expansion. Used only
   // for Sold leads; other statuses don't carry a vehicle on this chart.
   // Format: "Make Model" (dropping the year for cleaner chart aggregation).
   // Weights are roughly proportional to popularity in the v78 stock.
@@ -4013,7 +4021,7 @@ const leadRecords = (function seedLeads(){
     for(const v of VEHICLE_ROSTER){ acc += v.weight; if(r < acc) return v.name; }
     return VEHICLE_ROSTER[0].name;
   }
-  // Status weights — Active dominates; Sold/Deposit rare; Dead a small tail
+  // Status weights â€” Active dominates; Sold/Deposit rare; Dead a small tail
   const weights = [
     ['active',    0.30],
     ['followUp',  0.18],
@@ -4035,7 +4043,7 @@ const leadRecords = (function seedLeads(){
     day.setDate(day.getDate() - dayOffset);
     const dow = day.getDay();
     const weekendDamp = (dow === 0 || dow === 6) ? 0.5 : 1;
-    const baseLeads = Math.round((4 + rnd() * 8) * weekendDamp);  // ~2–12/day
+    const baseLeads = Math.round((4 + rnd() * 8) * weekendDamp);  // ~2â€“12/day
     for(let i = 0; i < baseLeads; i++){
       const at = new Date(day);
       at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
@@ -4048,7 +4056,7 @@ const leadRecords = (function seedLeads(){
   return out;
 })();
 
-// ── Count leads per bucket, broken down by status ──────────────────────────
+// â”€â”€ Count leads per bucket, broken down by status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function bucketLeadsByStatus(buckets){
   // Returns array of { active, bdcShow, ..., total } per bucket
   return buckets.map(b => {
@@ -4065,7 +4073,7 @@ function bucketLeadsByStatus(buckets){
   });
 }
 
-// ── Render the Leads bar chart ─────────────────────────────────────────────
+// â”€â”€ Render the Leads bar chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderLeadsChart(body, win){
   const { buckets, granularity } = buildBuckets(win);
   const data = bucketLeadsByStatus(buckets);
@@ -4086,7 +4094,7 @@ function renderLeadsChart(body, win){
     return;
   }
 
-  // Geometry — measured pixel-accurate viewBox (same trick as Activity chart).
+  // Geometry â€” measured pixel-accurate viewBox (same trick as Activity chart).
   // For daily granularity, widen for horizontal scroll so dates fit comfortably.
   const measuredW = Math.max(280, Math.round(body.getBoundingClientRect().width || 640));
   const padL = 30, padR = 12, padT = 10, padB = 24;
@@ -4106,13 +4114,13 @@ function renderLeadsChart(body, win){
   });
   const yMax = niceMax(peak);
 
-  // X positions — each bucket gets a slot; bar sits centered with ~20% gap
+  // X positions â€” each bucket gets a slot; bar sits centered with ~20% gap
   const slotW = plotW / n;
   const barW  = Math.max(2, slotW * 0.78);
   const xCenter = i => padL + slotW * (i + 0.5);
   const yAt = v => padT + plotH - (plotH * v / yMax);
 
-  // Y gridlines (adaptive clean-integer steps — same as Activity chart)
+  // Y gridlines (adaptive clean-integer steps â€” same as Activity chart)
   let ySteps = 4;
   if(yMax <= 5)               ySteps = yMax;
   else if(yMax % 4 === 0)     ySteps = 4;
@@ -4126,7 +4134,7 @@ function renderLeadsChart(body, win){
     grid += `<text class="chart-axis-label" x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${val}</text>`;
   }
 
-  // X labels (adaptive thinning — same as Activity chart)
+  // X labels (adaptive thinning â€” same as Activity chart)
   // Hourly labels ('8 AM') are narrower than daily ('24 May'); allow more per row.
   const approxLabelW = (granularity === 'hour') ? 36 : 52;
   const maxLabels = Math.max(2, Math.floor(plotW / approxLabelW));
@@ -4137,7 +4145,7 @@ function renderLeadsChart(body, win){
     xlabels += `<text class="chart-axis-label" x="${xCenter(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${b.label}</text>`;
   });
 
-  // Build stacked bar segments — bottom-to-top through visible statuses
+  // Build stacked bar segments â€” bottom-to-top through visible statuses
   let bars = '';
   for(let i = 0; i < n; i++){
     const row = data[i];
@@ -4275,7 +4283,7 @@ function wireLeadHover(body, geo){
   hit.addEventListener('touchend', onLeave);
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'leads-chart', title: 'Leads', visible: true, order: 1, section: 'chart',
   wide: true, render: renderLeadsChart
@@ -4292,10 +4300,10 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
-   WIDGET: Call Volume (Inbound vs Outbound — grouped bars)
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   WIDGET: Call Volume (Inbound vs Outbound â€” grouped bars)
    Two bars per time bucket, side by side. Reads dir from callRecords.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 // Per-direction visibility (legend toggles)
 const cvHidden = { in: false, out: false };
@@ -4331,7 +4339,7 @@ function renderCallVolume(body, win){
     return;
   }
 
-  // Geometry — widen for horizontal scroll when daily granularity
+  // Geometry â€” widen for horizontal scroll when daily granularity
   const measuredW = Math.max(280, Math.round(body.getBoundingClientRect().width || 640));
   const padL = 30, padR = 12, padT = 10, padB = 24;
   const n = buckets.length;
@@ -4383,7 +4391,7 @@ function renderCallVolume(body, win){
     xlabels += `<text class="chart-axis-label" x="${xSlotCenter(i).toFixed(1)}" y="${H-8}" text-anchor="middle">${b.label}</text>`;
   });
 
-  // Grouped bars — for each bucket, render an inbound (left) and outbound (right) bar
+  // Grouped bars â€” for each bucket, render an inbound (left) and outbound (right) bar
   let bars = '';
   for(let i = 0; i < n; i++){
     const row = data[i];
@@ -4504,7 +4512,7 @@ function wireCvHover(body, geo){
   hit.addEventListener('touchend', onLeave);
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'call-volume', title: 'Call Volume', visible: true, order: 2, section: 'chart',
   wide: true, render: renderCallVolume
@@ -4521,11 +4529,11 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GENERIC: Direction-Volume chart (grouped bars: in vs out)
    Same shell as Call Volume; parameterized by records + theme class + ids.
    Used by SMS Volume and Email Volume.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function bucketDirByRecords(buckets, records){
   return buckets.map(b => {
     const bs = b.start.getTime(), be = b.end.getTime();
@@ -4557,7 +4565,7 @@ function renderDirVolume(body, win, opts){
     return;
   }
 
-  // Geometry — widen for horizontal scroll when daily
+  // Geometry â€” widen for horizontal scroll when daily
   const measuredW = Math.max(280, Math.round(body.getBoundingClientRect().width || 640));
   const padL = 30, padR = 12, padT = 10, padB = 24;
   const n = buckets.length;
@@ -4726,7 +4734,7 @@ function wireDirVolumeHover(body, geo){
   hit.addEventListener('touchend', onLeave);
 }
 
-// ── SMS Volume ────────────────────────────────────────────────────────────
+// â”€â”€ SMS Volume â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const smsVolHidden = { in: false, out: false };
 function toggleSmsVolDir(key){
   smsVolHidden[key] = !smsVolHidden[key];
@@ -4757,7 +4765,7 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-// ── Email Volume ───────────────────────────────────────────────────────────
+// â”€â”€ Email Volume â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const emailVolHidden = { in: false, out: false };
 function toggleEmailVolDir(key){
   emailVolHidden[key] = !emailVolHidden[key];
@@ -4788,13 +4796,13 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
-   WIDGET: Talk Time (vertical bars per lead — all leads with talk time,
-   horizontally scrollable if many; labels rotated 45° under each bar)
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   WIDGET: Talk Time (vertical bars per lead â€” all leads with talk time,
+   horizontally scrollable if many; labels rotated 45Â° under each bar)
    Reuses callRecords with leadName + durationSec (connected calls only).
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// Format seconds → "M:SS" (e.g. 65 → "1:05") or "X min" for tooltips
+// Format seconds â†’ "M:SS" (e.g. 65 â†’ "1:05") or "X min" for tooltips
 function fmtMSS(sec){
   const m = Math.floor(sec / 60);
   const s = sec % 60;
@@ -4830,7 +4838,7 @@ function renderTalkTime(body, win){
     return;
   }
 
-  // Geometry — chart needs enough horizontal room for all bars; scrolls if wider
+  // Geometry â€” chart needs enough horizontal room for all bars; scrolls if wider
   // than the card. Each bar gets a min slot (~46px) so rotated names stay legible.
   const minSlotW = 46;
   const cardW = Math.max(280, Math.round(body.getBoundingClientRect().width || 640));
@@ -4877,9 +4885,9 @@ function renderTalkTime(body, win){
     const x  = cx - barW / 2;
     const yTop = yAt(row.sec);
     bars += `<rect class="tt-bar" data-idx="${i}" x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="3" ry="3"/>`;
-    // Truncate very long names so labels don't overflow at 9.5px / 45°
-    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + '…' : row.name;
-    // Rotate -45° (counter-clockwise) around the label's anchor point
+    // Truncate very long names so labels don't overflow at 9.5px / 45Â°
+    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + 'â€¦' : row.name;
+    // Rotate -45Â° (counter-clockwise) around the label's anchor point
     const labelY = padT + plotH + 12;
     labels += `<text class="tt-name" x="${cx.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" transform="rotate(-45 ${cx.toFixed(1)} ${labelY.toFixed(1)})">${safeName}</text>`;
   });
@@ -4905,7 +4913,7 @@ function renderTalkTime(body, win){
     </div>
     <div class="ca-window"><span class="ca-window-dot"></span><span>${win.label}</span></div>`;
 
-  // Hover — handle on each bar rect directly (no hit-rect needed; bars are spaced)
+  // Hover â€” handle on each bar rect directly (no hit-rect needed; bars are spaced)
   wireTalkTimeHover(body, { rows, W, H, xAt, yAt });
 }
 
@@ -4929,7 +4937,7 @@ function wireTalkTimeHover(body, geo){
         <div class="chart-tip-time">${row.name}</div>
         <div class="chart-tip-row"><span class="chart-tip-left">Talk time</span><span class="chart-tip-val">${fmtMSS(row.sec)}</span></div>`;
 
-      // Position above the bar — bar's screen rect, mapped to wrap-relative px
+      // Position above the bar â€” bar's screen rect, mapped to wrap-relative px
       const barRect = bar.getBoundingClientRect();
       const wrapRect = wrap.getBoundingClientRect();
       const pxX = (barRect.left + barRect.width / 2) - wrapRect.left;
@@ -4954,7 +4962,7 @@ function wireTalkTimeHover(body, geo){
   });
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'talk-time', title: 'Talk Time', visible: true, order: 3, section: 'chart',
   render: renderTalkTime
@@ -4971,17 +4979,17 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Idle Time (vertical bars per user)
-   Idle = (working hours in window) − (talk time + ~30s/SMS + ~30s/email).
+   Idle = (working hours in window) âˆ’ (talk time + ~30s/SMS + ~30s/email).
    All 8 reps shown, sorted desc, amber bars.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Idle time = the actual gaps between activity within working hours.
    Per user, per day in the window:
      1. Collect every activity span: calls = [at, at+durationSec],
         SMS = [at, at+IDLE_SMS_SECONDS_EACH], email = [at, at+IDLE_EMAIL_SECONDS_EACH]
-     2. Clip each span to the day's working window (8 AM – 7 PM)
+     2. Clip each span to the day's working window (8 AM â€“ 7 PM)
      3. Sort spans by start, merge overlaps
      4. activeSec = sum of merged span durations
      5. workSec  = 11 * 3600 (working seconds in the day)
@@ -4989,7 +4997,7 @@ window.addEventListener('resize', () => {
    Sum across all days in the window. */
 const IDLE_SMS_SECONDS_EACH   = 30;       // sending/reading an SMS counts as 30s of activity
 const IDLE_EMAIL_SECONDS_EACH = 60;       // emails take a little longer than SMS
-const IDLE_BUSINESS_HOURS_PER_DAY = 11;   // 8 AM – 7 PM matches seed data
+const IDLE_BUSINESS_HOURS_PER_DAY = 11;   // 8 AM â€“ 7 PM matches seed data
 const IDLE_WORK_START_HOUR = 8;
 const IDLE_WORK_END_HOUR   = 19;          // 7 PM (exclusive end)
 
@@ -5014,7 +5022,7 @@ function workingDaysInWindow(win){
   return out;
 }
 
-// Aggregate per user — returns sorted desc array of { id, name, idleSec, activeSec, workSec }
+// Aggregate per user â€” returns sorted desc array of { id, name, idleSec, activeSec, workSec }
 function bucketIdleTime(win){
   const days = workingDaysInWindow(win);
   // Total working seconds in window (sum of clipped working days)
@@ -5048,7 +5056,7 @@ function bucketIdleTime(win){
     addSpan(r.userId, r.at.getTime(), IDLE_EMAIL_SECONDS_EACH);
   }
 
-  // For each user, merge overlapping spans and sum them → activeSec
+  // For each user, merge overlapping spans and sum them â†’ activeSec
   const rows = USER_ROSTER.map(u => {
     const spans = userSpans[u.id];
     spans.sort((a, b) => a[0] - b[0]);
@@ -5057,7 +5065,7 @@ function bucketIdleTime(win){
     for(const [s, e] of spans){
       if(!cur){ cur = [s, e]; continue; }
       if(s <= cur[1]){
-        // Overlap — extend
+        // Overlap â€” extend
         if(e > cur[1]) cur[1] = e;
       } else {
         activeMs += cur[1] - cur[0];
@@ -5074,7 +5082,7 @@ function bucketIdleTime(win){
   return rows;
 }
 
-// Format seconds → "Xh Ym" or "Xm" for tooltips (idle times can be large)
+// Format seconds â†’ "Xh Ym" or "Xm" for tooltips (idle times can be large)
 function fmtIdleTime(sec){
   if(sec <= 0) return '0m';
   const h = Math.floor(sec / 3600);
@@ -5088,7 +5096,7 @@ function renderIdleTime(body, win){
   const rows = bucketIdleTime(win);
 
   // Even if all rows are 0 idle (very busy team), still render the chart frame
-  // — but keep the leaderboard intent. Only show empty state if literally no users.
+  // â€” but keep the leaderboard intent. Only show empty state if literally no users.
   if(rows.length === 0){
     body.innerHTML = `
       <div class="chart-empty">No users to display</div>
@@ -5096,7 +5104,7 @@ function renderIdleTime(body, win){
     return;
   }
 
-  // Geometry — same approach as Talk Time
+  // Geometry â€” same approach as Talk Time
   const minSlotW = 56;
   const cardW = Math.max(280, Math.round(body.getBoundingClientRect().width || 640));
   const padL = 48, padR = 16, padT = 10, padB = 70;
@@ -5140,7 +5148,7 @@ function renderIdleTime(body, win){
     const x  = cx - barW / 2;
     const yTop = yAt(row.idleSec);
     bars += `<rect class="idle-bar" data-idx="${i}" x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" rx="3" ry="3"/>`;
-    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + '…' : row.name;
+    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + 'â€¦' : row.name;
     const labelY = padT + plotH + 12;
     labels += `<text class="tt-name" x="${cx.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" transform="rotate(-45 ${cx.toFixed(1)} ${labelY.toFixed(1)})">${safeName}</text>`;
   });
@@ -5211,7 +5219,7 @@ function wireIdleHover(body, geo){
   });
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'idle-time', title: 'Idle Time', visible: true, order: 6, section: 'chart',
   wide: true, render: renderIdleTime
@@ -5228,10 +5236,10 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Sold Inventory (vertical bars per vehicle make/model)
    Counts Sold leads in the active window, grouped by vehicle name, sorted desc.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function bucketSoldInventory(win){
   const ws = win.start.getTime(), we = win.end.getTime();
   const counts = new Map();   // vehicle name -> count
@@ -5300,7 +5308,7 @@ function renderSoldInventory(body, win){
     const x  = cx - barW / 2;
     const yTop = yAt(row.units);
     bars += `<rect class="sold-bar" data-idx="${i}" x="${x.toFixed(1)}" y="${yTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="3" ry="3"/>`;
-    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + '…' : row.name;
+    const safeName = (row.name.length > 18) ? row.name.slice(0, 17) + 'â€¦' : row.name;
     const labelY = padT + plotH + 12;
     labels += `<text class="tt-name" x="${cx.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" transform="rotate(-45 ${cx.toFixed(1)} ${labelY.toFixed(1)})">${safeName}</text>`;
   });
@@ -5369,7 +5377,7 @@ function wireSoldInventoryHover(body, geo){
   });
 }
 
-// ── Register ───────────────────────────────────────────────────────────────
+// â”€â”€ Register â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 widgetRegistry.push({
   id: 'sold-inventory', title: 'Sold Inventory', visible: true, order: 7, section: 'chart',
   wide: true, render: renderSoldInventory
@@ -5385,13 +5393,13 @@ window.addEventListener('resize', () => {
   }, 120);
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Lead Conversion Funnel
    Snapshot funnel over leadRecords in the active window. Because statuses are a
    snapshot (not a tracked journey), each stage counts leads currently AT OR PAST
    that point in the pipeline. Stages:
-     Total Leads → Engaged → Appointment → Deposit → Sold
-   ════════════════════════════════════════════════════════════════════════════ */
+     Total Leads â†’ Engaged â†’ Appointment â†’ Deposit â†’ Sold
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function bucketFunnel(win){
   const ws = win.start.getTime(), we = win.end.getTime();
   // collect status counts in-window
@@ -5463,12 +5471,12 @@ widgetRegistry.push({
   wide: true, render: renderFunnel
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIDGET: Rep Leaderboard
    Ranks USER_ROSTER by total activity (calls + SMS + email) in the active
    window, using the userId already attached to every record. Talk time shown
    as a secondary column.
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function bucketLeaderboard(win){
   const ws = win.start.getTime(), we = win.end.getTime();
   const stats = {};
@@ -5546,9 +5554,9 @@ widgetRegistry.push({
   wide: true, render: renderLeaderboard
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    INIT
-   ════════════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 renderDialerContacts();
 captureWidgetDefaults();
 

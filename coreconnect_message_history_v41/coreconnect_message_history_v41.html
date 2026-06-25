@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Message History</title>
+<title>CoreConnect â€” Message History</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -19,7 +19,7 @@
     --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
   }
 
-  /* ===== TOP HEADER (full width, contains logo) — cloned from leads v79 ===== */
+  /* ===== TOP HEADER (full width, contains logo) â€” cloned from leads v79 ===== */
   .top-header{position:fixed;top:0;left:0;right:0;height:64px;
     background:var(--bg);border-bottom:0.5px solid var(--brd);
     display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
@@ -84,7 +84,7 @@
   .main-area{margin-left:64px;margin-top:64px;height:calc(100vh - 64px);
     display:flex;flex-direction:column;overflow:hidden;}
 
-  /* ===== TOOLBAR — cloned from call history v29 ===== */
+  /* ===== TOOLBAR â€” cloned from call history v29 ===== */
   .toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;
     border-bottom:0.5px solid var(--brd);background:var(--bg);position:relative;z-index:55;flex-shrink:0;}
   .tb-btn{display:flex;align-items:center;gap:5px;background:var(--sur2);
@@ -110,7 +110,7 @@
   .tb-srch input::placeholder{color:var(--mu);}
   .tb-srch:focus-within{border-color:var(--ac);}
 
-  /* ===== MOBILE SEARCH (≤640px) — cloned from leads v79 ===== */
+  /* ===== MOBILE SEARCH (â‰¤640px) â€” cloned from leads v79 ===== */
   .mobile-search-toggle{display:none;position:relative;}
   .mobile-search-toggle.has-query::after{
     content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;
@@ -153,7 +153,7 @@
     border-radius:5px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
   .clear-all:hover{color:var(--rd);}
 
-  /* MOBILE CHIP ROW — hidden on desktop; lives below the toolbar on phones */
+  /* MOBILE CHIP ROW â€” hidden on desktop; lives below the toolbar on phones */
   .chips-row-mobile-wrap{display:none;position:relative;background:var(--bg);
     border-bottom:0.5px solid var(--brd);}
   .chips-row-mobile{display:flex;align-items:center;gap:6px;
@@ -166,7 +166,7 @@
     background:linear-gradient(to right, rgba(15,17,23,0), var(--bg));
     pointer-events:none;}
 
-  /* ===== SPLIT BODY — cloned from call history v29 ===== */
+  /* ===== SPLIT BODY â€” cloned from call history v29 ===== */
   .split-body{display:flex;flex:1;min-height:0;}
   .list-pane{width:45%;display:flex;flex-direction:column;border-right:0.5px solid var(--brd);
     background:var(--bg);min-width:0;}
@@ -225,7 +225,7 @@
     background:var(--ac);color:#fff;font-size:10.5px;font-weight:600;
     display:flex;align-items:center;justify-content:center;font-family:var(--mono);flex-shrink:0;}
 
-  /* Line type badge — Direct vs department line */
+  /* Line type badge â€” Direct vs department line */
   .cr-line{font-size:9.5px;font-weight:500;letter-spacing:.3px;padding:2px 6px;
     border-radius:5px;border:0.5px solid var(--brd2);white-space:nowrap;flex-shrink:0;}
   .cr-line.dept{background:var(--sur2);color:var(--mu);}
@@ -278,9 +278,9 @@
     font-size:10.5px;color:var(--mu);font-family:var(--mono);}
   .dp-delivered{color:var(--gr);}
 
-  /* ===== REPLY COMPOSER — cloned from call history v29 (sms-textarea-wrap + sms-foot) ===== */
+  /* ===== REPLY COMPOSER â€” cloned from call history v29 (sms-textarea-wrap + sms-foot) ===== */
   .dp-compose-wrap{padding:10px 14px 8px;flex-shrink:0;border-top:0.5px solid var(--brd);}
-  /* ── Composer file-attachment module (SMS + Email) ── */
+  /* â”€â”€ Composer file-attachment module (SMS + Email) â”€â”€ */
   .att-clip{width:30px;height:30px;border-radius:7px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:color .15s;flex:none;}
   .att-clip:hover{color:var(--ac2);}
   .att-clip svg{width:16px;height:16px;}
@@ -303,7 +303,7 @@
   .att-file .att-sz{color:var(--mu);font-size:11px;flex:none;}
   @media (max-width:640px){ .att-clip{width:40px;height:40px;} .att-chip{height:40px;} .att-x{width:40px;height:40px;} }
 
-  /* AI conversation summary — pinned at bottom of thread, above composer */
+  /* AI conversation summary â€” pinned at bottom of thread, above composer */
   .dp-ai{flex-shrink:0;border-top:0.5px solid var(--brd2);background:var(--sur2);}
   .dp-ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;cursor:pointer;user-select:none;}
   .dp-ai-title{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
@@ -364,14 +364,14 @@
   .dp-send-btn:disabled{opacity:.4;cursor:not-allowed;}
   .dp-send-btn svg{width:13px;height:13px;}
 
-  /* AI compose button — drops a suggested reply into the textarea (from v29) */
+  /* AI compose button â€” drops a suggested reply into the textarea (from v29) */
   .dp-ai-btn{width:36px;height:36px;border-radius:8px;border:none;background:transparent;
     cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;
     transition:opacity .15s, transform .15s;flex-shrink:0;}
   .dp-ai-btn:hover{opacity:.85;transform:translateY(-1px);}
   .dp-ai-btn svg{display:block;}
 
-  /* AI Compose button (contact panel) — per style guide .cp-ai-btn */
+  /* AI Compose button (contact panel) â€” per style guide .cp-ai-btn */
   .cp-ai-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
     border-radius:8px;background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));
     border:0.5px solid rgba(79,124,255,.4);color:var(--tx);font-size:12px;font-weight:500;
@@ -380,7 +380,7 @@
   .cp-ai-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
   .cp-ai-btn svg{display:block;flex-shrink:0;}
 
-  /* ===== EMAIL COMPOSER MODAL — cloned from call history v29 ===== */
+  /* ===== EMAIL COMPOSER MODAL â€” cloned from call history v29 ===== */
   .em-backdrop{display:none;position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.6);opacity:0;}
   .em-backdrop.show{display:block;opacity:1;}
   .em-modal{display:none;position:fixed;top:50%;left:50%;z-index:1501;
@@ -405,7 +405,7 @@
   .em-head-close:hover{border-color:var(--rd);color:var(--rd);}
   .em-body{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
 
-  /* Email thread — scrollable history above the compose area */
+  /* Email thread â€” scrollable history above the compose area */
   .em-thread{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;
     border-bottom:0.5px solid var(--brd);min-height:0;
     scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
@@ -500,7 +500,7 @@
     .em-send-btn{height:44px;padding:0 18px;font-size:14px;}
   }
 
-  /* ===== NEW MESSAGE MODAL — compose SMS to one or more uncontacted leads ===== */
+  /* ===== NEW MESSAGE MODAL â€” compose SMS to one or more uncontacted leads ===== */
   .nm-backdrop{display:none;position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.6);}
   .nm-backdrop.show{display:block;}
   .nm-modal{display:none;position:fixed;top:50%;left:50%;z-index:1501;
@@ -532,7 +532,7 @@
   .nm-to-input{flex:1;min-width:120px;background:none;border:none;outline:none;color:var(--tx);
     font-family:var(--font);font-size:13px;height:24px;}
   .nm-to-input::placeholder{color:var(--mu);}
-  /* Suggestion list — inline in the body flow so it can't be clipped by the modal edge */
+  /* Suggestion list â€” inline in the body flow so it can't be clipped by the modal edge */
   .nm-suggest{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:10;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;
     box-shadow:0 12px 32px rgba(0,0,0,.5);max-height:230px;overflow-y:auto;padding:6px;
@@ -576,7 +576,7 @@
     .nm-textarea{font-size:16px;}
   }
 
-  /* ===== SENT FROM picker — cloned from call history v29 ===== */
+  /* ===== SENT FROM picker â€” cloned from call history v29 ===== */
   .modal-from-row{display:flex;align-items:center;gap:6px;padding:0 0 6px 0;margin:0;
     justify-content:flex-end;font-size:11px;color:var(--mu);cursor:pointer;user-select:none;
     flex-shrink:0;transition:color .15s;}
@@ -614,7 +614,7 @@
   .modal-from-pitem-role{font-size:10.5px;color:var(--mu);}
   .modal-from-pempty{padding:14px 8px;text-align:center;font-size:12px;color:var(--mu);}
 
-  /* ===== FILTER DROPDOWN — two-pane menu, cloned from call history v29 ===== */
+  /* ===== FILTER DROPDOWN â€” two-pane menu, cloned from call history v29 ===== */
   .fd-wrap{position:fixed;top:0;left:0;z-index:200;
     display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;max-height:calc(100vh - 32px);}
@@ -675,7 +675,7 @@
   .fp-radio.on{border-color:var(--ac);}
   .fp-radio.on::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac);}
 
-  /* ===== LIST FOOTER + PAGINATION — cloned from call history v29 ===== */
+  /* ===== LIST FOOTER + PAGINATION â€” cloned from call history v29 ===== */
   .list-footer{display:flex;align-items:center;justify-content:space-between;
     padding:10px 20px;border-top:0.5px solid var(--brd);font-size:12px;color:var(--mu);
     flex-shrink:0;background:var(--bg);gap:10px;flex-wrap:wrap;}
@@ -688,14 +688,14 @@
   .list-footer select{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);
     border-radius:6px;padding:3px 7px;font-family:var(--font);font-size:12px;cursor:pointer;}
 
-  /* Mobile back arrow — visible only on phone, lives in the detail header */
+  /* Mobile back arrow â€” visible only on phone, lives in the detail header */
   .dp-mobile-back{display:none;align-items:center;justify-content:center;
     width:36px;height:36px;border-radius:8px;border:0.5px solid var(--brd2);
     background:transparent;color:var(--mu);cursor:pointer;transition:all .15s;flex-shrink:0;}
   .dp-mobile-back:hover{border-color:var(--ac);color:var(--ac2);}
   .dp-mobile-back svg{width:18px;height:18px;}
 
-  /* ===== NOTIFICATIONS PANEL — cloned from leads v79 ===== */
+  /* ===== NOTIFICATIONS PANEL â€” cloned from leads v79 ===== */
   .notif-panel{display:none;position:fixed;top:0;left:0;width:380px;max-height:560px;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     box-shadow:0 12px 36px rgba(0,0,0,.55);z-index:9999;
@@ -770,7 +770,7 @@
     padding:8px;border-radius:6px;transition:background .12s;}
   .notif-seeall:hover{background:rgba(79,124,255,.08);}
 
-  /* ===== MOBILE DRAWER — cloned from leads v79 ===== */
+  /* ===== MOBILE DRAWER â€” cloned from leads v79 ===== */
   .mobile-drawer-backdrop{display:none;position:fixed;inset:0;z-index:9000;
     background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s ease;pointer-events:none;}
   .mobile-drawer-backdrop.open{opacity:1;pointer-events:auto;}
@@ -793,7 +793,7 @@
     display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
   .md-account .md-account-av{margin-right:-4px;}
 
-  /* ===== DIALER PANEL — cloned from leads v79 ===== */
+  /* ===== DIALER PANEL â€” cloned from leads v79 ===== */
   .dialer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1600;
     background:var(--ac);color:#fff;border-radius:10px 0 0 10px;
     padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -922,7 +922,7 @@
     cursor:pointer;transition:color .15s;flex-shrink:0;background:var(--sur);}
   .dialer-hide-keypad:hover{color:var(--ac2);}
 
-  /* ===== ADD LEAD MODAL — cloned from leads v79 ===== */
+  /* ===== ADD LEAD MODAL â€” cloned from leads v79 ===== */
   .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
   .modal-backdrop.open{display:flex;}
   .modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:420px;max-width:95%;overflow:hidden;max-height:calc(100vh - 48px);display:flex;flex-direction:column;}
@@ -944,7 +944,7 @@
   .modal-save{background:var(--ac);border:none;border-radius:8px;padding:0 20px;height:34px;color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
   .modal-save:hover{background:var(--ac2);}
 
-  /* ===== SEND BUSINESS CARD MODAL — ported verbatim from dashboard v41 ===== */
+  /* ===== SEND BUSINESS CARD MODAL â€” ported verbatim from dashboard v41 ===== */
   .bc-modal{width:640px;}
   .bc-card{display:flex;border:1px solid #2a2e3a;border-radius:6px;overflow:hidden;
     background:#fff;min-height:210px;}
@@ -991,7 +991,7 @@
     .bc-checks{justify-content:flex-start;}
   }
 
-  /* ===== NAV TOAST — ported verbatim from dashboard v41 ===== */
+  /* ===== NAV TOAST â€” ported verbatim from dashboard v41 ===== */
   .nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;
@@ -1008,11 +1008,11 @@
     cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
   .nav-toast-close:hover{opacity:1;color:var(--tx);}
 
-  /* ===== RESPONSIVE — two-tier (1024 / 640) matching leads v79 ===== */
-  /* ─────────────── TABLET (≤ 1024px) ─────────────── */
+  /* ===== RESPONSIVE â€” two-tier (1024 / 640) matching leads v79 ===== */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ TABLET (â‰¤ 1024px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   @media (max-width: 1024px){
     .top-header{padding:0 16px;}
-    /* Touch-target pass — interactive elements ≥44px on touch viewports */
+    /* Touch-target pass â€” interactive elements â‰¥44px on touch viewports */
     .header-bell{width:44px;height:44px;}
     .hamburger-btn{width:44px;height:44px;}
     .notif-tab{padding:12px 14px;}
@@ -1028,7 +1028,7 @@
     .pb{min-width:36px;height:36px;}
     .rows-select,#rows-select{min-height:36px;}
 
-    /* Chips — bigger row + larger close target */
+    /* Chips â€” bigger row + larger close target */
     .chip{min-height:36px;}
     .chip-x{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;margin:-4px -4px -4px 0;}
 
@@ -1051,13 +1051,13 @@
     .dialer-close{width:44px;height:44px;}
   }
 
-  /* ── TABLET + PHONE (≤ 900px) — lift filter chips out of toolbar into their own row ── */
+  /* â”€â”€ TABLET + PHONE (â‰¤ 900px) â€” lift filter chips out of toolbar into their own row â”€â”€ */
   @media (max-width: 900px){
     .toolbar .filter-chips{display:none;}
     .chips-row-mobile-wrap{display:block;}
   }
 
-  /* ── MASTER-DETAIL DRILL-DOWN (≤ 820px) — list full-width; detail slides in as overlay ── */
+  /* â”€â”€ MASTER-DETAIL DRILL-DOWN (â‰¤ 820px) â€” list full-width; detail slides in as overlay â”€â”€ */
   @media (max-width: 820px){
     .split-body{position:relative;}
     .list-pane{width:100%;border-right:none;}
@@ -1067,13 +1067,13 @@
       transition:transform .25s cubic-bezier(.4,0,.2,1);
       pointer-events:none;}
     .detail-pane.show{transform:translateX(0);pointer-events:auto;}
-    /* Hide the empty state on mobile — the list itself is the default view */
+    /* Hide the empty state on mobile â€” the list itself is the default view */
     .dp-empty{display:none !important;}
     /* Back arrow visible only on mobile */
     .dp-mobile-back{display:flex;}
   }
 
-  /* ─────────────── PHONE (≤ 640px) ─────────────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   @media (max-width: 640px){
     /* Hide the 64px sidebar entirely */
     .sidebar{display:none;}
@@ -1103,7 +1103,7 @@
     /* Tab strip font on phone */
     .notif-tab{font-size:13px;}
 
-    /* === NOTIFICATIONS PANEL — full-screen on phone === */
+    /* === NOTIFICATIONS PANEL â€” full-screen on phone === */
     .notif-panel{
       /* Override the JS-positioned inline styles */
       top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
@@ -1122,11 +1122,11 @@
     .notif-item{padding:14px 16px;}
     .notif-item-title{font-size:13.5px;}
     .notif-item-body{font-size:12.5px;}
-    /* Notif footer — bigger "See all" tap target */
+    /* Notif footer â€” bigger "See all" tap target */
     .notif-footer{padding:12px;}
     .notif-seeall{padding:14px;font-size:14px;min-height:48px;}
 
-    /* === ADD LEAD MODAL — touch sizing on phone === */
+    /* === ADD LEAD MODAL â€” touch sizing on phone === */
     .modal-field{height:44px;}
     .modal-cancel,.modal-save{height:44px;font-size:14px;padding:0 20px;}
     .modal-header{padding:14px 18px;}
@@ -1135,22 +1135,22 @@
     .modal-footer{flex-direction:column-reverse;gap:10px;padding:14px 16px;}
     .modal-cancel,.modal-save{width:100%;}
 
-    /* === DIALER PANEL — full-screen on phone (matches v79) === */
+    /* === DIALER PANEL â€” full-screen on phone (matches v79) === */
     .dialer-panel{
       width:100%;right:-100%;
       box-shadow:none;border-left:none;
       z-index:1600;  /* above the top header (z:60) */
     }
     .dialer-panel.open{right:0;}
-    /* Dialer header — bigger close, more padding */
+    /* Dialer header â€” bigger close, more padding */
     .dialer-header{padding:14px 16px;}
     .dialer-close{width:40px;height:40px;border-radius:8px;}
     .dialer-title{font-size:16px;}
 
-    /* Hide the line-type badge in the row — too cramped on phone */
+    /* Hide the line-type badge in the row â€” too cramped on phone */
     .cr-line{display:none;}
 
-    /* FILTER DROPDOWN — full-screen drill-down on phone */
+    /* FILTER DROPDOWN â€” full-screen drill-down on phone */
     .fd-wrap{top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
       width:100% !important;max-height:none !important;height:100vh;
       border-radius:0;border:none;flex-direction:column;}
@@ -1169,7 +1169,7 @@
     .fd-foot{padding:12px 16px;}
     .fd-clear{font-size:14px;min-height:44px;display:flex;align-items:center;}
 
-    /* REPLY COMPOSER — touch sizing on phone */
+    /* REPLY COMPOSER â€” touch sizing on phone */
     .dp-send-btn{height:44px;padding:0 18px;font-size:14px;}
     .dp-foot-meta{font-size:11px;}
     .dp-compose-wrap .modal-from-row{font-size:10.5px;padding:0 0 5px 0;}
@@ -1193,7 +1193,7 @@
     transition:border-color .15s;}
   .cc-input:focus{border-color:var(--ac);}
 
-  /* Two-column workspace — each column is a raised card */
+  /* Two-column workspace â€” each column is a raised card */
   .cc-cols{display:flex;gap:16px;align-items:stretch;}
   .cc-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;
@@ -1238,7 +1238,7 @@
   .cc-row-lock{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
     color:var(--mu);opacity:.55;flex-shrink:0;}
 
-  /* Add panel — tabs + body */
+  /* Add panel â€” tabs + body */
   .cc-pop{display:flex;flex-direction:column;flex:1;min-height:0;gap:14px;}
 
   /* Bigger, more prominent tabs */
@@ -1587,7 +1587,7 @@
     /* CC body: maintains vertical flow */
     .cc-body{padding:14px 14px 6px;gap:14px;}
 
-    /* Mobile tabs — show, hide the per-column desktop headers */
+    /* Mobile tabs â€” show, hide the per-column desktop headers */
     .cc-mobile-tabs{
       display:flex;background:var(--sur2);border:0.5px solid var(--brd2);
       border-radius:10px;padding:3px;gap:3px;flex-shrink:0;
@@ -1609,7 +1609,7 @@
       background:rgba(255,255,255,.08);color:var(--mu);
     }
 
-    /* CC columns: tabbed view — only one visible at a time */
+    /* CC columns: tabbed view â€” only one visible at a time */
     .cc-cols{flex-direction:column;gap:0;flex:1;min-height:0;}
     .cc-col{flex:initial;}
     .cc-col-left,.cc-col-right{display:none;}
@@ -1619,7 +1619,7 @@
     /* Hide the desktop per-column headers on phone (tabs replace them) */
     .cc-col-head{display:none;}
 
-    /* Participants list expands naturally — no max-height constraint */
+    /* Participants list expands naturally â€” no max-height constraint */
     .cc-participants{max-height:none;}
 
     /* Add pop: also natural height, list expands */
@@ -1696,6 +1696,9 @@
     <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="window.location.href='../coreconnect_appointments/coreconnect_appointments.html'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
+    <div class="sb-item" data-nav="reputation" data-label="Reputation" onclick="window.open('../reputation/reputation_dashboard/Dashboard.html','_blank')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
     <div class="sidebar-nav-spacer"></div>
     <div class="sb-divider"></div>
     <div class="sb-item" data-nav="settings" data-label="Settings" onclick="window.location.href='../Settings/Settings_main_page/coreconnect_settings.html'">
@@ -1705,7 +1708,7 @@
   <div class="sb-account" title="Account">DP</div>
 </div>
 
-<!-- ===== MOBILE DRAWER — sidebar's mobile twin ===== -->
+<!-- ===== MOBILE DRAWER â€” sidebar's mobile twin ===== -->
 <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <div class="md-nav">
@@ -1737,6 +1740,10 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Appointments</span>
     </div>
+    <div class="md-item" data-nav="reputation" onclick="window.open('../reputation/reputation_dashboard/Dashboard.html','_blank');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>Reputation</span>
+    </div>
     <div class="md-divider"></div>
     <div class="md-item" data-nav="settings" onclick="window.location.href='../Settings/Settings_main_page/coreconnect_settings.html'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
@@ -1749,7 +1756,7 @@
   </div>
 </div>
 
-<!-- ===== DIALER (tab + panel) — cloned from leads v79 ===== -->
+<!-- ===== DIALER (tab + panel) â€” cloned from leads v79 ===== -->
 <div class="dialer-tab" id="dialer-tab" onclick="toggleDialer()" title="Open Dialer">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
@@ -1773,8 +1780,8 @@
     <div class="dialer-contact-row">
       <div class="dialer-contact-av" id="dialer-contact-av">AT</div>
       <div>
-        <div class="dialer-contact-name" id="dialer-contact-name">—</div>
-        <div class="dialer-contact-num" id="dialer-contact-num">—</div>
+        <div class="dialer-contact-name" id="dialer-contact-name">â€”</div>
+        <div class="dialer-contact-num" id="dialer-contact-num">â€”</div>
       </div>
       <button class="dialer-contact-clear" onclick="clearDialerContact()" title="Clear contact">&#x2715;</button>
     </div>
@@ -1816,7 +1823,7 @@
     <!-- Number display -->
     <div class="dialer-display">
       <div class="dialer-number" id="dialer-number">
-        <span class="dialer-number-placeholder">Enter number…</span>
+        <span class="dialer-number-placeholder">Enter numberâ€¦</span>
       </div>
     </div>
 
@@ -1868,7 +1875,7 @@
     </div>
     <div>
       <div class="dialer-calling-name" id="calling-name">Ac Thakur</div>
-      <div class="dialer-calling-status" id="calling-status" style="text-align:center;">Calling…</div>
+      <div class="dialer-calling-status" id="calling-status" style="text-align:center;">Callingâ€¦</div>
     </div>
     <div class="dialer-calling-timer" id="calling-timer" style="display:none;">0:00</div>
     <div style="display:flex;gap:16px;margin-top:8px;">
@@ -1889,8 +1896,8 @@
 
 </div>
 
-<!-- ===== ADD LEAD MODAL — cloned from leads v79 ===== -->
-<!-- ===== NAV TOAST — ported verbatim from dashboard v41 ===== -->
+<!-- ===== ADD LEAD MODAL â€” cloned from leads v79 ===== -->
+<!-- ===== NAV TOAST â€” ported verbatim from dashboard v41 ===== -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -1902,7 +1909,7 @@
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
-<!-- ===== SEND BUSINESS CARD MODAL — ported verbatim from dashboard v41 ===== -->
+<!-- ===== SEND BUSINESS CARD MODAL â€” ported verbatim from dashboard v41 ===== -->
 <div class="modal-backdrop" id="bc-modal-backdrop" onclick="handleBcBackdropClick(event)">
   <div class="modal bc-modal">
     <div class="modal-header">
@@ -1911,7 +1918,7 @@
     </div>
     <div class="modal-body">
 
-      <!-- Business card preview (branded — recreated from artwork) -->
+      <!-- Business card preview (branded â€” recreated from artwork) -->
       <div class="bc-card">
         <div class="bc-logo">
           <svg class="bc-logo-car" viewBox="0 0 200 70" fill="none" aria-hidden="true">
@@ -2064,7 +2071,7 @@
     </button>
   </div>
 
-  <!-- MOBILE CHIPS ROW — hidden on desktop; horizontally scrollable -->
+  <!-- MOBILE CHIPS ROW â€” hidden on desktop; horizontally scrollable -->
   <div class="chips-row-mobile-wrap" id="chips-row-mobile-wrap">
     <div class="chips-row-mobile" id="chips-row-mobile"></div>
   </div>
@@ -2096,7 +2103,7 @@
 
 </div>
 
-<!-- ===== FILTER DROPDOWN — two-pane, cloned from call history v29 ===== -->
+<!-- ===== FILTER DROPDOWN â€” two-pane, cloned from call history v29 ===== -->
 <div class="fd-wrap" id="filter-dropdown" onclick="event.stopPropagation()">
   <div class="fd-mobile-header">
     <button class="fd-mobile-back" id="fd-mobile-back" onclick="fdMobileBackToCategories()" aria-label="Back">
@@ -2123,7 +2130,7 @@
   </div>
 </div>
 
-<!-- ===== SENT FROM picker popup — cloned from call history v29 ===== -->
+<!-- ===== SENT FROM picker popup â€” cloned from call history v29 ===== -->
 <div class="modal-from-popup" id="modal-from-popup" onclick="event.stopPropagation()">
   <div class="modal-from-ptabs">
     <div class="modal-from-ptab active" id="modal-from-ptab-users" onclick="setModalFromTab('users')">Users</div>
@@ -2131,19 +2138,19 @@
   </div>
   <div class="modal-from-psearch">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="modal-from-search" placeholder="Search…" oninput="renderModalFromList(this.value)" />
+    <input type="text" id="modal-from-search" placeholder="Searchâ€¦" oninput="renderModalFromList(this.value)" />
   </div>
   <div class="modal-from-plist" id="modal-from-plist"></div>
 </div>
 
-<!-- ===== EMAIL COMPOSER MODAL — cloned from call history v29 (step 1: shell) ===== -->
+<!-- ===== EMAIL COMPOSER MODAL â€” cloned from call history v29 (step 1: shell) ===== -->
 <div class="em-backdrop" id="em-backdrop" onclick="closeEmailModal()"></div>
 <div class="em-modal" id="em-modal" role="dialog" aria-modal="true" aria-label="Send Email">
   <div class="em-head">
-    <div class="em-head-av" id="em-head-av">—</div>
+    <div class="em-head-av" id="em-head-av">â€”</div>
     <div class="em-head-info">
-      <div class="em-head-name" id="em-head-name">—</div>
-      <div class="em-head-email" id="em-head-email">—</div>
+      <div class="em-head-name" id="em-head-name">â€”</div>
+      <div class="em-head-email" id="em-head-email">â€”</div>
     </div>
     <button class="em-head-close" onclick="closeEmailModal()" aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -2178,7 +2185,7 @@
       <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertUnorderedList', null, event)" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg></button>
       <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertOrderedList', null, event)" title="Numbered list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
     </div>
-    <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your email…"></div>
+    <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your emailâ€¦"></div>
   </div>
   <input type="file" id="em-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('em',this.files);this.value='';">
   <div class="att-tray" id="em-att-tray" style="padding:0 0 6px;"></div>
@@ -2188,7 +2195,7 @@
         AI Compose
       </button>
       <button class="att-clip" type="button" onclick="document.getElementById('em-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
-    <span class="em-hint">⌘+Enter to send</span>
+    <span class="em-hint">âŒ˜+Enter to send</span>
     <button class="em-send-btn" id="em-send-btn" onclick="sendEmailMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       Send
@@ -2202,7 +2209,7 @@
   <span>Email sent</span>
 </div>
 
-<!-- ===== NEW MESSAGE MODAL (step 1) — compose SMS to one or more uncontacted leads ===== -->
+<!-- ===== NEW MESSAGE MODAL (step 1) â€” compose SMS to one or more uncontacted leads ===== -->
 <div class="nm-backdrop" id="nm-backdrop" onclick="closeNewMessage()"></div>
 <div class="nm-modal" id="nm-modal" role="dialog" aria-modal="true" aria-label="New message">
   <div class="nm-head">
@@ -2215,7 +2222,7 @@
     <div class="nm-to-label">To</div>
     <div class="nm-to-field">
       <div class="nm-to-box" id="nm-to-box" onclick="document.getElementById('nm-to-input').focus()">
-        <input type="text" class="nm-to-input" id="nm-to-input" placeholder="Search uncontacted leads…"
+        <input type="text" class="nm-to-input" id="nm-to-input" placeholder="Search uncontacted leadsâ€¦"
           oninput="nmSearchInput(this.value)" onkeydown="nmToKeyDown(event)" autocomplete="off" />
       </div>
       <div class="nm-suggest" id="nm-suggest"></div>
@@ -2224,7 +2231,7 @@
       Sent From: <span id="nm-from-agent">Angel Garcia</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <textarea class="nm-textarea" id="nm-textarea" placeholder="Type your message…"
+    <textarea class="nm-textarea" id="nm-textarea" placeholder="Type your messageâ€¦"
       maxlength="320" oninput="nmInputChange()"></textarea>
   </div>
   <div class="nm-foot">
@@ -2246,7 +2253,7 @@
   <span id="nm-toast-text">Message sent</span>
 </div>
 
-<!-- ===== MOBILE SEARCH OVERLAY (≤640px) — cloned from leads v79 ===== -->
+<!-- ===== MOBILE SEARCH OVERLAY (â‰¤640px) â€” cloned from leads v79 ===== -->
 <div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
   <div class="mso-header">
     <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
@@ -2261,7 +2268,7 @@
   </div>
 </div>
 
-<!-- ===== NOTIFICATIONS PANEL — cloned from leads v79 ===== -->
+<!-- ===== NOTIFICATIONS PANEL â€” cloned from leads v79 ===== -->
 <div class="notif-panel" id="notif-panel">
   <div class="notif-header">
     <span class="notif-title">Notifications</span>
@@ -2740,7 +2747,7 @@ function ini(n){return n.split(' ').filter(Boolean).map(w=>w[0]).join('').substr
 // Directory data reused from v79 (leads + team)
 const leads=[
   {no:1,name:'Ac Thakur',phone:'(215) 915-0731',ac:'#534AB7'},
-  {no:2,name:'Kristina Stuf…',phone:'(970) 275-9251',ac:'#0F6E56'},
+  {no:2,name:'Kristina Stufâ€¦',phone:'(970) 275-9251',ac:'#0F6E56'},
   {no:3,name:'Taylor Dang',phone:'(703) 868-1333',ac:'#993C1D'},
   {no:4,name:'Gage Quarles',phone:'(346) 284-2557',ac:'#185FA5'},
   {no:5,name:'Jason Stark',phone:'(281) 635-3495',ac:'#3B6D11'},
@@ -2812,7 +2819,7 @@ const assignUsers = [
 ];
 assignUsers.forEach((u, i) => { u.phone = '(555) ' + (100 + i*10) + '-' + (2000 + i); });
 
-// ===== NAV TOAST — ported verbatim from dashboard v41 =====
+// ===== NAV TOAST â€” ported verbatim from dashboard v41 =====
 let navToastTimer = null;
 function showNavToast(title, body){
   const t = document.getElementById('nav-toast');
@@ -2829,7 +2836,7 @@ function hideNavToast(){
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
 
-// ===== SEND BUSINESS CARD MODAL — ported verbatim from dashboard v41 =====
+// ===== SEND BUSINESS CARD MODAL â€” ported verbatim from dashboard v41 =====
 function openBcModal(){
   document.getElementById('bc-modal-backdrop').classList.add('open');
   toggleBcLocation();
@@ -2858,7 +2865,7 @@ function sendBusinessCard(){
   showNavToast('Business card sent', 'Sent to ' + num + '.');
 }
 
-// "Add new lead" modal — ported from v79, adapted to this page.
+// "Add new lead" modal â€” ported from v79, adapted to this page.
 function openAddModal(){
   document.getElementById('modal-backdrop').classList.add('open');
   document.getElementById('new-name').focus();
@@ -2884,13 +2891,13 @@ function saveNewLead(){
     phone: document.getElementById('new-phone').value.trim(),
     source: document.getElementById('new-source').value || 'Other',
     stock: document.getElementById('new-stock').value.trim(),
-    vehicle: document.getElementById('new-vehicle').value.trim() || '—',
+    vehicle: document.getElementById('new-vehicle').value.trim() || 'â€”',
     ac: colors[Math.floor(Math.random()*colors.length)]
   };
   leads.unshift(newLead);
   leads.forEach((l,i) => l.no = i+1);
   closeAddModal();
-  // No leads table on this page — refresh the dialer directory instead.
+  // No leads table on this page â€” refresh the dialer directory instead.
   renderDialerContacts();
 }
 
@@ -2943,7 +2950,7 @@ function updateDialerDisplay(){
     el.textContent = fmt || dialerNumber;
     el.style.fontSize = dialerNumber.length > 12 ? '18px' : '24px';
   } else {
-    el.innerHTML = '<span class="dialer-number-placeholder">Enter number…</span>';
+    el.innerHTML = '<span class="dialer-number-placeholder">Enter numberâ€¦</span>';
   }
 }
 
@@ -2982,7 +2989,7 @@ function formatPhoneDisplay(num){
   return num;
 }
 
-// Shared contacts from the Contacts page (Settings/contacts) — only those marked
+// Shared contacts from the Contacts page (Settings/contacts) â€” only those marked
 // "Visible to other users" (shared:true) with a phone. Read from the shared cc_contacts store.
 var _DIALER_CT_PALETTE=['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9'];
 function _dialerContactColor(id){ var n=0; String(id||'').split('').forEach(function(ch){ n=(n+ch.charCodeAt(0))%_DIALER_CT_PALETTE.length; }); return _DIALER_CT_PALETTE[n]; }
@@ -3045,7 +3052,7 @@ function renderDialerContacts(){
 
   function renderRow(c, isFirstMatch){
     const cls = 'dialer-contact' + (isFirstMatch ? ' dialer-contact-firstmatch' : '');
-    return `<div class="${cls}" onclick="loadRecentCall('${c.phone}','${c.name.replace(/'/g,"\\'")}','${c.av}','${c.color}')">
+    return `<div class="${cls}" onclick="loadRecentCall('${c.phone}','${c.name.replace(/'/g,"\\'")}','${c.av}','${c.color}');initiateCall()">
        <div class="dc-av" style="background:${c.color};">${c.av}</div>
        <div><div class="dc-name">${c.name}</div><div class="dc-num">${c.phone}</div></div>
      </div>`;
@@ -3093,7 +3100,7 @@ function updateDialerMatchBar(entry){
 
 function sortDialerContacts(){
   dialerSortAsc = !dialerSortAsc;
-  document.getElementById('dialer-sort-label').textContent = dialerSortAsc ? 'A–Z' : 'Z–A';
+  document.getElementById('dialer-sort-label').textContent = dialerSortAsc ? 'Aâ€“Z' : 'Zâ€“A';
   renderDialerContacts();
 }
 
@@ -3156,7 +3163,7 @@ function initiateCall(){
   document.getElementById('calling-av').textContent = displayAv;
   document.getElementById('calling-av').style.background = displayCol;
   document.getElementById('calling-name').textContent = displayName;
-  document.getElementById('calling-status').textContent = 'Calling…';
+  document.getElementById('calling-status').textContent = 'Callingâ€¦';
   document.getElementById('calling-timer').style.display = 'none';
 
   setTimeout(()=>{
@@ -3199,9 +3206,9 @@ function hideDetailPane(){
   document.getElementById('detail-pane').classList.remove('show');
 }
 
-/* ============ TOOLBAR (scope + search + chips) — ported from call history v29 ============ */
+/* ============ TOOLBAR (scope + search + chips) â€” ported from call history v29 ============ */
 const tbState = {
-  scope: 'all',        // 'all' (default) | 'personal' | 'department' — now a Filter ("View"), not a toggle
+  scope: 'all',        // 'all' (default) | 'personal' | 'department' â€” now a Filter ("View"), not a toggle
   search: '',
   period: 'today',     // 'today' | 'thisWeek' | 'thisMonth' | 'all'
   selectedId: null,
@@ -3225,7 +3232,7 @@ function canonPeriod(p){ return p === 'thisWeek' ? 'week' : p === 'thisMonth' ? 
 function pagePeriod(c){ return c === 'week' ? 'thisWeek' : c === 'month' ? 'thisMonth' : c === 'all' ? 'all' : 'today'; }
 if(window.CCLeads && window.CCLeads.getPeriod){ tbState.period = pagePeriod(window.CCLeads.getPeriod()); }
 
-// View/scope was a Per./Dep. toggle — now a single-select filter. This resets it to the default 'all'.
+// View/scope was a Per./Dep. toggle â€” now a single-select filter. This resets it to the default 'all'.
 function removeScopeChip(){
   tbState.scope = 'all';
   tbState.selectedId = null;
@@ -3243,7 +3250,7 @@ function handleSearch(v){
   msoUpdateDot();
 }
 
-/* ===== MOBILE SEARCH OVERLAY (≤640px) — cloned from leads v79 ===== */
+/* ===== MOBILE SEARCH OVERLAY (â‰¤640px) â€” cloned from leads v79 ===== */
 function _msoEl(){ return document.getElementById('mso'); }
 function _msoInput(){ return document.getElementById('mso-input'); }
 function _msoClearBtn(){ return document.getElementById('mso-clear'); }
@@ -3263,7 +3270,7 @@ function msoUpdateDot(){
   if(!btn) return;
   btn.classList.toggle('has-query', !!(tbState.search && tbState.search.length));
 }
-// Show/hide the inline clear (×) inside the overlay input
+// Show/hide the inline clear (Ã—) inside the overlay input
 function msoUpdateClear(){
   const inp = _msoInput(); const clr = _msoClearBtn();
   if(!inp || !clr) return;
@@ -3315,7 +3322,7 @@ window.addEventListener('popstate', ()=>{
   }
 });
 
-/* ============ FILTER DROPDOWN + CHIPS — cloned from call history v29 ============ */
+/* ============ FILTER DROPDOWN + CHIPS â€” cloned from call history v29 ============ */
 const filterConfig = [
   {key:'scope', label:'View', type:'single', options:[
     {val:'all',        label:'All messages'},
@@ -3429,7 +3436,7 @@ function renderFilterDropdown(){
     const selCount = countActiveSelections(cat);
     if(cat.key === activeCatKey) row.classList.add('active');
     const badge = selCount > 0 ? `<span class="fd-cat-count">${selCount}</span>` : '';
-    row.innerHTML = `<span class="fd-cat-label">${cat.label}</span>${badge}<span class="fd-cat-chev">›</span>`;
+    row.innerHTML = `<span class="fd-cat-label">${cat.label}</span>${badge}<span class="fd-cat-chev">â€º</span>`;
     row.onclick = () => lockCategory(cat.key);
     list.appendChild(row);
   });
@@ -3546,7 +3553,7 @@ function renderChips(){
         <span class="chip-x" onclick="removeChip('${key}','${v}')">&#x2715;</span></div>`);
     });
   });
-  // View/scope (was the Per./Dep. toggle) — only shown when narrowed away from the default 'all'
+  // View/scope (was the Per./Dep. toggle) â€” only shown when narrowed away from the default 'all'
   if(tbState.scope && tbState.scope !== 'all'){
     const sc = filterConfig.find(c=>c.key==='scope');
     const sopt = sc && sc.options.find(o=>o.val===tbState.scope);
@@ -3555,7 +3562,7 @@ function renderChips(){
         <span class="chip-x" onclick="removeScopeChip()">&#x2715;</span></div>`);
     }
   }
-  // Period — always visible, muted when default 'today'
+  // Period â€” always visible, muted when default 'today'
   const pcat = filterConfig.find(c=>c.key==='period');
   const popt = pcat.options.find(o=>o.val===tbState.period);
   if(popt){
@@ -3626,7 +3633,7 @@ document.addEventListener('click',(e)=>{
   closeFilterDropdown();
 });
 
-/* ============ MESSAGE THREADS (data + list) — scope model mirrors v29 ============ */
+/* ============ MESSAGE THREADS (data + list) â€” scope model mirrors v29 ============ */
 // Current logged-in user drives Personal vs Department scope.
 const MSG_CURRENT_USER = { name: 'Angel Garcia', department: 'BDC' };
 const MSG_DEPT_NUMBERS = { 'BDC':'(555) 200-1000', 'Sales':'(555) 200-2000', 'Service':'(555) 200-3000' };
@@ -3638,14 +3645,14 @@ const MSG_AVCLR = ['#534AB7','#0F6E56','#993C1D','#185FA5','#3B6D11','#72243E','
 function msgIni(n){return n.split(' ').filter(Boolean).map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 function msgClr(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return MSG_AVCLR[h%MSG_AVCLR.length];}
 
-// hoursAgo helper → Date
+// hoursAgo helper â†’ Date
 const MSG_NOW = new Date();
 function hAgo(h){ return new Date(MSG_NOW.getTime() - h*3600000); }
 
 // Each thread: contact, agent (our side), department, lineType, plus messages[].
 // lineType 'direct' = handled on the agent's personal line; 'department' = via the shared dept number.
 
-// Agent → department, and a flat agent list, for scope-tagging the re-sourced threads.
+// Agent â†’ department, and a flat agent list, for scope-tagging the re-sourced threads.
 const MSG_AGENT_DEPT = {
   'Angel Garcia':'BDC', 'Ana Ruiz':'BDC', 'Sofia Reyes':'BDC',
   'Devon Powell':'Sales', 'Maya Singh':'Sales', 'Liam Chen':'Service',
@@ -3656,18 +3663,18 @@ const MSG_AGENT_LIST = Object.keys(MSG_AGENT_NUMBERS);
 const MSG_IN_SAMPLES = [
   'Hi, is this still available?', 'Can we schedule a test drive?', "What's the best price you can do?",
   'Saturday morning works for me.', 'Do you have it in another color?', "Thanks, I'll think it over.",
-  'Can you send the financing options?', 'Still considering — will get back to you.',
+  'Can you send the financing options?', 'Still considering â€” will get back to you.',
 ];
 const MSG_OUT_SAMPLES = [
-  'Yes it is! Want to come in this week?', 'Absolutely — when works for you?',
+  'Yes it is! Want to come in this week?', 'Absolutely â€” when works for you?',
   'I can do a great deal this weekend.', 'Just sent the details to your email.',
-  'Following up — any questions?', 'Your appointment is confirmed.',
-  'Happy to help — call me anytime.', 'Checking now, back to you shortly.',
+  'Following up â€” any questions?', 'Your appointment is confirmed.',
+  'Happy to help â€” call me anytime.', 'Checking now, back to you shortly.',
 ];
 
-// ── Re-source threads from the shared CRM leads (window.CCLeads) ──────────────────────────────
+// â”€â”€ Re-source threads from the shared CRM leads (window.CCLeads) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // One conversation per SMS-active lead; the lead's "out/in" sms becomes the messages, dated on the
-// lead's timeline (CCLeads.NOW − leadHoursBack). leadIndex lets the period filter reuse leadInPeriod,
+// lead's timeline (CCLeads.NOW âˆ’ leadHoursBack). leadIndex lets the period filter reuse leadInPeriod,
 // so the messages within match the dashboard's SMS totals for the period. Falls back to the demo set.
 function buildThreadsFromLeads(){
   const list = [];
@@ -3679,7 +3686,7 @@ function buildThreadsFromLeads(){
     const department = MSG_AGENT_DEPT[agent] || 'BDC';
     const lineType = (i % 2 === 0) ? 'direct' : 'department';
     const base = NOW - window.CCLeads.leadHoursBack(i) * 3600000;
-    // Interleave inbound/outbound (oldest → newest) while respecting the per-direction counts.
+    // Interleave inbound/outbound (oldest â†’ newest) while respecting the per-direction counts.
     let oi = 0, ii = 0; const dirs = [];
     for(let k = 0; k < sc.in + sc.out; k++){
       const wantIn = (k % 2 === 0);
@@ -3702,24 +3709,24 @@ function buildThreadsFromLeads(){
 }
 
 const LEGACY_THREADS = [
-  // ── Angel's personal lead conversations (Personal scope) ──
+  // â”€â”€ Angel's personal lead conversations (Personal scope) â”€â”€
   { id:'t1', contact:'Mei Chen',       num:'(415) 555-0192', agent:'Angel Garcia', department:'BDC', lineType:'direct',
     unread:2, messages:[
       {dir:'in',  text:'Hi, is the 2022 model still available?', time:hAgo(2)},
       {dir:'out', text:'Yes it is! Want to schedule a test drive?', time:hAgo(1.8)},
-      {dir:'in',  text:'That would be great — Saturday morning?', time:hAgo(0.5)},
+      {dir:'in',  text:'That would be great â€” Saturday morning?', time:hAgo(0.5)},
   ]},
   { id:'t2', contact:'Marcus Webb',    num:'(628) 555-0145', agent:'Angel Garcia', department:'BDC', lineType:'direct',
     unread:0, noEmail:true, messages:[
-      {dir:'out', text:'Following up on your inquiry — any questions?', time:hAgo(26)},
+      {dir:'out', text:'Following up on your inquiry â€” any questions?', time:hAgo(26)},
       {dir:'in',  text:'Thanks, I think I am all set for now.',       time:hAgo(25)},
   ]},
   { id:'t3', contact:'Sofia Reyes',    num:'(650) 555-0108', agent:'Angel Garcia', department:'BDC', lineType:'direct',
     unread:0, messages:[
       {dir:'in',  text:'Left you a voicemail about the trade-in.', time:hAgo(50)},
-      {dir:'out', text:'Got it — I will text the numbers today.',  time:hAgo(49)},
+      {dir:'out', text:'Got it â€” I will text the numbers today.',  time:hAgo(49)},
   ]},
-  // ── Department (BDC) shared-line conversations — teammates, visible in Department scope ──
+  // â”€â”€ Department (BDC) shared-line conversations â€” teammates, visible in Department scope â”€â”€
   { id:'t4', contact:'Priya Nair',     num:'(510) 555-0177', agent:'Ana Ruiz',     department:'BDC', lineType:'department',
     unread:1, messages:[
       {dir:'in',  text:'Can you send the financing options?', time:hAgo(3)},
@@ -3732,9 +3739,9 @@ const LEGACY_THREADS = [
   { id:'t6', contact:'Hannah Brooks',  num:'(415) 555-1564', agent:'Ana Ruiz',     department:'BDC', lineType:'department',
     unread:0, messages:[
       {dir:'in',  text:'Do you have the blue one in stock?', time:hAgo(52)},
-      {dir:'out', text:'Checking now — back to you shortly.', time:hAgo(51)},
+      {dir:'out', text:'Checking now â€” back to you shortly.', time:hAgo(51)},
   ]},
-  // ── Other departments — NOT visible to Angel in either scope ──
+  // â”€â”€ Other departments â€” NOT visible to Angel in either scope â”€â”€
   { id:'t7', contact:'Carlos Rivera',  num:'(415) 555-2288', agent:'Devon Powell', department:'Sales', lineType:'direct',
     unread:0, messages:[
       {dir:'out', text:'Sending the quote over now.', time:hAgo(28)},
@@ -3785,19 +3792,19 @@ function getFilteredThreads(){
   const dirSet = tbState.filters.direction;
   const lineSet = tbState.filters.lineType;
   return THREADS.filter(t=>{
-    // View/scope (was the Per./Dep. toggle, now a Filter) — 'all' shows everyone.
+    // View/scope (was the Per./Dep. toggle, now a Filter) â€” 'all' shows everyone.
     if(!threadInScope(t, tbState.scope)) return false;
-    // Direction filter — match the latest message's direction
+    // Direction filter â€” match the latest message's direction
     if(dirSet.size && !dirSet.has(lastMsg(t).dir)) return false;
     // Line type filter
     if(lineSet.size && !lineSet.has(t.lineType)) return false;
-    // Status filter — unread = has unread count, read = none
+    // Status filter â€” unread = has unread count, read = none
     const statusSet = tbState.filters.status;
     if(statusSet.size){
       const st = t.unread>0 ? 'unread' : 'read';
       if(!statusSet.has(st)) return false;
     }
-    // Period filter — scoped by the lead's window (shared with the dashboard/leads) so it matches.
+    // Period filter â€” scoped by the lead's window (shared with the dashboard/leads) so it matches.
     if(tbState.period && tbState.period !== 'all'){
       if(window.CCLeads && window.CCLeads.leadInPeriod && typeof t.leadIndex === 'number'){
         if(!window.CCLeads.leadInPeriod(t.leadIndex, canonPeriod(tbState.period))) return false;
@@ -3897,7 +3904,7 @@ function mhSummaryData(t){
   var smsT=cc.sms.out+cc.sms.in, emailT=cc.email.out+cc.email.in, callT=cc.calls.out+cc.calls.in;
   var vm=Math.min(cc.calls.missed||0,3);
   var touches=smsT+emailT+callT;
-  if(!touches){ return {empty:true, stats:[{ic:'💬',l:'SMS',ct:0},{ic:'✉️',l:'Email',ct:0},{ic:'📞',l:'Calls',ct:0},{ic:'🎙️',l:'VM',ct:0}], last:(lead&&lead.lastAttempt)||''}; }
+  if(!touches){ return {empty:true, stats:[{ic:'ðŸ’¬',l:'SMS',ct:0},{ic:'âœ‰ï¸',l:'Email',ct:0},{ic:'ðŸ“ž',l:'Calls',ct:0},{ic:'ðŸŽ™ï¸',l:'VM',ct:0}], last:(lead&&lead.lastAttempt)||''}; }
   var corpus=mhCorpus(t);
   var intents=[];
   if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|best price|deal/.test(corpus)) intents.push('pricing & financing');
@@ -3915,11 +3922,11 @@ function mhSummaryData(t){
   var breakdown=parts.length?parts.join(', ').replace(/,([^,]*)$/,' and$1'):'no logged activity yet';
   var inb=(t.messages||[]).filter(function(m){return m.dir==='in'&&m.text;});
   var quote=inb.length?inb[inb.length-1].text:'';
-  if(quote&&quote.length>90) quote=quote.slice(0,87).trim()+'…';
-  var s1='<span class="em">'+msgEsc(first)+'</span> is '+level+' — '+msgEsc(breakdown)+'.';
+  if(quote&&quote.length>90) quote=quote.slice(0,87).trim()+'â€¦';
+  var s1='<span class="em">'+msgEsc(first)+'</span> is '+level+' â€” '+msgEsc(breakdown)+'.';
   var s2=intents.length?(' Conversation touched on '+msgEsc(intents.slice(0,2).join(' and '))+'; tone is '+tone+'.'):(' Overall tone is '+tone+'.');
-  var s3=quote?(' Last message in: “'+msgEsc(quote)+'”.'):'';
-  return {empty:false, narrative:s1+s2+s3, stats:[{ic:'💬',l:'SMS',ct:smsT},{ic:'✉️',l:'Email',ct:emailT},{ic:'📞',l:'Calls',ct:callT},{ic:'🎙️',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''};
+  var s3=quote?(' Last message in: â€œ'+msgEsc(quote)+'â€.'):'';
+  return {empty:false, narrative:s1+s2+s3, stats:[{ic:'ðŸ’¬',l:'SMS',ct:smsT},{ic:'âœ‰ï¸',l:'Email',ct:emailT},{ic:'ðŸ“ž',l:'Calls',ct:callT},{ic:'ðŸŽ™ï¸',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''};
 }
 function mhBuildSuggestions(t){
   var corpus=mhCorpus(t);
@@ -3929,18 +3936,18 @@ function mhBuildSuggestions(t){
   var lastMsg=msgs.length?msgs[msgs.length-1]:null;
   var awaiting=lastMsg&&lastMsg.dir==='in';
   var sug=[];
-  if(awaiting){ sug.push({ic:'↩️', tx:first+' is awaiting a reply — respond to keep the thread moving.', action:'sms', draft:''}); }
+  if(awaiting){ sug.push({ic:'â†©ï¸', tx:first+' is awaiting a reply â€” respond to keep the thread moving.', action:'sms', draft:''}); }
   if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|best price|deal/.test(corpus)){
-    if(hasEmail) sug.push({ic:'✉️', tx:'They asked about price/financing — email the figures and a pre-qualification link in writing.', action:'email', subject:'Your pricing & financing details', draft:'Hi '+first+',\n\nThanks for asking! Here are the figures we discussed, along with current financing options and a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\n• Out-the-door price breakdown\n• Competitive APR options\n• Pre-qualify in 2 minutes: [link]\n\nHappy to walk through any of it — just let me know.'});
-    else sug.push({ic:'💬', tx:'They asked about price/financing — text the numbers and next steps.', action:'sms', draft:'Here are the numbers and current financing options — happy to walk through them:'});
+    if(hasEmail) sug.push({ic:'âœ‰ï¸', tx:'They asked about price/financing â€” email the figures and a pre-qualification link in writing.', action:'email', subject:'Your pricing & financing details', draft:'Hi '+first+',\n\nThanks for asking! Here are the figures we discussed, along with current financing options and a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\nâ€¢ Out-the-door price breakdown\nâ€¢ Competitive APR options\nâ€¢ Pre-qualify in 2 minutes: [link]\n\nHappy to walk through any of it â€” just let me know.'});
+    else sug.push({ic:'ðŸ’¬', tx:'They asked about price/financing â€” text the numbers and next steps.', action:'sms', draft:'Here are the numbers and current financing options â€” happy to walk through them:'});
   }
   if(/test drive|come in|visit|tour|see it|saturday|schedule|appointment|works for you|available/.test(corpus)){
-    sug.push({ic:'📅', tx:'A visit/test drive came up — book it on the calendar so it doesn\'t slip.', action:'appointment'});
+    sug.push({ic:'ðŸ“…', tx:'A visit/test drive came up â€” book it on the calendar so it doesn\'t slip.', action:'appointment'});
   }
   if(/color|colour|trim|feature|option/.test(corpus)){
-    sug.push({ic:'🚗', tx:'They asked about color/options — text availability and alternatives.', action:'sms', draft:'Let me check availability on that — I\'ll confirm colors and options for you shortly.'});
+    sug.push({ic:'ðŸš—', tx:'They asked about color/options â€” text availability and alternatives.', action:'sms', draft:'Let me check availability on that â€” I\'ll confirm colors and options for you shortly.'});
   }
-  if(!sug.length){ sug.push({ic:'✍️', tx:'Send a friendly follow-up to re-engage and confirm next steps.', action:'sms', draft:'Hi '+first+', just following up — anything I can help with on your vehicle search?'}); }
+  if(!sug.length){ sug.push({ic:'âœï¸', tx:'Send a friendly follow-up to re-engage and confirm next steps.', action:'sms', draft:'Hi '+first+', just following up â€” anything I can help with on your vehicle search?'}); }
   return sug.slice(0,4);
 }
 function mhSugsHtml(t){
@@ -3959,22 +3966,22 @@ function mhSummaryHtml(t){
   var collapsed=tbState.aiCollapsed?' collapsed':'';
   var bodyInner;
   if(d.empty){
-    bodyInner='<p class="dp-ai-empty">No prior engagement logged — early in the conversation. Keep following up to build history.</p>';
+    bodyInner='<p class="dp-ai-empty">No prior engagement logged â€” early in the conversation. Keep following up to build history.</p>';
   } else {
     var chips=d.stats.map(function(s){return '<span class="dp-ai-chip"><span class="ic">'+s.ic+'</span>'+s.l+' <span class="ct">'+s.ct+'</span></span>';}).join('');
-    if(d.last) chips+='<span class="dp-ai-last">· Last: '+msgEsc(d.last)+'</span>';
-    var help='<div class="dp-ai-help"><button class="dp-ai-help-btn" onclick="mhHelp()"><span class="dp-ai-spark">✦</span>Suggested Next Actions</button></div>';
+    if(d.last) chips+='<span class="dp-ai-last">Â· Last: '+msgEsc(d.last)+'</span>';
+    var help='<div class="dp-ai-help"><button class="dp-ai-help-btn" onclick="mhHelp()"><span class="dp-ai-spark">âœ¦</span>Suggested Next Actions</button></div>';
     var sugsBlock='';
-    if(tbState.aiLoading){ sugsBlock='<div class="dp-ai-sugs"><div class="dp-ai-loading"><span class="dp-ai-spark">✦</span>Analyzing conversation…</div></div>'; }
+    if(tbState.aiLoading){ sugsBlock='<div class="dp-ai-sugs"><div class="dp-ai-loading"><span class="dp-ai-spark">âœ¦</span>Analyzing conversationâ€¦</div></div>'; }
     else if(tbState.aiOpen){ sugsBlock='<div class="dp-ai-sugs">'+mhSugsHtml(t)+'</div>'; }
     bodyInner='<p class="dp-ai-text">'+d.narrative+'</p><div class="dp-ai-stats">'+chips+'</div>'+help+sugsBlock;
   }
   return '<div class="dp-ai'+collapsed+'">'+
     '<div class="dp-ai-head" onclick="mhToggleAi()">'+
-      '<span class="dp-ai-title"><span class="dp-ai-spark">✦</span>Conversation Summary</span>'+
+      '<span class="dp-ai-title"><span class="dp-ai-spark">âœ¦</span>Conversation Summary</span>'+
       '<div class="dp-ai-acts">'+
-        '<button class="dp-ai-refresh" onclick="event.stopPropagation();mhRegen()" title="Regenerate"><span class="ic">⟳</span></button>'+
-        '<span class="dp-ai-chev">▾</span>'+
+        '<button class="dp-ai-refresh" onclick="event.stopPropagation();mhRegen()" title="Regenerate"><span class="ic">âŸ³</span></button>'+
+        '<span class="dp-ai-chev">â–¾</span>'+
       '</div>'+
     '</div>'+
     '<div class="dp-ai-body">'+bodyInner+'</div>'+
@@ -4000,7 +4007,7 @@ function mhSugAct(i){
     window.location.href='../coreconnect_appointments/coreconnect_appointments.html?new=appointment'+(lead?('&lead='+lead.no):'');
     return;
   }
-  // sms draft → prefill this page's composer
+  // sms draft â†’ prefill this page's composer
   var ta=document.getElementById('dp-textarea');
   if(ta){ ta.value=s.draft||''; if(typeof onReplyInput==='function') onReplyInput(); ta.focus(); }
 }
@@ -4033,7 +4040,7 @@ function renderDetail(){
       body += `<div class="dp-daysep"><div class="dp-daysep-line"></div><span class="dp-daysep-label">${dl}</span><div class="dp-daysep-line"></div></div>`;
       lastDay = dl;
     }
-    const delivered = m.dir==='out' ? '<span class="dp-delivered">✓ Delivered</span>' : '';
+    const delivered = m.dir==='out' ? '<span class="dp-delivered">âœ“ Delivered</span>' : '';
     body += `<div class="dp-msg ${m.dir}">
       ${m.text ? `<div class="dp-bubble">${msgEsc(m.text)}</div>` : ''}
       ${attListHtml(m.attachments)}
@@ -4050,7 +4057,7 @@ function renderDetail(){
         <div class="dp-head-av" style="background:${t.clr}22;color:${t.clr};">${t.av}</div>
         <div class="dp-head-info">
           <div class="dp-head-name">${msgEsc(t.contact)} ${lineBadge}</div>
-          <div class="dp-head-num">${msgEsc(t.num)}${t.lineType==='department'?' · via '+msgEsc(t.lineNumber):''}</div>
+          <div class="dp-head-num">${msgEsc(t.num)}${t.lineType==='department'?' Â· via '+msgEsc(t.lineNumber):''}</div>
         </div>
       </div>
       <div class="dp-head-actions">
@@ -4075,7 +4082,7 @@ function renderDetail(){
         Sent From: <span id="sms-from-agent">${msgEsc(tbState.replyFrom)}</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <textarea class="dp-textarea" id="dp-textarea" placeholder="Type a message…"
+      <textarea class="dp-textarea" id="dp-textarea" placeholder="Type a messageâ€¦"
         rows="1" maxlength="320"
         oninput="onReplyInput()" onkeydown="onReplyKeyDown(event)"></textarea>
     </div>
@@ -4089,7 +4096,7 @@ function renderDetail(){
       <button class="att-clip" type="button" onclick="document.getElementById('sms-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
       <div class="dp-foot-meta">
         <span class="dp-counter" id="dp-counter">0/160</span>
-        <span class="dp-hint">⌘+Enter to send</span>
+        <span class="dp-hint">âŒ˜+Enter to send</span>
       </div>
       <button class="dp-send-btn" id="dp-send-btn" onclick="sendReply()" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -4102,24 +4109,24 @@ function renderDetail(){
   if(typeof attRenderTray==='function') attRenderTray('sms');
 }
 
-// Mobile back arrow — clear selection and slide the overlay away.
+// Mobile back arrow â€” clear selection and slide the overlay away.
 function backToList(){
   hideDetailPane();
 }
 
-// "Call" action — open the dialer preloaded with this conversation's contact.
+// "Call" action â€” open the dialer preloaded with this conversation's contact.
 function openDialerForThread(id){
   const t = THREADS.find(x=>x.id===id);
   if(!t) return;
-  if(isCalling) return;            // already on a call — ignore
+  if(isCalling) return;            // already on a call â€” ignore
   if(!dialerOpen) toggleDialer();  // open the panel so the user sees the call lifecycle
   loadRecentCall(t.num, t.contact, t.av, t.clr);
-  // Start the call automatically — small delay so the panel slide-in isn't
+  // Start the call automatically â€” small delay so the panel slide-in isn't
   // competing with the calling-overlay swap.
   setTimeout(initiateCall, 250);
 }
 
-/* ============ REPLY COMPOSER (step 1) — append outbound message to the selected thread ============ */
+/* ============ REPLY COMPOSER (step 1) â€” append outbound message to the selected thread ============ */
 function onReplyInput(){
   const ta = document.getElementById('dp-textarea');
   const counter = document.getElementById('dp-counter');
@@ -4185,12 +4192,12 @@ function sendReply(){
   if(newTa) newTa.focus();
 }
 
-/* ============ AI COMPOSE (step 3) — drop a suggested reply into the textarea ============ */
+/* ============ AI COMPOSE (step 3) â€” drop a suggested reply into the textarea ============ */
 const AI_SMS_SUGGESTIONS = [
-  "Hi {first}, thanks for your message! When's a good time to follow up — later today or tomorrow?",
+  "Hi {first}, thanks for your message! When's a good time to follow up â€” later today or tomorrow?",
   "Hey {first}, just checking in. Happy to walk through any questions whenever you're ready.",
   "Hi {first}, here's a quick recap of where things stand and the next steps. Let me know if you'd like to set a time to dig in.",
-  "Hey {first}, following up — let me know if you'd like me to send over additional details or schedule a tour.",
+  "Hey {first}, following up â€” let me know if you'd like me to send over additional details or schedule a tour.",
 ];
 let aiSmsIdx = 0;
 
@@ -4210,10 +4217,10 @@ function aiCompose(){
   ta.setSelectionRange(ta.value.length, ta.value.length);
 }
 
-/* ============ EMAIL COMPOSER MODAL (step 1: shell) — cloned from call history v29 ============ */
+/* ============ EMAIL COMPOSER MODAL (step 1: shell) â€” cloned from call history v29 ============ */
 let emState = { contact:null };
 
-// Email thread (inbound/outbound history) — keyed by thread id
+// Email thread (inbound/outbound history) â€” keyed by thread id
 const MAIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>';
 const TICK_SVG  = '<span class="em-msg-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
 const emThreads = {};
@@ -4363,7 +4370,7 @@ function showEmToast(){
   t._hideTimer = setTimeout(()=>t.classList.remove('show'), 2500);
 }
 
-/* Rich-text toolbar (step 2) — execCommand-based formatting for the email body */
+/* Rich-text toolbar (step 2) â€” execCommand-based formatting for the email body */
 function emEx(cmd, val, e){
   if(e){ e.preventDefault(); e.stopPropagation(); }
   const content = document.getElementById('em-content');
@@ -4388,11 +4395,11 @@ function emLink(e){
   }
 }
 
-/* AI email compose (step 3) — fills subject (if blank) + body with a suggestion */
+/* AI email compose (step 3) â€” fills subject (if blank) + body with a suggestion */
 const AI_EMAIL_SUGGESTIONS = [
   { subject:"Following up on our conversation",
     body:"<p>Hi {first},</p><p>Thanks for your message. I wanted to follow up in writing with a quick summary of what we discussed and the next steps.</p><p>If you have any questions in the meantime, feel free to reply here or give me a call directly.</p><p>Best regards,<br>Angel Garcia<br>CoreConnect</p>" },
-  { subject:"Next steps — your inquiry",
+  { subject:"Next steps â€” your inquiry",
     body:"<p>Hi {first},</p><p>Following up on your inquiry. I'd love to learn a bit more about what you're looking for so I can put together the right options for you.</p><p>What works best for a quick call this week?</p><p>Best,<br>Angel Garcia</p>" },
   { subject:"Quick check-in",
     body:"<p>Hi {first},</p><p>Just a quick note to see how things are progressing. Happy to walk through any questions or send over additional details if it would help.</p><p>Let me know what works best for you.</p><p>Thanks,<br>Angel Garcia</p>" },
@@ -4420,10 +4427,10 @@ function aiEmailCompose(){
   sel.addRange(range);
 }
 
-/* ============ NEW MESSAGE MODAL (step 1) — compose to one or more uncontacted leads ============ */
+/* ============ NEW MESSAGE MODAL (step 1) â€” compose to one or more uncontacted leads ============ */
 let nmRecipients = [];   // [{name, phone, av, color}]
 let nmActiveIdx = -1;    // highlighted suggestion index
-// "Sent From" identity for the New Message modal — a user name, or "<Dept> (Dept)".
+// "Sent From" identity for the New Message modal â€” a user name, or "<Dept> (Dept)".
 let nmFrom = MSG_CURRENT_USER.name;
 
 // Leads we have NOT yet contacted = dialer lead directory minus numbers already in THREADS.
@@ -4602,10 +4609,10 @@ function sendNewMessage(){
   toast._t = setTimeout(()=>toast.classList.remove('show'), 2500);
 }
 
-// AI compose for the New message modal — drops a suggested opener into the textarea.
+// AI compose for the New message modal â€” drops a suggested opener into the textarea.
 let aiNmIdx = 0;
 const AI_NM_SUGGESTIONS = [
-  "Hi {name}, thanks for your interest! I'd love to help you find the right fit — do you have a few minutes to chat?",
+  "Hi {name}, thanks for your interest! I'd love to help you find the right fit â€” do you have a few minutes to chat?",
   "Hello {name}, reaching out about your recent inquiry. Happy to answer any questions or set up a time to connect.",
   "Hi {name}, just following up to introduce myself. Let me know what you're looking for and I'll put together some options.",
   "Hey {name}, wanted to personally welcome you. Is there a good time this week for a quick call?",
@@ -4625,7 +4632,7 @@ function aiNewMessageCompose(){
   ta.setSelectionRange(ta.value.length, ta.value.length);
 }
 
-// ⌘/Ctrl+Enter sends from anywhere inside the email modal
+// âŒ˜/Ctrl+Enter sends from anywhere inside the email modal
 document.addEventListener('keydown', e => {
   const modal = document.getElementById('em-modal');
   if(!modal || !modal.classList.contains('show')) return;
@@ -4635,7 +4642,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ============ SENT FROM picker (step 2) — cloned from call history v29 ============ */
+/* ============ SENT FROM picker (step 2) â€” cloned from call history v29 ============ */
 const MODAL_FROM_USERS = [
   {key:'AG', name:'Angel Garcia',  role:'BDC Agent',       color:'#22c88a'},
   {key:'DP', name:'David P.',      role:'Sales',            color:'#4f7cff'},
@@ -4780,16 +4787,16 @@ function openConferenceFromThread(threadId){
   openConferenceSetup();
   if(t){ ccParticipants.push({ id:'seed-'+t.id, kind:'lead', name:t.contact, meta:t.num||t.email||'\u2014', color:t.clr||'var(--ac)', locked:false }); ccRender(); }
 }
-// ── CONFERENCE CALL SETUP ─────────────────────
+// â”€â”€ CONFERENCE CALL SETUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Participant shape: { id, kind:'host'|'lead'|'team'|'external', key?, name, meta, color, locked? }
 // `kind` drives the badge color/label; `locked` prevents removal (host + lead).
 let ccParticipants = [];
 let ccPopTab = 'team'; // 'team' | 'external'
 
 function openConferenceSetup(){
-  // Seed initial participants — host (current user) + lead (if a contact panel is open)
+  // Seed initial participants â€” host (current user) + lead (if a contact panel is open)
   ccParticipants = [];
-  // The host is always the current user. We don't store a real session, so use David P. (DP) — first in confTeam.
+  // The host is always the current user. We don't store a real session, so use David P. (DP) â€” first in confTeam.
   const host = confTeam[0]; // David P., Sales Manager
   ccParticipants.push({
     id: 'host-'+host.key,
@@ -4821,13 +4828,13 @@ function openConferenceSetup(){
   document.getElementById('cc-ext-name').value = '';
   document.getElementById('cc-ext-contact').value = '';
   document.getElementById('cc-ext-add').disabled = true;
-  // Phase 2E — default to "Current" tab on phone (so user sees the seeded host + lead)
+  // Phase 2E â€” default to "Current" tab on phone (so user sees the seeded host + lead)
   ccSetCol('left');
   ccRender();
   document.getElementById('cc-modal-backdrop').classList.add('open');
 }
 
-// ── Phase 2E: Mobile tab switcher between Current participants ('left') and Add ('right') ──
+// â”€â”€ Phase 2E: Mobile tab switcher between Current participants ('left') and Add ('right') â”€â”€
 function ccSetCol(which){
   const cols = document.getElementById('cc-cols');
   if(cols){
@@ -4869,7 +4876,7 @@ function ccRender(){
   }).join('');
   // Counter
   document.getElementById('cc-count').textContent = ccParticipants.length;
-  // Phase 2E — also update the mobile-tab count
+  // Phase 2E â€” also update the mobile-tab count
   const mobCount = document.getElementById('cc-mobile-count');
   if(mobCount) mobCount.textContent = ccParticipants.length;
   // Start button enabled when at least 1 invited participant (host doesn't count alone)
@@ -4885,7 +4892,7 @@ function ccRemoveParticipant(id){
   ccRender();
 }
 
-// ── Add Participant: tab + search + add ───────
+// â”€â”€ Add Participant: tab + search + add â”€â”€â”€â”€â”€â”€â”€
 function ccSetPopTab(tab){
   ccPopTab = tab;
   document.querySelectorAll('.cc-pop-tab').forEach(t => t.classList.toggle('active', t.dataset.popTab === tab));
@@ -4906,7 +4913,7 @@ function ccRenderTeam(q){
   const list = document.getElementById('cc-pop-team-list');
   if(!list) return;
   const query = (q || '').trim().toLowerCase();
-  // Filter out the host (already in participants) — but show all OTHER confTeam, marking added ones as disabled
+  // Filter out the host (already in participants) â€” but show all OTHER confTeam, marking added ones as disabled
   const hostKey = ccParticipants.find(p => p.kind === 'host')?.key;
   const matches = confTeam.filter(u => u.key !== hostKey).filter(u =>
     !query || u.name.toLowerCase().includes(query) || u.role.toLowerCase().includes(query) || u.key.toLowerCase().includes(query)
@@ -4987,7 +4994,7 @@ function ccStartCall(){
   lcStartCall(title, snapshot);
 }
 
-// ── LIVE CALL BAR ─────────────────────────────
+// â”€â”€ LIVE CALL BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // State for the active call. When `lcActive` is true the bar is showing.
 let lcActive = false;
 let lcStartedAt = null;       // Date the call started
@@ -5008,7 +5015,7 @@ function lcStartCall(title, participants){
   lcTitle = title || 'Conference Call';
   lcCallParticipants = participants;
   lcStates = { mute:false, cam:false, share:false };
-  // Seed per-participant statuses — mute a couple at random for realism (host always unmuted)
+  // Seed per-participant statuses â€” mute a couple at random for realism (host always unmuted)
   lcParticipantStates = {};
   participants.forEach((p, i) => {
     lcParticipantStates[p.id] = { muted: p.kind === 'host' ? false : (i % 3 === 0 && i > 0) };
@@ -5071,7 +5078,7 @@ function lcTickTimer(){
 function lcToggle(which){
   if(!lcActive) return;
   lcStates[which] = !lcStates[which];
-  // Map: which → bar element id, fullscreen element id
+  // Map: which â†’ bar element id, fullscreen element id
   const map = {
     mute:  ['lc-mute',  'fs-mute'],
     cam:   ['lc-cam',   'fs-cam'],
@@ -5103,7 +5110,7 @@ function lcToggle(which){
   }
 }
 
-// ── Bar click → expand to fullscreen ──────────
+// â”€â”€ Bar click â†’ expand to fullscreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function lcToggleParticipants(e){
   // (Repurposed) Clicking the bar now expands to the fullscreen call view.
   // The right-side controls (mute/cam/share/end) stop propagation so they don't trigger this.
@@ -5141,7 +5148,7 @@ function lcRenderPanel(){
   }).join('');
 }
 
-// ── End call (with confirm) ───────────────────
+// â”€â”€ End call (with confirm) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function lcRequestEnd(e){
   if(e) e.stopPropagation();
   if(!lcActive) return;
@@ -5210,7 +5217,7 @@ function lcReset(){
   });
 }
 
-// ── FULLSCREEN CALL VIEW ──────────────────────
+// â”€â”€ FULLSCREEN CALL VIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let lcFullscreenOpen = false;
 let lcFocusedId = null;        // id of participant currently in focus mode (null = grid)
 let fsSpeakingInterval = null; // timer for speaking simulation
@@ -5254,7 +5261,7 @@ function lcMinimize(){
   if(kb) kb.classList.remove('open');
 }
 
-// Build a deterministic SVG "portrait" — gradient circular background + large initials.
+// Build a deterministic SVG "portrait" â€” gradient circular background + large initials.
 // Each participant gets a consistent visual identity based on their color.
 function fsBuildPortraitSVG(name, color){
   const initials = (name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
@@ -5369,7 +5376,7 @@ function lcExitFocus(){
   fsRenderTiles();
 }
 
-// ── Speaking simulation ───────────────────────
+// â”€â”€ Speaking simulation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Every ~2.5s, pick a random unmuted participant to be the "speaker".
 // ~20% chance of silence (no speaker). Updates only the affected tiles for performance.
 function fsStartSpeakingSim(){
@@ -5396,7 +5403,7 @@ function fsStopSpeakingSim(){
   fsCurrentSpeaker = null;
 }
 
-// ── Browser fullscreen ────────────────────────
+// â”€â”€ Browser fullscreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function fsToggleFullscreen(){
   const fs = document.getElementById('fs-call');
   if(!fs) return;
@@ -5407,7 +5414,7 @@ function fsToggleFullscreen(){
   }
 }
 
-// ── Kebab menu ────────────────────────────────
+// â”€â”€ Kebab menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function fsToggleKebab(e){
   if(e) e.stopPropagation();
   const kb = document.getElementById('fs-kebab-menu');
@@ -5419,7 +5426,7 @@ function fsKebabAction(action){
   const kb = document.getElementById('fs-kebab-menu');
   if(kb) kb.classList.remove('open');
   if(action === 'participants'){
-    // Open the participants panel above the bar — but if we're fullscreen, briefly minimize to bar to show it
+    // Open the participants panel above the bar â€” but if we're fullscreen, briefly minimize to bar to show it
     lcMinimize();
     setTimeout(() => {
       lcRenderPanel();

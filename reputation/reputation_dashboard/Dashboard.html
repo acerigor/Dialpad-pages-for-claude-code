@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+  :root{
+    --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;
+    --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
+    --tx:#e8eaf0;--mu:#7a7f94;
+    --ac:#4f7cff;--ac2:#6e9dff;
+    --gr:#22c88a;--am:#f5a623;--rd:#e85555;
+    --teal:#2dd4bf;--purple:#c4b5fd;
+    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  }
+
+  /* ── Top header (kept from the app, fixed 64px) ── */
+  .top-header{position:fixed;top:0;left:0;right:0;height:64px;
+    background:var(--bg);border-bottom:0.5px solid var(--brd);
+    display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+  .top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;
+    color:#fff;display:flex;align-items:center;gap:10px;}
+  .top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .th-left{display:flex;align-items:center;gap:10px;}
+  .hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;
+    border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+  .hamburger-btn:hover{background:rgba(255,255,255,.05);}
+  .top-header-right{display:flex;align-items:center;gap:10px;}
+  .header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+    border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+  .header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;
+    background:var(--rd);border:2px solid var(--bg);}
+
+  /* ── Reputation sidebar (our dark style guide) ── */
+  .rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);
+    background:var(--bg);border-right:0.5px solid var(--brd);
+    display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;
+    transition:transform .2s ease-out;}
+  .rep-nav{display:flex;flex-direction:column;gap:3px;}
+  .rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;
+    border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;
+    transition:background .12s,color .12s;user-select:none;}
+  .rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .rep-item.active{background:var(--ac);color:#fff;}
+  .rep-item.active:hover{background:var(--ac);color:#fff;}
+  .rep-item svg{width:18px;height:18px;flex:none;}
+  .rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rep-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+
+  /* ── Content ── */
+  .rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+  .rep-empty{margin-top:24px;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);
+    min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
+  .rep-empty svg{width:46px;height:46px;color:var(--mu);opacity:.55;margin-bottom:4px;}
+  .rep-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+
+  /* ── Toolbar (identical to the app .toolbar / .tbtn) ── */
+  .rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:relative;z-index:55;flex-wrap:wrap;}
+  .rep-sp{flex:1;}
+  .rep-content{padding:24px 20px 60px;}
+  .rep-tbtn{display:flex;align-items:center;gap:5px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+  .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+  .rep-tbtn svg{width:15px;height:15px;flex:none;}
+  .rep-chev{transition:transform .15s;}
+  .rep-dd{position:relative;}
+  .rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
+  .rep-dd.open .rep-tbtn svg{color:var(--ac2);}
+  .rep-dd.open .rep-chev{transform:rotate(180deg);}
+  .rep-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:210px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+  .rep-dd.open .rep-menu{display:block;}
+  .rep-menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 13px;background:transparent;border:none;border-bottom:0.5px solid var(--brd);color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;cursor:pointer;transition:background .12s,color .12s;}
+  .rep-menu-item:last-child{border-bottom:none;}
+  .rep-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+  .rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
+  .rep-menu-item.checked{color:var(--ac2);}
+  .rep-menu-item.checked .rep-mi-check{opacity:1;}
+
+  /* ── Widgets drawer ── */
+  .rep-drawer-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:80;}
+  .rep-drawer-backdrop.show{display:block;}
+  .rep-drawer{position:fixed;top:64px;right:0;bottom:0;width:340px;max-width:88vw;background:var(--sur);border-left:0.5px solid var(--brd2);box-shadow:-8px 0 32px rgba(0,0,0,.5);z-index:81;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+  .rep-drawer.open{transform:translateX(0);}
+  .rep-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:0.5px solid var(--brd);}
+  .rep-drawer-head span{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-drawer-x{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+  .rep-drawer-x:hover{border-color:var(--rd);color:var(--rd);}
+  .rep-drawer-body{flex:1;overflow-y:auto;padding:14px 18px;}
+  .rep-drawer-sec{font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+  .rep-wrow + .rep-drawer-sec{margin-top:18px;}
+  .rep-wgroup + .rep-wgroup{margin-top:8px;}
+  .rep-wgroup-head{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:9px 0;user-select:none;transition:color .12s;}
+  .rep-wgroup-head:hover{color:var(--tx);}
+  .rep-wgroup-chev{width:15px;height:15px;flex:none;color:var(--mu);transition:transform .15s;}
+  .rep-wgroup.collapsed .rep-wgroup-chev{transform:rotate(-90deg);}
+  .rep-wgroup.collapsed .rep-wgroup-body{display:none;}
+  .rep-wrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--brd);}
+  .rep-wrow:last-child{border-bottom:none;}
+  .rep-wrow-lbl{font-size:13px;color:var(--tx);}
+  .rep-switch{width:38px;height:22px;border-radius:22px;background:var(--sur2);border:0.5px solid var(--brd2);position:relative;cursor:pointer;flex:none;transition:background .15s,border-color .15s;}
+  .rep-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#cfd3e0;transition:transform .15s,background .15s;}
+  .rep-switch.on{background:var(--ac);border-color:var(--ac);}
+  .rep-switch.on::after{transform:translateX(16px);background:#fff;}
+  /* ── widget grid + cards (drag to rearrange) ── */
+  .rep-wgrid{display:flex;flex-wrap:wrap;gap:16px;}
+  .rep-wcard{flex:1 1 calc(50% - 8px);min-width:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;position:relative;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s,opacity .15s,transform .15s;}
+  .rep-wcard:hover{border-color:rgba(255,255,255,.18);}
+  .rep-wcard.dragging{opacity:.35;transform:scale(.98);cursor:grabbing;}
+  .rep-wcard.touch-source{opacity:.35;}
+  .rep-wcard.touch-ghost{position:fixed;top:0;left:0;z-index:9000;pointer-events:none;box-shadow:0 24px 60px rgba(0,0,0,.55);transform:scale(1.03);transform-origin:center top;transition:none;border-color:var(--ac);}
+  .rep-wcard.drop-target{border-color:var(--ac);background:rgba(79,124,255,.04);box-shadow:0 0 0 2px rgba(79,124,255,.18) inset;}
+  .rep-wcard-head{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--brd);min-height:48px;}
+  .rep-wcard-drag{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--mu);cursor:grab;border-radius:8px;flex-shrink:0;opacity:.5;transition:opacity .12s,color .12s,background .12s;}
+  .rep-wcard:hover .rep-wcard-drag{opacity:1;}
+  .rep-wcard-drag:hover{color:var(--ac2);background:rgba(255,255,255,.05);opacity:1;}
+  .rep-wcard-drag:active{cursor:grabbing;}
+  .rep-wcard-title{flex:1;font-size:11px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rep-wcard-kebab{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:8px;transition:color .12s,background .12s;flex-shrink:0;}
+  .rep-wcard-kebab:hover{color:var(--ac2);background:rgba(255,255,255,.05);}
+  .rep-wcard-menu{display:none;position:absolute;top:46px;right:10px;z-index:80;min-width:150px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+  .rep-wcard-menu.open{display:block;}
+  .rep-wcard-menu-item{display:flex;align-items:center;gap:10px;padding:11px 13px;font-size:12.5px;color:var(--tx);cursor:pointer;background:transparent;border:none;width:100%;font-family:var(--font);text-align:left;}
+  .rep-wcard-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+  .rep-wcard-body{flex:1;padding:16px;min-height:148px;display:flex;}
+  .rep-w-ph{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:0.5px dashed var(--brd2);border-radius:9px;color:var(--mu);}
+  .rep-w-ph svg{width:30px;height:30px;opacity:.5;}
+  .rep-w-ph span{font-size:12px;}
+  /* Overall Summary widget body */
+  .rep-osum{flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-around;gap:20px 8px;text-align:center;}
+  .rep-osum-cell{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:120px;flex:1;}
+  .rep-osum-lbl{font-size:12px;color:var(--mu);font-weight:500;}
+  .rep-osum-num{font-size:28px;font-weight:700;color:var(--tx);font-family:var(--font);line-height:1;letter-spacing:-.5px;}
+  .rep-osum-num.rating{color:var(--am);}
+  .rep-osum-unit{font-size:14px;color:var(--mu);font-weight:500;margin-left:2px;}
+  .rep-osum-sent{font-size:11px;color:var(--mu);}
+  .rep-osum-sent .neg{color:var(--rd);}
+  .rep-osum-sent .pos{color:var(--gr);}
+  .rep-osum-sent .sep{color:var(--brd2);margin:0 3px;}
+  .rep-osum-badge{display:inline-block;background:var(--gr);color:#0f1117;font-size:22px;font-weight:700;padding:8px 16px;border-radius:8px;line-height:1;}
+  .rep-osum-badge-unit{font-size:12px;font-weight:500;color:rgba(15,17,23,.65);}
+  /* Period Summary widget body */
+  .rep-psum{flex:1;}
+  .rep-psum-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .rep-psum-table th{text-align:left;font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;padding:0 12px 8px 0;border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
+  .rep-psum-table td{padding:12px 12px 0 0;color:var(--tx);vertical-align:baseline;}
+  .rep-psum-num{font-weight:700;font-size:14px;}
+  .rep-psum-sent{font-size:11px;color:var(--mu);margin-left:8px;}
+  .rep-psum-sent .neg{color:var(--rd);}
+  .rep-psum-sent .pos{color:var(--gr);}
+  .rep-psum-sent .sep{color:var(--brd2);margin:0 3px;}
+  .rep-psum-rating{color:var(--am);font-weight:700;font-size:15px;}
+  .rep-psum-unit{color:var(--mu);font-size:12px;margin-left:2px;}
+  /* Sentiment Trend widget (stacked bar chart) */
+  .rep-strend{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .rep-strend-scroll{overflow-x:auto;overflow-y:hidden;}
+  .rep-strend-scroll::-webkit-scrollbar{height:8px;}
+  .rep-strend-scroll::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:8px;}
+  .rep-strend-scroll::-webkit-scrollbar-track{background:transparent;}
+  .rep-strend-svg{width:860px;height:auto;display:block;overflow:visible;}
+  .rep-strend-svg .st-grid{stroke:var(--brd);stroke-width:1;}
+  .rep-strend-svg .st-axis{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-strend-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-strend-svg .st-total{fill:var(--tx);font-size:13px;font-weight:600;font-family:var(--font);}
+  .rep-strend-svg .st-pos{fill:var(--gr);}
+  .rep-strend-svg .st-neu{fill:var(--am);}
+  .rep-strend-svg .st-neg{fill:var(--rd);}
+  .rep-strend-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
+  .rep-strend-leg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mu);}
+  .rep-strend-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none;}
+  @media (max-width:640px){ .rep-wcard{flex-basis:100%;} }
+
+  /* ── Mobile drawer ── */
+  .rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+  .rep-backdrop.show{display:block;}
+  @media (max-width:900px){
+    .hamburger-btn{display:flex;}
+    .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+    .rep-sb.open{transform:translateX(0);}
+    .rep-main{margin-left:0;}
+    .rep-bar{padding:10px 14px;}
+    .rep-content{padding:18px 14px 60px;}
+  }
+
+  /* ── nav toast ── */
+  .nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+    padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;
+    transform:translateX(380px);opacity:0;pointer-events:none;
+    transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+  .nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+  .nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);
+    color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+  .nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+  .nav-toast-text span{color:var(--mu);font-size:12px;}
+  .nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;
+    cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+  .nav-toast-close:hover{opacity:1;color:var(--tx);}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER (kept) -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="showNavToast('Notifications','You have no new notifications.')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- REPUTATION SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item active" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item" data-rep="Listings" onclick="repNav('Listings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+      <span class="rep-lbl">Listings</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Requests" onclick="repNav('Requests')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <span class="rep-lbl">Requests</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Surveys" onclick="repNav('Surveys')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="rep-lbl">Surveys</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Insights" onclick="repNav('Insights')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+      <span class="rep-lbl">Insights</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Reputation Score X" onclick="repNav('Reputation Score X')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4 4 0 1 0 5 0z"/></svg>
+      <span class="rep-lbl">Reputation Score X</span>
+    </div>
+    <div class="rep-item" data-rep="Reports" onclick="repNav('Reports')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
+      <span class="rep-lbl">Reports</span>
+    </div>
+    <div class="rep-item" data-rep="Resources" onclick="repNav('Resources')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="rep-lbl">Resources</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="rep-bar">
+      <div class="rep-dd" id="rep-filter">
+        <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)" aria-haspopup="menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span id="rep-filter-label">Current Year</span>
+          <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="rep-menu" id="rep-filter-menu" role="menu">
+          <button class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        </div>
+      </div>
+      <div class="rep-sp"></div>
+      <button class="rep-tbtn" onclick="repWidgetsOpen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span>Widgets</span></button>
+  </div>
+  <div class="rep-content">
+    <div id="rep-grid"></div>
+  </div>
+</div>
+
+<!-- WIDGETS DRAWER -->
+<div class="rep-drawer-backdrop" id="rep-widgets-backdrop" onclick="repWidgetsClose()"></div>
+<div class="rep-drawer" id="rep-widgets-panel" aria-label="Widgets">
+  <div class="rep-drawer-head">
+    <span>Widgets</span>
+    <button class="rep-drawer-x" onclick="repWidgetsClose()" aria-label="Close">&#x2715;</button>
+  </div>
+  <div class="rep-drawer-body">
+    <div class="rep-wgroup collapsed">
+      <div class="rep-wgroup-head" onclick="repWGroupToggle(this)"><span>Reviews</span><svg class="rep-wgroup-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="rep-wgroup-body">
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Overall Summary</span><div class="rep-switch on" data-w="reviews-overall-summary" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Period Summary</span><div class="rep-switch on" data-w="reviews-period-summary" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Sentiment Trend</span><div class="rep-switch on" data-w="reviews-sentiment-trend" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Rating Trend</span><div class="rep-switch on" data-w="reviews-rating-trend" onclick="repWidgetToggle(this)"></div></div>
+      </div>
+    </div>
+    <div class="rep-wgroup collapsed">
+      <div class="rep-wgroup-head" onclick="repWGroupToggle(this)"><span>Requests</span><svg class="rep-wgroup-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="rep-wgroup-body">
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Period Summary</span><div class="rep-switch on" data-w="requests-period-summary" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Trend</span><div class="rep-switch on" data-w="requests-trend" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Leaderboard</span><div class="rep-switch on" data-w="requests-leaderboard" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">History</span><div class="rep-switch on" data-w="requests-history" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Unsubscribers</span><div class="rep-switch on" data-w="requests-unsubscribers" onclick="repWidgetToggle(this)"></div></div>
+      </div>
+    </div>
+    <div class="rep-wgroup collapsed">
+      <div class="rep-wgroup-head" onclick="repWGroupToggle(this)"><span>Listing</span><svg class="rep-wgroup-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="rep-wgroup-body">
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Total Customer Actions</span><div class="rep-switch on" data-w="listing-total-customer-actions" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Listing Impressions Growth</span><div class="rep-switch on" data-w="listing-impressions-growth" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Customer Actions Growth</span><div class="rep-switch on" data-w="listing-customer-actions-growth" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Google Calls By Day of Week</span><div class="rep-switch on" data-w="listing-google-calls-dow" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Google Impressions</span><div class="rep-switch on" data-w="listing-google-impressions" onclick="repWidgetToggle(this)"></div></div>
+      </div>
+    </div>
+    <div class="rep-wgroup collapsed">
+      <div class="rep-wgroup-head" onclick="repWGroupToggle(this)"><span>Surveys</span><svg class="rep-wgroup-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="rep-wgroup-body">
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Sentiment Trend</span><div class="rep-switch on" data-w="surveys-sentiment-trend" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Rating Trend</span><div class="rep-switch on" data-w="surveys-rating-trend" onclick="repWidgetToggle(this)"></div></div>
+        <div class="rep-wrow"><span class="rep-wrow-lbl">Overall Summary</span><div class="rep-switch on" data-w="surveys-overall-summary" onclick="repWidgetToggle(this)"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </div>
+  <div class="nav-toast-text">
+    <strong id="nav-toast-title">Coming soon</strong>
+    <span id="nav-toast-body">This feature is under construction.</span>
+  </div>
+  <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
+</div>
+
+<script>
+var _navToastTimer=null;
+function showNavToast(title, body){
+  var t=document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent=title;
+  if(body)  document.getElementById('nav-toast-body').textContent=body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer=setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t=document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer=null; }
+}
+function repNav(label){
+  var items=document.querySelectorAll('.rep-item');
+  items.forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep')===label); });
+  if(window.innerWidth<=900) closeRepDrawer();
+  if(label==='Dashboards') return; // already here
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb=document.getElementById('rep-sb'), bd=document.getElementById('rep-backdrop');
+  var open=sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+/* toolbar: filter dropdown */
+function repFilterToggle(e){ if(e) e.stopPropagation(); document.getElementById('rep-filter').classList.toggle('open'); }
+function repFilterClose(){ var f=document.getElementById('rep-filter'); if(f) f.classList.remove('open'); }
+function repFilterPick(el, label){
+  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it===el); });
+  var lbl=document.getElementById('rep-filter-label'); if(lbl) lbl.textContent=label;
+  repFilterClose();
+}
+/* toolbar: widgets drawer */
+function repWidgetsOpen(){ document.querySelectorAll('.rep-wgroup').forEach(function(x){ x.classList.add('collapsed'); }); repSyncDrawer(); document.getElementById('rep-widgets-panel').classList.add('open'); document.getElementById('rep-widgets-backdrop').classList.add('show'); }
+function repWidgetsClose(){ document.getElementById('rep-widgets-panel').classList.remove('open'); document.getElementById('rep-widgets-backdrop').classList.remove('show'); }
+
+/* ===== Widget registry + grid + drag-reorder + persistence (ported from dashboard) ===== */
+var REP_WKEY='cc_rep_widgets';
+var REP_WIDGETS=[
+  {id:'reviews-overall-summary', group:'Reviews', title:'Overall Summary'},
+  {id:'reviews-period-summary', group:'Reviews', title:'Period Summary'},
+  {id:'reviews-sentiment-trend', group:'Reviews', title:'Sentiment Trend'},
+  {id:'reviews-rating-trend', group:'Reviews', title:'Rating Trend'},
+  {id:'requests-period-summary', group:'Requests', title:'Period Summary'},
+  {id:'requests-trend', group:'Requests', title:'Trend'},
+  {id:'requests-leaderboard', group:'Requests', title:'Leaderboard'},
+  {id:'requests-history', group:'Requests', title:'History'},
+  {id:'requests-unsubscribers', group:'Requests', title:'Unsubscribers'},
+  {id:'listing-total-customer-actions', group:'Listing', title:'Total Customer Actions'},
+  {id:'listing-impressions-growth', group:'Listing', title:'Listing Impressions Growth'},
+  {id:'listing-customer-actions-growth', group:'Listing', title:'Customer Actions Growth'},
+  {id:'listing-google-calls-dow', group:'Listing', title:'Google Calls By Day of Week'},
+  {id:'listing-google-impressions', group:'Listing', title:'Google Impressions'},
+  {id:'surveys-sentiment-trend', group:'Surveys', title:'Sentiment Trend'},
+  {id:'surveys-rating-trend', group:'Surveys', title:'Rating Trend'},
+  {id:'surveys-overall-summary', group:'Surveys', title:'Overall Summary'}
+].map(function(w,i){ w.visible=true; w.order=i; return w; });
+function repGetW(id){ return REP_WIDGETS.filter(function(w){ return w.id===id; })[0]; }
+function repWSave(){ try{ localStorage.setItem(REP_WKEY, JSON.stringify(REP_WIDGETS.map(function(w){ return {id:w.id,visible:w.visible,order:w.order}; }))); }catch(e){} }
+function repWLoad(){ try{ var s=JSON.parse(localStorage.getItem(REP_WKEY)||'null'); if(Array.isArray(s)){ s.forEach(function(d){ var w=repGetW(d.id); if(w){ w.visible=!!d.visible; if(typeof d.order==='number') w.order=d.order; } }); } }catch(e){} }
+function repWEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+var REP_DRAG_SVG='<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="5" cy="3" r="1.3"/><circle cx="11" cy="3" r="1.3"/><circle cx="5" cy="8" r="1.3"/><circle cx="11" cy="8" r="1.3"/><circle cx="5" cy="13" r="1.3"/><circle cx="11" cy="13" r="1.3"/></svg>';
+var REP_KEBAB_SVG='<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="8" cy="3" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="8" cy="13" r="1.3"/></svg>';
+var REP_PH_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg>';
+var REP_OSUM_HTML=''
+  +'<div class="rep-osum">'
+    +'<div class="rep-osum-cell">'
+      +'<div class="rep-osum-lbl">Total Reviews</div>'
+      +'<div class="rep-osum-num">8,796</div>'
+      +'<div class="rep-osum-sent"><span class="neg">6% Negative</span><span class="sep">|</span><span class="neu">6% Neutral</span><span class="sep">|</span><span class="pos">88% Positive</span></div>'
+    +'</div>'
+    +'<div class="rep-osum-cell">'
+      +'<div class="rep-osum-lbl">Overall Rating</div>'
+      +'<div class="rep-osum-num rating">4.5<span class="rep-osum-unit">/5</span></div>'
+    +'</div>'
+    +'<div class="rep-osum-cell">'
+      +'<div class="rep-osum-lbl">Reputation Score</div>'
+      +'<div class="rep-osum-badge">856 <span class="rep-osum-badge-unit">/1,000</span></div>'
+    +'</div>'
+  +'</div>';
+var REP_PSUM_HTML=''
+  +'<div class="rep-psum"><table class="rep-psum-table">'
+    +'<thead><tr><th>Period</th><th>Total Reviews</th><th>Overall Rating</th></tr></thead>'
+    +'<tbody><tr>'
+      +'<td>Current Period</td>'
+      +'<td><span class="rep-psum-num">405</span><span class="rep-psum-sent"><span class="neg">10% Negative</span><span class="sep">|</span><span class="neu">6% Neutral</span><span class="sep">|</span><span class="pos">84% Positive</span></span></td>'
+      +'<td><span class="rep-psum-rating">4.3</span><span class="rep-psum-unit">/5</span></td>'
+    +'</tr></tbody>'
+  +'</table></div>';
+function buildSentimentTrend(){
+  var data=[
+    {neg:12,neu:3,pos:44},{neg:7,neu:4,pos:51},{neg:5,neu:4,pos:57},{neg:4,neu:3,pos:77},
+    {neg:7,neu:4,pos:75},{neg:4,neu:5,pos:72},{neg:15,neu:9,pos:81},{neg:5,neu:10,pos:77},
+    {neg:5,neu:9,pos:66},{neg:5,neu:8,pos:60},{neg:7,neu:4,pos:71},{neg:8,neu:5,pos:73}
+  ];
+  var W=860,H=320,mL=46,mR=16,mT=28,mB=46;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH, maxY=120;
+  function yp(v){ return y0 - (v/maxY)*plotH; }
+  var s='<svg class="rep-strend-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sentiment trend stacked bar chart">';
+  // gridlines + y labels
+  for(var v=0; v<=maxY; v+=20){
+    var gy=yp(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+v+'</text>';
+  }
+  // y-axis title
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Reviews</text>';
+  // bars
+  var n=data.length, slot=plotW/n, barW=slot*0.6;
+  for(var i=0;i<n;i++){
+    var d=data[i], total=d.neg+d.neu+d.pos;
+    var bx=mL + i*slot + (slot-barW)/2, cx=bx+barW/2;
+    var negH=(d.neg/maxY)*plotH, neuH=(d.neu/maxY)*plotH, posH=(d.pos/maxY)*plotH;
+    var yNeg=y0-negH, yNeu=yNeg-neuH, yPos=yNeu-posH;
+    s+='<rect class="st-neg" x="'+bx+'" y="'+yNeg+'" width="'+barW+'" height="'+negH+'"/>';
+    s+='<rect class="st-neu" x="'+bx+'" y="'+yNeu+'" width="'+barW+'" height="'+neuH+'"/>';
+    s+='<rect class="st-pos" x="'+bx+'" y="'+yPos+'" width="'+barW+'" height="'+posH+'" rx="1.5"/>';
+    s+='<text class="st-total" x="'+cx+'" y="'+(yPos-8)+'" text-anchor="middle">'+total+'</text>';
+    s+='<text class="st-axis" x="'+cx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket '+(i+1)+'</text>';
+  }
+  s+='</svg>';
+  return '<div class="rep-strend"><div class="rep-strend-scroll">'+s+'</div>'
+    +'<div class="rep-strend-legend">'
+      +'<span class="rep-strend-leg"><i style="background:var(--gr)"></i>Positive</span>'
+      +'<span class="rep-strend-leg"><i style="background:var(--am)"></i>Neutral</span>'
+      +'<span class="rep-strend-leg"><i style="background:var(--rd)"></i>Negative</span>'
+    +'</div>'
+  +'</div>';
+}
+var REP_STREND_HTML=buildSentimentTrend();
+function repWidgetBody(w){
+  if(w.id==='reviews-overall-summary') return REP_OSUM_HTML;
+  if(w.id==='reviews-period-summary') return REP_PSUM_HTML;
+  if(w.id==='reviews-sentiment-trend') return REP_STREND_HTML;
+  return '<div class="rep-w-ph">'+REP_PH_SVG+'<span>Preview coming soon</span></div>';
+}
+function repBuildCard(w){
+  return '<div class="rep-wcard" data-wid="'+w.id+'" draggable="false">'
+    +'<div class="rep-wcard-head">'
+      +'<div class="rep-wcard-drag" onmousedown="repWDragStart(\''+w.id+'\')" onmouseup="repWDragEnd(\''+w.id+'\')" ontouchstart="repTouchStart(event,\''+w.id+'\')" title="Drag to rearrange">'+REP_DRAG_SVG+'</div>'
+      +'<div class="rep-wcard-title">'+repWEsc(w.group)+' &middot; '+repWEsc(w.title)+'</div>'
+      +'<button class="rep-wcard-kebab" onclick="repCardMenu(event,\''+w.id+'\')" aria-label="Widget options">'+REP_KEBAB_SVG+'</button>'
+      +'<div class="rep-wcard-menu" id="rep-wmenu-'+w.id+'"><button class="rep-wcard-menu-item" onclick="repHideWidget(\''+w.id+'\')">Hide widget</button></div>'
+    +'</div>'
+    +'<div class="rep-wcard-body">'+repWidgetBody(w)+'</div>'
+  +'</div>';
+}
+function repRenderGrid(){
+  var grid=document.getElementById('rep-grid'); if(!grid) return;
+  var vis=REP_WIDGETS.filter(function(w){ return w.visible; }).sort(function(a,b){ return a.order-b.order; });
+  if(!vis.length){
+    grid.innerHTML='<div class="rep-empty">'+REP_PH_SVG+'<div class="rep-empty-title">No widgets shown</div><div class="rep-empty-sub">Open the Widgets panel to add widgets to the dashboard.</div></div>';
+    return;
+  }
+  grid.innerHTML='<div class="rep-wgrid">'+vis.map(repBuildCard).join('')+'</div>';
+  repWireDrag();
+}
+function repSyncDrawer(){ document.querySelectorAll('.rep-switch[data-w]').forEach(function(sw){ var w=repGetW(sw.getAttribute('data-w')); if(w) sw.classList.toggle('on', !!w.visible); }); }
+function repRefresh(){ repRenderGrid(); repSyncDrawer(); repWSave(); }
+/* drawer toggle */
+function repWidgetToggle(el){ var w=repGetW(el.getAttribute('data-w')); var on=el.classList.toggle('on'); if(w){ w.visible=on; repRefresh(); } }
+/* card kebab + hide */
+function repCardMenu(e,id){ if(e) e.stopPropagation(); var m=document.getElementById('rep-wmenu-'+id); if(!m) return; var open=m.classList.contains('open'); document.querySelectorAll('.rep-wcard-menu.open').forEach(function(x){ x.classList.remove('open'); }); if(!open) m.classList.add('open'); }
+function repHideWidget(id){ var w=repGetW(id); if(w){ w.visible=false; repRefresh(); } }
+document.addEventListener('mousedown', function(e){ if(e.target.closest && (e.target.closest('.rep-wcard-menu')||e.target.closest('.rep-wcard-kebab'))) return; document.querySelectorAll('.rep-wcard-menu.open').forEach(function(x){ x.classList.remove('open'); }); });
+/* mouse drag */
+var repDraggedId=null;
+function repWDragStart(id){ var c=document.querySelector('.rep-wcard[data-wid="'+id+'"]'); if(c) c.draggable=true; }
+function repWDragEnd(id){ var c=document.querySelector('.rep-wcard[data-wid="'+id+'"]'); if(c) c.draggable=false; }
+function repWireDrag(){
+  document.querySelectorAll('.rep-wcard').forEach(function(card){
+    card.addEventListener('dragstart', repOnDragStart);
+    card.addEventListener('dragend', repOnDragEnd);
+    card.addEventListener('dragover', repOnDragOver);
+    card.addEventListener('dragenter', repOnDragEnter);
+    card.addEventListener('dragleave', repOnDragLeave);
+    card.addEventListener('drop', repOnDrop);
+  });
+}
+function repOnDragStart(e){ repDraggedId=this.dataset.wid; if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', repDraggedId); }catch(_){} } var card=this; setTimeout(function(){ card.classList.add('dragging'); },0); }
+function repOnDragEnd(){ this.classList.remove('dragging'); this.draggable=false; document.querySelectorAll('.rep-wcard.drop-target').forEach(function(c){ c.classList.remove('drop-target'); }); repDraggedId=null; }
+function repOnDragOver(e){ if(!repDraggedId || this.dataset.wid===repDraggedId) return; e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect='move'; }
+function repOnDragEnter(e){ if(!repDraggedId || this.dataset.wid===repDraggedId) return; this.classList.add('drop-target'); }
+function repOnDragLeave(e){ if(!this.contains(e.relatedTarget)) this.classList.remove('drop-target'); }
+function repOnDrop(e){ e.preventDefault(); this.classList.remove('drop-target'); var t=this.dataset.wid; if(!repDraggedId || t===repDraggedId) return; var dc=document.querySelector('.rep-wcard[data-wid="'+repDraggedId+'"]'); if(dc) dc.classList.remove('dragging'); repReorder(repDraggedId, t); }
+/* reorder + FLIP */
+function repReorder(draggedId, targetId){
+  var d=repGetW(draggedId), t=repGetW(targetId); if(!d||!t) return;
+  repFlip(function(){
+    var vis=REP_WIDGETS.filter(function(w){ return w.visible; }).sort(function(a,b){ return a.order-b.order; });
+    var from=vis.findIndex(function(w){ return w.id===draggedId; });
+    var to=vis.findIndex(function(w){ return w.id===targetId; });
+    if(from===-1||to===-1) return;
+    vis.splice(from,1);
+    var insertAt=(from<to)?to-1:to;
+    vis.splice(insertAt,0,d);
+    vis.forEach(function(w,i){ w.order=i; });
+    var base=vis.length;
+    REP_WIDGETS.filter(function(w){ return !w.visible; }).forEach(function(w,i){ w.order=base+i; });
+    repRefresh();
+  });
+}
+function repFlip(mutate){
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ var sx=window.scrollX, sy=window.scrollY; mutate(); window.scrollTo(sx,sy); return; }
+  var first={}; document.querySelectorAll('.rep-wgrid .rep-wcard').forEach(function(c){ first[c.dataset.wid]=c.getBoundingClientRect(); });
+  var savedX=window.scrollX, savedY=window.scrollY;
+  mutate();
+  window.scrollTo(savedX,savedY);
+  document.querySelectorAll('.rep-wgrid .rep-wcard').forEach(function(c){
+    var f=first[c.dataset.wid]; if(!f) return;
+    var last=c.getBoundingClientRect();
+    var dx=f.left-last.left, dy=f.top-last.top;
+    if(dx===0&&dy===0) return;
+    c.style.transition='none'; c.style.transform='translate('+dx+'px,'+dy+'px)';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ c.style.transition='transform .26s cubic-bezier(.2,.8,.2,1)'; c.style.transform=''; }); });
+  });
+}
+/* touch drag (long-press ghost) */
+var REP_HOLD=250, REP_MOVE_THRESH=8, REP_AS_EDGE=60, REP_AS_SPEED=12, repTDrag=null;
+function repTouchStart(ev,id){
+  if(!ev.touches||ev.touches.length!==1) return;
+  var src=document.querySelector('.rep-wcard[data-wid="'+id+'"]'); if(!src) return;
+  var t=ev.touches[0];
+  repTDrag={id:id,sourceCard:src,ghost:null,targetCard:null,startX:t.clientX,startY:t.clientY,offsetX:0,offsetY:0,holdTimer:null,scrollRAF:null,scrollDir:0,lifted:false};
+  repTDrag.holdTimer=setTimeout(function(){ if(repTDrag) repTouchLift(); }, REP_HOLD);
+  document.addEventListener('touchmove', repTouchMove, {passive:false});
+  document.addEventListener('touchend', repTouchEnd);
+  document.addEventListener('touchcancel', repTouchEnd);
+}
+function repTouchLift(){
+  if(!repTDrag||repTDrag.lifted) return;
+  var src=repTDrag.sourceCard, rect=src.getBoundingClientRect();
+  var ghost=src.cloneNode(true); ghost.classList.add('touch-ghost');
+  ghost.style.width=rect.width+'px'; ghost.style.height=rect.height+'px';
+  repTDrag.offsetX=repTDrag.startX-rect.left; repTDrag.offsetY=repTDrag.startY-rect.top;
+  ghost.style.transform='translate('+rect.left+'px,'+rect.top+'px) scale(1.03)';
+  document.body.appendChild(ghost); repTDrag.ghost=ghost;
+  src.classList.add('touch-source'); repTDrag.lifted=true;
+  if(navigator.vibrate) try{ navigator.vibrate(15); }catch(_){}
+}
+function repTouchMove(ev){
+  if(!repTDrag) return;
+  var t=ev.touches[0];
+  if(!repTDrag.lifted){ var dx=t.clientX-repTDrag.startX, dy=t.clientY-repTDrag.startY; if(Math.hypot(dx,dy)>REP_MOVE_THRESH) repTouchCancel(); return; }
+  ev.preventDefault();
+  var x=t.clientX-repTDrag.offsetX, y=t.clientY-repTDrag.offsetY;
+  repTDrag.ghost.style.transform='translate('+x+'px,'+y+'px) scale(1.03)';
+  repTDrag.ghost.style.visibility='hidden';
+  var under=document.elementFromPoint(t.clientX,t.clientY);
+  repTDrag.ghost.style.visibility='';
+  var target=under?under.closest('.rep-wcard'):null;
+  if(repTDrag.targetCard && repTDrag.targetCard!==target){ repTDrag.targetCard.classList.remove('drop-target'); repTDrag.targetCard=null; }
+  if(target && target!==repTDrag.sourceCard){ target.classList.add('drop-target'); repTDrag.targetCard=target; }
+  var winH=window.innerHeight, dir=0;
+  if(t.clientY<REP_AS_EDGE) dir=-1; else if(t.clientY>winH-REP_AS_EDGE) dir=1;
+  repTDrag.scrollDir=dir;
+  if(dir!==0 && !repTDrag.scrollRAF) repTouchAutoscroll();
+  else if(dir===0 && repTDrag.scrollRAF){ cancelAnimationFrame(repTDrag.scrollRAF); repTDrag.scrollRAF=null; }
+}
+function repTouchAutoscroll(){ function step(){ if(!repTDrag||repTDrag.scrollDir===0){ if(repTDrag) repTDrag.scrollRAF=null; return; } window.scrollBy(0, repTDrag.scrollDir*REP_AS_SPEED); repTDrag.scrollRAF=requestAnimationFrame(step); } repTDrag.scrollRAF=requestAnimationFrame(step); }
+function repTouchDetach(){ document.removeEventListener('touchmove', repTouchMove); document.removeEventListener('touchend', repTouchEnd); document.removeEventListener('touchcancel', repTouchEnd); }
+function repTouchCancel(){
+  if(!repTDrag) return;
+  if(repTDrag.holdTimer) clearTimeout(repTDrag.holdTimer);
+  if(repTDrag.ghost && repTDrag.ghost.parentElement) repTDrag.ghost.parentElement.removeChild(repTDrag.ghost);
+  if(repTDrag.sourceCard) repTDrag.sourceCard.classList.remove('touch-source');
+  if(repTDrag.targetCard) repTDrag.targetCard.classList.remove('drop-target');
+  if(repTDrag.scrollRAF) cancelAnimationFrame(repTDrag.scrollRAF);
+  repTouchDetach(); repTDrag=null;
+}
+function repTouchEnd(){
+  if(!repTDrag) return;
+  if(!repTDrag.lifted){ repTouchCancel(); return; }
+  var target=repTDrag.targetCard, sourceId=repTDrag.id;
+  repTDrag.sourceCard.classList.remove('touch-source');
+  if(repTDrag.ghost && repTDrag.ghost.parentElement) repTDrag.ghost.parentElement.removeChild(repTDrag.ghost);
+  if(target) target.classList.remove('drop-target');
+  if(repTDrag.scrollRAF) cancelAnimationFrame(repTDrag.scrollRAF);
+  repTouchDetach();
+  if(target){ var tid=target.dataset.wid; if(tid && tid!==sourceId){ repTDrag=null; repReorder(sourceId, tid); return; } }
+  repTDrag=null;
+}
+/* init */
+repWLoad(); repRenderGrid(); repSyncDrawer();
+function repWGroupToggle(head){
+  var g=head.closest('.rep-wgroup'); if(!g) return;
+  var willOpen = g.classList.contains('collapsed');
+  document.querySelectorAll('.rep-wgroup').forEach(function(x){ x.classList.add('collapsed'); });
+  if(willOpen) g.classList.remove('collapsed');
+}
+document.addEventListener('mousedown', function(e){
+  var f=document.getElementById('rep-filter');
+  if(f && f.classList.contains('open') && !(e.target.closest && e.target.closest('#rep-filter'))) repFilterClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key!=='Escape') return;
+  var dr=document.getElementById('rep-widgets-panel');
+  if(dr && dr.classList.contains('open')){ repWidgetsClose(); return; }
+  repFilterClose();
+  closeRepDrawer();
+});
+</script>
+</body>
+</html>

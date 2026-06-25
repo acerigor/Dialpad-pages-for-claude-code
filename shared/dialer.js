@@ -88,7 +88,7 @@
     }
     function renderRow(c, isFirstMatch){
       var cls = 'dialer-contact' + (isFirstMatch ? ' dialer-contact-firstmatch' : '');
-      return '<div class="'+cls+'" onclick="loadRecentCall(\''+esc(c.phone)+'\',\''+esc(c.name)+'\',\''+esc(c.av)+'\',\''+esc(c.color)+'\')">'+
+      return '<div class="'+cls+'" onclick="callDialerContact(\''+esc(c.phone)+'\',\''+esc(c.name)+'\',\''+esc(c.av)+'\',\''+esc(c.color)+'\')">'+
         '<div class="dc-av" style="background:'+c.color+';">'+c.av+'</div>'+
         '<div><div class="dc-name">'+c.name+'</div><div class="dc-num">'+c.phone+'</div></div>'+
       '</div>';

@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect â€” Schedule Report</title>
+<title>CoreConnect — Schedule Report</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -22,7 +22,7 @@
     transition:all .12s;background:transparent;border:none;}
   .header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
   .header-bell.active{background:rgba(79,124,255,.10);color:var(--ac2);}
-  /* red dot indicator â€” visible only when unread > 0 */
+  /* red dot indicator — visible only when unread > 0 */
   .header-bell-dot{position:absolute;top:9px;right:9px;width:8px;height:8px;
     border-radius:50%;background:var(--rd);border:2px solid var(--bg);
     display:none;}
@@ -52,7 +52,7 @@
   .notif-markall:hover{background:rgba(79,124,255,.10);}
   .notif-markall[disabled]{opacity:.4;cursor:not-allowed;}
   .notif-markall[disabled]:hover{background:transparent;}
-  /* Close button â€” hidden on desktop (tap outside to close), shown on phone */
+  /* Close button — hidden on desktop (tap outside to close), shown on phone */
   .notif-close{display:none;width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;}
@@ -173,7 +173,7 @@
   }
   .root{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:93vh;display:flex;flex-direction:column;position:relative;}
 
-  /* TOP BAR â€” logo + period dropdown + right actions all on one line */
+  /* TOP BAR — logo + period dropdown + right actions all on one line */
   .topbar{display:flex;align-items:center;gap:12px;padding:14px 20px 0;}
   .logo{font-size:15px;font-weight:600;letter-spacing:-.3px;display:flex;align-items:center;gap:7px;flex-shrink:0;}
   .logo-mark{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -207,7 +207,7 @@
   .kebab-item i{font-size:14px;color:var(--mu);}
   .kebab-item:hover i{color:var(--ac2);}
 
-  /* ACTIVE FILTER CHIPS â€” inline in toolbar */
+  /* ACTIVE FILTER CHIPS — inline in toolbar */
   .filter-chips{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:visible;min-width:0;flex-shrink:1;}
   .filter-chips::-webkit-scrollbar{display:none;}
   .filter-chips:empty{display:none;}
@@ -221,7 +221,7 @@
   .clear-all{font-size:12.5px;color:var(--mu);cursor:pointer;padding:3px 6px;border-radius:5px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
   .clear-all:hover{color:var(--rd);}
 
-  /* MOBILE CHIP ROW â€” hidden on desktop. Lives below the toolbar on phones.
+  /* MOBILE CHIP ROW — hidden on desktop. Lives below the toolbar on phones.
      Horizontal scroll with native swipe, scrollbar hidden, right-edge fade hint. */
   .chips-row-mobile-wrap{display:none;position:relative;background:var(--bg);
     border-bottom:0.5px solid var(--brd);}
@@ -230,7 +230,7 @@
     scrollbar-width:none;-ms-overflow-style:none;}
   .chips-row-mobile::-webkit-scrollbar{display:none;}
   .chips-row-mobile:empty{display:none;}
-  /* Right-edge fade â€” gradient overlay hinting more chips off-screen.
+  /* Right-edge fade — gradient overlay hinting more chips off-screen.
      The wrapper has `.has-overflow` toggled by JS when content overflows. */
   .chips-row-mobile-wrap.has-overflow::after{
     content:'';position:absolute;top:0;right:0;bottom:0;width:32px;
@@ -245,7 +245,7 @@
   .add-btn svg{width:16px;height:16px;}
   .table-btn{width:32px;padding:0;justify-content:center;flex-shrink:0;}
 
-  /* FILTER DROPDOWN â€” cascading two-pane menu */
+  /* FILTER DROPDOWN — cascading two-pane menu */
   .fd-wrap{position:fixed;top:0;left:0;z-index:200;
     display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
@@ -373,7 +373,7 @@
   .nm{font-weight:500;color:#c1c3c8;font-size:12.5px;cursor:pointer;transition:color .12s;}
   .nm:hover{color:var(--ac2);}
   .ns{font-size:11px;color:var(--mu);font-family:var(--mono);}
-  /* "NEW" pill â€” recently arrived lead not yet viewed by the rep */
+  /* "NEW" pill — recently arrived lead not yet viewed by the rep */
   .new-pill{display:inline-flex;align-items:center;flex:none;font-size:9px;font-weight:700;
     letter-spacing:.04em;line-height:1;padding:3px 5px;border-radius:4px;
     background:rgba(79,124,255,.12);color:var(--ac2);text-transform:uppercase;}
@@ -397,7 +397,7 @@
   .tog::after{content:'';position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s;}
   .tog:not(.off)::after{transform:translateX(12px);}
   .aav{width:23px;height:23px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;position:relative;}
-  /* Full-name tooltip on hover â€” matches sidebar tooltip styling */
+  /* Full-name tooltip on hover — matches sidebar tooltip styling */
   .aav[data-name]:not([data-name=""])::after{content:attr(data-name);position:absolute;right:0;top:calc(100% + 7px);
     background:var(--sur2);color:var(--ac2);
     font-size:12px;font-weight:500;padding:6px 11px;border-radius:8px;
@@ -421,7 +421,7 @@
   .pb:hover{border-color:var(--ac);color:var(--ac2);}
   .pb.on{background:var(--ac);border-color:var(--ac);color:#fff;}
 
-  /* Rows-per-page selector (desktop default â€” compact) */
+  /* Rows-per-page selector (desktop default — compact) */
   .rows-per-page-wrap{display:flex;align-items:center;gap:7px;}
   .rows-select{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);
     border-radius:6px;padding:3px 7px;font-family:var(--font);font-size:12px;cursor:pointer;}
@@ -526,11 +526,11 @@
   .role-pane-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;
     padding:14px 24px;border-top:0.5px solid var(--brd);flex-shrink:0;}
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     v78 â€” EXPORT MODAL
+  /* ════════════════════════════════════════════════════════════════════════════
+     v78 — EXPORT MODAL
      Triggered from the toolbar kebab "Export" and bucket "Export" menu items.
      Lets the user pick CSV or .xls; rows = current filtered/sorted set.
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+     ──────────────────────────────────────────────────────────────────────── */
   .export-modal{width:440px;max-width:95%;}
   .export-summary{display:flex;align-items:center;gap:12px;padding:14px;
     background:var(--sur2);border:0.5px solid var(--brd);border-radius:10px;
@@ -546,7 +546,7 @@
   .export-summary.empty .export-summary-icon{background:rgba(245,166,35,.15);color:var(--am);}
   .export-summary.empty .export-summary-count{color:var(--am);}
 
-  /* Format picker â€” radio-card style */
+  /* Format picker — radio-card style */
   .export-format-label{font-size:11px;font-weight:600;color:var(--mu);
     text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
   .export-format-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -584,11 +584,11 @@
     .export-format-grid{grid-template-columns:1fr;}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     v80 â€” SEND BUSINESS CARD MODAL
+  /* ════════════════════════════════════════════════════════════════════════════
+     v80 — SEND BUSINESS CARD MODAL
      Ported from coreconnect_dashboard_v41.html. Opened from the "Business card"
      sidebar/drawer nav item. Branded card preview + send form + checkboxes.
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+     ──────────────────────────────────────────────────────────────────────── */
   .bc-modal{width:640px;}
   .bc-card{display:flex;border:1px solid #2a2e3a;border-radius:6px;overflow:hidden;
     background:#0a0a0a;margin-bottom:18px;min-height:172px;}
@@ -627,7 +627,7 @@
   .bc-check input:checked + .bc-box svg{opacity:1;}
   .bc-check input:focus-visible + .bc-box{outline:2px solid var(--ac);outline-offset:2px;}
 
-  /* Phone â€” card flips to vertical stack; form collapses to single column */
+  /* Phone — card flips to vertical stack; form collapses to single column */
   @media (max-width: 600px){
     .bc-modal{width:auto;max-width:95%;}
     .bc-card{flex-direction:column;min-height:0;}
@@ -640,7 +640,7 @@
     .bc-checks{justify-content:flex-start;}
   }
 
-  /* â”€â”€ DIALER PANEL â”€â”€ */
+  /* ── DIALER PANEL ── */
   .dialer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1600;
     background:var(--ac);color:#fff;border-radius:10px 0 0 10px;
     padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -733,7 +733,7 @@
   @keyframes pulse{0%{transform:scale(1);opacity:.6;}100%{transform:scale(1.7);opacity:0;}}
   .dialer-calling-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:88px;height:88px;}
 
-  /* â”€â”€ DIALER Â· new layout parts â”€â”€ */
+  /* ── DIALER · new layout parts ── */
   .dialer-add-new{display:flex;align-items:center;justify-content:center;gap:7px;
     margin:0 16px 12px;height:36px;border-radius:8px;border:none;cursor:pointer;
     background:var(--ac);color:#fff;font-size:12.5px;font-weight:500;font-family:var(--font);
@@ -756,7 +756,7 @@
     transition:background .1s;border-bottom:0.5px solid var(--brd);}
   .dialer-contact:last-child{border-bottom:none;}
   .dialer-contact:hover{background:rgba(79,124,255,.05);}
-  /* First-match highlight â€” applied in text-mode so user can see what Call will dial */
+  /* First-match highlight — applied in text-mode so user can see what Call will dial */
   .dialer-contact-firstmatch{
     background:rgba(79,124,255,.10);
     border-left:2px solid var(--ac);
@@ -786,7 +786,7 @@
     cursor:pointer;transition:color .15s;flex-shrink:0;background:var(--sur);}
   .dialer-hide-keypad:hover{color:var(--ac2);}
 
-  /* â”€â”€ BUCKETS â”€â”€ */
+  /* ── BUCKETS ── */
   .buckets-area{padding:0 20px 20px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
   .bucket-row{background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;transition:border-color .15s,background .15s;}
   .bucket-row:hover{border-color:rgba(255,255,255,.18);}
@@ -843,7 +843,7 @@
   .create-bucket-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border:0.5px dashed var(--brd2);border-radius:10px;color:var(--mu);font-size:12.5px;cursor:pointer;transition:all .15s;background:transparent;font-family:var(--font);}
   .create-bucket-btn:hover{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.04);}
 
-  /* Flash highlight for newly created buckets â€” 2s pulse using accent color */
+  /* Flash highlight for newly created buckets — 2s pulse using accent color */
   @keyframes bucket-flash-pulse {
     0%   { box-shadow: 0 0 0 0 rgba(79,124,255,.55); border-color: var(--ac); }
     40%  { box-shadow: 0 0 0 6px rgba(79,124,255,.10); border-color: var(--ac); }
@@ -969,7 +969,7 @@
     transition:border-color .15s;}
   .cc-input:focus{border-color:var(--ac);}
 
-  /* Two-column workspace â€” each column is a raised card */
+  /* Two-column workspace — each column is a raised card */
   .cc-cols{display:flex;gap:16px;align-items:stretch;}
   .cc-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;
@@ -1014,7 +1014,7 @@
   .cc-row-lock{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
     color:var(--mu);opacity:.55;flex-shrink:0;}
 
-  /* Add panel â€” tabs + body */
+  /* Add panel — tabs + body */
   .cc-pop{display:flex;flex-direction:column;flex:1;min-height:0;gap:14px;}
 
   /* Bigger, more prominent tabs */
@@ -1442,7 +1442,7 @@
   .ls-saveas-chev{transition:transform .15s;}
   .ls-saveas.open .ls-saveas-chev{transform:rotate(180deg);}
 
-  /* "Save as" dropdown menu â€” position:fixed so it can float above the modal */
+  /* "Save as" dropdown menu — position:fixed so it can float above the modal */
   .ls-saveas-menu{display:none;position:fixed;
     min-width:160px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:9999;}
@@ -1535,7 +1535,7 @@
   .cb-clear-all{font-size:12.5px;color:var(--mu);cursor:pointer;transition:color .15s;}
   .cb-clear-all:hover{color:var(--rd);}
 
-  /* â”€â”€ CONTACT PANEL â”€â”€ */
+  /* ── CONTACT PANEL ── */
   .contact-panel{position:fixed;right:-700px;top:0;bottom:0;width:694px;
     background:#0f1117;border-left:0.5px solid rgba(255,255,255,0.13);
     z-index:1490;display:flex;flex-direction:column;
@@ -1582,8 +1582,8 @@
   .cp-sidebar-field{display:flex;flex-direction:column;gap:4px;}
   .cp-sidebar-label{font-size:10px;font-weight:500;color:#7a7f94;text-transform:uppercase;letter-spacing:.6px;}
   .cp-sidebar-value{font-size:12.5px;color:#e8eaf0;font-family:'DM Mono',monospace;}
-  /* Sidebar status select â€” layers sizing on top of the shared .status-select.
-     Color classes (.status-active, .status-followup, â€¦) come from the table styles. */
+  /* Sidebar status select — layers sizing on top of the shared .status-select.
+     Color classes (.status-active, .status-followup, …) come from the table styles. */
   .cp-status-select{width:100%;font-size:11.5px;padding:6px 22px 6px 9px;
     background-position:right 7px center;}
   /* Legacy rule kept for any markup that still uses bare `.cp-sidebar-status select` */
@@ -1640,7 +1640,7 @@
   .cp-section-empty{padding:18px 14px;text-align:center;font-size:11.5px;color:var(--mu);
     font-style:italic;}
 
-  /* Notes â€” dark pull-quote card */
+  /* Notes — dark pull-quote card */
   .cp-note-wrap{display:flex;flex-direction:column;gap:8px;max-width:85%;align-self:flex-end;align-items:stretch;}
   .cp-note-card{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;
     padding:16px 20px 12px;color:var(--tx);position:relative;}
@@ -1670,7 +1670,7 @@
   .cp-bubble.in{background:var(--sur2);color:var(--tx);border-radius:3px 14px 14px 14px;}
   .cp-bubble.out{background:var(--ac);color:#fff;border-radius:14px 3px 14px 14px;}
 
-  /* Email bubble â€” header strip + subject + body */
+  /* Email bubble — header strip + subject + body */
   .cp-bubble.cp-email-bubble{padding:0;overflow:hidden;border-radius:14px 14px 3px 14px;}
   .cp-bubble.cp-email-bubble.in{border-radius:14px 14px 14px 3px;}
   .cp-email-head{display:flex;align-items:center;gap:7px;padding:9px 14px;
@@ -1825,8 +1825,8 @@
   .cp-tool{width:28px;height:28px;border-radius:6px;border:none;background:transparent;
     color:#7a7f94;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .15s;}
   .cp-tool:hover{color:#6e9dff;}
-  /* AI Compose button â€” matches style guide spec (.sg-ai-btn).
-     Gradient blueâ†’purple pill, accent border, sparkle + label. */
+  /* AI Compose button — matches style guide spec (.sg-ai-btn).
+     Gradient blue→purple pill, accent border, sparkle + label. */
   .cp-ai-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
     border-radius:8px;
     background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));
@@ -1841,14 +1841,14 @@
   .cp-ai-btn svg{display:block;flex-shrink:0;color:var(--ac2);}
   .cp-tools-hint{font-size:10.5px;color:#7a7f94;margin-left:auto;}
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     v78 â€” KANBAN VIEW
-     Adds a Table â‡„ Kanban view switcher. Desktop Kanban is a horizontal scroll
+  /* ════════════════════════════════════════════════════════════════════════════
+     v78 — KANBAN VIEW
+     Adds a Table ⇄ Kanban view switcher. Desktop Kanban is a horizontal scroll
      of status columns with HTML5 drag-drop. Mobile Kanban is a single-column
      carousel with a status-pill bar at the top (no drag-drop on touch).
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* View dropdown â€” button + menu (replaces v78's initial segmented switcher) */
+  /* View dropdown — button + menu (replaces v78's initial segmented switcher) */
   .view-outer{position:relative;flex-shrink:0;}
   .view-btn{gap:6px;}
   .view-btn .view-btn-chev{margin-left:1px;color:var(--mu);transition:transform .15s;}
@@ -1856,17 +1856,17 @@
   .view-btn.open{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
   .view-btn.open .view-btn-chev{transform:rotate(180deg);color:var(--ac2);}
 
-  /* Menu â€” kebab-menu DNA, slightly wider for label + checkmark */
+  /* Menu — kebab-menu DNA, slightly wider for label + checkmark */
   .view-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     overflow:hidden;min-width:180px;z-index:60;
     box-shadow:0 8px 24px rgba(0,0,0,.35);}
   .view-menu.open{display:block;}
 
-  /* Backdrop â€” hidden on desktop, shows on mobile when sheet is open */
+  /* Backdrop — hidden on desktop, shows on mobile when sheet is open */
   .view-backdrop{display:none;}
 
-  /* Mobile-only header â€” hidden on desktop */
+  /* Mobile-only header — hidden on desktop */
   .view-menu-mobile-header{display:none;align-items:center;justify-content:space-between;
     padding:14px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .view-menu-mobile-title{font-size:15px;font-weight:600;color:var(--tx);}
@@ -1887,17 +1887,17 @@
   .view-menu-item[aria-checked="true"]{color:var(--ac2);}
   .view-menu-item[aria-checked="true"] .view-menu-check{opacity:1;}
 
-  /* Kanban wrap â€” hidden by default, shown when currentView === 'kanban' */
+  /* Kanban wrap — hidden by default, shown when currentView === 'kanban' */
   .kanban-wrap{display:none;padding:14px 20px 24px;}
   .kanban-wrap.show{display:block;}
   body.view-kanban .table-wrap{display:none;}
   body.view-kanban .leads-cards{display:none !important;}
-  /* Hide pagination footer (.tfooter â€” note: was incorrectly .footer in v78 initial) */
+  /* Hide pagination footer (.tfooter — note: was incorrectly .footer in v78 initial) */
   body.view-kanban .tfooter{display:none;}
-  /* Hide the buckets section when Kanban is active â€” Kanban replaces this surface */
+  /* Hide the buckets section when Kanban is active — Kanban replaces this surface */
   body.view-kanban .buckets-area{display:none;}
 
-  /* Desktop Kanban â€” horizontal scrolling column row */
+  /* Desktop Kanban — horizontal scrolling column row */
   .kanban-scroll{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
     padding-bottom:8px;scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;
     /* Height = viewport - top header(64) - toolbar(48) - wrap padding(38) */
@@ -1939,7 +1939,7 @@
     color:var(--brd2);margin-bottom:8px;}
   .kanban-col-empty-icon svg{width:16px;height:16px;}
 
-  /* Kanban card â€” condensed lead representation */
+  /* Kanban card — condensed lead representation */
   .k-card{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;
     padding:11px 12px;cursor:pointer;transition:border-color .15s,transform .12s,opacity .15s;
     display:flex;flex-direction:column;gap:8px;position:relative;}
@@ -1978,7 +1978,7 @@
   .k-card-act.disabled{cursor:default;opacity:.5;}
   .k-card-act.disabled:hover{background:transparent;color:var(--mu);}
 
-  /* Mobile Kanban â€” status pill bar + single column */
+  /* Mobile Kanban — status pill bar + single column */
   .kanban-mobile-bar{display:none;}
   .km-pill{display:inline-flex;align-items:center;gap:6px;padding:0 14px;
     min-height:44px;border-radius:8px;font-family:var(--font);font-size:13px;
@@ -1999,7 +1999,7 @@
     text-align:center;}
   .km-pill.active .km-pill-count{color:var(--ac2);background:rgba(79,124,255,.12);}
 
-  /* Toast â€” drag-drop success feedback (extends nav-toast pattern, success variant) */
+  /* Toast — drag-drop success feedback (extends nav-toast pattern, success variant) */
   .kanban-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9001;
@@ -2029,7 +2029,7 @@
     font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;
     transition:opacity .12s;flex-shrink:0;}
   .kanban-toast-close:hover{opacity:1;color:var(--tx);}
-  /* "Show" action button â€” appears when the moved lead is filtered out of view */
+  /* "Show" action button — appears when the moved lead is filtered out of view */
   .kanban-toast-action{flex-shrink:0;padding:6px 10px;border-radius:6px;
     background:rgba(79,124,255,.16);border:0.5px solid rgba(79,124,255,.35);
     color:var(--ac2);font-family:var(--font);font-size:12px;font-weight:600;
@@ -2049,7 +2049,7 @@
     .view-menu-item{padding:13px 14px;font-size:14px;min-height:44px;}
   }
   @media (max-width: 640px){
-    /* Phone â€” single-column carousel */
+    /* Phone — single-column carousel */
     .kanban-wrap{padding:10px 12px 80px;}
     .kanban-mobile-bar{display:flex;gap:6px;padding:0 0 12px;overflow-x:auto;
       overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;}
@@ -2065,21 +2065,21 @@
     .k-card{padding:13px 14px;}
     .k-card-name{font-size:14px;}
     .k-card[draggable]{cursor:default;}  /* no drag on touch */
-    /* Card footer actions â€” bumped to 44px for touch compliance */
+    /* Card footer actions — bumped to 44px for touch compliance */
     .k-card-footer{gap:4px;padding-top:10px;}
     .k-card-act{min-height:44px;padding:6px 4px;font-size:11.5px;border-radius:8px;}
     .k-card-act i{font-size:15px;}
 
-    /* View dropdown â€” full-screen sheet on phone (matches Filter mobile takeover spirit) */
+    /* View dropdown — full-screen sheet on phone (matches Filter mobile takeover spirit) */
     .view-btn{padding:0 12px;}
     .view-btn span{display:none;}  /* icon-only label on phone */
     .view-btn .view-btn-chev{display:none;}  /* chevron redundant when sheet opens */
-    /* Backdrop â€” fades in behind the sheet */
+    /* Backdrop — fades in behind the sheet */
     .view-backdrop{display:block;position:fixed;top:0;left:0;right:0;bottom:0;
       background:rgba(0,0,0,.5);z-index:199;opacity:0;pointer-events:none;
       transition:opacity .2s ease-out;}
     .view-outer.view-open .view-backdrop{opacity:1;pointer-events:auto;}
-    /* Sheet itself â€” slides up from the bottom */
+    /* Sheet itself — slides up from the bottom */
     .view-menu{display:flex;flex-direction:column;
       position:fixed !important;left:0;right:0;bottom:0;top:auto;
       width:100%;height:auto;max-height:80vh;min-width:0;
@@ -2100,18 +2100,18 @@
     .kanban-toast.show{transform:translateY(0);}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 1: Core Navigation
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 1: Core Navigation
      Three breakpoints:
-       Phone   < 640px   â€” hamburger drawer, no sidebar, compressed toolbar
-       Tablet  640-1024  â€” sidebar stays, slight padding tweaks
-       Desktop > 1024    â€” no changes (current desktop layout)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+       Phone   < 640px   — hamburger drawer, no sidebar, compressed toolbar
+       Tablet  640-1024  — sidebar stays, slight padding tweaks
+       Desktop > 1024    — no changes (current desktop layout)
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* Top header â€” left group (hamburger + logo) */
+  /* Top header — left group (hamburger + logo) */
   .th-left{display:flex;align-items:center;gap:10px;}
 
-  /* Hamburger â€” hidden by default, visible only on phone */
+  /* Hamburger — hidden by default, visible only on phone */
   .hamburger-btn{display:none;width:40px;height:40px;align-items:center;justify-content:center;
     border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;
     flex-shrink:0;transition:background .12s;}
@@ -2148,11 +2148,11 @@
     border-radius:50%;background:var(--ac);
     box-shadow:0 0 0 2px var(--sur);
   }
-  /* Search close button (only used in mobile-expanded mode â€” legacy, kept for safety) */
+  /* Search close button (only used in mobile-expanded mode — legacy, kept for safety) */
   .srch-close{display:none;background:transparent;border:none;color:var(--mu);cursor:pointer;
     padding:0;margin-right:6px;display:none;align-items:center;justify-content:center;}
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ MOBILE SEARCH BAR (phone, top-anchored) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── MOBILE SEARCH BAR (phone, top-anchored) ─────────────── */
   /* Search bar replaces the top header only; page content stays visible and live-filters underneath. */
   .mso{
     position:fixed;top:0;left:0;right:0;height:60px;
@@ -2190,22 +2190,22 @@
   }
   .mso-clear.show{display:flex;}
   .mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
-  .mso-body{display:none;}  /* legacy, no longer used â€” page renders underneath */
+  .mso-body{display:none;}  /* legacy, no longer used — page renders underneath */
 
   /* When the search bar is active, hide the original header + toolbar and lock body scroll */
   body.mso-active{overflow:hidden;}
   body.mso-active .top-header{visibility:hidden;}
   body.mso-active .toolbar{display:none;}
-  /* Kebab "mobile only" items â€” hidden on desktop */
+  /* Kebab "mobile only" items — hidden on desktop */
   .kebab-mobile-only{display:none;}
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ TABLET (â‰¤ 1024px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── TABLET (≤ 1024px) ─────────────── */
   @media (max-width: 1024px){
     .toolbar{padding:8px 14px;}
     .top-header{padding:0 16px;}
   }
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
     /* Hide the 64px sidebar entirely */
     .sidebar{display:none;}
@@ -2223,7 +2223,7 @@
     /* Main content area no longer needs to clear the sidebar */
     .main-area{margin-left:0;}
 
-    /* Live Call bar â€” no sidebar to clear on phones */
+    /* Live Call bar — no sidebar to clear on phones */
     .lc-bar{left:0;}
 
     /* Show mobile drawer / backdrop */
@@ -2234,7 +2234,7 @@
     /* TOOLBAR adjustments */
     .toolbar{flex-wrap:nowrap;gap:6px;padding:8px 12px;}
 
-    /* Hide Layout settings on phone â€” column toggles aren't meaningful at this width
+    /* Hide Layout settings on phone — column toggles aren't meaningful at this width
        (responsive table already auto-manages columns; pinned Name + essentials only). */
     .table-btn{display:none;}
 
@@ -2245,32 +2245,32 @@
     .toolbar .srch{display:none;}
     .toolbar .mobile-search-toggle{display:flex;}
 
-    /* Filter chips: hide the in-toolbar row entirely on mobile â€” chips live in their own row below the toolbar */
+    /* Filter chips: hide the in-toolbar row entirely on mobile — chips live in their own row below the toolbar */
     .toolbar .filter-chips{display:none;}
     /* Show the dedicated mobile chip row */
     .chips-row-mobile-wrap{display:block;}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 1
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 1
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 2A: Touch targets + Leads table responsive
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 2A: Touch targets + Leads table responsive
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* v53 â€” Cards killed. Pinned-name table now serves all viewports. */
+  /* v53 — Cards killed. Pinned-name table now serves all viewports. */
   /* Leads-cards & bucket-cards containers: always hidden (kept in DOM for backwards-compat) */
   .leads-cards{display:none !important;}
   .bucket-cards{display:none !important;}
-  /* Mobile pagination â€” hidden by default */
+  /* Mobile pagination — hidden by default */
   .pgn-mobile{display:none;}
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE + TABLET (â‰¤ 1024px): pinned-name table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE + TABLET (≤ 1024px): pinned-name table ─────────────── */
   @media (max-width: 1024px){
-    /* Touch-target pass â€” every interactive element â‰¥44px on touch viewports */
+    /* Touch-target pass — every interactive element ≥44px on touch viewports */
     .tbtn{min-height:44px;padding:0 14px;}
-    /* Icon-only buttons: make them square (44Ã—44) so the icon has room */
+    /* Icon-only buttons: make them square (44×44) so the icon has room */
     .add-btn,.table-btn,.kebab-btn,.mobile-search-toggle{width:44px;min-width:44px;padding:0;justify-content:center;}
     .add-btn svg,.table-btn svg,.mobile-search-toggle svg{width:18px;height:18px;}
     .kebab-btn i{font-size:18px;}
@@ -2287,11 +2287,11 @@
     .cc-pop-item{padding:13px 14px;}
     .cc-cancel,.cc-start{height:44px;}
 
-    /* Rows-per-page selector â€” fat-finger-free: 44px tall, 16px font (no iOS zoom) */
+    /* Rows-per-page selector — fat-finger-free: 44px tall, 16px font (no iOS zoom) */
     .rows-select{min-height:44px;padding:0 14px;font-size:16px;border-radius:8px;}
     .rows-per-page-wrap{gap:10px;}
 
-    /* === Modal inputs + buttons â€” fat-finger-free === */
+    /* === Modal inputs + buttons — fat-finger-free === */
     /* Inputs/selects: 44px tall, 16px font-size (prevents iOS Safari zoom-on-focus) */
     .modal-field{height:44px;}
     .modal-field input,.modal-field select{font-size:16px;}
@@ -2306,7 +2306,7 @@
     .modal-body{gap:20px;}
 
     /* === PINNED-NAME TABLE === */
-    /* Prevent page-level horizontal scroll â€” only the table-wrap should scroll horizontally */
+    /* Prevent page-level horizontal scroll — only the table-wrap should scroll horizontally */
     html, body{overflow-x:hidden;}
     .main-area{overflow-x:hidden;}
 
@@ -2329,7 +2329,7 @@
     .table-wrap::-webkit-scrollbar-thumb,
     .bucket-table-wrap::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px;}
 
-    /* The table itself: don't shrink â€” let it be its natural width */
+    /* The table itself: don't shrink — let it be its natural width */
     .table-wrap table,
     .bucket-table-wrap table{width:max-content;min-width:100%;}
 
@@ -2340,7 +2340,7 @@
     .bucket-table-wrap th[data-col="select"],
     .bucket-table-wrap td[data-col="select"]{
       position:sticky;left:0;z-index:10;background:var(--bg);
-      /* Force GPU layer â€” guarantees this cell composites ABOVE scrolling content */
+      /* Force GPU layer — guarantees this cell composites ABOVE scrolling content */
       transform:translateZ(0);will-change:transform;
     }
     .table-wrap thead th[data-col="select"],
@@ -2365,7 +2365,7 @@
     .bucket-table-wrap td[data-col="name"]{
       position:sticky;left:30px;z-index:9;background:var(--bg);
       box-shadow:6px 0 12px -4px rgba(0,0,0,.6);  /* right-edge shadow hints at scroll */
-      /* Force GPU layer â€” same reason as the select column */
+      /* Force GPU layer — same reason as the select column */
       transform:translateZ(0);will-change:transform;
     }
     .table-wrap thead th[data-col="name"],
@@ -2382,9 +2382,9 @@
     .bucket-table-wrap thead th{position:relative;z-index:2;background:var(--sur);}
   }
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
-    /* Form inputs â€” 16px font-size prevents iOS Safari zoom-on-focus */
+    /* Form inputs — 16px font-size prevents iOS Safari zoom-on-focus */
     input[type="text"],input[type="email"],input[type="tel"],input[type="number"],input[type="search"],textarea,select{
       font-size:16px;
     }
@@ -2399,7 +2399,7 @@
     .notif-tab{font-size:13px;}
     .cc-cancel,.cc-start{font-size:13.5px;}
 
-    /* Modal footer on phone â€” stack buttons vertically, full-width, primary on top */
+    /* Modal footer on phone — stack buttons vertically, full-width, primary on top */
     .modal-footer{flex-direction:column-reverse;gap:10px;padding:14px 16px;}
     .modal-cancel,.modal-save{width:100%;}
     .modal-body{padding:16px;}
@@ -2463,7 +2463,7 @@
     .pgn-mobile-btn:disabled{opacity:.35;cursor:not-allowed;}
     .pgn-mobile-label{font-size:13px;color:var(--tx);font-family:var(--mono);min-width:80px;text-align:center;}
 
-    /* === Buckets â€” phone treatment === */
+    /* === Buckets — phone treatment === */
     .bucket-table-wrap{padding:0;}
     .bucket-footer{padding:10px 12px;font-size:12px;text-align:right;}
     .bucket-row{margin:0 0 12px;}
@@ -2473,44 +2473,44 @@
 
     .tfooter > div:first-child strong{color:var(--tx);}
 
-    /* === Phase 2G â€” v78 audit fixes (touch targets) === */
-    /* Composer toolbar buttons: emoji / attach / voice â€” bumped from 28Ã—28 to 44Ã—44 */
+    /* === Phase 2G — v78 audit fixes (touch targets) === */
+    /* Composer toolbar buttons: emoji / attach / voice — bumped from 28×28 to 44×44 */
     .cp-tools-row{gap:6px;}
     .cp-tool{width:44px;height:44px;border-radius:8px;}
     .cp-tool i{font-size:18px !important;}
-    /* Composer send button â€” bumped from 36Ã—36 to 44Ã—44 */
+    /* Composer send button — bumped from 36×36 to 44×44 */
     .cp-send-btn{width:44px;height:44px;}
     .cp-send-btn svg{width:18px;height:18px;}
-    /* AI Compose â€” bump pill to 44px tall for touch (was 32px from style guide spec) */
+    /* AI Compose — bump pill to 44px tall for touch (was 32px from style guide spec) */
     .cp-ai-btn{height:44px;padding:0 14px;font-size:13px;}
     .cp-ai-btn svg{width:15px;height:15px;}
-    /* "Enter to send" hint is desktop-only nicety â€” frees up width on phone */
+    /* "Enter to send" hint is desktop-only nicety — frees up width on phone */
     .cp-tools-hint{display:none;}
   }
-  /* Very narrow phones â€” drop the label to icon-only to keep the row tidy */
+  /* Very narrow phones — drop the label to icon-only to keep the row tidy */
   @media (max-width: 380px){
     .cp-ai-btn-label{display:none;}
     .cp-ai-btn{padding:0 11px;}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 2A (rewritten as Phase 2D in v53)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 2A (rewritten as Phase 2D in v53)
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 2B: Contact panel, Dialer, Notifications (full-screen on phone)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 2B: Contact panel, Dialer, Notifications (full-screen on phone)
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* Back-arrow inside contact panel topbar â€” hidden by default */
+  /* Back-arrow inside contact panel topbar — hidden by default */
   .cp-mobile-back{display:none;width:40px;height:40px;border-radius:8px;
     background:transparent;border:none;color:var(--tx);cursor:pointer;
     align-items:center;justify-content:center;flex-shrink:0;transition:background .12s;}
   .cp-mobile-back:hover{background:rgba(255,255,255,.05);}
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
 
-    /* === CONTACT PANEL â€” full-screen takeover === */
+    /* === CONTACT PANEL — full-screen takeover === */
     .contact-panel{
       width:100%;right:-100%;
       box-shadow:none;border-left:none;
@@ -2562,9 +2562,9 @@
     .cp-assign-av{width:30px;height:30px;font-size:10px;}
     .cp-assign-name{font-size:13px;}
 
-    /* Collapse handle â€” visible on mobile, sits as a small tab on the edge.
-       Collapsed (sidebar hidden, messages full-screen) â†’ left edge of body, arrow points right.
-       Expanded (sidebar full-screen) â†’ handle is hidden; user closes via the floating X. */
+    /* Collapse handle — visible on mobile, sits as a small tab on the edge.
+       Collapsed (sidebar hidden, messages full-screen) → left edge of body, arrow points right.
+       Expanded (sidebar full-screen) → handle is hidden; user closes via the floating X. */
     .cp-sidebar-collapse{
       position:absolute;top:50%;
       width:22px;height:48px;
@@ -2572,7 +2572,7 @@
       z-index:7;color:#7a7f94;
       transition:left .18s ease-out, right .18s ease-out, transform .18s ease-out;
     }
-    /* Expanded state: hide the edge-tab arrow (handle conflicts with stacking â€” dialer, etc.).
+    /* Expanded state: hide the edge-tab arrow (handle conflicts with stacking — dialer, etc.).
        The user closes via the floating X (top-right of the sidebar) instead. */
     .cp-body:not(.sb-collapsed) .cp-sidebar-collapse{display:none;}
     /* Collapsed state: arrow on the left edge, pointing right */
@@ -2593,7 +2593,7 @@
     .cp-tabs::-webkit-scrollbar{display:none;}
     .cp-tab{flex-shrink:0;white-space:nowrap;}
 
-    /* === DIALER PANEL â€” full-screen on phone === */
+    /* === DIALER PANEL — full-screen on phone === */
     .dialer-panel{
       width:100%;right:-100%;
       box-shadow:none;border-left:none;
@@ -2601,12 +2601,12 @@
     }
     .dialer-panel.open{right:0;}
 
-    /* Dialer header â€” bigger close, more padding */
+    /* Dialer header — bigger close, more padding */
     .dialer-header{padding:14px 16px;}
     .dialer-close{width:40px;height:40px;border-radius:8px;}
     .dialer-title{font-size:16px;}
 
-    /* === NOTIFICATIONS PANEL â€” full-screen on phone === */
+    /* === NOTIFICATIONS PANEL — full-screen on phone === */
     .notif-panel{
       /* Override the JS-positioned inline styles */
       top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
@@ -2626,20 +2626,20 @@
     .notif-item{padding:14px 16px;}
     .notif-item-title{font-size:13.5px;}
     .notif-item-body{font-size:12.5px;}
-    /* Notif footer â€” bigger "See all" tap target */
+    /* Notif footer — bigger "See all" tap target */
     .notif-footer{padding:12px;}
     .notif-seeall{padding:14px;font-size:14px;min-height:48px;}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 2B
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 2B
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 2C: Monday-style FAB + Read more
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 2C: Monday-style FAB + Read more
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* FAB â€” hidden by default (desktop & tablet) */
+  /* FAB — hidden by default (desktop & tablet) */
   .fab{display:none;}
 
   /* "Read more" / "Show less" toggle */
@@ -2659,7 +2659,7 @@
   }
   .read-more-toggle:hover{color:var(--ac);}
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px): show FAB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE (≤ 640px): show FAB ─────────────── */
   @media (max-width: 640px){
     .fab{
       display:flex;align-items:center;justify-content:center;
@@ -2689,13 +2689,13 @@
     100% {opacity:1;transform:scale(1);}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 2C
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 2C
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 2D: Cascading filter dropdown (full-screen drill-down)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 2D: Cascading filter dropdown (full-screen drill-down)
+     ──────────────────────────────────────────────────────────────────────── */
 
   @media (max-width: 640px){
     /* Full-screen takeover, override the JS-set inline top/left */
@@ -2741,15 +2741,15 @@
     .fp-cb,.fp-radio{width:20px;height:20px;}
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 2D
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 2D
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     RESPONSIVE â€” PHASE 2E: Conference Call setup modal (mobile)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     RESPONSIVE — PHASE 2E: Conference Call setup modal (mobile)
+     ──────────────────────────────────────────────────────────────────────── */
 
-  /* Mobile tabs â€” hidden on desktop+tablet; shown on phone */
+  /* Mobile tabs — hidden on desktop+tablet; shown on phone */
   .cc-mobile-tabs{display:none;}
   .cc-mobile-tab{display:none;}
 
@@ -2766,7 +2766,7 @@
     /* CC body: maintains vertical flow */
     .cc-body{padding:14px 14px 6px;gap:14px;}
 
-    /* Mobile tabs â€” show, hide the per-column desktop headers */
+    /* Mobile tabs — show, hide the per-column desktop headers */
     .cc-mobile-tabs{
       display:flex;background:var(--sur2);border:0.5px solid var(--brd2);
       border-radius:10px;padding:3px;gap:3px;flex-shrink:0;
@@ -2788,7 +2788,7 @@
       background:rgba(255,255,255,.08);color:var(--mu);
     }
 
-    /* CC columns: tabbed view â€” only one visible at a time */
+    /* CC columns: tabbed view — only one visible at a time */
     .cc-cols{flex-direction:column;gap:0;flex:1;min-height:0;}
     .cc-col{flex:initial;}
     .cc-col-left,.cc-col-right{display:none;}
@@ -2798,7 +2798,7 @@
     /* Hide the desktop per-column headers on phone (tabs replace them) */
     .cc-col-head{display:none;}
 
-    /* Participants list expands naturally â€” no max-height constraint */
+    /* Participants list expands naturally — no max-height constraint */
     .cc-participants{max-height:none;}
 
     /* Add pop: also natural height, list expands */
@@ -2822,9 +2822,9 @@
     /* Footer already stacks via the v54 modal-footer rule */
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     END RESPONSIVE â€” PHASE 2E
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ════════════════════════════════════════════════════════════════════════════
+     END RESPONSIVE — PHASE 2E
+     ──────────────────────────────────────────────────────────────────────── */
 
 
 /* ===== SETTINGS HUB (page content) ===== */
@@ -2864,7 +2864,7 @@
 .ur-back:hover{background:var(--sur2);color:var(--tx);}
 .ur-back svg{width:16px;height:16px;}
 
-/* Roles list section â€” single surface card containing rows */
+/* Roles list section — single surface card containing rows */
 .ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
 .ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;
   border-bottom:0.5px solid var(--brd);transition:background .15s;}
@@ -3049,7 +3049,7 @@
   .root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;}
   @media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
 
-  /* â”€â”€ CONTACTS MODULE â”€â”€ */
+  /* ── CONTACTS MODULE ── */
   .cts-wrap{flex:1;display:flex;min-height:0;overflow:hidden;}
   /* Left panel */
   .cts-side{flex:none;width:236px;border-right:0.5px solid var(--brd2);display:flex;flex-direction:column;padding:16px 14px;gap:14px;overflow-y:auto;}
@@ -3147,7 +3147,7 @@
   .ct-check-label{font-size:12.5px;color:var(--tx);font-weight:500;}
   .ct-check-sub{font-size:11px;color:var(--mu);}
 
-  /* â”€â”€ Label popup (assign + create) â€” ported from CRM leads â”€â”€ */
+  /* ── Label popup (assign + create) — ported from CRM leads ── */
   .label-popup{position:fixed;z-index:1600;width:236px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;}
   .label-popup.open{display:block;}
   .lblp-title{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:4px 8px 8px;}
@@ -3216,10 +3216,15 @@
         <line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
-    <div class="logo">
+    <div class="logo" onclick="toggleProductSwitcher(event)">
       <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
       <span class="logo-text">CoreConnect</span>
-    </div>
+    
+  <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  <div class="product-switcher" id="product-switcher">
+    <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+    <a class="ps-item" data-pid="reputation" href="../../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+  </div></div>
   </div>
   <div class="top-header-right">
     <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
@@ -3280,9 +3285,6 @@
     <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
-    <div class="sb-item" data-nav="reputation" data-label="Reputation" onclick="window.open('../../reputation/reputation_dashboard/Dashboard.html','_blank')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-    </div>
     <div class="sidebar-nav-spacer"></div>
     <div class="sb-divider"></div>
     <div class="sb-item active" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
@@ -3323,10 +3325,6 @@
     <div class="md-item" data-nav="appointments" onclick="navClick('Appointments');closeMobileDrawer();">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Appointments</span>
-    </div>
-    <div class="md-item" data-nav="reputation" onclick="window.open('../../reputation/reputation_dashboard/Dashboard.html','_blank');closeMobileDrawer();">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span>Reputation</span>
     </div>
     <div class="md-divider"></div>
     <div class="md-item active" data-nav="settings" onclick="navClick('Settings');closeMobileDrawer();">
@@ -3468,7 +3466,7 @@
 </div>
 <script src="../../shared/leads-comms.js"></script>
 <script>
-// â”€â”€ NOTIFICATIONS PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NOTIFICATIONS PANEL ─────────────────────────
 // Anchor "now" to match the rest of the seed data (May 23, 2026 7:00 PM)
 const NOTIF_NOW = new Date(2026, 4, 23, 19, 0, 0);
 
@@ -3687,7 +3685,7 @@ function navClick(label){
   showNavToast(label + ' is coming soon', 'This feature is under construction.');
 }
 
-// â”€â”€ RESPONSIVE â€” PHASE 1: Mobile drawer + mobile search â”€â”€
+// ── RESPONSIVE — PHASE 1: Mobile drawer + mobile search ──
 function toggleMobileDrawer(){
   const drawer = document.getElementById('mobile-drawer');
   const bd     = document.getElementById('mobile-drawer-backdrop');
@@ -3724,7 +3722,7 @@ function hideNavToast(){
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
 
-// â”€â”€ REPORTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── REPORTS ─────────────────────────────────────────────
 var RPT_KEY='cc_reports';
 var REPORTS;                 // array of report objects
 var _rptFolder='standard';   // current folder filter
@@ -3790,9 +3788,9 @@ function renderReports(){
   var hdr=document.getElementById('rpt-count');
   if(hdr) hdr.innerHTML='<b>'+list.length+'</b> Report Found';
   if(!list.length){
-    var msg = _rptFolder==='favorite'  ? 'No favorite reports yet â€” star a report to add it here.'
-            : _rptFolder==='custom'    ? 'No custom reports yet â€” duplicate a report to create one.'
-            : _rptFolder==='scheduled' ? 'No scheduled reports yet â€” schedule a report to see it here.'
+    var msg = _rptFolder==='favorite'  ? 'No favorite reports yet — star a report to add it here.'
+            : _rptFolder==='custom'    ? 'No custom reports yet — duplicate a report to create one.'
+            : _rptFolder==='scheduled' ? 'No scheduled reports yet — schedule a report to see it here.'
             : 'No reports found.';
     tb.innerHTML='<tr><td colspan="5"><div class="rpt-empty">'+msg+'</div></td></tr>';
     return;
@@ -3821,7 +3819,7 @@ function setReportFolder(folder){
   renderReports();
 }
 
-// â”€â”€ Row actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Row actions ────────────────────────────────────────
 var _rptSchedId=null;
 var RPT_SCHED_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
 
@@ -3880,7 +3878,7 @@ function confirmSchedule(){
   closeScheduleModal();
   if(!r) return;
   r.scheduled=true; r.schedFreq=freq; _rptSave(); renderReports();
-  if(typeof showNavToast==='function') showNavToast('Report scheduled', r.name+' â€” '+freq+'.');
+  if(typeof showNavToast==='function') showNavToast('Report scheduled', r.name+' — '+freq+'.');
 }
 
 // Close the floating menu on outside click / Escape
@@ -3895,7 +3893,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(typeof renderReports==='function') renderReports();
 });
 
-// â”€â”€ SCHEDULE REPORT FORM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SCHEDULE REPORT FORM ───────────────────────────────
 var _srSched='onetime';
 var _srReportId=null;
 
@@ -3922,7 +3920,7 @@ function srSchedLabel(){
 function srCancel(){ window.location.href='../reports/coreconnect_report.html'; }
 
 function srSave(){
-  // light filter validation â€” mirrors the source design's banner
+  // light filter validation — mirrors the source design's banner
   var status=(document.getElementById('sr-status')||{}).value||'';
   var banner=document.getElementById('sr-banner');
   if(!status){
@@ -3952,3 +3950,69 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+<!-- PRODUCT-SWITCHER:CSS START -->
+<style>
+.logo{cursor:pointer;position:relative;user-select:none;}
+.logo:hover .logo-chev{color:#fff;}
+.logo-chev{width:11px;height:11px;flex:none;color:rgba(255,255,255,.6);transition:transform .15s,color .15s;margin-left:1px;}
+.logo.ps-open .logo-chev{transform:rotate(180deg);color:#fff;}
+.product-switcher{display:none;position:fixed;top:0;left:0;min-width:200px;background:#181c27;border:0.5px solid rgba(255,255,255,.13);border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.55);z-index:10000;padding:6px;}
+.product-switcher.ps-open{display:block;}
+.ps-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;color:#e8eaf0;text-decoration:none;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;}
+.ps-item:hover{background:#1e2333;color:#6e9dff;}
+.ps-item.ps-active{color:#6e9dff;background:rgba(79,124,255,.10);}
+.ps-ic{width:15px;height:15px;flex:none;color:#7a7f94;}
+.ps-item:hover .ps-ic,.ps-item.ps-active .ps-ic{color:#6e9dff;}
+</style>
+<!-- PRODUCT-SWITCHER:CSS END -->
+<!-- PRODUCT-SWITCHER:JS START -->
+<script>
+(function(){
+  function portalSwitcher(){
+    var ps=document.getElementById('product-switcher');
+    if(ps && ps.parentElement !== document.body) document.body.appendChild(ps);
+  }
+  function positionSwitcher(){
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher');
+    if(!logo||!ps) return;
+    var r=logo.getBoundingClientRect();
+    ps.style.left=((window.innerWidth>640) ? 66 : r.left)+'px';
+    ps.style.top=(r.bottom+8)+'px';
+  }
+  function toggleProductSwitcher(e){
+    if(e){ e.stopPropagation(); }
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher'); if(!logo||!ps) return;
+    portalSwitcher();
+    var willOpen=!ps.classList.contains('ps-open');
+    if(willOpen) positionSwitcher();
+    ps.classList.toggle('ps-open', willOpen); logo.classList.toggle('ps-open', willOpen);
+  }
+  function closeProductSwitcher(){
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher');
+    if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open');
+  }
+  window.toggleProductSwitcher=toggleProductSwitcher;
+  window.closeProductSwitcher=closeProductSwitcher;
+  function init(){
+    portalSwitcher();
+    var isRep = location.pathname.replace(/\\/g,'/').indexOf('/reputation/')>=0;
+    document.querySelectorAll('.ps-item').forEach(function(a){
+      var pid=a.getAttribute('data-pid');
+      var active=(isRep && pid==='reputation') || (!isRep && pid==='coreconnect');
+      a.classList.toggle('ps-active', active);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  document.addEventListener('mousedown', function(e){
+    var ps=document.getElementById('product-switcher'); if(!ps||!ps.classList.contains('ps-open')) return;
+    if(e.target.closest && (e.target.closest('.logo')||e.target.closest('#product-switcher'))) return;
+    closeProductSwitcher();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+<!-- PRODUCT-SWITCHER:JS END -->
+

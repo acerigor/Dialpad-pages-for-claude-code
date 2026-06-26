@@ -1,7 +1,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../shared/app.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
 
   /* TOP HEADER (full width, contains logo) */
@@ -35,7 +35,7 @@
   .header-bell:hover::after{opacity:1;}
 
   /* NOTIFICATIONS PANEL */
-  .notif-panel{display:none;position:fixed;top:0;left:0;width:380px;max-height:560px;
+  .notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     box-shadow:0 12px 36px rgba(0,0,0,.55);z-index:9999;
     flex-direction:column;overflow:hidden;}
@@ -161,16 +161,7 @@
   .nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;
     cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
   .nav-toast-close:hover{opacity:1;color:var(--tx);}
-
-  :root{
-    --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;
-    --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
-    --tx:#e8eaf0;--mu:#7a7f94;
-    --ac:#4f7cff;--ac2:#6e9dff;
-    --gr:#22c88a;--am:#f5a623;--rd:#e85555;
-    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
-  }
-  .root{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:93vh;display:flex;flex-direction:column;position:relative;}
+.root{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:93vh;display:flex;flex-direction:column;position:relative;}
 
   /* TOP BAR — logo + period dropdown + right actions all on one line */
   .topbar{display:flex;align-items:center;gap:12px;padding:14px 20px 0;}
@@ -3118,7 +3109,7 @@
     <!-- groups + items rendered dynamically -->
   </div>
   <div class="notif-footer">
-    <button class="notif-seeall" onclick="navClick('Notifications')">See all notifications</button>
+    <button class="notif-seeall" onclick="window.location.href='../notification/notification.html'">See all notifications</button>
   </div>
 </div>
 
@@ -8090,7 +8081,16 @@ function saveAppt(){
   var typeEl=document.getElementById('appt-type'), dateEl=document.getElementById('appt-date');
   if(!typeEl.value){ typeEl.focus(); return; }
   if(!dateEl.value){ dateEl.focus(); return; }
-  if(_persistActivity('appointment', typeEl.value, dateEl.value, document.getElementById('appt-time').value, document.getElementById('appt-notes').value, _scopeUsers('appt'))) closeApptModal();
+  var timeVal=document.getElementById('appt-time').value;
+  if(_persistActivity('appointment', typeEl.value, dateEl.value, timeVal, document.getElementById('appt-notes').value, _scopeUsers('appt'))){
+    if(typeof ccNotifAdd==='function' && typeof cpLead!=='undefined' && cpLead){
+      var nm=cpLead.name||'Unknown';
+      var iv=(nm.trim().split(/\s+/).map(function(p){return (p[0]||'');}).join('')||'??').slice(0,2).toUpperCase();
+      ccNotifAdd({type:'appt',leadNo:cpLead.no,leadName:nm,leadAv:iv,leadColor:cpLead.ac||'#4f7cff',
+        title:'Appointment created',body: typeEl.value+' — '+dateEl.value+(timeVal?' '+timeVal:''),ts:Date.now(),read:false});
+    }
+    closeApptModal();
+  }
 }
 function saveReminder(){
   var tEl=document.getElementById('rem-title'), dateEl=document.getElementById('rem-date');
@@ -12137,23 +12137,7 @@ renderDialerContacts();
 renderBuckets();
 renderBellDot();
 
-</script>
-<!-- PRODUCT-SWITCHER:CSS START -->
-<style>
-.logo{cursor:pointer;position:relative;user-select:none;}
-.logo:hover .logo-chev{color:#fff;}
-.logo-chev{width:11px;height:11px;flex:none;color:rgba(255,255,255,.6);transition:transform .15s,color .15s;margin-left:1px;}
-.logo.ps-open .logo-chev{transform:rotate(180deg);color:#fff;}
-.product-switcher{display:none;position:fixed;top:0;left:0;min-width:200px;background:#181c27;border:0.5px solid rgba(255,255,255,.13);border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.55);z-index:10000;padding:6px;}
-.product-switcher.ps-open{display:block;}
-.ps-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;color:#e8eaf0;text-decoration:none;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;}
-.ps-item:hover{background:#1e2333;color:#6e9dff;}
-.ps-item.ps-active{color:#6e9dff;background:rgba(79,124,255,.10);}
-.ps-ic{width:15px;height:15px;flex:none;color:#7a7f94;}
-.ps-item:hover .ps-ic,.ps-item.ps-active .ps-ic{color:#6e9dff;}
-</style>
-<!-- PRODUCT-SWITCHER:CSS END -->
-<!-- PRODUCT-SWITCHER:JS START -->
+</script><!-- PRODUCT-SWITCHER:JS START -->
 <script>
 (function(){
   function portalSwitcher(){
@@ -12202,5 +12186,7 @@ renderBellDot();
   window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
 })();
 </script>
+<script src="../shared/notifications.js"></script>
+
 <!-- PRODUCT-SWITCHER:JS END -->
 

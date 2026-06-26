@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Notifications</title>
+<link rel="stylesheet" href="../shared/app.css">
+<link rel="stylesheet" href="../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+/* ===== NOTIF PANEL (page bell dropdown — same as other pages) ===== */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;
+  background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-markall:disabled{opacity:.4;cursor:default;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-tab.active .notif-tab-count{background:var(--ac);color:#fff;}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-empty{padding:60px 20px;text-align:center;color:var(--mu);}
+.notif-empty-icon{font-size:32px;margin-bottom:8px;opacity:.6;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+}
+
+/* ===== NLOG PAGE ===== */
+.nlog-page{margin-left:64px;margin-top:64px;padding:0;height:calc(100vh - 64px);display:flex;flex-direction:column;overflow:hidden;}
+@media(max-width:640px){ .nlog-page{margin-left:0;} }
+.nlog-head{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);flex:none;}
+.nlog-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;}
+.nlog-period{display:inline-flex;align-items:center;gap:4px;padding:4px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;flex-shrink:0;}
+button.nlog-period-mobile{display:none;align-items:center;gap:7px;}
+.nlog-pm-chev{width:11px;height:11px;color:var(--mu);}
+/* Mobile period drawer */
+.nlog-pd-backdrop{position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;z-index:9100;}
+.nlog-pd-backdrop.open{opacity:1;visibility:visible;}
+.nlog-pd-drawer{position:fixed;top:64px;right:-100%;width:90%;max-width:380px;height:calc(100vh - 64px);background:var(--sur);border-left:0.5px solid var(--brd2);box-shadow:-12px 0 32px rgba(0,0,0,.4);transition:right .25s ease;z-index:9200;display:flex;flex-direction:column;}
+.nlog-pd-drawer.open{right:0;}
+.nlog-pd-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:0.5px solid var(--brd);}
+.nlog-pd-title{font-size:15px;font-weight:600;color:var(--tx);}
+.nlog-pd-close{background:none;border:none;color:var(--mu);cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nlog-pd-close:hover{background:var(--sur2);color:var(--tx);}
+.nlog-pd-list{display:flex;flex-direction:column;padding:8px 0;}
+.nlog-pd-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:14px;cursor:pointer;text-align:left;}
+.nlog-pd-item:hover{background:var(--sur2);}
+.nlog-pd-item.active{color:var(--ac2);}
+.nlog-pd-item.active::after{content:'\2713';color:var(--ac2);font-size:14px;font-weight:700;}
+.nlog-period-btn{display:flex;align-items:center;justify-content:center;min-height:32px;padding:0 16px;border-radius:7px;background:transparent;border:none;cursor:pointer;color:var(--mu);font-size:12.5px;font-weight:500;font-family:var(--font);transition:color .12s,background .12s;white-space:nowrap;}
+.nlog-period-btn:hover{color:var(--tx);}
+.nlog-period-btn.active{background:var(--ac);color:#fff;}
+.nlog-period-btn.active:hover{color:#fff;}
+.nlog-tb-btn{display:flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:0 13px;height:40px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .12s;position:relative;}
+.nlog-tb-btn:hover{color:var(--ac2);border-color:var(--ac);}
+.nlog-tb-btn.active{background:var(--ac);border-color:var(--ac);color:#fff;}
+.nlog-tb-btn svg{width:15px;height:15px;}
+.nlog-tb-btn-icon{padding:0;width:40px;justify-content:center;}
+.nlog-tb-badge{background:var(--ac);color:#fff;border-radius:999px;font-size:10.5px;font-weight:700;min-width:18px;padding:0 5px;line-height:18px;}
+.nlog-search{display:flex;align-items:center;gap:7px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:0 13px;height:40px;width:240px;margin-left:auto;}
+.nlog-search:focus-within{border-color:var(--ac);}
+.nlog-search svg{width:14px;height:14px;color:var(--mu);flex:none;}
+.nlog-search input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;width:100%;}
+.nlog-search input::placeholder{color:var(--mu);}
+/* Calendar popover */
+.nlog-cal-pop{position:absolute;display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.5);padding:12px;z-index:9000;width:260px;}
+.nlog-cal-pop.open{display:block;}
+.nlog-cal-head{display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px;}
+.nlog-cal-title{font-size:13px;font-weight:600;color:var(--tx);}
+.nlog-cal-nav{background:none;border:none;color:var(--mu);cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.nlog-cal-nav:hover{background:var(--sur2);color:var(--tx);}
+.nlog-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.nlog-cal-wd{font-size:10.5px;color:var(--mu);text-align:center;padding:4px 0;font-weight:600;text-transform:uppercase;}
+.nlog-cal-day{background:none;border:none;color:var(--tx);cursor:pointer;font-family:var(--font);font-size:12px;height:30px;border-radius:6px;transition:all .1s;}
+.nlog-cal-day.empty{visibility:hidden;}
+.nlog-cal-day:hover:not(.empty):not(.selected){background:var(--sur2);}
+.nlog-cal-day.today{color:var(--ac2);font-weight:700;}
+.nlog-cal-day.selected{background:var(--ac);color:#fff;}
+.nlog-cal-foot{display:flex;justify-content:space-between;padding-top:10px;border-top:0.5px solid var(--brd);margin-top:10px;}
+.nlog-cal-clear{background:none;border:none;color:var(--mu);cursor:pointer;font-size:11.5px;font-family:var(--font);}
+.nlog-cal-clear:hover{color:var(--ac2);}
+/* Filter popover */
+.nlog-fil-pop{position:absolute;display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.5);padding:14px;z-index:9000;width:300px;max-height:520px;overflow-y:auto;}
+.nlog-fil-pop.open{display:block;}
+.nlog-fil-sec{margin-bottom:14px;}
+.nlog-fil-sec:last-of-type{margin-bottom:0;}
+.nlog-fil-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);font-weight:600;margin-bottom:8px;}
+.nlog-fil-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.nlog-fil-chip{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;padding:5px 10px;color:var(--mu);font-family:var(--font);font-size:11.5px;cursor:pointer;transition:all .12s;}
+.nlog-fil-chip:hover{color:var(--ac2);border-color:var(--ac);}
+.nlog-fil-chip.on{background:var(--ac);color:#fff;border-color:var(--ac);}
+.nlog-fil-lead-wrap{position:relative;}
+.nlog-fil-lead-input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 11px;outline:none;}
+.nlog-fil-lead-input:focus{border-color:var(--ac);}
+.nlog-fil-lead-list{position:absolute;top:100%;left:0;right:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;margin-top:4px;max-height:160px;overflow-y:auto;display:none;z-index:1;}
+.nlog-fil-lead-list.open{display:block;}
+.nlog-fil-lead-item{padding:7px 11px;color:var(--tx);font-size:12px;cursor:pointer;}
+.nlog-fil-lead-item:hover{background:var(--sur2);color:var(--ac2);}
+.nlog-fil-lead-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(79,124,255,.15);color:var(--ac2);padding:4px 10px;border-radius:999px;font-size:11.5px;margin-top:6px;}
+.nlog-fil-lead-x{cursor:pointer;}
+.nlog-fil-foot{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:0.5px solid var(--brd);margin-top:12px;}
+.nlog-fil-clr{background:none;border:none;color:var(--mu);cursor:pointer;font-size:12px;font-family:var(--font);}
+.nlog-fil-clr:hover{color:var(--ac2);}
+.nlog-fil-done{background:var(--ac);border:none;color:#fff;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:500;padding:6px 14px;border-radius:7px;}
+.nlog-fil-done:hover{background:var(--ac2);}
+@media(max-width:640px){
+  .nlog-search{width:100%;}
+  .nlog-toolbar{width:100%;}
+}
+.nlog-title{font-size:22px;font-weight:600;color:var(--tx);letter-spacing:-.3px;}
+.nlog-sub{font-size:12.5px;color:var(--mu);margin-top:3px;}
+.nlog-layout{display:flex;gap:20px;align-items:stretch;flex:1;min-height:0;overflow:hidden;padding:0 32px;}
+.nlog-cats{width:220px;flex:none;display:flex;flex-direction:column;gap:2px;padding-right:16px;padding-top:16px;border-right:0.5px solid var(--brd);max-height:100%;overflow-y:auto;}
+.nlog-cat{display:flex;align-items:center;gap:11px;padding:9px 12px;border:none;background:transparent;color:var(--mu);border-radius:8px;cursor:pointer;font-family:var(--font);font-size:13px;text-align:left;width:100%;transition:background .12s,color .12s;}
+.nlog-cat:hover{background:rgba(255,255,255,.04);color:var(--tx);}
+.nlog-cat.active{background:var(--ac);color:#fff;}
+.nlog-cat.active:hover{background:var(--ac);color:#fff;}
+.nlog-cat-ic{width:18px;height:18px;flex:none;display:flex;align-items:center;justify-content:center;}
+.nlog-cat-ic svg{width:16px;height:16px;}
+.nlog-cat-lbl{flex:1;}
+.nlog-cat-count{background:var(--sur);color:var(--mu);border-radius:999px;min-width:22px;padding:0 7px;line-height:18px;font-size:11px;text-align:center;font-weight:600;}
+.nlog-cat.active .nlog-cat-count{background:rgba(255,255,255,.22);color:#fff;}
+.nlog-main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;padding-top:16px;}
+.nlog-feed{display:flex;flex-direction:column;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+.nlog-feed::-webkit-scrollbar{width:8px;}
+.nlog-feed::-webkit-scrollbar-track{background:transparent;}
+.nlog-feed::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px;}
+@media(max-width:640px){
+  .nlog-head{padding:8px 14px;}
+  .nlog-period{display:none;}
+  button.nlog-period-mobile{display:flex;}
+}
+@media(max-width:900px){
+  .nlog-page{height:auto;overflow:visible;padding-bottom:60px;}
+  .nlog-layout{flex-direction:column;overflow:visible;padding:14px 16px 0;}
+  .nlog-cats{width:100%;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;border-right:none;border-bottom:0.5px solid var(--brd);padding-right:0;padding-bottom:12px;gap:6px;}
+  .nlog-cat{flex:none;width:auto;padding:7px 12px;}
+  .nlog-cat-lbl{flex:none;}
+  .nlog-cat-count{margin-left:4px;}
+  .nlog-main{overflow:visible;padding-bottom:0;}
+  .nlog-feed{flex:none;overflow:visible;}
+}
+.nlog-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--brd);cursor:pointer;text-align:left;font-family:var(--font);transition:background .12s;}
+.nlog-row:last-child{border-bottom:none;}
+.nlog-row:hover{background:rgba(255,255,255,.04);}
+.nlog-ic{width:34px;height:34px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;}
+.nlog-ic svg{width:16px;height:16px;}
+.nlog-av{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px;margin-top:2px;}
+.nlog-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+.nlog-line{font-size:13px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nlog-line strong{font-weight:600;}
+.nlog-body-txt{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nlog-meta{display:flex;align-items:center;gap:10px;margin-top:3px;}
+.nlog-time{font-size:11px;color:var(--mu);}
+.nlog-pill{font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px;}
+.nlog-pill.sent{background:rgba(110,157,255,.16);color:#6e9dff;}
+.nlog-pill.replied{background:rgba(45,212,191,.16);color:#2dd4bf;}
+.nlog-pill.missed{background:rgba(232,85,85,.16);color:#e85555;}
+.nlog-pill.returned{background:rgba(34,200,138,.16);color:#22c88a;}
+.nlog-pill.inbound{background:rgba(110,157,255,.16);color:#6e9dff;}
+.nlog-pill.created{background:rgba(245,166,35,.16);color:#f5a623;}
+.nlog-pill.canceled{background:rgba(232,85,85,.16);color:#e85555;}
+.nlog-pill.completed{background:rgba(34,200,138,.16);color:#22c88a;}
+.nlog-empty{padding:80px 24px;text-align:center;color:var(--mu);}
+.nlog-empty-ic{font-size:36px;margin-bottom:10px;opacity:.5;}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL (dropdown anchored to bell) -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-title">Notifications</span>
+    <div class="notif-header-actions">
+      <button class="notif-markall" id="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button>
+      <button class="notif-close" onclick="closeNotifications()" aria-label="Close notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="notif-tabs">
+    <button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button>
+    <button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button>
+  </div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer">
+    <button class="notif-seeall" onclick="window.location.reload()">See all notifications</button>
+  </div>
+</div>
+
+<!-- MOBILE NAVIGATION DRAWER -->
+<div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="md-nav">
+    <div class="md-item" data-nav="home" onclick="navClick('Home');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg><span>Dashboard</span></div>
+    <div class="md-item" data-nav="crm" onclick="navClick('CRM');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg><span>CRM Customer</span></div>
+    <div class="md-item" data-nav="call" onclick="navClick('Call');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M10.27 9.08C10.34 9.04 10.42 9.01 10.51 9.00C10.59 8.99 10.67 9.01 10.75 9.04L13.70 10.36C13.80 10.40 13.88 10.48 13.93 10.57C13.99 10.66 14.01 10.77 14.00 10.88C13.90 11.61 13.54 12.27 12.99 12.75C12.44 13.24 11.73 13.50 11 13.50C8.75 13.50 6.58 12.60 4.99 11.01C3.40 9.42 2.50 7.25 2.50 5.00C2.50 4.27 2.76 3.56 3.25 3.01C3.73 2.46 4.39 2.10 5.12 2.00C5.23 1.99 5.34 2.01 5.43 2.07C5.52 2.12 5.60 2.20 5.64 2.30L6.96 5.25C6.99 5.33 7.01 5.41 7.00 5.49C6.99 5.58 6.96 5.66 6.92 5.72L5.58 7.31C5.54 7.38 5.51 7.47 5.50 7.55C5.50 7.64 5.51 7.72 5.55 7.80C6.07 8.86 7.16 9.94 8.22 10.45C8.30 10.49 8.38 10.50 8.47 10.50C8.56 10.49 8.64 10.46 8.71 10.41L10.27 9.08Z"/></svg><span>Call History</span></div>
+    <div class="md-item" data-nav="message" onclick="navClick('Message');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M4.47 9L2 11V3C2 2.87 2.05 2.74 2.15 2.65C2.24 2.55 2.37 2.5 2.5 2.5H10.5C10.63 2.5 10.76 2.55 10.85 2.65C10.95 2.74 11 2.87 11 3V8.5C11 8.63 10.95 8.76 10.85 8.85C10.76 8.95 10.63 9 10.5 9H4.47Z"/><path d="M5 9V11.5C5 11.63 5.05 11.76 5.15 11.85C5.24 11.95 5.37 12 5.5 12H11.53L14 14V6C14 5.87 13.95 5.74 13.85 5.65C13.76 5.55 13.63 5.5 13.5 5.5H11"/></svg><span>Message History</span></div>
+    <div class="md-item" data-nav="voicemail" onclick="navClick('Voice mail');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg><span>Voice mail History</span></div>
+    <div class="md-item" data-nav="appointments" onclick="navClick('Appointments');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Appointments</span></div>
+    <div class="md-divider"></div>
+    <div class="md-item" data-nav="settings" onclick="navClick('Settings');closeMobileDrawer();"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg><span>Settings</span></div>
+    <div class="md-item md-account" data-nav="account" onclick="navClick('Account');closeMobileDrawer();"><span class="md-account-av">DP</span><span>Account</span></div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <div class="sb-item" data-nav="home" data-label="Dashboard" onclick="navClick('Home')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg></div>
+    <div class="sb-item" data-nav="crm" data-label="CRM Customer" onclick="navClick('CRM')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M5 9C6.38 9 7.5 7.88 7.5 6.5C7.5 5.12 6.38 4 5 4C3.62 4 2.5 5.12 2.5 6.5C2.5 7.88 3.62 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44 10.28 3.14 9 5 9C6.86 9 8.56 10.28 9 12"/></svg></div>
+    <div class="sb-item" data-nav="call" data-label="Call History" onclick="navClick('Call')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M10.27 9.08C10.34 9.04 10.42 9.01 10.51 9.00C10.59 8.99 10.67 9.01 10.75 9.04L13.70 10.36C13.80 10.40 13.88 10.48 13.93 10.57C13.99 10.66 14.01 10.77 14.00 10.88C13.90 11.61 13.54 12.27 12.99 12.75C12.44 13.24 11.73 13.50 11 13.50C8.75 13.50 6.58 12.60 4.99 11.01C3.40 9.42 2.50 7.25 2.50 5.00C2.50 4.27 2.76 3.56 3.25 3.01C3.73 2.46 4.39 2.10 5.12 2.00C5.23 1.99 5.34 2.01 5.43 2.07C5.52 2.12 5.60 2.20 5.64 2.30L6.96 5.25C6.99 5.33 7.01 5.41 7.00 5.49C6.99 5.58 6.96 5.66 6.92 5.72L5.58 7.31C5.54 7.38 5.51 7.47 5.50 7.55C5.50 7.64 5.51 7.72 5.55 7.80C6.07 8.86 7.16 9.94 8.22 10.45C8.30 10.49 8.38 10.50 8.47 10.50C8.56 10.49 8.64 10.46 8.71 10.41L10.27 9.08Z"/></svg></div>
+    <div class="sb-item" data-nav="message" data-label="Message History" onclick="navClick('Message')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M4.47 9L2 11V3C2 2.87 2.05 2.74 2.15 2.65C2.24 2.55 2.37 2.5 2.5 2.5H10.5C10.63 2.5 10.76 2.55 10.85 2.65C10.95 2.74 11 2.87 11 3V8.5C11 8.63 10.95 8.76 10.85 8.85C10.76 8.95 10.63 9 10.5 9H4.47Z"/><path d="M5 9V11.5C5 11.63 5.05 11.76 5.15 11.85C5.24 11.95 5.37 12 5.5 12H11.53L14 14V6C14 5.87 13.95 5.74 13.85 5.65C13.76 5.55 13.63 5.5 13.5 5.5H11"/></svg></div>
+    <div class="sb-item" data-nav="voicemail" data-label="Voice mail History" onclick="navClick('Voice mail')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg></div>
+    <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <div class="sidebar-nav-spacer"></div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" data-nav="settings" data-label="Settings" onclick="navClick('Settings')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></div>
+  </div>
+  <div class="sb-account" onclick="navClick('Account')">DP</div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area nlog-page">
+  <div class="nlog-head">
+    <div class="nlog-toolbar">
+      <div class="nlog-period" id="nlog-period">
+        <button class="nlog-period-btn" data-period="today" onclick="setLogPeriod('today')">Today</button>
+        <button class="nlog-period-btn" data-period="thisWeek" onclick="setLogPeriod('thisWeek')">Week</button>
+        <button class="nlog-period-btn" data-period="thisMonth" onclick="setLogPeriod('thisMonth')">Month</button>
+        <button class="nlog-period-btn" data-period="all" onclick="setLogPeriod('all')">All</button>
+      </div>
+      <button class="nlog-period-mobile nlog-tb-btn" id="nlog-period-mobile-btn" onclick="toggleLogPeriodDrawer(event)">
+        Period: <span id="nlog-period-mobile-lbl">All</span>
+        <svg class="nlog-pm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button class="nlog-tb-btn nlog-tb-btn-icon" id="nlog-cal-btn" onclick="toggleLogCal(event)" title="Pick a date" aria-label="Pick a date">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+      <div class="nlog-cal-pop" id="nlog-cal-pop">
+        <div class="nlog-cal-head">
+          <button class="nlog-cal-nav" onclick="logCalNav(-1)">&lsaquo;</button>
+          <div class="nlog-cal-title" id="nlog-cal-title">—</div>
+          <button class="nlog-cal-nav" onclick="logCalNav(1)">&rsaquo;</button>
+        </div>
+        <div class="nlog-cal-grid" id="nlog-cal-grid"></div>
+        <div class="nlog-cal-foot">
+          <button class="nlog-cal-clear" onclick="logCalClear()">Clear selection</button>
+        </div>
+      </div>
+      <button class="nlog-tb-btn" id="nlog-filter-btn" onclick="toggleLogFilter(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        Filter
+        <span class="nlog-tb-badge" id="nlog-filter-badge" style="display:none;">0</span>
+      </button>
+      <div class="nlog-fil-pop" id="nlog-fil-pop">
+        <div class="nlog-fil-sec">
+          <div class="nlog-fil-lbl">Status</div>
+          <div class="nlog-fil-chips" id="nlog-fil-statuses"></div>
+        </div>
+        <div class="nlog-fil-sec">
+          <div class="nlog-fil-lbl">Lead</div>
+          <div class="nlog-fil-lead-wrap">
+            <input type="text" class="nlog-fil-lead-input" id="nlog-fil-lead-input" placeholder="Search a lead..." oninput="logFilLeadSearch(this.value)" onfocus="logFilLeadSearch(this.value)" />
+            <div class="nlog-fil-lead-list" id="nlog-fil-lead-list"></div>
+          </div>
+          <div id="nlog-fil-lead-chip-wrap"></div>
+        </div>
+        <div class="nlog-fil-sec">
+          <div class="nlog-fil-lbl">Direction</div>
+          <div class="nlog-fil-chips">
+            <button class="nlog-fil-chip" data-dir="inbound" onclick="logFilToggleDir('inbound')">Inbound</button>
+            <button class="nlog-fil-chip" data-dir="outbound" onclick="logFilToggleDir('outbound')">Outbound</button>
+          </div>
+        </div>
+        <div class="nlog-fil-foot">
+          <button class="nlog-fil-clr" onclick="logFilClear()">Clear all</button>
+          <button class="nlog-fil-done" onclick="logFilClose()">Done</button>
+        </div>
+      </div>
+      <div class="nlog-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="nlog-search-input" placeholder="Search notifications" oninput="nlogSearch(this.value)" />
+      </div>
+    </div>
+  </div>
+  <div class="nlog-layout">
+    <div class="nlog-cats">
+      <button class="nlog-cat active" data-type="all" onclick="setLogType('all')">
+        <span class="nlog-cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+        <span class="nlog-cat-lbl">All</span>
+        <span class="nlog-cat-count" id="nlog-count-all">0</span>
+      </button>
+      <button class="nlog-cat" data-type="sms" onclick="setLogType('sms')">
+        <span class="nlog-cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+        <span class="nlog-cat-lbl">SMS</span>
+        <span class="nlog-cat-count" id="nlog-count-sms">0</span>
+      </button>
+      <button class="nlog-cat" data-type="email" onclick="setLogType('email')">
+        <span class="nlog-cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        <span class="nlog-cat-lbl">Email</span>
+        <span class="nlog-cat-count" id="nlog-count-email">0</span>
+      </button>
+      <button class="nlog-cat" data-type="call" onclick="setLogType('call')">
+        <span class="nlog-cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        <span class="nlog-cat-lbl">Calls</span>
+        <span class="nlog-cat-count" id="nlog-count-call">0</span>
+      </button>
+      <button class="nlog-cat" data-type="activity" onclick="setLogType('activity')">
+        <span class="nlog-cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span class="nlog-cat-lbl">Activities</span>
+        <span class="nlog-cat-count" id="nlog-count-activity">0</span>
+      </button>
+    </div>
+    <div class="nlog-main">
+      <div class="nlog-feed" id="nlog-feed">
+        <div class="nlog-empty"><div class="nlog-empty-ic">🔔</div>Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile period drawer -->
+  <div class="nlog-pd-backdrop" id="nlog-pd-backdrop" onclick="closeLogPeriodDrawer()"></div>
+  <div class="nlog-pd-drawer" id="nlog-pd-drawer">
+    <div class="nlog-pd-head">
+      <span class="nlog-pd-title">Period</span>
+      <button class="nlog-pd-close" onclick="closeLogPeriodDrawer()" aria-label="Close">&times;</button>
+    </div>
+    <div class="nlog-pd-list">
+      <button class="nlog-pd-item" data-period="today" onclick="setLogPeriod('today');closeLogPeriodDrawer();">Today</button>
+      <button class="nlog-pd-item" data-period="thisWeek" onclick="setLogPeriod('thisWeek');closeLogPeriodDrawer();">This Week</button>
+      <button class="nlog-pd-item" data-period="thisMonth" onclick="setLogPeriod('thisMonth');closeLogPeriodDrawer();">This Month</button>
+      <button class="nlog-pd-item" data-period="all" onclick="setLogPeriod('all');closeLogPeriodDrawer();">All Time</button>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/leads-comms.js"></script>
+<script>
+/* ============ CHROME ============ */
+function navClick(name){
+  if(name==='Home'){ window.location.href = '../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html'; return; }
+  if(name==='CRM'){ window.location.href = '../coreconnect_leads_v83/coreconnect_leads_v83.html'; return; }
+  if(name==='Call'){ window.location.href = '../call_history/coreconnect_call_history_v31.html'; return; }
+  if(name==='Message'){ window.location.href = '../coreconnect_message_history_v41/coreconnect_message_history_v41.html'; return; }
+  if(name==='Voice mail'){ window.location.href = '../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html'; return; }
+  if(name==='Appointments'){ window.location.href = '../coreconnect_appointments/coreconnect_appointments.html'; return; }
+  if(name==='Settings'){ window.location.href = '../Settings/Settings_main_page/coreconnect_settings.html'; return; }
+}
+function toggleMobileDrawer(){var d=document.getElementById('mobile-drawer'),b=document.getElementById('mobile-drawer-backdrop');if(!d)return;var o=d.classList.contains('open');d.classList.toggle('open',!o);if(b)b.classList.toggle('open',!o);document.body.style.overflow=o?'':'hidden';}
+function closeMobileDrawer(){var d=document.getElementById('mobile-drawer'),b=document.getElementById('mobile-drawer-backdrop');if(d)d.classList.remove('open');if(b)b.classList.remove('open');document.body.style.overflow='';}
+
+/* Notifications dropdown (notifications.js overrides openNotifications, setNotifTab, markAllNotificationsRead) */
+function toggleNotifications(e){if(e)e.stopPropagation();var p=document.getElementById('notif-panel');if(!p)return;if(p.classList.contains('open'))closeNotifications();else openNotifications();}
+function openNotifications(){var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell');if(!p||!b)return;if(p.parentElement!==document.body)document.body.appendChild(p);positionNotifications();p.classList.add('open');b.classList.add('active');}
+function closeNotifications(){var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell');if(p)p.classList.remove('open');if(b)b.classList.remove('active');}
+function positionNotifications(){var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell');if(!p||!b)return;var r=b.getBoundingClientRect();var w=p.offsetWidth||420;p.style.top=(r.bottom+8)+'px';p.style.left=Math.max(8,r.right-w)+'px';}
+function setNotifTab(t){document.querySelectorAll('.notif-tab').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===t);});}
+function markAllNotificationsRead(){}
+document.addEventListener('click',function(e){var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell');if(p&&p.classList.contains('open')&&!(b&&b.contains(e.target))&&!p.contains(e.target))closeNotifications();});
+window.addEventListener('resize',function(){var p=document.getElementById('notif-panel');if(p&&p.classList.contains('open'))positionNotifications();});
+
+/* ============ NOTIFICATIONS LOG PAGE ============ */
+var _logType = 'all';
+var _logEntries = [];
+var _period = 'today';
+var _specificDate = null; // 'yyyy-mm-dd' when calendar picks a day
+var _filterStatuses = new Set();
+var _filterLead = null;
+var _filterDirections = new Set();
+var _search = '';
+
+var ICONS = {
+  sms:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  call: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  appt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  reminder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  task: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+};
+var ICON_BG = { sms:'rgba(45,212,191,.14)', email:'rgba(110,157,255,.14)', call:'rgba(232,85,85,.14)', activity:'rgba(245,166,35,.14)' };
+var ICON_FG = { sms:'#2dd4bf', email:'#6e9dff', call:'#e85555', activity:'#f5a623' };
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function initialsOf(n){var p=String(n||'').trim().split(/\s+/);return (((p[0]||'')[0]||'')+((p.length>1&&p[p.length-1][0])||'')).toUpperCase();}
+function colorFor(n){var P=['#534AB7','#0F6E56','#B73D5B','#3D81B7','#B77B3D','#22c88a','#e85555','#f5a623','#6e9dff','#2dd4bf'];var h=0,x=String(n||'');for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))>>>0;return P[h%P.length];}
+function relTime(ts){var d=(Date.now()-ts)/1000;if(d<45)return 'Just now';if(d<3600)return Math.round(d/60)+'m ago';if(d<86400)return Math.round(d/3600)+'h ago';var dt=new Date(ts),M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return M[dt.getMonth()]+' '+dt.getDate();}
+
+/* Deterministic per-lead PRNG */
+function srand(seed){ var s = seed|0; return function(){ s = (s*1664525 + 1013904223) >>> 0; return (s & 0xfffffff) / 0xfffffff; }; }
+
+function leadDescriptor(L){
+  return { no:L.no, name:L.name||'Unknown', av:initialsOf(L.name||'??'), color:L.ac||colorFor(L.name) };
+}
+
+function buildLogEntries(){
+  var out = [];
+  var leads = (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS : [];
+  var NOW = Date.now();
+  var HOUR = 3600*1000;
+
+  /* --- Calls (sourced from CCLeads.callCountsForLead) --- */
+  var SMS_OUT_LINES = ['Just wanted to check in — let me know if you have questions.','Following up on the test drive — interested in moving forward?','Sent you the pricing breakdown. Have a look when you can.','Quick reminder about your appointment tomorrow.','Got a new arrival you might like.'];
+  var SMS_IN_LINES = ['Thanks, will check in tonight.','Can we move it to 3pm?','Got the docs, thank you!','Is the vehicle still available?','Sounds good — see you then.'];
+  var EMAIL_OUT_SUBJ = ['Your financing options','Following up on your visit','Loan paperwork attached','Re: Trade-in appraisal','Vehicle quote — as discussed'];
+  var EMAIL_IN_SUBJ = ['Re: Financing options','Re: Following up on your visit','Re: Loan paperwork','Re: Trade-in appraisal','Re: Question about my appointment'];
+  var APPT_TYPES = ['Test drive','Delivery','Trade-in appraisal','Walk-around','Financing discussion'];
+
+  leads.forEach(function(L, i){
+    if(!L || L.no==null) return;
+    var ld = leadDescriptor(L);
+    var rnd = srand(L.no * 7919 + 13);
+
+    /* CALLS */
+    if(window.CCLeads && CCLeads.callCountsForLead){
+      var cc = CCLeads.callCountsForLead(L);
+      var baseT = NOW - Math.floor(rnd()*48*HOUR) - HOUR;
+      for(var m=0; m<cc.missed; m++){
+        out.push({ id:'call_m_'+L.no+'_'+m, type:'call', subType:'call-missed', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Missed call', body:'Inbound, not answered', ts: baseT - m*3*HOUR - Math.floor(rnd()*HOUR), status:'Missed' });
+      }
+      for(var r=0; r<cc.returned; r++){
+        out.push({ id:'call_r_'+L.no+'_'+r, type:'call', subType:'call-returned', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Returned call', body:'Outbound · '+(60+Math.floor(rnd()*240))+'s', ts: baseT - (cc.missed+r)*3*HOUR - Math.floor(rnd()*HOUR), status:'Returned' });
+      }
+    }
+
+    /* SMS */
+    if(L.phone){
+      var smsOut = 1 + Math.floor(rnd()*3);
+      var smsBaseT = NOW - Math.floor(rnd()*36*HOUR) - 30*60*1000;
+      for(var s=0; s<smsOut; s++){
+        out.push({ id:'sms_s_'+L.no+'_'+s, type:'sms', subType:'sms-sent', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Sent SMS', body: SMS_OUT_LINES[Math.floor(rnd()*SMS_OUT_LINES.length)], ts: smsBaseT - s*4*HOUR - Math.floor(rnd()*HOUR), status:'Sent' });
+        if(rnd() < 0.6){
+          out.push({ id:'sms_r_'+L.no+'_'+s, type:'sms', subType:'sms-replied', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'New SMS reply', body: SMS_IN_LINES[Math.floor(rnd()*SMS_IN_LINES.length)], ts: smsBaseT - s*4*HOUR + 25*60*1000, status:'Replied' });
+        }
+      }
+    }
+
+    /* EMAIL */
+    if(L.email){
+      var emOut = Math.floor(rnd()*2) + 1;
+      var emBaseT = NOW - Math.floor(rnd()*40*HOUR) - 2*HOUR;
+      for(var e=0; e<emOut; e++){
+        out.push({ id:'em_s_'+L.no+'_'+e, type:'email', subType:'email-sent', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Sent email', body: EMAIL_OUT_SUBJ[Math.floor(rnd()*EMAIL_OUT_SUBJ.length)], ts: emBaseT - e*6*HOUR, status:'Sent' });
+        if(rnd() < 0.45){
+          out.push({ id:'em_r_'+L.no+'_'+e, type:'email', subType:'email-replied', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'New email reply', body: EMAIL_IN_SUBJ[Math.floor(rnd()*EMAIL_IN_SUBJ.length)], ts: emBaseT - e*6*HOUR + 90*60*1000, status:'Replied' });
+        }
+      }
+    }
+
+    /* ACTIVITIES — synthesize 1 deterministic appt + occasional reminder/task per lead */
+    var hasAppt = rnd() < 0.55;
+    if(hasAppt){
+      var apptType = APPT_TYPES[Math.floor(rnd()*APPT_TYPES.length)];
+      var apptCreatedT = NOW - Math.floor(rnd()*72*HOUR);
+      var apptDateT = NOW + (rnd()<0.5 ? -24*HOUR*(1+Math.floor(rnd()*5)) : 24*HOUR*Math.floor(rnd()*7));
+      var apptDateStr = new Date(apptDateT).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + new Date(apptDateT).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      out.push({ id:'act_appt_c_'+L.no, type:'activity', subType:'appt-created', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Appointment created', body: apptType+' — '+apptDateStr, ts: apptCreatedT, status:'Created' });
+      var deterministic = (L.no % 5 === 0);
+      if(deterministic){
+        out.push({ id:'act_appt_x_'+L.no, type:'activity', subType:'appt-canceled', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Appointment canceled', body: apptType+' — '+apptDateStr, ts: apptCreatedT + 12*HOUR, status:'Canceled' });
+      } else if(apptDateT < NOW){
+        out.push({ id:'act_appt_d_'+L.no, type:'activity', subType:'appt-completed', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Appointment completed', body: apptType+' — '+apptDateStr, ts: apptDateT + 30*60*1000, status:'Completed' });
+      }
+    }
+    if(rnd() < 0.3){
+      out.push({ id:'act_rem_'+L.no, type:'activity', subType:'reminder-created', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title:'Reminder created', body:'Follow up next week', ts: NOW - Math.floor(rnd()*36*HOUR), status:'Created' });
+    }
+    if(rnd() < 0.25){
+      var taskDone = rnd() < 0.4;
+      out.push({ id:'act_tsk_'+L.no, type:'activity', subType:'task-created', leadNo:L.no, leadName:ld.name, leadAv:ld.av, leadColor:ld.color, title: taskDone ? 'Task completed' : 'Task created', body:'Prep paperwork for visit', ts: NOW - Math.floor(rnd()*24*HOUR), status: taskDone ? 'Completed' : 'Created' });
+    }
+  });
+
+  out.sort(function(a,b){ return b.ts - a.ts; });
+  return out;
+}
+
+function rowIcon(entry){
+  var sub = entry.subType||'';
+  if(entry.type==='call') return ICONS.call;
+  if(entry.type==='sms') return ICONS.sms;
+  if(entry.type==='email') return ICONS.email;
+  if(sub.indexOf('appt')===0) return ICONS.appt;
+  if(sub.indexOf('reminder')===0) return ICONS.reminder;
+  if(sub.indexOf('task')===0) return ICONS.task;
+  return ICONS.appt;
+}
+function pillClass(status){return String(status||'').toLowerCase();}
+
+function rowHtml(n){
+  var bg = ICON_BG[n.type]||'rgba(255,255,255,.06)', fg = ICON_FG[n.type]||'#6e9dff';
+  return '<button class="nlog-row" data-id="'+esc(n.id)+'" onclick="nlogClick(\''+esc(n.id)+'\')">'
+    + '<span class="nlog-ic" style="background:'+bg+';color:'+fg+'">'+rowIcon(n)+'</span>'
+    + '<span class="nlog-av" style="background:'+esc(n.leadColor||'#4f7cff')+'">'+esc(n.leadAv||'??')+'</span>'
+    + '<span class="nlog-txt">'
+      + '<span class="nlog-line"><strong>'+esc(n.title)+'</strong> · '+esc(n.leadName||'')+'</span>'
+      + '<span class="nlog-body-txt">'+esc(n.body)+'</span>'
+      + '<span class="nlog-meta"><span class="nlog-time">'+esc(relTime(n.ts))+'</span><span class="nlog-pill '+pillClass(n.status)+'">'+esc(n.status)+'</span></span>'
+    + '</span>'
+  + '</button>';
+}
+
+function renderLog(){
+  var feed = document.getElementById('nlog-feed');
+  var list = _logEntries;
+  if(_logType !== 'all') list = list.filter(function(n){ return n.type === _logType; });
+  list = list.filter(entryInPeriod);
+  if(_filterStatuses.size) list = list.filter(function(n){ return _filterStatuses.has(n.status); });
+  if(_filterLead) list = list.filter(function(n){ return n.leadNo === _filterLead.no; });
+  if(_filterDirections.size){ list = list.filter(function(n){ var d = dirOf(n); return d && _filterDirections.has(d); }); }
+  if(_search){ var q = _search; list = list.filter(function(n){ return (n.leadName+' '+n.title+' '+n.body).toLowerCase().includes(q); }); }
+  if(!list.length){
+    feed.innerHTML = '<div class="nlog-empty"><div class="nlog-empty-ic">🔔</div>No notifications for this filter.</div>';
+  } else {
+    feed.innerHTML = list.map(rowHtml).join('');
+  }
+  /* counts */
+  var counts = { all:_logEntries.length, sms:0, email:0, call:0, activity:0 };
+  _logEntries.forEach(function(n){ counts[n.type] = (counts[n.type]||0) + 1; });
+  Object.keys(counts).forEach(function(k){
+    var el = document.getElementById('nlog-count-'+k);
+    if(el) el.textContent = counts[k];
+  });
+}
+
+function setLogType(t){
+  _logType = t;
+  document.querySelectorAll('.nlog-cat').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-type') === t); });
+  renderLog();
+}
+
+function nlogClick(id){
+  var n = _logEntries.find(function(x){ return x.id === id; });
+  if(!n) return;
+  var depth = '../';
+  if(n.type === 'call'){
+    window.location.href = depth + 'call_history/coreconnect_call_history_v31.html?focus=' + encodeURIComponent(n.leadNo||'');
+  } else if(n.type === 'sms' || n.type === 'email'){
+    var tab = (n.type === 'sms') ? 'sms' : 'email';
+    window.location.href = depth + 'coreconnect_leads_v83/coreconnect_leads_v83.html?openLead=' + encodeURIComponent(n.leadNo||'') + '&tab=' + tab;
+  } else {
+    window.location.href = depth + 'coreconnect_appointments/coreconnect_appointments.html';
+  }
+}
+
+/* Period filter (Today / Week / Month / All) — synced with CCLeads */
+var PERIOD_MS = { today: 24*3600*1000, thisWeek: 7*24*3600*1000, thisMonth: 30*24*3600*1000 };
+function entryInPeriod(n){
+  if(_specificDate){
+    var d = new Date(n.ts);
+    var dStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return dStr === _specificDate;
+  }
+  if(_period === 'all') return true;
+  return (Date.now() - n.ts) < (PERIOD_MS[_period] || 0);
+}
+function setLogPeriod(p){
+  _period = p;
+  _specificDate = null;
+  if(window.CCLeads && CCLeads.setPeriod) CCLeads.setPeriod(p);
+  renderPeriodActive();
+  renderLog();
+}
+function renderPeriodActive(){
+  document.querySelectorAll('.nlog-period-btn').forEach(function(b){
+    b.classList.toggle('active', !_specificDate && b.getAttribute('data-period') === _period);
+  });
+  syncLogPeriodLabel();
+}
+var PERIOD_LABELS = { today:'Today', thisWeek:'Week', thisMonth:'Month', all:'All' };
+function syncLogPeriodLabel(){
+  var lbl = document.getElementById('nlog-period-mobile-lbl');
+  if(lbl){
+    if(_specificDate){
+      var d = new Date(_specificDate+'T00:00:00');
+      var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      lbl.textContent = M[d.getMonth()]+' '+d.getDate();
+    } else {
+      lbl.textContent = PERIOD_LABELS[_period] || 'All';
+    }
+  }
+  document.querySelectorAll('.nlog-pd-item').forEach(function(b){
+    b.classList.toggle('active', !_specificDate && b.getAttribute('data-period') === _period);
+  });
+}
+function toggleLogPeriodDrawer(e){
+  if(e) e.stopPropagation();
+  var d = document.getElementById('nlog-pd-drawer'), b = document.getElementById('nlog-pd-backdrop');
+  var isOpen = d.classList.contains('open');
+  d.classList.toggle('open', !isOpen);
+  b.classList.toggle('open', !isOpen);
+}
+function closeLogPeriodDrawer(){
+  document.getElementById('nlog-pd-drawer').classList.remove('open');
+  document.getElementById('nlog-pd-backdrop').classList.remove('open');
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLogPeriodDrawer(); });
+
+/* Calendar popover */
+var _calView = new Date(); _calView.setDate(1);
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function toggleLogCal(e){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('nlog-cal-pop');
+  if(pop.classList.contains('open')){ pop.classList.remove('open'); return; }
+  positionLogCal();
+  renderLogCal();
+  pop.classList.add('open');
+}
+function positionLogCal(){
+  var btn = document.getElementById('nlog-cal-btn');
+  var pop = document.getElementById('nlog-cal-pop');
+  var r = btn.getBoundingClientRect();
+  pop.style.top = (r.bottom + 6) + 'px';
+  pop.style.left = Math.max(8, r.right - 260) + 'px';
+}
+function logCalNav(delta){
+  _calView.setMonth(_calView.getMonth() + delta);
+  renderLogCal();
+}
+function renderLogCal(){
+  document.getElementById('nlog-cal-title').textContent = MONTHS[_calView.getMonth()] + ' ' + _calView.getFullYear();
+  var grid = document.getElementById('nlog-cal-grid');
+  var html = '';
+  ['S','M','T','W','T','F','S'].forEach(function(d){ html += '<div class="nlog-cal-wd">'+d+'</div>'; });
+  var y = _calView.getFullYear(), m = _calView.getMonth();
+  var firstDay = new Date(y, m, 1).getDay();
+  var daysInMonth = new Date(y, m+1, 0).getDate();
+  var todayStr = new Date(); var todayKey = todayStr.getFullYear()+'-'+String(todayStr.getMonth()+1).padStart(2,'0')+'-'+String(todayStr.getDate()).padStart(2,'0');
+  for(var i=0; i<firstDay; i++) html += '<button class="nlog-cal-day empty"></button>';
+  for(var d=1; d<=daysInMonth; d++){
+    var key = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var cls = 'nlog-cal-day';
+    if(key === todayKey) cls += ' today';
+    if(key === _specificDate) cls += ' selected';
+    html += '<button class="'+cls+'" onclick="logCalPick(\''+key+'\')">'+d+'</button>';
+  }
+  grid.innerHTML = html;
+}
+function logCalPick(key){
+  _specificDate = key;
+  document.getElementById('nlog-cal-pop').classList.remove('open');
+  document.getElementById('nlog-cal-btn').classList.add('active');
+  renderPeriodActive();
+  renderLog();
+}
+function logCalClear(){
+  _specificDate = null;
+  document.getElementById('nlog-cal-btn').classList.remove('active');
+  document.getElementById('nlog-cal-pop').classList.remove('open');
+  renderPeriodActive();
+  renderLog();
+}
+document.addEventListener('click', function(e){
+  var pop = document.getElementById('nlog-cal-pop'), btn = document.getElementById('nlog-cal-btn');
+  if(pop && pop.classList.contains('open') && !pop.contains(e.target) && !(btn && btn.contains(e.target))) pop.classList.remove('open');
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var p=document.getElementById('nlog-cal-pop'); if(p) p.classList.remove('open'); }});
+
+/* Filter popover */
+var STATUS_OPTIONS = ['Sent','Replied','Missed','Returned','Inbound','Created','Canceled','Completed'];
+function toggleLogFilter(e){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('nlog-fil-pop');
+  if(pop.classList.contains('open')){ pop.classList.remove('open'); return; }
+  positionLogFilter();
+  renderLogFilterUI();
+  pop.classList.add('open');
+}
+function positionLogFilter(){
+  var btn = document.getElementById('nlog-filter-btn');
+  var pop = document.getElementById('nlog-fil-pop');
+  var r = btn.getBoundingClientRect();
+  pop.style.top = (r.bottom + 6) + 'px';
+  pop.style.left = Math.max(8, r.right - 300) + 'px';
+}
+function renderLogFilterUI(){
+  var sBox = document.getElementById('nlog-fil-statuses');
+  sBox.innerHTML = STATUS_OPTIONS.map(function(s){
+    return '<button class="nlog-fil-chip'+(_filterStatuses.has(s)?' on':'')+'" onclick="logFilToggleStatus(\''+s+'\')">'+s+'</button>';
+  }).join('');
+  document.querySelectorAll('.nlog-fil-chip[data-dir]').forEach(function(b){ b.classList.toggle('on', _filterDirections.has(b.getAttribute('data-dir'))); });
+  renderLogFilLeadChip();
+}
+function renderLogFilLeadChip(){
+  var w = document.getElementById('nlog-fil-lead-chip-wrap');
+  if(_filterLead){
+    w.innerHTML = '<div class="nlog-fil-lead-chip">'+esc(_filterLead.name)+'<span class="nlog-fil-lead-x" onclick="logFilClearLead()">&times;</span></div>';
+  } else { w.innerHTML = ''; }
+}
+function logFilToggleStatus(s){
+  if(_filterStatuses.has(s)) _filterStatuses.delete(s); else _filterStatuses.add(s);
+  renderLogFilterUI(); updateFilterBadge(); renderLog();
+}
+function logFilToggleDir(d){
+  if(_filterDirections.has(d)) _filterDirections.delete(d); else _filterDirections.add(d);
+  renderLogFilterUI(); updateFilterBadge(); renderLog();
+}
+function logFilLeadSearch(q){
+  var list = document.getElementById('nlog-fil-lead-list');
+  var leads = (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS : [];
+  var qLow = (q||'').trim().toLowerCase();
+  var matches = qLow ? leads.filter(function(l){ return String(l.name||'').toLowerCase().includes(qLow); }).slice(0,8) : leads.slice(0,8);
+  if(!matches.length){ list.innerHTML = '<div class="nlog-fil-lead-item" style="color:var(--mu);">No matches</div>'; }
+  else { list.innerHTML = matches.map(function(l){ return '<div class="nlog-fil-lead-item" onclick="logFilPickLead('+l.no+')">'+esc(l.name)+'</div>'; }).join(''); }
+  list.classList.add('open');
+}
+function logFilPickLead(no){
+  var l = CCLeads.LEADS.find(function(x){ return x.no === no; });
+  if(!l) return;
+  _filterLead = { no: l.no, name: l.name };
+  document.getElementById('nlog-fil-lead-input').value = '';
+  document.getElementById('nlog-fil-lead-list').classList.remove('open');
+  renderLogFilLeadChip(); updateFilterBadge(); renderLog();
+}
+function logFilClearLead(){
+  _filterLead = null; renderLogFilLeadChip(); updateFilterBadge(); renderLog();
+}
+function logFilClear(){
+  _filterStatuses.clear(); _filterDirections.clear(); _filterLead = null;
+  renderLogFilterUI(); updateFilterBadge(); renderLog();
+}
+function logFilClose(){ document.getElementById('nlog-fil-pop').classList.remove('open'); }
+function updateFilterBadge(){
+  var n = _filterStatuses.size + _filterDirections.size + (_filterLead ? 1 : 0);
+  var badge = document.getElementById('nlog-filter-badge');
+  if(n > 0){ badge.style.display = ''; badge.textContent = n; document.getElementById('nlog-filter-btn').classList.add('active'); }
+  else { badge.style.display = 'none'; document.getElementById('nlog-filter-btn').classList.remove('active'); }
+}
+function dirOf(n){
+  if(n.subType==='sms-sent' || n.subType==='email-sent' || n.subType==='call-returned') return 'outbound';
+  if(n.subType==='sms-replied' || n.subType==='email-replied' || n.subType==='call-missed') return 'inbound';
+  return null;
+}
+document.addEventListener('click', function(e){
+  var pop = document.getElementById('nlog-fil-pop'), btn = document.getElementById('nlog-filter-btn');
+  if(pop && pop.classList.contains('open') && !pop.contains(e.target) && !(btn && btn.contains(e.target))) pop.classList.remove('open');
+  var list = document.getElementById('nlog-fil-lead-list'), inp = document.getElementById('nlog-fil-lead-input');
+  if(list && list.classList.contains('open') && !list.contains(e.target) && e.target!==inp) list.classList.remove('open');
+});
+
+/* Search */
+var _searchT = null;
+function nlogSearch(v){
+  clearTimeout(_searchT);
+  _searchT = setTimeout(function(){
+    _search = (v||'').trim().toLowerCase();
+    renderLog();
+  }, 120);
+}
+
+function initNlog(){
+  if(window.CCLeads && CCLeads.getPeriod) _period = CCLeads.getPeriod() || 'today';
+  _logEntries = buildLogEntries();
+  renderPeriodActive();
+  renderLog();
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initNlog);
+else initNlog();
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){var ps=document.getElementById('product-switcher');if(ps && ps.parentElement!==document.body) document.body.appendChild(ps);}
+  function positionSwitcher(){var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher');if(!logo||!ps)return;var r=logo.getBoundingClientRect();ps.style.left=((window.innerWidth>640)?66:r.left)+'px';ps.style.top=(r.bottom+8)+'px';}
+  function toggleProductSwitcher(e){if(e)e.stopPropagation();var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher');if(!logo||!ps)return;portalSwitcher();var w=!ps.classList.contains('ps-open');if(w)positionSwitcher();ps.classList.toggle('ps-open',w);logo.classList.toggle('ps-open',w);}
+  function closeProductSwitcher(){var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher');if(logo)logo.classList.remove('ps-open');if(ps)ps.classList.remove('ps-open');}
+  window.toggleProductSwitcher=toggleProductSwitcher; window.closeProductSwitcher=closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid')==='coreconnect'); }); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){var ps=document.getElementById('product-switcher');if(!ps||!ps.classList.contains('ps-open'))return;if(e.target.closest && (e.target.closest('.logo')||e.target.closest('#product-switcher')))return;closeProductSwitcher();});
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){var ps=document.getElementById('product-switcher');if(ps && ps.classList.contains('ps-open')) positionSwitcher();});
+  window.addEventListener('scroll', function(){var ps=document.getElementById('product-switcher');if(ps && ps.classList.contains('ps-open')) positionSwitcher();}, true);
+})();
+</script>
+<script src="../shared/notifications.js"></script>
+<script src="../shared/contact-panel.js"></script>
+
+
+</body>
+</html>

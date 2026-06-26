@@ -1,0 +1,266 @@
+/* ============================================================================
+   CoreConnect — shared global chrome
+   ----------------------------------------------------------------------------
+   Linked from every page's <head> BEFORE the page's own inline <style>, so
+   any page-specific overrides still win during the migration. Edit this file
+   to change global tokens / chrome (top-header, sidebar, modals, etc.) in one
+   place; per-page rules live in each page's inline <style>.
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Design tokens ─────────────────────────────────────────────────────── */
+:root{
+  --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;
+  --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
+  --tx:#e8eaf0;--mu:#7a7f94;
+  --ac:#4f7cff;--ac2:#6e9dff;
+  --gr:#22c88a;--am:#f5a623;--rd:#e85555;
+  --teal:#2dd4bf;--purple:#c4b5fd;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+.root{background:var(--bg);font-family:var(--font);color:var(--tx);min-height:93vh;display:flex;flex-direction:column;position:relative;}
+
+/* ── Top header (full width, fixed 64px) ───────────────────────────────── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;
+  background:var(--bg);border-bottom:0.5px solid var(--brd);
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;
+  color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.top-header .logo-mark img{width:32px;height:32px;border-radius:8px;object-fit:cover;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;
+  border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;
+  flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;
+  justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);
+  transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell.active{background:rgba(79,124,255,.10);color:var(--ac2);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;
+  border-radius:50%;background:var(--rd);border:2px solid var(--bg);display:none;}
+.header-bell-dot.show{display:block;}
+.header-bell::after{content:attr(data-label);position:absolute;top:52px;left:50%;
+  transform:translateX(-50%);background:var(--sur2);color:var(--ac2);
+  font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;
+  border:0.5px solid var(--ac);white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.header-bell:hover::after{opacity:1;}
+
+/* ── Icon sidebar (64px, fixed, starts below header) ───────────────────── */
+.sidebar{position:fixed;top:64px;left:0;width:64px;height:calc(100vh - 64px);
+  background:var(--bg);border-right:0.5px solid var(--brd);
+  display:flex;flex-direction:column;align-items:center;
+  padding:14px 0 18px;z-index:70;}
+.sidebar-nav{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;flex:1;}
+.sidebar-nav-spacer{flex:1;}
+.sb-item{position:relative;width:44px;height:44px;display:flex;align-items:center;
+  justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);
+  transition:all .12s;flex-shrink:0;}
+.sb-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.sb-item.active{background:var(--ac);color:#fff;}
+.sb-item.active:hover{background:var(--ac);}
+.sb-divider{width:36px;height:0.5px;background:var(--brd);margin:6px 0;flex-shrink:0;}
+.sb-item::after{content:attr(data-label);position:absolute;left:58px;top:50%;
+  transform:translateY(-50%);background:var(--sur2);color:var(--ac2);
+  font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;
+  border:0.5px solid var(--ac);white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.sb-item:hover::after{opacity:1;}
+.sb-account{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:600;color:#fff;
+  background:var(--gr);cursor:pointer;position:relative;flex-shrink:0;margin-top:8px;}
+.sb-account::after{content:'Account';position:absolute;left:52px;top:50%;
+  transform:translateY(-50%);background:var(--sur2);color:var(--ac2);
+  font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;
+  border:0.5px solid var(--ac);white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.sb-account:hover::after{opacity:1;}
+
+/* Main content shifts right past sidebar and down past header */
+.main-area{margin-left:64px;margin-top:64px;}
+
+/* ── Mobile drawer (off-canvas on phone) ───────────────────────────────── */
+.mobile-drawer-backdrop{display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s ease;pointer-events:none;}
+.mobile-drawer-backdrop.open{opacity:1;pointer-events:auto;}
+.mobile-drawer{display:none;position:fixed;top:0;left:0;bottom:0;width:260px;z-index:9001;
+  background:var(--bg);border-right:0.5px solid var(--brd2);
+  transform:translateX(-100%);transition:transform .25s ease;
+  flex-direction:column;padding:14px 10px;overflow-y:auto;}
+.mobile-drawer.open{transform:translateX(0);}
+.md-nav{display:flex;flex-direction:column;gap:2px;}
+.md-item{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:10px;
+  color:var(--mu);cursor:pointer;font-size:14px;font-weight:500;font-family:var(--font);
+  transition:all .12s;}
+.md-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.md-item.active{background:var(--ac);color:#fff;}
+.md-item.active:hover{background:var(--ac);}
+.md-item svg{flex-shrink:0;}
+.md-divider{height:0.5px;background:var(--brd);margin:8px 14px;}
+.md-account{margin-top:4px;}
+.md-account-av{width:24px;height:24px;border-radius:50%;background:var(--gr);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+.md-account .md-account-av{margin-right:-4px;}
+
+/* ── Page-level "coming soon" / nav toast ──────────────────────────────── */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);
+  background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+  padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;
+  transform:translateX(380px);opacity:0;pointer-events:none;
+  transition:transform .25s ease-out, opacity .2s ease-out;
+  display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);
+  color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;
+  cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+
+/* ── Modal scaffold ────────────────────────────────────────────────────── */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;
+  align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;width:420px;
+  max-width:95%;overflow:hidden;max-height:calc(100vh - 48px);display:flex;flex-direction:column;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.modal-title{font-size:15px;font-weight:600;color:var(--tx);}
+.modal-close{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--brd2);
+  background:var(--sur2);color:var(--mu);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:16px;transition:all .15s;}
+.modal-close:hover{border-color:var(--rd);color:var(--rd);}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;}
+.modal-section-title{font-size:11px;font-weight:500;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.7px;margin-bottom:10px;}
+.modal-field{display:flex;align-items:center;gap:10px;background:var(--sur2);
+  border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:40px;transition:border-color .15s;}
+.modal-field:focus-within{border-color:var(--ac);}
+.modal-field svg{width:16px;height:16px;color:var(--mu);flex-shrink:0;}
+.modal-field input,.modal-field select{background:none;border:none;outline:none;color:var(--tx);
+  font-family:var(--font);font-size:13px;width:100%;height:100%;}
+.modal-field select option{background:var(--sur2);color:var(--tx);}
+.modal-field input::placeholder{color:var(--mu);}
+.modal-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;
+  padding:14px 20px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+.modal-cancel{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+  padding:0 16px;height:34px;color:var(--mu);font-size:13px;font-family:var(--font);
+  cursor:pointer;transition:all .15s;}
+.modal-cancel:hover{border-color:var(--brd2);color:var(--tx);}
+.modal-save{background:var(--ac);border:none;border-radius:8px;padding:0 20px;height:34px;
+  color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
+.modal-save:hover{background:var(--ac2);}
+
+/* ── Toolbar primitives ────────────────────────────────────────────────── */
+.toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;overflow:visible;
+  position:relative;z-index:55;background:var(--bg);
+  border-bottom:0.5px solid var(--brd);}
+.toolbar .sp{flex:1;}
+.tbtn{display:flex;align-items:center;gap:5px;background:var(--sur2);
+  border:0.5px solid var(--brd2);border-radius:8px;padding:0 14px;height:40px;
+  color:var(--mu);font-size:12.5px;font-family:var(--font);cursor:pointer;
+  transition:all .15s;white-space:nowrap;position:relative;}
+.tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.tbtn-p{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:500;}
+.tbtn-p:hover{background:var(--ac2);border-color:var(--ac2);color:#fff;}
+.icon-btn{width:40px;padding:0;justify-content:center;}
+
+/* ── Product switcher (clickable logo → CoreConnect / Reputation) ──────── */
+.logo{cursor:pointer;position:relative;user-select:none;}
+.logo:hover .logo-chev{color:#fff;}
+.logo-chev{width:11px;height:11px;flex:none;color:rgba(255,255,255,.6);transition:transform .15s,color .15s;margin-left:1px;}
+.logo.ps-open .logo-chev{transform:rotate(180deg);color:#fff;}
+.product-switcher{display:none;position:fixed;top:0;left:0;min-width:200px;
+  background:#181c27;border:0.5px solid rgba(255,255,255,.13);border-radius:10px;
+  box-shadow:0 14px 36px rgba(0,0,0,.55);z-index:10000;padding:6px;}
+.product-switcher.ps-open{display:block;}
+.ps-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;
+  color:#e8eaf0;text-decoration:none;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;}
+.ps-item:hover{background:#1e2333;color:#6e9dff;}
+.ps-item.ps-active{color:#6e9dff;background:rgba(79,124,255,.10);}
+.ps-ic{width:15px;height:15px;flex:none;color:#7a7f94;}
+.ps-item:hover .ps-ic,.ps-item.ps-active .ps-ic{color:#6e9dff;}
+
+/* ── Phone breakpoint ──────────────────────────────────────────────────── */
+@media (max-width:640px){
+  .hamburger-btn{display:flex;}
+  .sidebar{display:none;}
+  .main-area{margin-left:0;}
+  .mobile-drawer,
+  .mobile-drawer-backdrop{display:flex;}
+  .mobile-drawer{display:flex;}
+}
+
+/* ============================================================================
+   Mobile touch-target floor (≥44×44px, WCAG 2.5.5 AA / Apple HIG).
+   Applied ONLY at phone widths so dense desktop UIs (chips, tabs, segmented
+   controls) stay compact. Component-specific overrides win via specificity.
+   ============================================================================ */
+@media (max-width: 640px){
+  /* Generic icon-only buttons + close buttons */
+  .modal-close,
+  .notif-close,
+  .scp-close, .scp-back,
+  .nlog-pd-close{ width:44px !important; height:44px !important; }
+
+  /* Contact panel top-bar buttons (close/media/call/kebab) and send btn.
+     !important because shared/contact-panel.css loads after app.css. */
+  .cp-top-btn{ width:44px !important; height:44px !important; }
+  .cp-send-btn{ width:44px !important; height:44px !important; }
+  .cp-call-play{ width:40px !important; height:40px !important; }
+  .cp-from-row{ min-height:44px !important; padding:8px 0 !important; }
+  .cp-label-select{ min-height:38px !important; }
+  .cp-help-btn{ min-height:44px !important; }
+  .cp-ai-btn{ min-height:44px !important; }
+  .cp-tool{ min-width:44px !important; min-height:44px !important; }
+  .cp-summary-refresh{ min-width:36px !important; min-height:36px !important; }
+
+  /* Form-like CTAs */
+  .modal-cancel, .modal-save,
+  .tbtn, .tbtn-p{ min-height:44px; }
+
+  /* Tabs / pickable rows — bigger touch targets */
+  .notif-tabs{
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .notif-tab{ min-height:44px; padding:11px 12px; flex: none !important; }
+  .cp-tab{ min-height:44px; padding:11px 14px; }
+  .cp-kebab-item{ min-height:44px; padding:11px 14px; }
+  .cp-from-item{ min-height:44px; padding:11px 10px; }
+  .lblp-item{ min-height:44px; padding:11px 9px; }
+  .lblp-sw{ width:28px; height:28px; }  /* color swatches — clickable so a touch easier */
+  .lblp-add-btn{ min-height:44px; }
+
+  /* Notifications page bits */
+  .nlog-period-btn{ min-height:44px; padding:0 18px; }
+  .nlog-tb-btn{ min-height:44px; }
+  .nlog-tb-btn-icon{ min-width:44px !important; }
+  .nlog-search{ min-height:44px !important; height:44px !important; }
+  .nlog-cal-day{ min-height:38px; }      /* day cells — keep slightly compact for 7-col grid */
+  .nlog-cat{ min-height:44px; }
+  .nlog-pd-item{ min-height:48px; }      /* drawer rows can be larger */
+  button.nlog-period-mobile{ min-height:44px; }
+}
+
+/* ============================================================================
+   Standard scrollbar style — matches .table-wrap on the CRM page.
+   Applies to every scrollable element; component-specific overrides still win
+   via class-selector specificity.
+   ============================================================================ */
+*{ scrollbar-width: thin; scrollbar-color: var(--brd2) transparent; }
+*::-webkit-scrollbar{ width: 8px; height: 8px; }
+*::-webkit-scrollbar-track{ background: transparent; }
+*::-webkit-scrollbar-thumb{ background: var(--brd2); border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover{ background: var(--brd); }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect â€” Voice mail History</title>
+<title>CoreConnect — Voice mail History</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -36,7 +36,7 @@
     transition:all .12s;background:transparent;border:none;}
   .header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
   .header-bell.active{background:rgba(79,124,255,.10);color:var(--ac2);}
-  /* red dot indicator â€” visible only when unread > 0 */
+  /* red dot indicator — visible only when unread > 0 */
   .header-bell-dot{position:absolute;top:9px;right:9px;width:8px;height:8px;
     border-radius:50%;background:var(--rd);border:2px solid var(--bg);
     display:none;}
@@ -49,10 +49,10 @@
     opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
   .header-bell:hover::after{opacity:1;}
 
-  /* Top header â€” left group (hamburger + logo) */
+  /* Top header — left group (hamburger + logo) */
   .th-left{display:flex;align-items:center;gap:10px;}
 
-  /* Hamburger â€” hidden by default, visible only on phone */
+  /* Hamburger — hidden by default, visible only on phone */
   .hamburger-btn{display:none;width:40px;height:40px;align-items:center;justify-content:center;
     border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;
     flex-shrink:0;transition:background .12s;}
@@ -256,7 +256,7 @@
   .chip{display:inline-flex;align-items:center;gap:6px;padding:0 9px;height:32px;
     border-radius:8px;font-size:12.5px;font-weight:500;background:var(--sur2);
     border:0.5px solid var(--brd2);color:var(--ac2);white-space:nowrap;flex-shrink:0;}
-  /* Period chip â€” always visible; when set to "Today" uses muted style (v78 convention) */
+  /* Period chip — always visible; when set to "Today" uses muted style (v78 convention) */
   .chip-period{color:var(--ac2);}
   .chip-period-today{color:var(--mu);background:var(--sur2);border-color:var(--brd2);}
   .chip-period-today .chip-label{color:var(--mu);}
@@ -268,7 +268,7 @@
     border-radius:5px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
   .clear-all:hover{color:var(--rd);}
 
-  /* MOBILE CHIP ROW â€” hidden on desktop. Lives below the toolbar on phones. */
+  /* MOBILE CHIP ROW — hidden on desktop. Lives below the toolbar on phones. */
   .chips-row-mobile-wrap{display:none;position:relative;background:var(--bg);
     border-bottom:0.5px solid var(--brd);}
   .chips-row-mobile{display:flex;align-items:center;gap:6px;
@@ -276,7 +276,7 @@
     scrollbar-width:none;-ms-overflow-style:none;}
   .chips-row-mobile::-webkit-scrollbar{display:none;}
   .chips-row-mobile:empty{display:none;}
-  /* Right-edge fade â€” gradient overlay hinting more chips off-screen.
+  /* Right-edge fade — gradient overlay hinting more chips off-screen.
      The wrapper has `.has-overflow` toggled by JS when content overflows. */
   .chips-row-mobile-wrap.has-overflow::after{
     content:'';position:absolute;top:0;right:0;bottom:0;width:32px;
@@ -284,13 +284,13 @@
     pointer-events:none;
   }
 
-  /* MOBILE SEARCH TOGGLE â€” small icon button in toolbar (phone-only).
-     Hidden on desktop; visible at â‰¤640px. */
+  /* MOBILE SEARCH TOGGLE — small icon button in toolbar (phone-only).
+     Hidden on desktop; visible at ≤640px. */
   .mobile-search-toggle{display:none;width:36px;height:32px;padding:0;
     justify-content:center;align-items:center;}
   .mobile-search-toggle svg{width:16px;height:16px;}
 
-  /* MSO â€” Mobile Search Overlay (slides down from the top, full-width).
+  /* MSO — Mobile Search Overlay (slides down from the top, full-width).
      Mirrored from v79: 60px header with back arrow + input + clear (X). */
   .mso{position:fixed;top:0;left:0;right:0;height:60px;
     background:var(--bg);z-index:200;
@@ -378,7 +378,7 @@
   .cr-dur{font-family:var(--mono);font-size:11px;color:var(--mu);flex-shrink:0;}
   .cr-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 
-  /* Line type badge â€” tiny pill shown in the row top area indicating department vs direct line */
+  /* Line type badge — tiny pill shown in the row top area indicating department vs direct line */
   .cr-line{font-size:9.5px;font-weight:500;letter-spacing:.3px;padding:2px 6px;
     border-radius:5px;border:0.5px solid var(--brd2);white-space:nowrap;flex-shrink:0;}
   .cr-line.dept{background:var(--sur2);color:var(--mu);}
@@ -468,7 +468,7 @@
     align-items:center;justify-content:center;font-size:15px;transition:all .15s;flex-shrink:0;}
   .dp-head-close:hover{border-color:var(--rd);color:var(--rd);}
 
-  /* Back arrow â€” hidden on desktop, shown only on mobile (â‰¤820px) inside the detail header */
+  /* Back arrow — hidden on desktop, shown only on mobile (≤820px) inside the detail header */
   .dp-mobile-back{display:none;width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--tx);cursor:pointer;
     align-items:center;justify-content:center;flex-shrink:0;
@@ -611,7 +611,7 @@
   .dp-note-meta .dp-note-author{font-weight:500;color:var(--tx);}
   .dp-note-meta .dp-note-sep{opacity:.5;}
 
-  /* Empty state â€” small muted line, not a card */
+  /* Empty state — small muted line, not a card */
   .dp-notes-empty{font-size:12.5px;color:var(--mu);font-style:italic;padding:6px 4px;}
 
   /* Add-note trigger button (collapsed state) */
@@ -705,7 +705,7 @@
 
   /* Textarea sits as its own area above the footer */
   .sms-textarea-wrap{padding:10px 14px 8px;flex-shrink:0;border-top:0.5px solid var(--brd);}
-  /* â”€â”€ Composer file-attachment module (SMS + Email) â”€â”€ */
+  /* ── Composer file-attachment module (SMS + Email) ── */
   .att-clip{width:30px;height:30px;border-radius:7px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:color .15s;flex:none;}
   .att-clip:hover{color:var(--ac2);}
   .att-clip svg{width:16px;height:16px;}
@@ -738,7 +738,7 @@
   .sms-textarea::placeholder{color:var(--mu);}
   .sms-textarea:focus{border-color:var(--ac);}
 
-  /* Footer: horizontal strip matching email â€” AI left, meta center, Send right */
+  /* Footer: horizontal strip matching email — AI left, meta center, Send right */
   .sms-foot{padding:10px 14px 14px;flex-shrink:0;
     display:flex;align-items:center;gap:10px;}
   .sms-foot-meta{display:flex;align-items:center;gap:10px;margin-left:auto;
@@ -746,7 +746,7 @@
   .sms-counter.over{color:var(--rd);}
   .sms-hint{font-family:var(--mono);}
 
-  /* Send button â€” labeled, matches email's .em-send-btn */
+  /* Send button — labeled, matches email's .em-send-btn */
   .sms-send-btn{display:flex;align-items:center;gap:7px;padding:0 16px;height:38px;
     border-radius:8px;background:var(--ac);border:none;color:#fff;
     font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);
@@ -755,7 +755,7 @@
   .sms-send-btn:disabled{opacity:.4;cursor:not-allowed;}
   .sms-send-btn svg{width:13px;height:13px;}
 
-  /* AI Compose button â€” style-guide .sg-ai-btn (contact panel variant).
+  /* AI Compose button — style-guide .sg-ai-btn (contact panel variant).
      Tinted blue/purple gradient pill with sparkle glyph + label. */
   .sg-ai-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
     border-radius:8px;background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));
@@ -767,28 +767,28 @@
 
   /* Mobile: SMS modal becomes full-screen with touch-friendly sizing */
   @media (max-width: 640px){
-    /* Modal â€” full-screen, slide in from right */
+    /* Modal — full-screen, slide in from right */
     .sms-modal{width:100%;max-width:100%;height:100vh;max-height:100vh;
       top:0;left:0;transform:translateX(100%);border-radius:0;border:none;
       padding-top:env(safe-area-inset-top);
       padding-bottom:env(safe-area-inset-bottom);}
     .sms-modal.show{transform:translateX(0);}
 
-    /* Header â€” larger touch target on close */
+    /* Header — larger touch target on close */
     .sms-head{padding:14px 14px;}
     .sms-head-close{width:36px;height:36px;}
 
-    /* Message bubbles â€” wider, slightly larger text */
+    /* Message bubbles — wider, slightly larger text */
     .sms-msg{max-width:85%;}
     .sms-bubble{padding:10px 13px;font-size:14px;line-height:1.5;}
 
-    /* Sent From row â€” tighter on small screens */
+    /* Sent From row — tighter on small screens */
     .sms-textarea-wrap .modal-from-row{font-size:10.5px;padding:0 0 5px 0;}
 
-    /* Textarea â€” larger min-height for easier tapping */
+    /* Textarea — larger min-height for easier tapping */
     .sms-textarea{min-height:44px;font-size:14px;padding:12px 12px;}
 
-    /* Footer â€” larger buttons, hide keyboard hint */
+    /* Footer — larger buttons, hide keyboard hint */
     .sms-foot{padding:10px 14px 14px;}
     .sg-ai-btn{height:44px;padding:0 14px;font-size:13px;}
     .sms-send-btn{height:44px;padding:0 18px;font-size:14px;}
@@ -809,7 +809,7 @@
     transition:opacity .2s ease, transform .2s ease;}
   .em-modal.show{display:flex;opacity:1;transform:translate(-50%,-50%) translateY(0);}
 
-  /* Header â€” same anatomy as SMS modal */
+  /* Header — same anatomy as SMS modal */
   .em-head{display:flex;align-items:center;gap:12px;padding:14px 16px;
     border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .em-head-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
@@ -824,10 +824,10 @@
     align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
   .em-head-close:hover{border-color:var(--rd);color:var(--rd);}
 
-  /* Body: To + Subject + Toolbar + Body editor â€” compose area only, does NOT scroll */
+  /* Body: To + Subject + Toolbar + Body editor — compose area only, does NOT scroll */
   .em-body{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
 
-  /* Email thread â€” scrollable message history above compose */
+  /* Email thread — scrollable message history above compose */
   .em-thread{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;
     border-bottom:0.5px solid var(--brd);
     scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
@@ -870,7 +870,7 @@
   .em-daysep-label{font-size:10.5px;color:var(--mu);text-transform:uppercase;
     letter-spacing:.6px;font-weight:500;white-space:nowrap;}
 
-  /* "To" field â€” read-only display */
+  /* "To" field — read-only display */
   .em-to{display:flex;align-items:center;gap:8px;padding:9px 12px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;flex-shrink:0;}
   .em-to-lbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;
@@ -975,7 +975,7 @@
   .em-no-email-title{font-size:15px;font-weight:600;color:var(--tx);}
   .em-no-email-hint{font-size:12.5px;color:var(--mu);line-height:1.55;max-width:320px;}
 
-  /* Toast â€” used for "Email sent" confirmation */
+  /* Toast — used for "Email sent" confirmation */
   .em-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     padding:11px 18px;color:var(--tx);font-size:13px;
@@ -993,7 +993,7 @@
     .em-modal.show{transform:translateY(0);}
   }
 
-  /* ===== FILTER DROPDOWN â€” cascading two-pane menu (from v77) ===== */
+  /* ===== FILTER DROPDOWN — cascading two-pane menu (from v77) ===== */
   .fd-wrap{position:fixed;top:0;left:0;z-index:200;
     display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
     box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
@@ -1088,15 +1088,15 @@
   .dialer-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gr);}
   .dialer-title{font-size:14px;font-weight:600;color:var(--tx);}
 
-  /* Close button â€” visible at all breakpoints since dialer is always toggleable now */
+  /* Close button — visible at all breakpoints since dialer is always toggleable now */
   .dialer-close{display:flex;width:30px;height:30px;border-radius:8px;border:0.5px solid var(--brd2);
     background:transparent;color:var(--mu);cursor:pointer;align-items:center;justify-content:center;
     transition:all .15s;flex-shrink:0;}
   .dialer-close:hover{border-color:var(--rd);color:var(--rd);}
-  /* During an active call, hide the close button â€” user must hang up first */
+  /* During an active call, hide the close button — user must hang up first */
   .dialer-panel.in-call .dialer-close{display:none;}
 
-  /* Floating DIALER tab â€” visible at all breakpoints when panel is closed */
+  /* Floating DIALER tab — visible at all breakpoints when panel is closed */
   .dialer-tab{display:flex;position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1400;
     background:var(--ac);color:#fff;border-radius:10px 0 0 10px;padding:12px 6px;cursor:pointer;
     flex-direction:column;align-items:center;gap:6px;
@@ -1107,7 +1107,7 @@
     writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
   .dialer-tab.hidden{right:-60px;pointer-events:none;}
 
-  /* Backdrop â€” only used on tablet (641â€“1080px) overlay mode; hidden on desktop (push) and phone (full-screen) */
+  /* Backdrop — only used on tablet (641–1080px) overlay mode; hidden on desktop (push) and phone (full-screen) */
   .dialer-backdrop{display:none;position:fixed;inset:0;z-index:1499;
     background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s ease;}
   .dialer-backdrop.show{display:block;opacity:1;}
@@ -1224,7 +1224,7 @@
   .dialer-calling-status{font-size:13px;color:var(--mu);text-align:center;}
   .dialer-calling-timer{font-size:22px;font-weight:500;font-family:var(--mono);color:var(--tx);}
 
-  /* Speaking-indicator wave â€” appears only when the call is Connected */
+  /* Speaking-indicator wave — appears only when the call is Connected */
   .dl-wave{display:none;align-items:center;justify-content:center;gap:2px;height:14px;margin-top:6px;}
   .dialer-calling-overlay.connected .dl-wave{display:flex;}
   .dl-wave span{width:2px;background:var(--gr);border-radius:1px;animation:dl-wave 1s infinite ease-in-out;}
@@ -1246,7 +1246,7 @@
     .dialer-panel{width:320px;}
   }
 
-  /* MASTER-DETAIL DRILL-DOWN â€” phone/small-tablet (â‰¤820px)
+  /* MASTER-DETAIL DRILL-DOWN — phone/small-tablet (≤820px)
      List is the default view; tapping a row reveals the detail pane as a full-width takeover.
      A back arrow in the detail header returns to the list. */
   @media(max-width:820px){
@@ -1254,7 +1254,7 @@
     .split-body{position:relative;}
     .list-pane{width:100%;border-right:none;}
 
-    /* Detail pane hidden by default â€” slides in from right when a row is selected */
+    /* Detail pane hidden by default — slides in from right when a row is selected */
     .detail-pane{position:absolute;top:0;left:0;right:0;bottom:0;
       background:#0f1117;z-index:50;
       transform:translateX(100%);
@@ -1262,20 +1262,20 @@
       pointer-events:none;}
     .detail-pane.show{transform:translateX(0);pointer-events:auto;}
 
-    /* Hide the empty state on mobile â€” list is the empty state */
+    /* Hide the empty state on mobile — list is the empty state */
     .dp-empty{display:none !important;}
 
-    /* Back arrow â€” visible only on mobile, lives in the detail header */
+    /* Back arrow — visible only on mobile, lives in the detail header */
     .dp-mobile-back{display:flex;}
   }
 
-  /* â”€â”€ TABLET + PHONE (â‰¤ 900px) â€” lift chips out of toolbar into their own row â”€â”€ */
+  /* ── TABLET + PHONE (≤ 900px) — lift chips out of toolbar into their own row ── */
   @media (max-width: 900px){
     .toolbar .filter-chips{display:none;}
     .chips-row-mobile-wrap{display:block;}
   }
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ PHONE (â‰¤ 640px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
     /* Hide the 64px sidebar entirely */
     .sidebar{display:none;}
@@ -1295,7 +1295,7 @@
     /* Slightly bigger tap targets */
     .hamburger-btn{width:44px;height:44px;}
 
-    /* DIALER PANEL â€” full-screen on phone (overrides â‰¤1080px slide-in) */
+    /* DIALER PANEL — full-screen on phone (overrides ≤1080px slide-in) */
     .dialer-panel{top:0;width:100%;right:-100%;
       box-shadow:none;border-left:none;z-index:1600;
       padding-top:env(safe-area-inset-top);
@@ -1305,25 +1305,25 @@
     .dialer-header{padding:14px 16px;}
     .dialer-title{font-size:16px;}
     .dialer-close{width:40px;height:40px;}
-    /* Don't show backdrop on phone â€” full-screen covers everything */
+    /* Don't show backdrop on phone — full-screen covers everything */
     .dialer-backdrop{display:none !important;}
 
-    /* Hide the line-type badge in the call row â€” too cramped here.
+    /* Hide the line-type badge in the call row — too cramped here.
        Info still visible in the detail panel summary one tap away. */
     .cr-line{display:none;}
 
-    /* DETAIL PANEL â€” tighter margins and single-column summary on phone
+    /* DETAIL PANEL — tighter margins and single-column summary on phone
        so long values (Name + department, Line type + phone) don't truncate. */
     .dp-header{padding:14px 14px 12px;}
     .dp-summary{margin:14px;padding:14px;grid-template-columns:1fr;gap:12px;}
     .dp-rec{margin:0 14px 14px;}
     .dp-notes{margin:0 14px 14px;}
 
-    /* MOBILE SEARCH â€” hide the toolbar input, show the toggle button */
+    /* MOBILE SEARCH — hide the toolbar input, show the toggle button */
     .toolbar .srch{display:none;}
     .toolbar .mobile-search-toggle{display:flex;}
 
-    /* FILTER DROPDOWN â€” full-screen drill-down on phone */
+    /* FILTER DROPDOWN — full-screen drill-down on phone */
     .fd-wrap{top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
       width:100% !important;max-height:none !important;height:100vh;
       border-radius:0;border:none;flex-direction:column;}
@@ -1390,13 +1390,13 @@
     .modal-footer{flex-direction:column-reverse;gap:10px;padding:14px 16px;}
   }
 
-  /* ===== PHASE 4 Â· FAT-FINGER-FREE TOUCH TARGETS (â‰¤640px) =====
+  /* ===== PHASE 4 · FAT-FINGER-FREE TOUCH TARGETS (≤640px) =====
      Brings every remaining interactive control up to the 44px minimum on phone. */
   @media (max-width: 640px){
     /* Toolbar buttons (Filter, More, mobile search) */
     .tbtn{min-height:44px;}
     .tbtn.icon-btn,.mobile-search-toggle{width:44px;min-width:44px;height:44px;padding:0;justify-content:center;}
-    /* Row play button â€” larger, always tappable on touch (no hover) */
+    /* Row play button — larger, always tappable on touch (no hover) */
     .cr-play{width:40px;height:40px;}
     .cr-play svg{width:14px;height:14px;}
     .call-row .cr-play.has-rec{display:flex;}
@@ -1409,7 +1409,7 @@
     .dp-speed{min-width:44px;min-height:36px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;}
     /* Dialer "Add new lead" */
     .dialer-add-new{min-height:44px;}
-    /* Chip remove (Ã—) hit area */
+    /* Chip remove (×) hit area */
     .chip{height:40px;}
     .chip-x{width:28px;height:28px;}
     /* Rows-per-page select */
@@ -1484,7 +1484,7 @@
     transition:border-color .15s;}
   .cc-input:focus{border-color:var(--ac);}
 
-  /* Two-column workspace â€” each column is a raised card */
+  /* Two-column workspace — each column is a raised card */
   .cc-cols{display:flex;gap:16px;align-items:stretch;}
   .cc-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;
     background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;
@@ -1529,7 +1529,7 @@
   .cc-row-lock{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
     color:var(--mu);opacity:.55;flex-shrink:0;}
 
-  /* Add panel â€” tabs + body */
+  /* Add panel — tabs + body */
   .cc-pop{display:flex;flex-direction:column;flex:1;min-height:0;gap:14px;}
 
   /* Bigger, more prominent tabs */
@@ -1878,7 +1878,7 @@
     /* CC body: maintains vertical flow */
     .cc-body{padding:14px 14px 6px;gap:14px;}
 
-    /* Mobile tabs â€” show, hide the per-column desktop headers */
+    /* Mobile tabs — show, hide the per-column desktop headers */
     .cc-mobile-tabs{
       display:flex;background:var(--sur2);border:0.5px solid var(--brd2);
       border-radius:10px;padding:3px;gap:3px;flex-shrink:0;
@@ -1900,7 +1900,7 @@
       background:rgba(255,255,255,.08);color:var(--mu);
     }
 
-    /* CC columns: tabbed view â€” only one visible at a time */
+    /* CC columns: tabbed view — only one visible at a time */
     .cc-cols{flex-direction:column;gap:0;flex:1;min-height:0;}
     .cc-col{flex:initial;}
     .cc-col-left,.cc-col-right{display:none;}
@@ -1910,7 +1910,7 @@
     /* Hide the desktop per-column headers on phone (tabs replace them) */
     .cc-col-head{display:none;}
 
-    /* Participants list expands naturally â€” no max-height constraint */
+    /* Participants list expands naturally — no max-height constraint */
     .cc-participants{max-height:none;}
 
     /* Add pop: also natural height, list expands */
@@ -1954,10 +1954,15 @@
         <line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
-    <div class="logo">
+    <div class="logo" onclick="toggleProductSwitcher(event)">
       <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
     <span class="logo-text">CoreConnect</span>
-    </div>
+    
+  <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  <div class="product-switcher" id="product-switcher">
+    <a class="ps-item" data-pid="coreconnect" href="../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+    <a class="ps-item" data-pid="reputation" href="../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+  </div></div>
   </div>
   <div class="top-header-right">
     <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
@@ -2023,10 +2028,6 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Appointments</span>
     </div>
-    <div class="md-item" data-nav="reputation" onclick="window.open('../reputation/reputation_dashboard/Dashboard.html','_blank');closeMobileDrawer();">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span>Reputation</span>
-    </div>
     <div class="md-divider"></div>
     <div class="md-item" data-nav="settings" onclick="navClick('Settings');closeMobileDrawer();">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
@@ -2039,7 +2040,7 @@
   </div>
 </div>
 
-<!-- MOBILE SEARCH OVERLAY (MSO) â€” full-width slide-down search; mirrors v79 -->
+<!-- MOBILE SEARCH OVERLAY (MSO) — full-width slide-down search; mirrors v79 -->
 <div class="mso" id="mso" role="search" aria-label="Search voicemails">
   <div class="mso-header">
     <button class="mso-back" onclick="closeMobileSearch()" aria-label="Close search">
@@ -2078,9 +2079,6 @@
     <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
-    <div class="sb-item" data-nav="reputation" data-label="Reputation" onclick="window.open('../reputation/reputation_dashboard/Dashboard.html','_blank')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-    </div>
     <div class="sidebar-nav-spacer"></div>
     <div class="sb-divider"></div>
     <div class="sb-item" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
@@ -2114,7 +2112,7 @@
     </button>
   </div>
 
-  <!-- MOBILE CHIPS ROW â€” hidden on desktop. Horizontally scrollable, full-width. -->
+  <!-- MOBILE CHIPS ROW — hidden on desktop. Horizontally scrollable, full-width. -->
   <div class="chips-row-mobile-wrap">
     <div class="chips-row-mobile" id="chips-row-mobile"></div>
   </div>
@@ -2154,7 +2152,7 @@
       <div class="dp" id="dp"></div>
     </div>
 
-    <!-- DIALER (docked third column on desktop, slide-in panel â‰¤1080px) -->
+    <!-- DIALER (docked third column on desktop, slide-in panel ≤1080px) -->
     <div class="dialer-panel" id="dialer-panel">
       <div class="dialer-header">
         <div class="dialer-header-left">
@@ -2170,10 +2168,10 @@
       <div class="dialer-contact-bar" id="dialer-contact-bar" style="display:none;">
         <div class="dialer-contact-label">Calling</div>
         <div class="dialer-contact-row">
-          <div class="dialer-contact-av" id="dialer-contact-av">â€”</div>
+          <div class="dialer-contact-av" id="dialer-contact-av">—</div>
           <div>
-            <div class="dialer-contact-name" id="dialer-contact-name">â€”</div>
-            <div class="dialer-contact-num" id="dialer-contact-num">â€”</div>
+            <div class="dialer-contact-name" id="dialer-contact-name">—</div>
+            <div class="dialer-contact-num" id="dialer-contact-num">—</div>
           </div>
           <button class="dialer-contact-clear" onclick="clearDialerContact()" title="Clear contact">&#x2715;</button>
         </div>
@@ -2190,7 +2188,7 @@
           </div>
           <button class="dialer-sort-btn" onclick="toggleDialerSort()" title="Sort contacts">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 3v10M4 13l-2.5-2.5M4 3l2.5 2.5M12 13V3M12 3l-2.5 2.5M12 13l2.5-2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="dialer-sort-label">Aâ€“Z</span>
+            <span id="dialer-sort-label">A–Z</span>
           </button>
         </div>
 
@@ -2217,7 +2215,7 @@
           <!-- Number display -->
           <div class="dialer-display">
             <div class="dialer-number" id="dialer-number">
-              <span class="dialer-number-placeholder">Enter numberâ€¦</span>
+              <span class="dialer-number-placeholder">Enter number…</span>
             </div>
           </div>
 
@@ -2263,11 +2261,11 @@
       <div class="dialer-calling-overlay" id="dialer-calling-overlay">
         <div class="dialer-calling-wrap">
           <div class="pulse-ring"></div>
-          <div class="dialer-calling-av" id="calling-av">â€”</div>
+          <div class="dialer-calling-av" id="calling-av">—</div>
         </div>
         <div>
-          <div class="dialer-calling-name" id="calling-name">â€”</div>
-          <div class="dialer-calling-status" id="calling-status">Callingâ€¦</div>
+          <div class="dialer-calling-name" id="calling-name">—</div>
+          <div class="dialer-calling-status" id="calling-status">Calling…</div>
           <div class="dl-wave" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
@@ -2292,14 +2290,14 @@
   </div>
 </div>
 
-<!-- SMS MODAL â€” opens when the dp SMS action button is clicked -->
+<!-- SMS MODAL — opens when the dp SMS action button is clicked -->
 <div class="sms-backdrop" id="sms-backdrop" onclick="closeSmsModal()"></div>
 <div class="sms-modal" id="sms-modal" role="dialog" aria-modal="true" aria-label="Send SMS">
   <div class="sms-head">
-    <div class="sms-head-av" id="sms-head-av">â€”</div>
+    <div class="sms-head-av" id="sms-head-av">—</div>
     <div class="sms-head-info">
-      <div class="sms-head-name" id="sms-head-name">â€”</div>
-      <div class="sms-head-num" id="sms-head-num">â€”</div>
+      <div class="sms-head-name" id="sms-head-name">—</div>
+      <div class="sms-head-num" id="sms-head-num">—</div>
     </div>
     <button class="sms-head-close" onclick="closeSmsModal()" aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -2311,7 +2309,7 @@
       Sent From: <span id="sms-from-agent">Angel Garcia</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <textarea class="sms-textarea" id="sms-textarea" placeholder="Type a messageâ€¦"
+    <textarea class="sms-textarea" id="sms-textarea" placeholder="Type a message…"
       rows="1" maxlength="320"
       oninput="onSmsInputChange()"
       onkeydown="onSmsKeyDown(event)"></textarea>
@@ -2326,7 +2324,7 @@
     <button class="att-clip" type="button" onclick="document.getElementById('sms-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
     <div class="sms-foot-meta">
       <span class="sms-counter" id="sms-counter">0/160</span>
-      <span class="sms-hint">âŒ˜+Enter to send</span>
+      <span class="sms-hint">⌘+Enter to send</span>
     </div>
     <button class="sms-send-btn" id="sms-send-btn" onclick="sendSmsMessage()" disabled>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -2335,26 +2333,26 @@
   </div>
 </div>
 
-<!-- EMAIL MODAL â€” opens when the dp Email action button is clicked -->
+<!-- EMAIL MODAL — opens when the dp Email action button is clicked -->
 <div class="em-backdrop" id="em-backdrop" onclick="closeEmailModal()"></div>
 <div class="em-modal" id="em-modal" role="dialog" aria-modal="true" aria-label="Send Email">
   <div class="em-head">
-    <div class="em-head-av" id="em-head-av">â€”</div>
+    <div class="em-head-av" id="em-head-av">—</div>
     <div class="em-head-info">
-      <div class="em-head-name" id="em-head-name">â€”</div>
-      <div class="em-head-email" id="em-head-email">â€”</div>
+      <div class="em-head-name" id="em-head-name">—</div>
+      <div class="em-head-email" id="em-head-email">—</div>
     </div>
     <button class="em-head-close" onclick="closeEmailModal()" aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <!-- No-email empty state â€” shown when contact has no email on file -->
+  <!-- No-email empty state — shown when contact has no email on file -->
   <div class="em-no-email" id="em-no-email" style="display:none;">
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
     <div class="em-no-email-title">No email on file</div>
     <div class="em-no-email-hint">This contact doesn't have an email address yet. Add one from the CRM to send emails.</div>
   </div>
-  <!-- Email thread â€” scrollable history of sent/received emails -->
+  <!-- Email thread — scrollable history of sent/received emails -->
   <div class="em-thread" id="em-thread"></div>
   <div class="em-body" id="em-body">
     <div class="modal-from-row" id="em-from-row" onclick="toggleModalFromPopup('em', event)" style="border-bottom:none;padding:0 0 2px 0;margin:0;justify-content:flex-end;">
@@ -2380,7 +2378,7 @@
       <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertUnorderedList', null, event)" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg></button>
       <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertOrderedList', null, event)" title="Numbered list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
     </div>
-    <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your emailâ€¦"></div>
+    <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your email…"></div>
   </div>
   <input type="file" id="em-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('em',this.files);this.value='';">
   <div class="att-tray" id="em-att-tray"></div>
@@ -2390,7 +2388,7 @@
       AI Compose
     </button>
     <button class="att-clip" type="button" onclick="document.getElementById('em-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
-    <span class="em-hint">âŒ˜+Enter to send</span>
+    <span class="em-hint">⌘+Enter to send</span>
     <button class="em-send-btn" id="em-send-btn" onclick="sendEmailMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       Send
@@ -2412,12 +2410,12 @@
   </div>
   <div class="modal-from-psearch">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="modal-from-search" placeholder="Searchâ€¦" oninput="renderModalFromList(this.value)" />
+    <input type="text" id="modal-from-search" placeholder="Search…" oninput="renderModalFromList(this.value)" />
   </div>
   <div class="modal-from-plist" id="modal-from-plist"></div>
 </div>
 
-<!-- FILTER DROPDOWN â€” cascading two-pane menu -->
+<!-- FILTER DROPDOWN — cascading two-pane menu -->
 <div class="fd-wrap" id="filter-dropdown" onclick="event.stopPropagation()">
   <!-- Mobile-only header: shows back arrow + title + close X -->
   <div class="fd-mobile-header">
@@ -2445,7 +2443,7 @@
   </div>
 </div>
 
-<!-- FLOATING DIALER TAB â€” visible on phone/tablet (â‰¤1080px) when dialer is closed -->
+<!-- FLOATING DIALER TAB — visible on phone/tablet (≤1080px) when dialer is closed -->
 <div class="dialer-tab" id="dialer-tab" onclick="openDialerPanel()" title="Open Dialer">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
@@ -2453,7 +2451,7 @@
   <span class="dialer-tab-label">DIALER</span>
 </div>
 
-<!-- DIALER MOBILE BACKDROP â€” visible when dialer is open on phone -->
+<!-- DIALER MOBILE BACKDROP — visible when dialer is open on phone -->
 <div class="dialer-backdrop" id="dialer-backdrop" onclick="closeDialerPanel()"></div>
 
 
@@ -2826,24 +2824,24 @@ function srand(){seed=(seed*9301+49297)%233280;return seed/233280;}
 function pick(a){return a[Math.floor(srand()*a.length)];}
 
 const TRANSCRIPT_SAMPLES = [
-  [{s:'out',t:"Hi Alicia, this is Devon from CoreConnect â€” got a minute?"},
+  [{s:'out',t:"Hi Alicia, this is Devon from CoreConnect — got a minute?"},
    {s:'in', t:"Yeah, sure, I was actually about to call you back."},
-   {s:'out',t:"Perfect timing. I wanted to walk you through the listing on Elm Street â€” it just dropped in price."},
+   {s:'out',t:"Perfect timing. I wanted to walk you through the listing on Elm Street — it just dropped in price."},
    {s:'in', t:"Oh interesting. How much did it come down?"},
    {s:'out',t:"Twenty-two thousand. They're motivated, the seller relocated for work."},
    {s:'in', t:"Okay. Can we tour it this weekend? Saturday morning ideally."},
    {s:'out',t:"Saturday at 10 works. I'll send a calendar invite and the updated disclosure packet."},
    {s:'in', t:"Sounds great. Talk soon."}],
   [{s:'in', t:"Hey, I got your text about the inspection. Did everything check out?"},
-   {s:'out',t:"Mostly clean â€” there's a minor roof flashing issue, nothing structural."},
+   {s:'out',t:"Mostly clean — there's a minor roof flashing issue, nothing structural."},
    {s:'in', t:"What does that mean for the offer?"},
    {s:'out',t:"We can either ask for a credit or have them fix it before close. I'd lean credit."},
    {s:'in', t:"Yeah, let's do credit. I want to use my own contractor anyway."}],
-  [{s:'out',t:"Following up on the financing paperwork â€” did the lender get back to you?"},
+  [{s:'out',t:"Following up on the financing paperwork — did the lender get back to you?"},
    {s:'in', t:"They did, I have pre-approval through Friday."},
    {s:'out',t:"Great. I'd like to submit before then to lock in terms."},
    {s:'in', t:"Send it over today and I'll sign."}],
-  [{s:'in', t:"Quick question on the HOA â€” what's actually covered in the fee?"},
+  [{s:'in', t:"Quick question on the HOA — what's actually covered in the fee?"},
    {s:'out',t:"Common areas, exterior maintenance, trash, water. Roof reserve too."},
    {s:'in', t:"And it's stayed flat the last few years?"},
    {s:'out',t:"There was a five percent bump in 2024, but they project no increase next year."}],
@@ -2854,7 +2852,7 @@ const NOTES_SAMPLES = [
   "Asked about school district boundaries. Sent the GreatSchools links after the call.",
   "Wants three more comps in the same zip. Pull and email by EOD.",
   "Pre-approval through Cardinal Mortgage, valid 60 days.",
-  "Pushed back on listing price â€” wants to start at 92% of ask.",
+  "Pushed back on listing price — wants to start at 92% of ask.",
   "Left voicemail. No callback yet. Will retry @Devon tomorrow morning.",
 ];
 
@@ -2876,7 +2874,7 @@ function seedNotesForCall(callTime, srandFn){
   return arr;
 }
 
-// Current logged-in user â€” drives "Personal" vs "Department" scope filtering
+// Current logged-in user — drives "Personal" vs "Department" scope filtering
 const CURRENT_USER = {
   name: 'Angel Garcia',
   department: 'BDC',
@@ -2904,7 +2902,7 @@ const DEPT_NUMBERS = {
   'Finance':   '(555) 200-5000',
 };
 
-// Each agent's direct/personal extension â€” the number a known contact dials to reach them directly
+// Each agent's direct/personal extension — the number a known contact dials to reach them directly
 const AGENT_NUMBERS = {
   'Angel Garcia':  '(555) 201-0001',
   'Devon Powell':  '(555) 201-0002',
@@ -2936,7 +2934,7 @@ function generateCalls(n){
     const hasRec = out==='answered' && srand()>0.15;
     const agent = pick(AGENTS);
     const department = AGENT_DEPT[agent] || 'Sales';
-    // Line type â€” outbound calls always go out from the agent's direct line;
+    // Line type — outbound calls always go out from the agent's direct line;
     // inbound calls are ~60% to the department line and ~40% direct
     let lineType;
     if(direction === 'out')          lineType = 'direct';
@@ -2978,7 +2976,7 @@ function generateVoicemails(n){
     const c = pick(CONTACTS);
     // Direction: most voicemails are inbound; some are outbound (you left a vm)
     const direction = srand() < 0.78 ? 'in' : 'out';
-    // Voicemail length: 8â€“75s
+    // Voicemail length: 8–75s
     const dur = 8 + Math.floor(srand()*67);
     const hoursAgo = Math.floor(srand()*6*24);
     const minsAgo = Math.floor(srand()*60);
@@ -3010,7 +3008,7 @@ function generateVoicemails(n){
   return list;
 }
 
-// â”€â”€ Re-source voicemails from the shared CRM leads (window.CCLeads) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Re-source voicemails from the shared CRM leads (window.CCLeads) ───────────────────────────
 // A voicemail is left when a call isn't answered. Per lead: inbound VMs = missed calls (the dashboard's
 // "Missed" metric); outbound VMs = ~40% of outbound calls (you called, no answer, left a VM). Records
 // carry leadIndex so the period filter reuses CCLeads.leadInPeriod. Falls back to the demo generator.
@@ -3066,7 +3064,7 @@ let state = {
   search: '',
   filters: {direction:new Set(),status:new Set(),agent:new Set(),unheardOnly:false,hasTranscript:false},
   period: 'today',  // v78 mirror: period is a top-level scope, always set, defaults to 'today'
-  scope: 'all',  // 'all' (default) | 'personal' | 'department' â€” now a Filter ("View"), not a toggle
+  scope: 'all',  // 'all' (default) | 'personal' | 'department' — now a Filter ("View"), not a toggle
   speed: 1,
   playing: false,
   playProgress: 0,
@@ -3081,7 +3079,7 @@ function canonPeriod(p){ return p === 'thisWeek' ? 'week' : p === 'thisMonth' ? 
 function pagePeriod(c){ return c === 'week' ? 'thisWeek' : c === 'month' ? 'thisMonth' : c === 'all' ? 'all' : 'today'; }
 if(window.CCLeads && window.CCLeads.getPeriod){ state.period = pagePeriod(window.CCLeads.getPeriod()); }
 
-// View/scope was a Per./Dep. toggle â€” now a single-select filter. Reset it to the default 'all'.
+// View/scope was a Per./Dep. toggle — now a single-select filter. Reset it to the default 'all'.
 function removeScopeChip(){
   state.scope = 'all';
   state.selectedId = null;
@@ -3105,7 +3103,7 @@ function getFiltered(){
     if(state.filters.direction.size && !state.filters.direction.has(c.direction)) return false;
     if(state.filters.status.size && !state.filters.status.has(c.status)) return false;
     if(state.filters.agent.size && !state.filters.agent.has(c.agent)) return false;
-    // Period â€” scoped by the lead's window (shared with the dashboard/leads) so it matches.
+    // Period — scoped by the lead's window (shared with the dashboard/leads) so it matches.
     if(state.period && state.period !== 'all'){
       if(window.CCLeads && window.CCLeads.leadInPeriod && typeof c.leadIndex === 'number'){
         if(!window.CCLeads.leadInPeriod(c.leadIndex, canonPeriod(state.period))) return false;
@@ -3265,7 +3263,7 @@ function chSummaryData(c){
   var smsT=cc.sms.out+cc.sms.in, emailT=cc.email.out+cc.email.in, callT=cc.calls.out+cc.calls.in;
   var vm=Math.max(1, Math.min(cc.calls.missed||0,3));
   var touches=smsT+emailT+callT;
-  if(!touches){ return {empty:true, stats:[{ic:'ðŸ’¬',l:'SMS',ct:0},{ic:'âœ‰ï¸',l:'Email',ct:0},{ic:'ðŸ“ž',l:'Calls',ct:0},{ic:'ðŸŽ™ï¸',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''}; }
+  if(!touches){ return {empty:true, stats:[{ic:'💬',l:'SMS',ct:0},{ic:'✉️',l:'Email',ct:0},{ic:'📞',l:'Calls',ct:0},{ic:'🎙️',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''}; }
   var corpus=chCorpus(c);
   var intents=[];
   if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|listing|dropped/.test(corpus)) intents.push('pricing & financing');
@@ -3282,11 +3280,11 @@ function chSummaryData(c){
   var breakdown=parts.length?parts.join(', ').replace(/,([^,]*)$/,' and$1'):'no logged activity yet';
   var inb=(c.transcript||[]).filter(function(t){return t.s==='in'&&t.t;});
   var quote=inb.length?inb[inb.length-1].t:'';
-  if(quote&&quote.length>90) quote=quote.slice(0,87).trim()+'â€¦';
-  var s1='<span class="em">'+chEsc(first)+'</span> is '+level+' â€” '+chEsc(breakdown)+'.';
+  if(quote&&quote.length>90) quote=quote.slice(0,87).trim()+'…';
+  var s1='<span class="em">'+chEsc(first)+'</span> is '+level+' — '+chEsc(breakdown)+'.';
   var s2=intents.length?(' Recent conversation touched on '+chEsc(intents.slice(0,2).join(' and '))+'; tone is '+tone+'.'):(' Overall tone is '+tone+'.');
-  var s3=quote?(' In the voicemail they said: â€œ'+chEsc(quote)+'â€.'):'';
-  return {empty:false, narrative:s1+s2+s3, stats:[{ic:'ðŸ’¬',l:'SMS',ct:smsT},{ic:'âœ‰ï¸',l:'Email',ct:emailT},{ic:'ðŸ“ž',l:'Calls',ct:callT},{ic:'ðŸŽ™ï¸',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''};
+  var s3=quote?(' In the voicemail they said: “'+chEsc(quote)+'”.'):'';
+  return {empty:false, narrative:s1+s2+s3, stats:[{ic:'💬',l:'SMS',ct:smsT},{ic:'✉️',l:'Email',ct:emailT},{ic:'📞',l:'Calls',ct:callT},{ic:'🎙️',l:'VM',ct:vm}], last:(lead&&lead.lastAttempt)||''};
 }
 function chBuildSuggestions(c){
   var lead=chLeadFor(c);
@@ -3295,16 +3293,16 @@ function chBuildSuggestions(c){
   var hasEmail=!!(c.contact&&c.contact.email);
   var sug=[];
   // a voicemail always warrants a call back
-  sug.push({ic:'ðŸ“ž', tx:first+' left a voicemail â€” call them back to keep momentum.', action:'call'});
+  sug.push({ic:'📞', tx:first+' left a voicemail — call them back to keep momentum.', action:'call'});
   if(/financ|\bapr\b|\brate\b|credit|loan|down payment|price|listing|dropped/.test(corpus)){
-    if(hasEmail) sug.push({ic:'âœ‰ï¸', tx:'They asked about pricing/financing â€” email the figures and a pre-qualification link in writing.', action:'email', subject:'Your pricing & financing details', draft:'Hi '+first+',\n\nThanks for your voicemail! Here are the figures we discussed, along with current financing options and a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\nâ€¢ Out-the-door price breakdown\nâ€¢ Competitive APR options\nâ€¢ Pre-qualify in 2 minutes: [link]\n\nHappy to walk through any of it â€” just let me know.'});
-    else sug.push({ic:'ðŸ’¬', tx:'They asked about pricing/financing â€” text the numbers and next steps.', action:'sms'});
+    if(hasEmail) sug.push({ic:'✉️', tx:'They asked about pricing/financing — email the figures and a pre-qualification link in writing.', action:'email', subject:'Your pricing & financing details', draft:'Hi '+first+',\n\nThanks for your voicemail! Here are the figures we discussed, along with current financing options and a quick pre-qualification link so we can tailor a monthly payment to your budget:\n\n• Out-the-door price breakdown\n• Competitive APR options\n• Pre-qualify in 2 minutes: [link]\n\nHappy to walk through any of it — just let me know.'});
+    else sug.push({ic:'💬', tx:'They asked about pricing/financing — text the numbers and next steps.', action:'sms'});
   }
   if(/test drive|come in|visit|tour|see it|saturday|schedule|appointment/.test(corpus)){
-    sug.push({ic:'ðŸ“…', tx:'A visit/test drive came up â€” book it on the calendar so it doesn\'t slip.', action:'appointment'});
+    sug.push({ic:'📅', tx:'A visit/test drive came up — book it on the calendar so it doesn\'t slip.', action:'appointment'});
   }
   if(/trade-?in/.test(corpus)){
-    sug.push({ic:'ðŸš—', tx:'They mentioned a trade-in â€” text for year, make, model and mileage to prep a quote.', action:'sms'});
+    sug.push({ic:'🚗', tx:'They mentioned a trade-in — text for year, make, model and mileage to prep a quote.', action:'sms'});
   }
   return sug.slice(0,4);
 }
@@ -3324,22 +3322,22 @@ function chSummaryHtml(c){
   var collapsed=state.aiCollapsed?' collapsed':'';
   var bodyInner;
   if(d.empty){
-    bodyInner='<p class="dp-ai-empty">No prior engagement logged â€” this voicemail is an early touch. Follow up to start building history.</p>';
+    bodyInner='<p class="dp-ai-empty">No prior engagement logged — this voicemail is an early touch. Follow up to start building history.</p>';
   } else {
     var chips=d.stats.map(function(s){return '<span class="dp-ai-chip"><span class="ic">'+s.ic+'</span>'+s.l+' <span class="ct">'+s.ct+'</span></span>';}).join('');
-    if(d.last) chips+='<span class="dp-ai-last">Â· Last: '+chEsc(d.last)+'</span>';
-    var help='<div class="dp-ai-help"><button class="dp-ai-help-btn" onclick="chHelp()"><span class="dp-ai-spark">âœ¦</span>Suggested Next Actions</button></div>';
+    if(d.last) chips+='<span class="dp-ai-last">· Last: '+chEsc(d.last)+'</span>';
+    var help='<div class="dp-ai-help"><button class="dp-ai-help-btn" onclick="chHelp()"><span class="dp-ai-spark">✦</span>Suggested Next Actions</button></div>';
     var sugsBlock='';
-    if(state.aiLoading){ sugsBlock='<div class="dp-ai-sugs"><div class="dp-ai-loading"><span class="dp-ai-spark">âœ¦</span>Analyzing conversationâ€¦</div></div>'; }
+    if(state.aiLoading){ sugsBlock='<div class="dp-ai-sugs"><div class="dp-ai-loading"><span class="dp-ai-spark">✦</span>Analyzing conversation…</div></div>'; }
     else if(state.aiOpen){ sugsBlock='<div class="dp-ai-sugs">'+chSugsHtml(c)+'</div>'; }
     bodyInner='<p class="dp-ai-text">'+d.narrative+'</p><div class="dp-ai-stats">'+chips+'</div>'+help+sugsBlock;
   }
   return '<div class="dp-ai'+collapsed+'">'+
     '<div class="dp-ai-head" onclick="chToggleAi()">'+
-      '<span class="dp-ai-title"><span class="dp-ai-spark">âœ¦</span>Conversation Summary</span>'+
+      '<span class="dp-ai-title"><span class="dp-ai-spark">✦</span>Conversation Summary</span>'+
       '<div class="dp-ai-acts">'+
-        '<button class="dp-ai-refresh" onclick="event.stopPropagation();chRegen()" title="Regenerate"><span class="ic">âŸ³</span></button>'+
-        '<span class="dp-ai-chev">â–¾</span>'+
+        '<button class="dp-ai-refresh" onclick="event.stopPropagation();chRegen()" title="Regenerate"><span class="ic">⟳</span></button>'+
+        '<span class="dp-ai-chev">▾</span>'+
       '</div>'+
     '</div>'+
     '<div class="dp-ai-body">'+bodyInner+'</div>'+
@@ -3395,11 +3393,11 @@ function renderDetail(){
     ? 'Incoming voicemail'
     : (isMine ? 'Voicemail you left' : 'Outgoing voicemail');
 
-  // From / To depend on direction. Outgoing = agent â†’ contact; Incoming = contact â†’ agent.
+  // From / To depend on direction. Outgoing = agent → contact; Incoming = contact → agent.
   const agentInitials = c.agent.split(' ').map(p=>p[0]).join('');
   const agentParty = {
     name: isMine ? c.agent + ' (You)' : c.agent,
-    sub:  c.department || AGENT_DEPT[c.agent] || 'â€”',
+    sub:  c.department || AGENT_DEPT[c.agent] || '—',
     av:   `<span class="cr-av" style="width:20px;height:20px;background:rgba(79,124,255,.14);color:var(--ac2);font-size:9px;">${agentInitials}</span>`,
   };
   const contactParty = {
@@ -3428,7 +3426,7 @@ function renderDetail(){
     <div class="dp-msg ${t.s}">
       <div class="dp-msg-col">
         <div class="dp-msg-bubble" onclick="seekTo(${i/c.transcript.length})">${t.t}</div>
-        <div class="dp-msg-meta">${t.s==='out'?c.agent.split(' ')[0]:c.contact.name.split(' ')[0]} Â· ${fmtClock(Math.floor(c.duration*i/c.transcript.length))}</div>
+        <div class="dp-msg-meta">${t.s==='out'?c.agent.split(' ')[0]:c.contact.name.split(' ')[0]} · ${fmtClock(Math.floor(c.duration*i/c.transcript.length))}</div>
       </div>
     </div>
   `).join('') : `<div style="padding:18px 0;text-align:center;color:var(--mu);font-size:12px;">
@@ -3443,7 +3441,7 @@ function renderDetail(){
         </button>
         <div class="dp-head-av" style="background:${c.contact.clr}22;color:${c.contact.clr};">${c.contact.av}</div>
         <div class="dp-head-info">
-          <div class="dp-head-name">${c.contact.name} <a href="#" onclick="event.preventDefault();alert('Open lead ${c.contact.lead}');">${c.contact.lead} â†’</a></div>
+          <div class="dp-head-name">${c.contact.name} <a href="#" onclick="event.preventDefault();alert('Open lead ${c.contact.lead}');">${c.contact.lead} →</a></div>
           <div class="dp-head-num">${c.contact.num}${userSent?'<span class="vm-sent-pill">You sent this</span>':''}</div>
         </div>
         <button class="dp-head-close" onclick="selectCall(null)" title="Close">&#x2715;</button>
@@ -3490,7 +3488,7 @@ function renderDetail(){
         </div>
         <div class="dp-sum-row">
           <div class="dp-sum-label">Date &amp; time</div>
-          <div class="dp-sum-val mono">${dateStr} Â· ${fmtTime(c.time)}</div>
+          <div class="dp-sum-val mono">${dateStr} · ${fmtTime(c.time)}</div>
         </div>
         <div class="dp-sum-row">
           <div class="dp-sum-label">Length</div>
@@ -3500,19 +3498,19 @@ function renderDetail(){
           <div class="dp-sum-label">From</div>
           <div class="dp-sum-val">
             ${fromParty.av}
-            ${fromParty.name} <span style="color:var(--mu);">Â·</span> <span style="color:var(--mu);">${fromParty.sub}</span>
+            ${fromParty.name} <span style="color:var(--mu);">·</span> <span style="color:var(--mu);">${fromParty.sub}</span>
           </div>
         </div>
         <div class="dp-sum-row">
           <div class="dp-sum-label">To</div>
           <div class="dp-sum-val">
             ${toParty.av}
-            ${toParty.name} <span style="color:var(--mu);">Â·</span> <span style="color:var(--mu);">${toParty.sub}</span>
+            ${toParty.name} <span style="color:var(--mu);">·</span> <span style="color:var(--mu);">${toParty.sub}</span>
           </div>
         </div>
         <div class="dp-sum-row">
           <div class="dp-sum-label">Linked lead</div>
-          <div class="dp-sum-val"><a href="#" onclick="event.preventDefault();" style="color:var(--ac2);text-decoration:none;">${c.contact.lead} Â· ${c.contact.name}</a></div>
+          <div class="dp-sum-val"><a href="#" onclick="event.preventDefault();" style="color:var(--ac2);text-decoration:none;">${c.contact.lead} · ${c.contact.name}</a></div>
         </div>
       </div>
 
@@ -3536,7 +3534,7 @@ function renderDetail(){
           <div class="dp-time" id="dp-time">${fmtClock(curT)} / ${fmtClock(c.duration)}</div>
         </div>
         <div class="dp-rec-controls">
-          ${[1,1.5,2].map(s=>`<span class="dp-speed ${state.speed===s?'on':''}" onclick="setSpeed(${s})">${s}Ã—</span>`).join('')}
+          ${[1,1.5,2].map(s=>`<span class="dp-speed ${state.speed===s?'on':''}" onclick="setSpeed(${s})">${s}×</span>`).join('')}
         </div>
       </div>
 
@@ -3554,7 +3552,7 @@ function renderDetail(){
 }
 
 /* ============ NOTES (per-call) ============ */
-// Local UI state â€” which call's composer is currently open, and the draft text.
+// Local UI state — which call's composer is currently open, and the draft text.
 let notesUI = { openFor: null, draft: '' };
 
 // Pre-written disposition pool for the AI button. Cycled with notesAiIdx.
@@ -3562,7 +3560,7 @@ let notesUI = { openFor: null, draft: '' };
 const AI_NOTE_SUGGESTIONS = [
   "Customer requested callback Friday afternoon. Confirm availability before then.",
   "Left voicemail. Will follow up Monday with a fresh offer summary.",
-  "Strong interest â€” discussed pricing and next steps. Send disclosure packet by EOD.",
+  "Strong interest — discussed pricing and next steps. Send disclosure packet by EOD.",
   "Not the right fit at this time. Flagged for re-engagement in 90 days.",
   "Needs additional documents before we can move forward. Sent checklist after the call.",
 ];
@@ -3584,7 +3582,7 @@ function renderNotesSection(c){
     ? notes.map(n => renderNoteCard(n)).join('')
     : `<div class="dp-notes-empty">No notes added for this call.</div>`;
 
-  // Composer â€” collapsed button OR expanded textarea
+  // Composer — collapsed button OR expanded textarea
   const composerHtml = isComposerOpen
     ? renderNoteComposer(c.id)
     : `<button class="dp-note-add-btn" onclick="openNoteComposer('${c.id}')">
@@ -3604,7 +3602,7 @@ function renderNoteCard(n){
       <svg class="dp-note-q dp-note-q-close" width="28" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.017 21v-7.391c0-5.704 3.748-9.571 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983zm-14.017 0v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983z"/></svg>
       <div class="dp-note-meta">
         <span class="dp-note-author">${escapeHtml(n.author || 'You')}</span>
-        <span class="dp-note-sep">Â·</span>
+        <span class="dp-note-sep">·</span>
         <span class="dp-note-time">${timeLabel}</span>
       </div>
     </div>
@@ -3617,7 +3615,7 @@ function renderNoteComposer(callId){
   const aiSvg = `<svg width="26" height="26" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="0.5" y="0.5" width="26" height="26" rx="5.5" fill="#4F7CFF"/><rect x="0.5" y="0.5" width="26" height="26" rx="5.5" stroke="#4F7CFF"/><path d="M12.4528 7.54858L12.6573 7.55041C12.6605 7.70215 12.7074 8.46856 12.6385 8.54556C12.5543 8.63952 8.68253 8.55817 8.17909 8.59208C7.87276 8.61269 7.59367 8.69818 7.38798 8.93928C7.23579 9.11763 7.16722 9.32098 7.14226 9.55123C7.08797 10.0518 7.12434 10.5784 7.12479 11.082L7.12408 13.8665L7.12482 17.2794C7.1234 17.9371 7.11251 18.5923 7.13764 19.2509C7.15554 19.7202 7.54775 20.1708 8.0233 20.2034C8.51169 20.2369 9.03538 20.2143 9.52818 20.2144L12.6374 20.2148L16.1015 20.2142L17.128 20.2159C17.3267 20.217 17.587 20.2267 17.7805 20.2096C18.1743 20.1749 18.5152 19.9216 18.6621 19.5546C18.7821 19.2511 18.7384 18.2265 18.7382 17.8422L18.7371 14.9292L18.7361 13.9924C18.7361 13.8649 18.7152 13.419 18.7806 13.341C18.8974 13.3116 19.6047 13.3323 19.7732 13.3285C19.768 13.891 19.7868 14.4352 19.7751 15.0062C19.7599 15.972 19.7827 16.9486 19.7737 17.9168C19.7554 18.4876 19.8177 19.1364 19.7034 19.6939C19.5489 20.4472 18.6472 21.2074 17.8816 21.2305C17.1313 21.2533 16.3468 21.2367 15.5907 21.2366L11.3296 21.2364L9.09956 21.238C8.24065 21.2399 7.45525 21.3302 6.77171 20.6846C6.38718 20.3214 6.09329 19.7676 6.0854 19.2357C6.07474 18.5159 6.0854 17.7759 6.08538 17.0539L6.08494 12.6459L6.08643 10.4494C6.08542 9.84149 6.0144 9.3303 6.29096 8.75592C6.55013 8.21771 7.03511 7.79894 7.61665 7.64648C7.69467 7.62605 7.78142 7.59746 7.86208 7.58219C9.38506 7.51123 10.9273 7.59075 12.4528 7.54858Z" fill="white"/><path d="M11.3457 11.3135C11.5303 11.3119 12.1858 11.2909 12.3628 11.328C12.4423 11.3446 12.5856 11.8352 12.6311 11.9677L12.9702 12.9472L14.1505 16.3581C14.2579 16.6618 14.4319 17.2309 14.5457 17.4997C14.2101 17.4598 13.4761 17.5221 13.2158 17.4659C13.1659 17.422 12.9254 16.5806 12.9117 16.468L12.2902 16.4702C11.8486 16.4708 11.2093 16.4886 10.7814 16.4554C10.7115 16.7385 10.5822 17.224 10.4864 17.4989C10.152 17.4602 9.52095 17.4922 9.14804 17.4818C9.179 17.3577 9.24182 17.2086 9.28567 17.0846L9.4937 16.4776L10.2357 14.3568L10.9437 12.304C11.0425 12.0173 11.1386 11.7236 11.2382 11.4369C11.2542 11.3908 11.3087 11.3452 11.3457 11.3135ZM11.089 15.4424C11.2872 15.426 11.5722 15.4299 11.775 15.4316C12.0348 15.4308 12.3173 15.4348 12.575 15.4228C12.352 14.6253 12.0864 13.8355 11.8671 13.0372C11.8671 13.0372 11.8373 13.0121 11.8345 13.0098C11.7796 13.1749 11.7466 13.3422 11.6958 13.5046C11.5581 13.9446 11.4326 14.3922 11.2951 14.8316C11.2488 14.9795 11.1496 15.3105 11.089 15.4424Z" fill="white"/><path d="M15.4451 11.3101C15.6645 11.3114 16.5447 11.282 16.683 11.3219C16.7312 11.4858 16.7101 11.8055 16.7085 11.986L16.7072 12.7671L16.7072 16.3383C16.7074 16.6733 16.7145 17.1034 16.7156 17.4465C16.7052 17.4622 16.6965 17.4755 16.6894 17.4862C16.4803 17.4856 15.6023 17.5007 15.4485 17.4707C15.4024 17.2854 15.4331 16.487 15.4329 16.2521L15.4342 12.9466L15.4346 11.9144C15.4338 11.7513 15.4122 11.4534 15.4451 11.3101Z" fill="white"/><path d="M16.055 5.75661C16.109 5.75616 16.167 5.76435 16.1969 5.81292C16.4212 6.17773 16.539 6.75679 16.7602 7.11817C17.0942 7.61884 17.8167 7.68241 18.3189 7.95104C18.4141 8.00201 18.4588 8.10291 18.3552 8.16948C17.9956 8.40041 17.4211 8.49371 17.0681 8.73176C16.5583 9.07558 16.4742 9.90698 16.1544 10.4212C15.8619 10.3911 15.6163 9.02058 15.2452 8.79435C14.8028 8.52467 14.3632 8.4287 13.9103 8.19654C13.8485 8.16487 13.8089 8.11996 13.7934 8.0539C13.8722 7.86503 14.9336 7.61374 15.2126 7.37181C15.7087 6.9415 15.7187 6.21994 16.055 5.75661Z" fill="white"/><path d="M19.2407 9.07166C19.4476 9.16268 19.5731 9.9655 19.8055 10.1847C20.0801 10.4437 20.6672 10.5388 20.9223 10.7457C20.9345 10.8972 20.0436 11.1456 19.8889 11.2782C19.5452 11.5727 19.528 12.1656 19.2679 12.4755C19.0733 12.3589 18.9222 11.5629 18.6837 11.3296C18.4586 11.1093 17.6829 10.9428 17.5836 10.7716C17.5948 10.639 18.409 10.4155 18.5721 10.2868C18.9786 9.96595 18.9443 9.45631 19.2407 9.07166Z" fill="white"/><path d="M19.9816 6.45117C20.0083 6.45932 20.0383 6.46373 20.053 6.48773C20.161 6.66339 20.2146 6.88421 20.3184 7.06464C20.4945 7.17604 20.7321 7.23049 20.8964 7.339C20.9051 7.34471 20.9006 7.36471 20.8999 7.37924C20.8108 7.49045 20.5226 7.54276 20.3906 7.61687C20.2276 7.70838 20.1107 8.13073 20.0385 8.3117C20.0245 8.31331 20.0108 8.30881 19.9964 8.30579C19.9722 8.27725 19.7866 7.88281 19.7717 7.82446C19.694 7.52022 19.1798 7.54222 19.0979 7.35973C19.1461 7.28508 19.5726 7.11762 19.6822 7.06937C19.7608 6.91988 19.906 6.55072 19.9816 6.45117Z" fill="white"/></svg>`;
   return `
     <div class="dp-note-composer">
-      <textarea class="dp-note-textarea" id="dp-note-textarea" placeholder="Type a noteâ€¦ use @name to mention a teammate"
+      <textarea class="dp-note-textarea" id="dp-note-textarea" placeholder="Type a note… use @name to mention a teammate"
         oninput="onNoteInput(this.value)" onkeydown="onNoteKeyDown(event, '${callId}')">${escapeHtml(draft)}</textarea>
       <div class="dp-note-actions">
         <button class="dp-note-ai" onclick="aiNoteCompose()" title="AI compose suggestion" aria-label="AI compose">${aiSvg}</button>
@@ -3690,14 +3688,14 @@ function saveNote(callId){
   c.notes.push({
     text,
     time: new Date(),
-    author: 'Devon Powell',  // current user â€” backend will replace
+    author: 'Devon Powell',  // current user — backend will replace
   });
   notesUI.openFor = null;
   notesUI.draft = '';
   refreshNotesSection();
 }
 
-// Re-render only the notes section (not the whole dp) â€” preserves scroll position
+// Re-render only the notes section (not the whole dp) — preserves scroll position
 function refreshNotesSection(){
   if(!state.selectedId) return;
   const c = ALL_CALLS.find(x => x.id === state.selectedId);
@@ -3724,7 +3722,7 @@ function aiNoteCompose(){
 /* ============ PLAYBACK (mock) ============ */
 let playTimer = null;
 // Lightweight per-tick update: only repaint the waveform bars, time readout,
-// and play button â€” never rebuild the whole pane (which would reset scroll).
+// and play button — never rebuild the whole pane (which would reset scroll).
 function updatePlaybackUI(){
   const c = ALL_CALLS.find(x=>x.id===state.selectedId);
   if(!c) return;
@@ -3818,7 +3816,7 @@ function playFromRow(id, e){
 /* ============ SEARCH ============ */
 function handleSearch(v){ state.search = v; state.page=1; renderList(); }
 
-/* ============ MOBILE SEARCH OVERLAY (MSO) â€” v79 pattern ============ */
+/* ============ MOBILE SEARCH OVERLAY (MSO) — v79 pattern ============ */
 function openMobileSearch(){
   const mso = document.getElementById('mso');
   const input = document.getElementById('mso-input');
@@ -3999,10 +3997,10 @@ function renderFilterDropdown(){
     if(cat.key === activeCatKey) row.classList.add('active');
     let right;
     if(isToggle){
-      right = `<span class="fd-cat-check">âœ“</span>`;
+      right = `<span class="fd-cat-check">✓</span>`;
     } else {
       const badge = selCount > 0 ? `<span class="fd-cat-count">${selCount}</span>` : '';
-      right = `${badge}<span class="fd-cat-chev">â€º</span>`;
+      right = `${badge}<span class="fd-cat-chev">›</span>`;
     }
     row.innerHTML = `<span class="fd-cat-label">${cat.label}</span>${right}`;
     row.onclick = () => {
@@ -4089,11 +4087,11 @@ function filterRightPane(query){
 
 function toggleFilterValue(cat, val){
   if(cat.key === 'period'){
-    // Period is always set â€” picking the same value is a no-op (can't toggle off)
+    // Period is always set — picking the same value is a no-op (can't toggle off)
     state.period = val;
     if(window.CCLeads && window.CCLeads.setPeriod) window.CCLeads.setPeriod(canonPeriod(val));
   } else if(cat.key === 'scope'){
-    // View scope (was the Per./Dep. toggle) â€” always set; clear the selection since it may leave scope.
+    // View scope (was the Per./Dep. toggle) — always set; clear the selection since it may leave scope.
     state.scope = val;
     state.selectedId = null;
   } else if(cat.type === 'single'){
@@ -4142,7 +4140,7 @@ function renderChips(){
   const row = document.getElementById('chips-row');
   if(!row) return; // Phase 1: toolbar/chips not present yet
   const chips = [];
-  // Direction / Outcome / Agent â€” multi-select
+  // Direction / Outcome / Agent — multi-select
   const labels = {
     direction:{in:'Incoming',out:'Outgoing'},
     status:{new:'New',unheard:'Unheard',heard:'Heard',saved:'Saved',returned:'Returned'},
@@ -4156,7 +4154,7 @@ function renderChips(){
         <span class="chip-x" onclick="removeChip('${key}','${v}')">&#x2715;</span></div>`);
     });
   });
-  // View/scope (was the Per./Dep. toggle) â€” only shown when narrowed away from the default 'all'
+  // View/scope (was the Per./Dep. toggle) — only shown when narrowed away from the default 'all'
   if(state.scope && state.scope !== 'all'){
     const sc = filterConfig.find(c=>c.key==='scope');
     const sopt = sc && sc.options.find(o=>o.val===state.scope);
@@ -4165,7 +4163,7 @@ function renderChips(){
         <span class="chip-x" onclick="removeScopeChip()">&#x2715;</span></div>`);
     }
   }
-  // Period (v78 mirror) â€” ALWAYS visible, muted style when set to default 'today'
+  // Period (v78 mirror) — ALWAYS visible, muted style when set to default 'today'
   if(state.period){
     const cat = filterConfig.find(c=>c.key==='period');
     const opt = cat.options.find(o=>o.val===state.period);
@@ -4194,7 +4192,7 @@ function renderChips(){
 
   row.innerHTML = chips.join('');
   const badge = document.getElementById('filter-badge');
-  // Badge counts only active filter chips â€” the default 'today' period chip is muted and doesn't count
+  // Badge counts only active filter chips — the default 'today' period chip is muted and doesn't count
   const n = row.querySelectorAll('.chip:not(.chip-period-today)').length;
   if(n){
     badge.style.display = 'flex';
@@ -4509,7 +4507,7 @@ let dialerState = {
   isMuted: false,
   callTimerId: null,
   callElapsed: 0,
-  sortDir: 'asc',      // 'asc' (Aâ€“Z) | 'desc' (Zâ€“A)
+  sortDir: 'asc',      // 'asc' (A–Z) | 'desc' (Z–A)
   filter: '',          // current text in the name input
   keypadHidden: false,
 };
@@ -4531,7 +4529,7 @@ function renderDialerNumber(){
   if(dialerState.number){
     el.textContent = dialerState.number;
   } else {
-    el.innerHTML = '<span class="dialer-number-placeholder">Enter numberâ€¦</span>';
+    el.innerHTML = '<span class="dialer-number-placeholder">Enter number…</span>';
   }
 }
 
@@ -4569,22 +4567,22 @@ function clearDialerContact(){
   renderDialerNumber();
 }
 
-/* ============ DIALER PANEL â€” toggleable at every breakpoint ============ */
-/* Desktop (>1080px): push pattern â€” pane expands inline, detail shrinks
+/* ============ DIALER PANEL — toggleable at every breakpoint ============ */
+/* Desktop (>1080px): push pattern — pane expands inline, detail shrinks
    Tablet  (641-1080px): overlay slide-in from right with backdrop
-   Phone   (â‰¤640px): full-screen takeover */
+   Phone   (≤640px): full-screen takeover */
 function openDialerPanel(){
   const panel = document.getElementById('dialer-panel');
   const tab   = document.getElementById('dialer-tab');
   const bd    = document.getElementById('dialer-backdrop');
   if(panel) panel.classList.add('open');
   if(tab)   tab.classList.add('hidden');
-  // Only show backdrop in tablet range (641-1080px) â€” desktop pushes, phone is full-screen
+  // Only show backdrop in tablet range (641-1080px) — desktop pushes, phone is full-screen
   const w = window.innerWidth;
   if(bd && w > 640 && w <= 1080) bd.classList.add('show');
 }
 function closeDialerPanel(){
-  // Defense in depth â€” never close the panel while a call is active
+  // Defense in depth — never close the panel while a call is active
   if(dialerState && dialerState.isCalling) return;
   const panel = document.getElementById('dialer-panel');
   const tab   = document.getElementById('dialer-tab');
@@ -4606,7 +4604,7 @@ function sortedDialerContacts(){
 }
 function toggleDialerSort(){
   dialerState.sortDir = dialerState.sortDir === 'asc' ? 'desc' : 'asc';
-  document.getElementById('dialer-sort-label').textContent = dialerState.sortDir === 'asc' ? 'Aâ€“Z' : 'Zâ€“A';
+  document.getElementById('dialer-sort-label').textContent = dialerState.sortDir === 'asc' ? 'A–Z' : 'Z–A';
   renderDialerContacts();
 }
 
@@ -4671,11 +4669,11 @@ function openAddLeadStub(){
 // call's contact to the dialer and starts the calling overlay flow.
 function dpCallBack(callId){
   // Mirrors the message-history "Call" button: drive the unified dialer (shared/dialer.js)
-  // â€” open the panel, load the contact, then auto-start the call.
+  // — open the panel, load the contact, then auto-start the call.
   const c = ALL_CALLS.find(x => x.id === callId);
   if(!c) return;
   const panel = document.getElementById('dialer-panel');
-  if(panel && panel.classList.contains('in-call')) return;      // already on a call â€” ignore
+  if(panel && panel.classList.contains('in-call')) return;      // already on a call — ignore
   if(panel && !panel.classList.contains('open')) toggleDialer(); // open the dialer so the lifecycle is visible
   loadRecentCall(c.contact.num, c.contact.name, c.contact.av, c.contact.clr);
   // Small delay so the panel slide-in isn't competing with the calling-overlay swap.
@@ -4718,7 +4716,7 @@ function initiateCall(){
     av.style.background = 'var(--ac)';
     name.textContent = dialerState.number;
   }
-  status.textContent = 'Callingâ€¦';
+  status.textContent = 'Calling…';
   overlay.classList.remove('connected');
   setTimeout(()=>{
     if(!dialerState.isCalling) return;
@@ -4761,23 +4759,23 @@ let smsState = {
 // appear consistently on re-open. Seeds based on contact id (string).
 const SMS_TEMPLATES = [
   // pair = [outgoing-from-agent, incoming-from-contact]
-  ["Hi {first}, this is Devon from CoreConnect. Just following up on our call â€” would Saturday work for a quick tour?",
+  ["Hi {first}, this is Devon from CoreConnect. Just following up on our call — would Saturday work for a quick tour?",
    "Hey Devon, Saturday morning works. What time were you thinking?"],
   ["{first}, sending over the disclosure packet for the Elm St listing. Let me know what you think.",
    "Got it, thanks. Will review tonight and circle back tomorrow."],
-  ["Hi {first} â€” circling back on the financing question from earlier. Any updates from your lender?",
+  ["Hi {first} — circling back on the financing question from earlier. Any updates from your lender?",
    "Yes! Pre-approval came through. Good through Friday."],
   ["{first}, the comps you asked for are in your inbox. Three matched units within the same zip.",
    "Perfect. Reviewing now."],
 ];
 
-// AI compose pool â€” cycled through on each click of the AI button.
+// AI compose pool — cycled through on each click of the AI button.
 // TODO(backend): replace aiSmsCompose() with a real generation call when ready.
 const AI_SMS_SUGGESTIONS = [
-  "Hi {first}, thanks for taking my call earlier. When's a good time to follow up â€” later today or tomorrow?",
+  "Hi {first}, thanks for taking my call earlier. When's a good time to follow up — later today or tomorrow?",
   "Hey {first}, just checking in after our chat. Happy to walk through any questions whenever you're ready.",
   "Hi {first}, wanted to send a quick recap of what we discussed and the next steps. Let me know if you'd like to set a time to dig in.",
-  "Hey {first}, following up â€” let me know if you'd like me to send over additional details or schedule a tour.",
+  "Hey {first}, following up — let me know if you'd like me to send over additional details or schedule a tour.",
 ];
 // Round-robin counter so each click cycles to the next suggestion.
 let aiSmsIdx = 0;
@@ -4901,7 +4899,7 @@ function renderSmsBody(){
       lastDay = day;
     }
     const deliveredTag = (m.dir === 'out' && m.delivered)
-      ? `<span class="sms-delivered">âœ“ Delivered</span>` : '';
+      ? `<span class="sms-delivered">✓ Delivered</span>` : '';
     const isNew = m.isNew ? ' new' : '';
     if(m.isNew) delete m.isNew;
     html += `<div class="sms-msg ${m.dir}${isNew}">
@@ -5013,7 +5011,7 @@ let emState = {
   contact: null,   // {name, email, av, clr, id}
 };
 
-// AI compose pool for email â€” each entry has {subject, body}, with {first} substituted.
+// AI compose pool for email — each entry has {subject, body}, with {first} substituted.
 // TODO(backend): replace aiEmailCompose() with a real generation call when ready.
 const AI_EMAIL_SUGGESTIONS = [
   {
@@ -5024,7 +5022,7 @@ const AI_EMAIL_SUGGESTIONS = [
           "<p>Best regards,<br>Devon Powell<br>CoreConnect</p>"
   },
   {
-    subject: "Next steps â€” your inquiry",
+    subject: "Next steps — your inquiry",
     body: "<p>Hi {first},</p>" +
           "<p>Following up on your inquiry. I'd love to learn a bit more about what you're looking for so I can put together the right options for you.</p>" +
           "<p>What works best for a quick call this week?</p>" +
@@ -5101,14 +5099,14 @@ function closeEmailModal(){
   closeModalFromPopup();
 }
 
-// Rich-text command helper â€” runs document.execCommand and keeps focus on the editor.
+// Rich-text command helper — runs document.execCommand and keeps focus on the editor.
 function emEx(cmd, val, e){
   if(e){ e.preventDefault(); e.stopPropagation(); }
   const content = document.getElementById('em-content');
   if(content) content.focus();
   try { document.execCommand(cmd, false, val || ''); } catch (_) {}
 }
-// Block-level format (paragraph, h1, h2, h3) â€” wraps current selection in a block element.
+// Block-level format (paragraph, h1, h2, h3) — wraps current selection in a block element.
 function emExBlock(tag, e){
   if(!tag) return;
   emEx('formatBlock', tag, e);
@@ -5138,7 +5136,7 @@ function aiEmailCompose(){
   const subjEl = document.getElementById('em-subject');
   const bodyEl = document.getElementById('em-content');
   if(!subjEl || !bodyEl) return;
-  // Fill subject only when blank â€” don't overwrite the user's typed subject.
+  // Fill subject only when blank — don't overwrite the user's typed subject.
   if(!subjEl.value.trim()) subjEl.value = tpl.subject;
   bodyEl.innerHTML = tpl.body.replace(/\{first\}/g, first);
   bodyEl.focus();
@@ -5186,7 +5184,7 @@ function showEmToast(){
   t._hideTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// âŒ˜/Ctrl+Enter sends from anywhere inside the modal
+// ⌘/Ctrl+Enter sends from anywhere inside the modal
 document.addEventListener('keydown', e => {
   const modal = document.getElementById('em-modal');
   if(!modal || !modal.classList.contains('show')) return;
@@ -5203,7 +5201,7 @@ const TICK_SVG  = '<span class="em-msg-tick"><svg viewBox="0 0 24 24" fill="none
 // Per-contact email threads keyed by callId
 const emThreads = {};
 
-// Seed email history â€” 2 outbound + 1 inbound reply
+// Seed email history — 2 outbound + 1 inbound reply
 function seedEmThread(contact, callId) {
   if(emThreads[callId]) return; // already seeded
   const first = contact.name.split(' ')[0];
@@ -5461,7 +5459,7 @@ window.addEventListener('resize',()=>{
   }
 });
 
-// â”€â”€ ADD LEAD MODAL (adapted: no leads table on this page) â”€â”€
+// ── ADD LEAD MODAL (adapted: no leads table on this page) ──
 function openAddModal(){
   const bd = document.getElementById('modal-backdrop');
   if(!bd) return;
@@ -5502,7 +5500,7 @@ function showLeadSavedToast(name){
 }
 
 
-/* â”€â”€ SEND BUSINESS CARD MODAL (ported from dashboard v41) â”€â”€ */
+/* ── SEND BUSINESS CARD MODAL (ported from dashboard v41) ── */
 function openBcModal(){
   document.getElementById('bc-modal-backdrop').classList.add('open');
   toggleBcLocation();
@@ -5556,16 +5554,16 @@ function openConferenceFromCall(callId){
   openConferenceSetup();
   if(c && c.contact){ ccParticipants.push({ id:'seed-'+(c.contact.lead||c.id), kind:'lead', name:c.contact.name, meta:c.contact.num||c.contact.email||'\u2014', color:c.contact.clr||'var(--ac)', locked:false }); ccRender(); }
 }
-// â”€â”€ CONFERENCE CALL SETUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONFERENCE CALL SETUP ─────────────────────
 // Participant shape: { id, kind:'host'|'lead'|'team'|'external', key?, name, meta, color, locked? }
 // `kind` drives the badge color/label; `locked` prevents removal (host + lead).
 let ccParticipants = [];
 let ccPopTab = 'team'; // 'team' | 'external'
 
 function openConferenceSetup(){
-  // Seed initial participants â€” host (current user) + lead (if a contact panel is open)
+  // Seed initial participants — host (current user) + lead (if a contact panel is open)
   ccParticipants = [];
-  // The host is always the current user. We don't store a real session, so use David P. (DP) â€” first in assignUsers.
+  // The host is always the current user. We don't store a real session, so use David P. (DP) — first in assignUsers.
   const host = assignUsers[0]; // David P., Sales Manager
   ccParticipants.push({
     id: 'host-'+host.key,
@@ -5597,13 +5595,13 @@ function openConferenceSetup(){
   document.getElementById('cc-ext-name').value = '';
   document.getElementById('cc-ext-contact').value = '';
   document.getElementById('cc-ext-add').disabled = true;
-  // Phase 2E â€” default to "Current" tab on phone (so user sees the seeded host + lead)
+  // Phase 2E — default to "Current" tab on phone (so user sees the seeded host + lead)
   ccSetCol('left');
   ccRender();
   document.getElementById('cc-modal-backdrop').classList.add('open');
 }
 
-// â”€â”€ Phase 2E: Mobile tab switcher between Current participants ('left') and Add ('right') â”€â”€
+// ── Phase 2E: Mobile tab switcher between Current participants ('left') and Add ('right') ──
 function ccSetCol(which){
   const cols = document.getElementById('cc-cols');
   if(cols){
@@ -5645,7 +5643,7 @@ function ccRender(){
   }).join('');
   // Counter
   document.getElementById('cc-count').textContent = ccParticipants.length;
-  // Phase 2E â€” also update the mobile-tab count
+  // Phase 2E — also update the mobile-tab count
   const mobCount = document.getElementById('cc-mobile-count');
   if(mobCount) mobCount.textContent = ccParticipants.length;
   // Start button enabled when at least 1 invited participant (host doesn't count alone)
@@ -5661,7 +5659,7 @@ function ccRemoveParticipant(id){
   ccRender();
 }
 
-// â”€â”€ Add Participant: tab + search + add â”€â”€â”€â”€â”€â”€â”€
+// ── Add Participant: tab + search + add ───────
 function ccSetPopTab(tab){
   ccPopTab = tab;
   document.querySelectorAll('.cc-pop-tab').forEach(t => t.classList.toggle('active', t.dataset.popTab === tab));
@@ -5682,7 +5680,7 @@ function ccRenderTeam(q){
   const list = document.getElementById('cc-pop-team-list');
   if(!list) return;
   const query = (q || '').trim().toLowerCase();
-  // Filter out the host (already in participants) â€” but show all OTHER assignUsers, marking added ones as disabled
+  // Filter out the host (already in participants) — but show all OTHER assignUsers, marking added ones as disabled
   const hostKey = ccParticipants.find(p => p.kind === 'host')?.key;
   const matches = assignUsers.filter(u => u.key !== hostKey).filter(u =>
     !query || u.name.toLowerCase().includes(query) || u.role.toLowerCase().includes(query) || u.key.toLowerCase().includes(query)
@@ -5763,7 +5761,7 @@ function ccStartCall(){
   lcStartCall(title, snapshot);
 }
 
-// â”€â”€ LIVE CALL BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── LIVE CALL BAR ─────────────────────────────
 // State for the active call. When `lcActive` is true the bar is showing.
 let lcActive = false;
 let lcStartedAt = null;       // Date the call started
@@ -5784,7 +5782,7 @@ function lcStartCall(title, participants){
   lcTitle = title || 'Conference Call';
   lcCallParticipants = participants;
   lcStates = { mute:false, cam:false, share:false };
-  // Seed per-participant statuses â€” mute a couple at random for realism (host always unmuted)
+  // Seed per-participant statuses — mute a couple at random for realism (host always unmuted)
   lcParticipantStates = {};
   participants.forEach((p, i) => {
     lcParticipantStates[p.id] = { muted: p.kind === 'host' ? false : (i % 3 === 0 && i > 0) };
@@ -5847,7 +5845,7 @@ function lcTickTimer(){
 function lcToggle(which){
   if(!lcActive) return;
   lcStates[which] = !lcStates[which];
-  // Map: which â†’ bar element id, fullscreen element id
+  // Map: which → bar element id, fullscreen element id
   const map = {
     mute:  ['lc-mute',  'fs-mute'],
     cam:   ['lc-cam',   'fs-cam'],
@@ -5879,7 +5877,7 @@ function lcToggle(which){
   }
 }
 
-// â”€â”€ Bar click â†’ expand to fullscreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Bar click → expand to fullscreen ──────────
 function lcToggleParticipants(e){
   // (Repurposed) Clicking the bar now expands to the fullscreen call view.
   // The right-side controls (mute/cam/share/end) stop propagation so they don't trigger this.
@@ -5917,7 +5915,7 @@ function lcRenderPanel(){
   }).join('');
 }
 
-// â”€â”€ End call (with confirm) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── End call (with confirm) ───────────────────
 function lcRequestEnd(e){
   if(e) e.stopPropagation();
   if(!lcActive) return;
@@ -5986,7 +5984,7 @@ function lcReset(){
   });
 }
 
-// â”€â”€ FULLSCREEN CALL VIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── FULLSCREEN CALL VIEW ──────────────────────
 let lcFullscreenOpen = false;
 let lcFocusedId = null;        // id of participant currently in focus mode (null = grid)
 let fsSpeakingInterval = null; // timer for speaking simulation
@@ -6030,7 +6028,7 @@ function lcMinimize(){
   if(kb) kb.classList.remove('open');
 }
 
-// Build a deterministic SVG "portrait" â€” gradient circular background + large initials.
+// Build a deterministic SVG "portrait" — gradient circular background + large initials.
 // Each participant gets a consistent visual identity based on their color.
 function fsBuildPortraitSVG(name, color){
   const initials = (name || '?').replace(' (you)','').split(/\s+/).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
@@ -6145,7 +6143,7 @@ function lcExitFocus(){
   fsRenderTiles();
 }
 
-// â”€â”€ Speaking simulation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Speaking simulation ───────────────────────
 // Every ~2.5s, pick a random unmuted participant to be the "speaker".
 // ~20% chance of silence (no speaker). Updates only the affected tiles for performance.
 function fsStartSpeakingSim(){
@@ -6172,7 +6170,7 @@ function fsStopSpeakingSim(){
   fsCurrentSpeaker = null;
 }
 
-// â”€â”€ Browser fullscreen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Browser fullscreen ────────────────────────
 function fsToggleFullscreen(){
   const fs = document.getElementById('fs-call');
   if(!fs) return;
@@ -6183,7 +6181,7 @@ function fsToggleFullscreen(){
   }
 }
 
-// â”€â”€ Kebab menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Kebab menu ────────────────────────────────
 function fsToggleKebab(e){
   if(e) e.stopPropagation();
   const kb = document.getElementById('fs-kebab-menu');
@@ -6195,7 +6193,7 @@ function fsKebabAction(action){
   const kb = document.getElementById('fs-kebab-menu');
   if(kb) kb.classList.remove('open');
   if(action === 'participants'){
-    // Open the participants panel above the bar â€” but if we're fullscreen, briefly minimize to bar to show it
+    // Open the participants panel above the bar — but if we're fullscreen, briefly minimize to bar to show it
     lcMinimize();
     setTimeout(() => {
       lcRenderPanel();
@@ -6239,6 +6237,72 @@ document.addEventListener('keydown',(e)=>{
   if(lcFullscreenOpen){ lcMinimize(); return; }
 });
 </script>
+<!-- PRODUCT-SWITCHER:CSS START -->
+<style>
+.logo{cursor:pointer;position:relative;user-select:none;}
+.logo:hover .logo-chev{color:#fff;}
+.logo-chev{width:11px;height:11px;flex:none;color:rgba(255,255,255,.6);transition:transform .15s,color .15s;margin-left:1px;}
+.logo.ps-open .logo-chev{transform:rotate(180deg);color:#fff;}
+.product-switcher{display:none;position:fixed;top:0;left:0;min-width:200px;background:#181c27;border:0.5px solid rgba(255,255,255,.13);border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.55);z-index:10000;padding:6px;}
+.product-switcher.ps-open{display:block;}
+.ps-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;color:#e8eaf0;text-decoration:none;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;}
+.ps-item:hover{background:#1e2333;color:#6e9dff;}
+.ps-item.ps-active{color:#6e9dff;background:rgba(79,124,255,.10);}
+.ps-ic{width:15px;height:15px;flex:none;color:#7a7f94;}
+.ps-item:hover .ps-ic,.ps-item.ps-active .ps-ic{color:#6e9dff;}
+</style>
+<!-- PRODUCT-SWITCHER:CSS END -->
+<!-- PRODUCT-SWITCHER:JS START -->
+<script>
+(function(){
+  function portalSwitcher(){
+    var ps=document.getElementById('product-switcher');
+    if(ps && ps.parentElement !== document.body) document.body.appendChild(ps);
+  }
+  function positionSwitcher(){
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher');
+    if(!logo||!ps) return;
+    var r=logo.getBoundingClientRect();
+    ps.style.left=((window.innerWidth>640) ? 66 : r.left)+'px';
+    ps.style.top=(r.bottom+8)+'px';
+  }
+  function toggleProductSwitcher(e){
+    if(e){ e.stopPropagation(); }
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher'); if(!logo||!ps) return;
+    portalSwitcher();
+    var willOpen=!ps.classList.contains('ps-open');
+    if(willOpen) positionSwitcher();
+    ps.classList.toggle('ps-open', willOpen); logo.classList.toggle('ps-open', willOpen);
+  }
+  function closeProductSwitcher(){
+    var logo=document.querySelector('.logo'); var ps=document.getElementById('product-switcher');
+    if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open');
+  }
+  window.toggleProductSwitcher=toggleProductSwitcher;
+  window.closeProductSwitcher=closeProductSwitcher;
+  function init(){
+    portalSwitcher();
+    var isRep = location.pathname.replace(/\\/g,'/').indexOf('/reputation/')>=0;
+    document.querySelectorAll('.ps-item').forEach(function(a){
+      var pid=a.getAttribute('data-pid');
+      var active=(isRep && pid==='reputation') || (!isRep && pid==='coreconnect');
+      a.classList.toggle('ps-active', active);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  document.addEventListener('mousedown', function(e){
+    var ps=document.getElementById('product-switcher'); if(!ps||!ps.classList.contains('ps-open')) return;
+    if(e.target.closest && (e.target.closest('.logo')||e.target.closest('#product-switcher'))) return;
+    closeProductSwitcher();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+<!-- PRODUCT-SWITCHER:JS END -->
+
 
 </body>
 </html>

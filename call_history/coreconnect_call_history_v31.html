@@ -4,20 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CoreConnect — Call History</title>
+<link rel="stylesheet" href="../shared/app.css">
+<link rel="stylesheet" href="../shared/contact-panel.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
-
-  :root{
-    --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;
-    --brd:rgba(255,255,255,0.07);--brd2:rgba(255,255,255,0.13);
-    --tx:#e8eaf0;--mu:#7a7f94;
-    --ac:#4f7cff;--ac2:#6e9dff;
-    --gr:#22c88a;--am:#f5a623;--rd:#e85555;
-    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
-  }
-  body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
+body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
 
   /* ===== TOP HEADER ===== */
   .top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);
@@ -93,7 +85,7 @@
   }
 
   /* NOTIFICATIONS PANEL */
-  .notif-panel{display:none;position:fixed;top:0;left:0;width:380px;max-height:560px;
+  .notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;
     background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
     box-shadow:0 12px 36px rgba(0,0,0,.55);z-index:9999;
     flex-direction:column;overflow:hidden;}
@@ -1971,7 +1963,7 @@
     <!-- groups + items rendered dynamically -->
   </div>
   <div class="notif-footer">
-    <button class="notif-seeall" onclick="navClick('Notifications')">See all notifications</button>
+    <button class="notif-seeall" onclick="window.location.href='../notification/notification.html'">See all notifications</button>
   </div>
 </div>
 
@@ -5352,6 +5344,37 @@ window.addEventListener('resize',()=>{
     if(drawer && drawer.classList.contains('open')) closeMobileDrawer();
   }
 });
+
+/* ===== Honor ?focus=<leadNo> from notification deep-link ===== */
+(function(){
+  try{
+    var m = location.search.match(/[?&]focus=([^&]+)/);
+    if(!m) return;
+    var no = parseInt(decodeURIComponent(m[1]), 10);
+    if(!no) return;
+    function applyFocus(){
+      var lead = (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS.find(function(l){ return l.no === no; }) : null;
+      if(!lead || typeof handleSearch !== 'function') return;
+      // Broaden the period so the focused lead's calls are visible regardless of date
+      if(typeof state !== 'undefined') state.period = 'all';
+      handleSearch(lead.name);
+      // Mirror into visible search inputs (desktop toolbar + mobile overlay)
+      var allSearch = document.querySelectorAll('input[placeholder="Search name, number, transcript"]');
+      allSearch.forEach(function(i){ i.value = lead.name; });
+      // Auto-open right detail pane on most-recent missed call (fallback: any call)
+      try{
+        if(typeof ALL_CALLS !== 'undefined' && typeof selectCall === 'function'){
+          var idx = CCLeads.LEADS.findIndex(function(l){ return l.no === no; });
+          var first = ALL_CALLS.find(function(c){ return c.leadIndex === idx && c.outcome === 'missed'; })
+                   || ALL_CALLS.find(function(c){ return c.leadIndex === idx; });
+          if(first) selectCall(first.id);
+        }
+      }catch(e){}
+    }
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(applyFocus, 50); });
+    else setTimeout(applyFocus, 50);
+  }catch(e){}
+})();
 </script>
 <!-- Unified Quick-Dial dialer (overrides this page's inline dialer) -->
 <script>
@@ -6074,23 +6097,7 @@ document.addEventListener('keydown',(e)=>{
 });
 </script>
 
-<script src="../shared/dialer.js"></script>
-<!-- PRODUCT-SWITCHER:CSS START -->
-<style>
-.logo{cursor:pointer;position:relative;user-select:none;}
-.logo:hover .logo-chev{color:#fff;}
-.logo-chev{width:11px;height:11px;flex:none;color:rgba(255,255,255,.6);transition:transform .15s,color .15s;margin-left:1px;}
-.logo.ps-open .logo-chev{transform:rotate(180deg);color:#fff;}
-.product-switcher{display:none;position:fixed;top:0;left:0;min-width:200px;background:#181c27;border:0.5px solid rgba(255,255,255,.13);border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.55);z-index:10000;padding:6px;}
-.product-switcher.ps-open{display:block;}
-.ps-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;color:#e8eaf0;text-decoration:none;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;}
-.ps-item:hover{background:#1e2333;color:#6e9dff;}
-.ps-item.ps-active{color:#6e9dff;background:rgba(79,124,255,.10);}
-.ps-ic{width:15px;height:15px;flex:none;color:#7a7f94;}
-.ps-item:hover .ps-ic,.ps-item.ps-active .ps-ic{color:#6e9dff;}
-</style>
-<!-- PRODUCT-SWITCHER:CSS END -->
-<!-- PRODUCT-SWITCHER:JS START -->
+<script src="../shared/dialer.js"></script><!-- PRODUCT-SWITCHER:JS START -->
 <script>
 (function(){
   function portalSwitcher(){
@@ -6139,6 +6146,10 @@ document.addEventListener('keydown',(e)=>{
   window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
 })();
 </script>
+<script src="../shared/notifications.js"></script>
+<script src="../shared/contact-panel.js"></script>
+
+
 <!-- PRODUCT-SWITCHER:JS END -->
 
 </body>

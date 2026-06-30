@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation · Reviews</title>
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Top header (kept from app) ── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid var(--bg);}
+
+/* ── Reputation sidebar ── */
+.rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);background:var(--bg);border-right:0.5px solid var(--brd);display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;transition:transform .2s ease-out;}
+.rep-nav{display:flex;flex-direction:column;gap:3px;}
+.rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;transition:background .12s,color .12s;user-select:none;}
+.rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.rep-item.active{background:var(--ac);color:#fff;}
+.rep-item.active:hover{background:var(--ac);color:#fff;}
+.rep-item svg{width:18px;height:18px;flex:none;}
+.rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+
+/* ── Content ── */
+.rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+.rep-empty{margin:24px 20px;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
+.rep-empty-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
+.rep-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
+.rep-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+
+/* Reviews 2-column display area */
+.rev-grid{display:flex;gap:16px;padding:20px;align-items:flex-start;}
+.rev-col-left{flex:0 0 20%;display:flex;flex-direction:column;gap:16px;min-width:0;}
+.rev-col-right{flex:1;min-width:0;}
+.rev-card{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:20px;}
+.rev-card-title{font-size:14px;font-weight:600;color:var(--tx);text-align:center;margin-bottom:18px;}
+.rev-avg-num{font-size:42px;font-weight:700;color:var(--tx);text-align:center;line-height:1;font-family:var(--font);}
+.rev-avg-num .rev-avg-unit{font-size:24px;color:var(--mu);font-weight:500;margin-left:2px;}
+.rev-stars{display:flex;justify-content:center;gap:4px;margin-top:10px;}
+.rev-stars svg{width:22px;height:22px;}
+.rev-avg-sub{font-size:12.5px;color:var(--mu);text-align:center;margin-top:10px;}
+.rev-bar-wrap{margin-top:16px;padding-top:14px;border-top:0.5px solid var(--brd);}
+.rev-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--brd);}
+.rev-bar-neg{background:var(--rd);}
+.rev-bar-pos{background:var(--gr);}
+.rev-bar-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;}
+.rev-bar-lab strong{font-weight:700;margin-right:4px;}
+.rev-bar-lab-neg{color:var(--rd);}
+.rev-bar-lab-pos{color:var(--gr);}
+.rev-bar-lab-sub{color:var(--mu);font-weight:400;}
+.rev-count-num{font-size:42px;font-weight:700;color:var(--tx);text-align:center;line-height:1;}
+.rev-count-sub{font-size:13px;color:var(--mu);text-align:center;margin-top:10px;}
+.rev-count-sub strong{color:var(--ac2);font-weight:700;}
+.rev-empty{margin:0;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
+.rev-empty-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
+.rev-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
+.rev-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+@media (max-width:900px){
+  .rev-grid{flex-direction:column;padding:16px;}
+  .rev-col-left,.rev-col-right{flex:1 1 auto;width:100%;}
+}
+
+/* Right column block #1 — chart card with tabs */
+.rev-r1{padding:14px;}
+.rev-r1-tabs{display:flex;justify-content:center;gap:4px;background:var(--sur2);border:0.5px solid var(--brd);border-radius:8px;padding:4px;margin:0 auto 14px;width:fit-content;}
+.rev-r1-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:7px 14px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
+.rev-r1-tab:hover{color:var(--tx);}
+.rev-r1-tab.active{background:var(--sur);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.rev-r1-body{min-height:360px;}
+.rev-r1-svg{width:100%;height:auto;display:block;overflow:visible;}
+.rev-r1-svg .rc-grid{stroke:var(--brd);stroke-width:0.5;}
+.rev-r1-svg .rc-axis{fill:var(--mu);font-size:11px;font-family:var(--font);}
+.rev-r1-svg .rc-ytitle{fill:var(--mu);font-size:11px;font-family:var(--font);}
+.rev-r1-svg .rc-ytitle-right{fill:var(--ac2);font-size:11px;font-family:var(--font);}
+.rev-r1-svg .rc-total{fill:var(--mu);font-size:11px;font-family:var(--font);text-anchor:middle;}
+.rev-r1-svg .rc-stk-pos{fill:var(--gr);}
+.rev-r1-svg .rc-stk-neu{fill:var(--am);}
+.rev-r1-svg .rc-stk-neg{fill:var(--rd);}
+.rev-r1-svg .rc-stk-resp{fill:#0f6e56;}
+.rev-r1-svg .rc-stk-unresp{fill:var(--mu);}
+.rev-r1-svg .rc-stk-notresp{fill:var(--teal);}
+.rev-r1-svg .rc-line{fill:none;stroke:var(--ac2);stroke-width:2;}
+.rev-r1-svg .rc-dot{fill:var(--ac2);}
+.rev-r1-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:8px;font-size:12px;color:var(--mu);}
+.rev-r1-leg{display:inline-flex;align-items:center;gap:6px;}
+.rev-r1-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;}
+.rev-r1-leg.line i{height:2px;border-radius:0;background:var(--ac2);}
+
+/* Right column block #2 — 5-cell stat strip */
+.rev-r2{display:flex;padding:18px 4px;margin-top:16px;}
+.rev-r2-cell{flex:1;min-width:0;padding:0 18px;border-left:0.5px solid var(--brd);}
+.rev-r2-cell:first-child{border-left:none;}
+.rev-r2-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--ac2);font-weight:500;}
+.rev-r2-info{width:13px;height:13px;color:var(--mu);flex:none;cursor:help;}
+.rev-r2-pct{color:var(--mu);font-size:12px;font-weight:400;}
+.rev-r2-val{font-size:28px;font-weight:700;color:var(--tx);line-height:1.1;margin-top:10px;}
+.rev-r2-tipwrap{position:relative;display:inline-flex;align-items:center;cursor:help;outline:none;}
+.rev-r2-tipwrap::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);background:var(--sur2);color:var(--tx);font-family:var(--font);font-size:11.5px;font-weight:400;line-height:1.3;padding:6px 9px;border-radius:6px;border:0.5px solid var(--brd2);box-shadow:0 6px 16px rgba(0,0,0,.4);white-space:nowrap;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .12s,visibility .12s;z-index:50;}
+.rev-r2-tipwrap::before{content:'';position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--brd2);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .12s,visibility .12s;z-index:50;}
+.rev-r2-head:hover .rev-r2-tipwrap::after,.rev-r2-head:hover .rev-r2-tipwrap::before,.rev-r2-tipwrap:focus::after,.rev-r2-tipwrap:focus::before{opacity:1;visibility:visible;}
+.rev-r2-cell:last-child .rev-r2-tipwrap::after{left:auto;right:0;transform:none;}
+.rev-r2-cell:last-child .rev-r2-tipwrap::before{left:auto;right:8px;transform:none;}
+
+/* Right column block #3 — review list (Step 1: header + 1 card) */
+.rev-r3{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
+.rev-r3-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 4px;flex-wrap:wrap;}
+.rev-r3-count{color:var(--mu);font-size:13px;}
+.rev-r3-count strong{color:var(--tx);font-weight:700;}
+.rev-r3-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.rev-r3-btn{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;height:36px;padding:0 12px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:default;display:flex;align-items:center;gap:6px;}
+.rev-r3-chev{color:var(--mu);font-size:10px;}
+.rev-r3-list{display:flex;flex-direction:column;gap:12px;}
+.rev-card-item{display:flex;gap:20px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:18px 20px;}
+.ri-left{flex:0 0 200px;display:flex;flex-direction:column;gap:10px;min-width:0;}
+.ri-src-logo{width:48px;height:48px;display:flex;align-items:center;justify-content:center;position:relative;}
+.ri-src-flag{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--rd);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--sur);box-shadow:0 2px 6px rgba(0,0,0,.4);}
+.ri-src-flag svg{width:10px;height:10px;}
+.ri-biz{font-size:14px;font-weight:600;color:var(--tx);line-height:1.3;}
+.ri-reviewer{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx);font-weight:500;}
+.ri-rev-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex:none;}
+.ri-date{font-size:12px;color:var(--mu);}
+.ri-status{display:inline-flex;align-items:center;gap:6px;background:rgba(34,200,138,.15);color:var(--gr);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;align-self:flex-start;}
+.ri-status svg{width:13px;height:13px;}
+.ri-status.is-flagged{background:rgba(232,85,85,.15);color:var(--rd);}
+.ri-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+.ri-rating-row{display:flex;align-items:center;gap:8px;}
+.ri-rating-row .rev-stars{margin-top:0;gap:2px;}
+.ri-rating-row .rev-stars svg{width:18px;height:18px;}
+.ri-rating-val{font-size:13px;color:var(--tx);font-weight:500;}
+.ri-kebab{margin-left:auto;background:none;border:none;color:var(--mu);width:32px;height:32px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;}
+.ri-kebab:hover{color:var(--tx);background:var(--sur2);}
+.ri-kebab-wrap{position:relative;margin-left:auto;}
+.ri-kebab-wrap .ri-kebab{margin-left:0;}
+.ri-kebab-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:160px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+.ri-kebab-menu.open{display:flex;flex-direction:column;}
+.ri-kebab-item{display:flex;align-items:center;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 14px;cursor:pointer;transition:background .12s,color .12s;}
+.ri-kebab-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.ri-text{font-size:13px;color:var(--tx);line-height:1.5;}
+.ri-attrs{display:flex;flex-wrap:wrap;gap:8px;}
+.ri-attr-chip{background:var(--sur2);color:var(--tx);font-size:12px;padding:5px 10px;border-radius:6px;border:0.5px solid var(--brd);}
+.ri-attr-add{background:none;border:0.5px solid var(--ac2);color:var(--ac2);font-family:var(--font);font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;}
+.ri-reply{margin-top:6px;border:0.5px solid var(--brd2);border-radius:8px;background:var(--sur2);overflow:hidden;}
+.ri-reply-top{display:flex;align-items:flex-start;padding:12px;gap:10px;font-size:13px;color:var(--mu);}
+.ri-reply-input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.45;padding:0;resize:vertical;min-height:36px;max-height:180px;}
+.ri-reply-input::placeholder{color:var(--mu);}
+.ri-reply-responded{padding:14px;font-size:12.5px;color:var(--mu);display:flex;align-items:center;gap:8px;}
+.ri-reply-responded strong{color:var(--gr);font-weight:600;}
+.ri-reply-responded-icon{color:var(--gr);width:16px;height:16px;flex:none;}
+.ri-reply-saved{padding:14px;}
+.ri-reply-saved-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;}
+.ri-reply-saved-label{padding:3px 8px;border-radius:4px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;}
+.ri-reply-saved-label.is-user{background:rgba(34,200,138,.18);color:var(--gr);}
+.ri-reply-saved-label.is-ai{background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));color:var(--ac2);border:0.5px solid rgba(79,124,255,.4);display:inline-flex;align-items:center;gap:5px;}
+.ri-reply-saved-sparkle{width:11px;height:11px;flex:none;}
+.ri-reply-saved-time{color:var(--mu);}
+.ri-reply-saved-edit{margin-left:auto;background:none;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.ri-reply-saved-edit:hover{background:rgba(79,124,255,.08);}
+.ri-reply-saved-text{font-size:13px;color:var(--tx);line-height:1.5;background:var(--sur);border-left:2px solid var(--ac2);padding:10px 12px;border-radius:0 6px 6px 0;}
+.ri-reply-thumbs{margin-left:auto;width:28px;height:28px;color:var(--mu);background:rgba(255,255,255,.04);border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;}
+.ri-reply-bottom{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:0.5px solid var(--brd);background:var(--sur);}
+.ri-reply-icon{width:32px;height:32px;border-radius:6px;color:var(--mu);background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ri-reply-icon:hover{color:var(--tx);background:var(--sur2);}
+.ri-reply-icon svg{width:16px;height:16px;}
+.ri-reply-sp{flex:1;}
+.ri-reply-analyze{font-size:12px;color:var(--mu);padding:0 8px;}
+.ri-reply-gen{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));border:0.5px solid rgba(79,124,255,.4);color:var(--tx);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.ri-reply-gen:hover{background:linear-gradient(135deg, rgba(79,124,255,.32), rgba(196,181,253,.32));border-color:var(--ac);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,124,255,.18);}
+.ri-reply-gen:active{transform:translateY(0);}
+.ri-reply-gen svg{display:block;flex-shrink:0;color:var(--ac2);}
+.ri-reply-respond{background:#0f6e56;color:#fff;border:none;font-family:var(--font);font-size:12.5px;font-weight:600;padding:8px 18px;border-radius:6px;cursor:pointer;}
+.ri-reply-respond[disabled]{opacity:.4;cursor:not-allowed;}
+.ri-reply-respond[disabled]:hover{background:#0f6e56;}
+@media (max-width:640px){
+  .rev-card-item{flex-direction:column;}
+  .ri-left{flex:1 1 auto;width:100%;}
+}
+
+/* Pager */
+.rev-r3-pager{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:8px 0 4px;}
+.rev-r3-pgbtn{min-width:36px;height:36px;padding:0 10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.rev-r3-pgbtn:hover:not([disabled]){border-color:var(--ac);color:var(--ac2);}
+.rev-r3-pgbtn[disabled]{opacity:.4;cursor:default;}
+.rev-r3-pgbtn.active{background:var(--ac);border-color:var(--ac);color:#fff;}
+.rev-r3-pgbtn.active:hover{color:#fff;}
+.rev-r3-pgell{color:var(--mu);padding:0 4px;user-select:none;}
+.rev-r3-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;background:var(--sur);border:0.5px dashed var(--brd2);border-radius:14px;}
+@media (max-width:640px){
+  .rev-r3-pager{gap:4px;}
+  .rev-r3-pgbtn{min-width:44px;height:44px;font-size:14px;}
+}
+@media (max-width:900px){
+  .rev-r2{flex-wrap:wrap;padding:14px 4px;}
+  .rev-r2-cell{flex:1 1 40%;padding:10px 14px;border-left:none;border-bottom:0.5px solid var(--brd);}
+}
+@media (max-width:640px){
+  .rev-r2-cell{flex:1 1 100%;}
+}
+
+/* ── Toolbar ── */
+.rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;flex-wrap:wrap;}
+.rep-sp{flex:1;}
+.rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+.rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.rep-tbtn svg{width:15px;height:15px;flex:none;}
+.rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
+.rep-chev{transition:transform .15s;}
+.rep-dd{position:relative;}
+.rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
+.rep-dd.open .rep-tbtn svg{color:var(--ac2);}
+.rep-dd.open .rep-chev{transform:rotate(180deg);}
+.rep-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+.rep-dd.open .rep-menu{display:block;}
+.rep-menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 13px;background:transparent;border:none;border-bottom:0.5px solid var(--brd);color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;cursor:pointer;transition:background .12s,color .12s;}
+.rep-menu-item:last-child{border-bottom:none;}
+.rep-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
+.rep-menu-item.checked{color:var(--ac2);}
+.rep-menu-item.checked .rep-mi-check{opacity:1;}
+.rep-srch{display:flex;align-items:center;gap:7px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;height:40px;width:260px;}
+.rep-srch:focus-within{border-color:var(--ac);}
+.rep-srch svg{width:14px;height:14px;color:var(--mu);flex:none;}
+.rep-srch input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;width:100%;}
+.rep-srch input::placeholder{color:var(--mu);}
+
+/* ── Mobile drawer ── */
+.rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+.rep-backdrop.show{display:block;}
+/* Mobile search toggle (hidden on desktop) */
+.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--bg);}
+
+/* Mobile search overlay (top-anchored, replaces header) */
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+/* In-menu search (used in Location dropdown — desktop popup + mobile sheet) */
+.rep-menu-srch{display:flex;align-items:center;gap:8px;margin:8px 10px;padding:7px 11px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;transition:border-color .12s;}
+.rep-menu-srch:focus-within{border-color:var(--ac);}
+.rep-menu-srch svg{width:13px;height:13px;color:var(--mu);flex:none;}
+.rep-menu-srch input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;padding:0;}
+.rep-menu-srch input::placeholder{color:var(--mu);}
+.rep-menu-empty{padding:14px 13px;color:var(--mu);font-size:13px;text-align:center;display:none;}
+.rep-menu-empty.show{display:block;}
+.rep-menu-wide{min-width:520px;}
+/* Two-pane filter panel (ported from CRM .fd-*) */
+.fd-wrap{display:flex;width:100%;min-height:380px;}
+.fd-left{width:200px;display:flex;flex-direction:column;border-right:0.5px solid var(--brd2);background:var(--sur);}
+.fd-list{flex:1;padding:6px;overflow-y:auto;min-height:0;}
+.fd-cat{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;color:var(--tx);font-size:12.5px;}
+.fd-cat:hover{background:var(--sur2);color:var(--ac2);}
+.fd-cat.active{background:rgba(79,124,255,.10);color:var(--ac2);}
+.fd-cat-label{flex:1;}
+.fd-cat-count{font-family:var(--mono);font-size:11px;color:var(--ac2);background:rgba(79,124,255,.12);padding:1px 6px;border-radius:4px;min-width:18px;text-align:center;}
+.fd-cat-chev{color:var(--mu);display:flex;align-items:center;font-size:13px;}
+.fd-cat:hover .fd-cat-chev,.fd-cat.active .fd-cat-chev{color:var(--ac2);}
+.fd-foot{padding:8px 12px;border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fd-clear{font-size:11.5px;color:var(--mu);cursor:pointer;transition:color .15s;}
+.fd-clear:hover{color:var(--rd);}
+.fd-foot-hint{font-size:10.5px;color:var(--mu);font-family:var(--mono);}
+.fd-right{flex:1;min-width:0;display:none;flex-direction:column;background:var(--sur2);}
+.fd-right.show{display:flex;}
+.fd-search{display:flex;align-items:center;gap:7px;padding:10px 12px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.fd-search svg{color:var(--mu);flex:none;}
+.fd-search input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;}
+.fd-search input::placeholder{color:var(--mu);}
+.fd-opts{flex:1;overflow-y:auto;padding:6px;min-height:0;}
+.fd-opt{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;transition:background .12s;}
+.fd-opt:hover{background:rgba(255,255,255,.04);}
+.fd-opt.chosen{background:rgba(79,124,255,.08);}
+.fd-opt-label{font-size:12.5px;color:var(--tx);flex:1;}
+.fd-opt.chosen .fd-opt-label{color:var(--ac2);}
+.fd-empty{padding:18px 14px;text-align:center;font-size:12px;color:var(--mu);}
+.fp-cb{width:14px;height:14px;border-radius:3px;border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--sur);}
+.fp-cb.on{background:var(--ac);border-color:var(--ac);}
+.fp-cb.on::after{content:'';width:7px;height:3.5px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg);margin-top:-2px;}
+.rep-menu-mback{display:none;width:36px;height:36px;border:none;background:var(--sur2);color:var(--mu);border-radius:8px;font-size:16px;cursor:pointer;align-items:center;justify-content:center;}
+.rep-menu-scroll{max-height:380px;overflow-y:auto;}
+.rep-menu-grp{padding:10px 13px 4px;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;border-top:0.5px solid var(--brd);}
+.rep-menu-grp:first-child{border-top:none;}
+.rep-menu-cb{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--tx);user-select:none;transition:background .12s;}
+.rep-menu-cb:hover{background:rgba(255,255,255,.04);}
+.rep-menu-cb input{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(--brd2);border-radius:3px;background:var(--sur2);display:grid;place-items:center;cursor:pointer;margin:0;flex:none;}
+.rep-menu-cb input:checked{background:var(--ac);border-color:var(--ac);}
+.rep-menu-cb input:checked::after{content:'';width:8px;height:4px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg);margin-top:-2px;}
+.rep-menu-foot{padding:10px 13px;border-top:0.5px solid var(--brd);display:flex;justify-content:flex-end;}
+.rep-menu-clear{background:none;border:none;color:var(--ac2);font-family:var(--font);font-size:13px;cursor:pointer;padding:6px 10px;}
+.rep-menu-clear:hover{color:var(--tx);}
+.rep-tbtn-badge{min-width:18px;padding:0 6px;background:var(--ac);color:#fff;border-radius:999px;font-size:11px;font-weight:600;line-height:18px;text-align:center;}
+.rep-tbtn-badge[hidden]{display:none;}
+
+/* Mobile-only sheet header for the Filter/Location dropdowns (hidden on desktop) */
+.rep-menu-mhead{display:none;}
+.rep-menu-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:140;}
+
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .rep-bar{display:none;}
+
+@media (max-width:900px){
+  .hamburger-btn{display:flex;}
+  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+  .rep-sb.open{transform:translateX(0);}
+  .rep-main{margin-left:0;}
+  .rep-bar{padding:10px 14px;}
+}
+@media (max-width:640px){
+  #rep-filter-btn > span,
+  #rep-loc-btn > span{display:none;}
+  #rep-filter-btn .rep-chev,
+  #rep-loc-btn .rep-chev{display:none;}
+  #rep-filter-btn,
+  #rep-loc-btn{padding:0;width:40px;justify-content:center;gap:0;}
+  .rep-bar #rep-srch-desktop{display:none;}
+  .rep-bar .mobile-search-toggle{display:flex;padding:0;width:40px;justify-content:center;gap:0;}
+  /* Filter/Location dropdowns become full-screen sheets */
+  .rep-menu{position:fixed;inset:0;width:100%;max-width:100%;min-width:0;border-radius:0;border:none;z-index:150;}
+  .rep-dd.open .rep-menu{display:flex;flex-direction:column;}
+  .rep-menu-mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-menu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-menu-mclose{width:36px;height:36px;border:none;background:var(--sur2);color:var(--mu);border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .rep-menu-item{padding:16px 20px;min-height:52px;font-size:15px;}
+  .rep-menu-srch{margin:12px 14px;padding:11px 12px;}
+  .rep-menu-srch input{font-size:15px;}
+  .rep-menu-scroll{flex:1;max-height:none;}
+  .rep-menu-cb{padding:14px 18px;font-size:15px;}
+  .rep-menu-cb input{width:20px;height:20px;}
+  .rep-menu-cb input:checked::after{width:10px;height:5px;border-width:2.5px;}
+  /* Filters two-pane: slide between left list and right opts */
+  #rep-cat-menu .fd-wrap{flex:1;min-height:0;position:relative;overflow:hidden;width:100%;}
+  #rep-cat-menu .fd-left,
+  #rep-cat-menu .fd-right{position:absolute;inset:0;width:100%;display:flex;flex-direction:column;border:none;background:var(--sur);transition:transform .2s ease-out;}
+  #rep-cat-menu .fd-left{transform:translateX(0);}
+  #rep-cat-menu .fd-right{transform:translateX(100%);display:flex;}
+  #rep-cat-menu .fd-wrap.fd-show-opts .fd-left{transform:translateX(-100%);}
+  #rep-cat-menu .fd-wrap.fd-show-opts .fd-right{transform:translateX(0);}
+  #rep-cat-menu .rep-menu-mhead.show-back .rep-menu-mback{display:flex;}
+  #rep-cat-menu .fd-cat{padding:14px 14px;font-size:15px;}
+  #rep-cat-menu .fd-opt{padding:13px 12px;font-size:15px;}
+  #rep-cat-menu .fp-cb{width:18px;height:18px;}
+  #rep-cat-menu .fp-cb.on::after{width:9px;height:4.5px;border-width:2.5px;}
+  #rep-cat-menu .fd-search{padding:14px 16px;}
+  #rep-cat-menu .fd-search input{font-size:16px;}
+  #rep-cat-menu .fd-foot-hint{display:none;}
+  /* ── Touch-target audit bumps (≥44×44) ── */
+  .rep-menu-mclose{width:44px;height:44px;}
+  .rep-menu-mback{width:44px;height:44px;}
+  .mso-back{width:44px;height:44px;}
+  .mso-clear{width:44px;height:44px;}
+  .nav-toast-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-tbtn{min-height:44px;}
+  #rep-filter-btn,#rep-loc-btn,.rep-bar .mobile-search-toggle{width:44px;}
+  .rep-item{min-height:44px;}
+  .notif-tab{min-height:44px;padding:11px 12px;}
+  .rep-menu-srch input{font-size:16px;}
+  .fd-clear{min-height:44px;display:flex;align-items:center;font-size:14px;}
+  .rep-menu-clear{min-height:44px;padding:0 14px;}
+  #rep-cat-menu.rep-menu-wide{min-width:0;}
+  body.rep-sheet-open{overflow:hidden;}
+  body.rep-sheet-open .rep-menu-backdrop{display:block;}
+  body.rep-sheet-open .rep-bar{z-index:auto;}
+}
+
+/* ── nav toast ── */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;transform:translateX(380px);opacity:0;pointer-events:none;transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+
+/* ── Notifications panel (matches the bell drop-down used app-wide) ── */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-tab.active .notif-tab-count{background:var(--ac);color:#fff;}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification panel (markup; shared/notifications.js wires it up) -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- REPUTATION SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item active" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item" data-rep="Listings" onclick="repNav('Listings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+      <span class="rep-lbl">Listings</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Requests" onclick="repNav('Requests')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <span class="rep-lbl">Requests</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Surveys" onclick="repNav('Surveys')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="rep-lbl">Surveys</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Insights" onclick="repNav('Insights')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+      <span class="rep-lbl">Insights</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="rep-item" data-rep="Reputation Score X" onclick="repNav('Reputation Score X')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4 4 0 1 0 5 0z"/></svg>
+      <span class="rep-lbl">Reputation Score X</span>
+    </div>
+    <div class="rep-item" data-rep="Reports" onclick="repNav('Reports')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
+      <span class="rep-lbl">Reports</span>
+    </div>
+    <div class="rep-item" data-rep="Resources" onclick="repNav('Resources')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="rep-lbl">Resources</span>
+      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="rep-bar">
+    <!-- Filter dropdown -->
+    <div class="rep-dd" id="rep-filter">
+      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="rep-menu" id="rep-filter-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Filter</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+    </div>
+    <!-- Location dropdown -->
+    <div class="rep-dd" id="rep-loc">
+      <button class="rep-tbtn" id="rep-loc-btn" onclick="repLocToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="rep-tbtn-val" id="rep-loc-label">All locations</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="rep-menu" id="rep-loc-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Location</span><button class="rep-menu-mclose" onclick="repLocClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="rep-menu-srch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="rep-loc-srch-input" placeholder="Search location..." oninput="repLocFilter(this.value)" />
+        </div>
+        <div class="rep-menu-item checked" onclick="repLocPick(this,'All locations')"><span>All locations</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 1')"><span>Location 1</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 2')"><span>Location 2</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 3')"><span>Location 3</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-empty" id="rep-loc-empty">No matching location.</div>
+      </div>
+    </div>
+    <!-- Filters (multi-section) -->
+    <div class="rep-dd" id="rep-cat">
+      <button class="rep-tbtn" id="rep-cat-btn" onclick="repCatToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="14" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/><circle cx="17" cy="6" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+        <span class="rep-tbtn-val">Filters</span>
+        <span class="rep-tbtn-badge" id="rep-cat-badge" hidden>0</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="rep-menu rep-menu-wide" id="rep-cat-menu">
+        <div class="rep-menu-mhead"><button class="rep-menu-mback" id="rep-fd-back" onclick="repFdBack()" aria-label="Back">&#x2190;</button><span class="rep-menu-mtitle" id="rep-cat-mtitle">Filters</span><button class="rep-menu-mclose" onclick="repCatClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="fd-wrap" id="rep-fd">
+          <div class="fd-left">
+            <div class="fd-list" id="rep-fd-list"></div>
+            <div class="fd-foot">
+              <span class="fd-clear" onclick="repCatClear()">Clear all</span>
+              <span class="fd-foot-hint">Esc to close</span>
+            </div>
+          </div>
+          <div class="fd-right" id="rep-fd-right">
+            <div class="fd-search">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="rep-fd-search" placeholder="Search Filter" oninput="repFdFilter(this.value)">
+            </div>
+            <div class="fd-opts" id="rep-fd-opts"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rep-sp"></div>
+    <!-- Mobile search toggle (magnifier) -->
+    <button class="rep-tbtn mobile-search-toggle" id="rep-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <!-- Search -->
+    <div class="rep-srch" id="rep-srch-desktop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="rep-reviews-search" placeholder="Search reviews..." oninput="repReviewsSearch(this.value)" />
+    </div>
+  </div>
+  <div class="rev-grid">
+    <div class="rev-col rev-col-left" id="rev-col-left"></div>
+    <div class="rev-col rev-col-right" id="rev-col-right">
+      <div class="rev-card rev-r1">
+        <div class="rev-r1-tabs">
+          <button class="rev-r1-tab active" data-tab="trend" onclick="revR1Set('trend')">Sentiment Trend</button>
+          <button class="rev-r1-tab" data-tab="source" onclick="revR1Set('source')">Sentiment by Source</button>
+          <button class="rev-r1-tab" data-tab="status" onclick="revR1Set('status')">Response Status</button>
+        </div>
+        <div class="rev-r1-body" id="rev-r1-body"></div>
+      </div>
+      <div class="rev-card rev-r2" id="rev-r2"></div>
+      <div class="rev-r3" id="rev-r3">
+        <div class="rev-r3-bar">
+          <div class="rev-r3-count" id="rev-r3-count">1 - 10 of <strong>454</strong> Reviews</div>
+          <div class="rev-r3-actions">
+            <button class="rev-r3-btn" type="button">Download Reviews <span class="rev-r3-chev">&#9662;</span></button>
+          </div>
+        </div>
+        <div class="rev-r3-list" id="rev-r3-list"></div>
+        <div class="rev-r3-pager" id="rev-r3-pager"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();repLocClose();repCatClose();"></div>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search reviews..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script src="../../shared/leads-comms.js"></script>
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+
+function repNav(label){
+  document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Reviews') return;
+  if(label === 'Dashboards'){ window.location.href = '../reputation_dashboard/Dashboard.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb = document.getElementById('rep-sb'), bd = document.getElementById('rep-backdrop');
+  var open = sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+
+function _repSyncSheet(){
+  var f = document.getElementById('rep-filter'), l = document.getElementById('rep-loc'), c = document.getElementById('rep-cat');
+  var anyOpen = (f && f.classList.contains('open')) || (l && l.classList.contains('open')) || (c && c.classList.contains('open'));
+  document.body.classList.toggle('rep-sheet-open', !!anyOpen);
+}
+/* Filter dropdown */
+function repFilterToggle(e){ if(e) e.stopPropagation(); repLocClose(); repCatClose(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
+function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
+function repFilterPick(el, label){
+  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
+  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
+  repFilterClose();
+}
+/* Location dropdown */
+function repLocToggle(e){
+  if(e) e.stopPropagation();
+  repFilterClose();
+  repCatClose();
+  var dd = document.getElementById('rep-loc');
+  var opening = !dd.classList.contains('open');
+  dd.classList.toggle('open');
+  if(opening){
+    var inp = document.getElementById('rep-loc-srch-input');
+    if(inp){ inp.value = ''; repLocFilter(''); if(window.innerWidth > 640) setTimeout(function(){ inp.focus(); }, 30); }
+  }
+  _repSyncSheet();
+}
+function repLocFilter(q){
+  var query = String(q||'').trim().toLowerCase();
+  var items = document.querySelectorAll('#rep-loc-menu .rep-menu-item');
+  var shown = 0;
+  items.forEach(function(it){
+    var t = (it.textContent||'').trim().toLowerCase();
+    var match = !query || t.indexOf(query) !== -1;
+    it.style.display = match ? '' : 'none';
+    if(match) shown++;
+  });
+  var empty = document.getElementById('rep-loc-empty');
+  if(empty) empty.classList.toggle('show', shown === 0);
+}
+function repLocClose(){ var f = document.getElementById('rep-loc'); if(f) f.classList.remove('open'); _repSyncSheet(); }
+function repLocPick(el, label){
+  document.querySelectorAll('#rep-loc-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
+  var lbl = document.getElementById('rep-loc-label'); if(lbl) lbl.textContent = label;
+  repLocClose();
+}
+/* Multi-section Filters dropdown */
+var REP_CAT_FACETS = [
+  { key:'cat',  title:'Categories', opts:['Staff - People','Staff Behavior - Professionalism','Purchase Experience - Sales Staff','Vehicle - Quality','Service - Speed','Pricing - Fair','Facility - Cleanliness','Financing - Options','Communication - Responsive'] },
+  { key:'resp', title:'Response Status', opts:['Unresponded','Responded','Not Respondable'] },
+  { key:'sent', title:'Sentiment', opts:['Positive','Negative','Neutral','None'] },
+  { key:'src',  title:'Source', opts:['Google','Facebook','CarGurus','Carfax','Cars.com','DealerRater'] },
+  { key:'created',  title:'Created',  opts:['Newest','Oldest'] },
+  { key:'activity', title:'Activity', opts:['Newest','Oldest'] }
+];
+var _repCatState = {};
+function repCatEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+var _repFdLocked = null;
+function _repIsMobile(){ return window.innerWidth <= 640; }
+function _repFdSetView(viewOpts){
+  var wrap = document.getElementById('rep-fd');
+  var head = document.querySelector('#rep-cat-menu .rep-menu-mhead');
+  var title = document.getElementById('rep-cat-mtitle');
+  if(!wrap || !head || !title) return;
+  wrap.classList.toggle('fd-show-opts', !!viewOpts);
+  head.classList.toggle('show-back', !!viewOpts && _repIsMobile());
+  if(viewOpts && _repFdLocked){
+    var f = REP_CAT_FACETS.find(function(x){ return x.key === _repFdLocked; });
+    title.textContent = f ? f.title : 'Filters';
+  } else {
+    title.textContent = 'Filters';
+  }
+}
+function repFdBack(){ _repFdSetView(false); }
+function repFdRenderLeft(){
+  var list = document.getElementById('rep-fd-list'); if(!list) return;
+  list.innerHTML = REP_CAT_FACETS.map(function(f){
+    var n = (_repCatState[f.key] || new Set()).size;
+    var active = _repFdLocked === f.key;
+    return '<div class="fd-cat'+(active?' active':'')+'" data-key="'+f.key+'">'
+      + '<span class="fd-cat-label">'+repCatEsc(f.title)+'</span>'
+      + (n ? '<span class="fd-cat-count">'+n+'</span>' : '')
+      + '<span class="fd-cat-chev">&#8250;</span>'
+      + '</div>';
+  }).join('');
+  list.querySelectorAll('.fd-cat').forEach(function(el){
+    el.addEventListener('click', function(){ repFdLock(el.getAttribute('data-key')); });
+  });
+}
+function repFdLock(key){
+  _repFdLocked = key;
+  var right = document.getElementById('rep-fd-right');
+  if(right) right.classList.add('show');
+  var srch = document.getElementById('rep-fd-search'); if(srch) srch.value = '';
+  repFdRenderLeft();
+  repFdRenderOpts('');
+  _repFdSetView(true);
+}
+function repFdRenderOpts(q){
+  var opts = document.getElementById('rep-fd-opts'); if(!opts || !_repFdLocked) return;
+  var facet = REP_CAT_FACETS.find(function(f){ return f.key === _repFdLocked; });
+  if(!facet){ opts.innerHTML = ''; return; }
+  var query = String(q||'').trim().toLowerCase();
+  var rows = facet.opts.filter(function(o){ return !query || o.toLowerCase().indexOf(query) !== -1; });
+  if(!rows.length){ opts.innerHTML = '<div class="fd-empty">No matches.</div>'; return; }
+  opts.innerHTML = rows.map(function(opt){
+    var checked = !!(_repCatState[facet.key] && _repCatState[facet.key].has(opt));
+    return '<div class="fd-opt'+(checked?' chosen':'')+'" data-opt="'+repCatEsc(opt)+'">'
+      + '<span class="fp-cb'+(checked?' on':'')+'"></span>'
+      + '<span class="fd-opt-label">'+repCatEsc(opt)+'</span>'
+      + '</div>';
+  }).join('');
+  opts.querySelectorAll('.fd-opt').forEach(function(row){
+    row.addEventListener('click', function(){
+      var opt = row.getAttribute('data-opt');
+      var isSort = (facet.key === 'created' || facet.key === 'activity');
+      if(isSort){
+        var prev = _repCatState[facet.key] && _repCatState[facet.key].has(opt);
+        _repCatState.created = new Set();
+        _repCatState.activity = new Set();
+        if(!prev) _repCatState[facet.key].add(opt);
+      } else {
+        var s = _repCatState[facet.key] = _repCatState[facet.key] || new Set();
+        if(s.has(opt)) s.delete(opt); else s.add(opt);
+      }
+      repCatSyncBadge();
+      if(typeof revR3InvalidateFilter === 'function') revR3InvalidateFilter();
+      repFdRenderLeft();
+      repFdRenderOpts(document.getElementById('rep-fd-search').value);
+    });
+  });
+}
+function repFdFilter(q){ if(_repFdLocked) repFdRenderOpts(q); }
+function repCatRender(){
+  var mobile = _repIsMobile();
+  if(mobile){
+    repFdRenderLeft();
+    _repFdSetView(false);
+    if(_repFdLocked) repFdRenderOpts('');
+  } else {
+    if(!_repFdLocked) _repFdLocked = REP_CAT_FACETS[0].key;
+    var right = document.getElementById('rep-fd-right');
+    if(right) right.classList.add('show');
+    repFdRenderLeft();
+    repFdRenderOpts('');
+  }
+}
+function repCatSyncBadge(){
+  var n = 0;
+  Object.keys(_repCatState).forEach(function(k){
+    if(k === 'created' || k === 'activity') return;
+    n += _repCatState[k].size;
+  });
+  var b = document.getElementById('rep-cat-badge'); if(!b) return;
+  if(n){ b.textContent = n; b.removeAttribute('hidden'); } else { b.setAttribute('hidden',''); }
+}
+function repCatToggle(e){
+  if(e) e.stopPropagation();
+  repFilterClose(); repLocClose();
+  var dd = document.getElementById('rep-cat');
+  var opening = !dd.classList.contains('open');
+  dd.classList.toggle('open');
+  if(opening) repCatRender();
+  _repSyncSheet();
+}
+function repCatClose(){
+  var d = document.getElementById('rep-cat'); if(d) d.classList.remove('open');
+  _repFdSetView(false);
+  _repSyncSheet();
+}
+function repCatClear(){ _repCatState = {}; repCatRender(); repCatSyncBadge(); _repFdSetView(false); if(typeof revR3InvalidateFilter === 'function') revR3InvalidateFilter(); }
+
+/* Reviews search (placeholder) */
+var _repSearchQuery = '';
+function repReviewsSearch(v){
+  _repSearchQuery = String(v||'');
+  // Sync the other input if present so desktop + overlay stay in lock-step
+  var d = document.getElementById('rep-reviews-search'), m = document.getElementById('mso-input');
+  if(d && document.activeElement !== d && d.value !== _repSearchQuery) d.value = _repSearchQuery;
+  if(m && document.activeElement !== m && m.value !== _repSearchQuery) m.value = _repSearchQuery;
+  msoUpdateDot();
+  /* shell phase — no list filtering yet */
+}
+
+/* Mobile search overlay */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('rep-search-toggle'); }
+function msoUpdateDot(){
+  var btn = _msoToggleBtn(); if(!btn) return;
+  if(_repSearchQuery && _repSearchQuery.length) btn.classList.add('has-query');
+  else btn.classList.remove('has-query');
+}
+function msoUpdateClear(){
+  var inp = _msoInput(), clr = _msoClearBtn(); if(!inp || !clr) return;
+  if(inp.value && inp.value.length) clr.classList.add('show'); else clr.classList.remove('show');
+}
+function msoOnInput(v){ repReviewsSearch(v); msoUpdateClear(); }
+function msoClearInput(){
+  var inp = _msoInput(); if(!inp) return;
+  inp.value = ''; repReviewsSearch(''); msoUpdateClear(); inp.focus();
+}
+function toggleMobileSearch(){
+  var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
+  inp.value = _repSearchQuery || ''; msoUpdateClear();
+  document.body.classList.add('mso-active');
+  ov.classList.add('open');
+  if(!history.state || !history.state.mso) history.pushState({mso:true}, '');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+var _msoClosingFromPop = false;
+function closeMobileSearch(){
+  var ov = _msoEl(); if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  document.body.classList.remove('mso-active');
+  var inp = _msoInput(); if(inp) inp.blur();
+  if(history.state && history.state.mso && !_msoClosingFromPop) history.back();
+  msoUpdateDot();
+}
+window.addEventListener('popstate', function(){
+  var ov = _msoEl();
+  if(ov && ov.classList.contains('open')){
+    _msoClosingFromPop = true; closeMobileSearch(); _msoClosingFromPop = false;
+  }
+});
+(function attachSwipeDismiss(){
+  var ov = _msoEl(); if(!ov) return;
+  var startY = null, startT = 0;
+  ov.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ startY = null; return; }
+    startY = e.touches[0].clientY; startT = Date.now();
+  }, {passive:true});
+  ov.addEventListener('touchend', function(e){
+    if(startY === null) return;
+    var endY = (e.changedTouches[0] || {}).clientY;
+    var dy = endY - startY, dt = Date.now() - startT;
+    if(dy > 70 && dt < 600) closeMobileSearch();
+    startY = null;
+  }, {passive:true});
+})();
+
+/* Reviews display area — left column cards */
+function revStarsHtml(rating){
+  var html = '';
+  for(var i=0;i<5;i++){
+    var fill = Math.max(0, Math.min(1, rating - i));
+    var id = 'rev-star-grad-'+i+'-'+Math.round(fill*100);
+    var off = (fill*100)+'%';
+    html += '<svg viewBox="0 0 24 24"><defs><linearGradient id="'+id+'" x1="0" x2="1" y1="0" y2="0">'
+         + '<stop offset="'+off+'" stop-color="var(--am)"/>'
+         + '<stop offset="'+off+'" stop-color="var(--brd2)"/>'
+         + '</linearGradient></defs>'
+         + '<polygon fill="url(#'+id+')" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>';
+  }
+  return html;
+}
+function _revStats(){ return (window.CCLeads && CCLeads.reviewStats) ? CCLeads.reviewStats() : null; }
+function _revBuildData(){
+  var s = _revStats();
+  if(!s) return { avg:4.7, pctNeg:7, pctPos:93, totalReviews:454, locations:1 };
+  var totalSent = s.sentiment.pos + s.sentiment.neu + s.sentiment.neg;
+  var pctNeg = totalSent ? Math.round((s.sentiment.neg / totalSent) * 100) : 0;
+  var pctPos = totalSent ? 100 - pctNeg : 0;
+  return { avg:s.avg, pctNeg:pctNeg, pctPos:pctPos, totalReviews:s.total, locations:1 };
+}
+var REV_DATA = _revBuildData();
+function revAvgCard(d){
+  return '<div class="rev-card">'
+    + '<div class="rev-card-title">Average Rating</div>'
+    + '<div class="rev-avg-num">'+d.avg.toFixed(1)+'<span class="rev-avg-unit">/5</span></div>'
+    + '<div class="rev-stars">'+revStarsHtml(d.avg)+'</div>'
+    + '<div class="rev-avg-sub">No previous data found</div>'
+    + '<div class="rev-bar-wrap">'
+      + '<div class="rev-bar"><div class="rev-bar-neg" style="width:'+d.pctNeg+'%;"></div><div class="rev-bar-pos" style="width:'+d.pctPos+'%;"></div></div>'
+      + '<div class="rev-bar-labels">'
+        + '<div class="rev-bar-lab"><strong class="rev-bar-lab-neg">'+d.pctNeg+'%</strong><span class="rev-bar-lab-sub">Negative</span></div>'
+        + '<div class="rev-bar-lab"><strong class="rev-bar-lab-pos">'+d.pctPos+'%</strong><span class="rev-bar-lab-sub">Positive</span></div>'
+      + '</div>'
+    + '</div>'
+    + '</div>';
+}
+function revCountCard(d){
+  return '<div class="rev-card">'
+    + '<div class="rev-card-title">Ratings and Reviews</div>'
+    + '<div class="rev-count-num">'+d.totalReviews+'</div>'
+    + '<div class="rev-count-sub">across <strong>'+d.locations+'</strong> locations</div>'
+    + '</div>';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var col = document.getElementById('rev-col-left');
+  if(col) col.innerHTML = revAvgCard(REV_DATA) + revCountCard(REV_DATA);
+  revR1Set('trend');
+  revR2Render();
+  revR3Render();
+});
+var FLAG_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 21V3h2v18H4zm3-3V4h11l-2 5 2 5H7z"/></svg>';
+function riKebabToggle(ev, id){
+  if(ev) ev.stopPropagation();
+  var m = document.getElementById('ri-kebab-menu-'+id); if(!m) return;
+  var wasOpen = m.classList.contains('open');
+  document.querySelectorAll('.ri-kebab-menu.open').forEach(function(el){ el.classList.remove('open'); });
+  if(!wasOpen) m.classList.add('open');
+}
+function riKebabClose(){
+  document.querySelectorAll('.ri-kebab-menu.open').forEach(function(el){ el.classList.remove('open'); });
+}
+function riKebabAct(id, action){
+  riKebabClose();
+  if(action === 'flag'){
+    var rf = revFindReview(id); if(!rf) return;
+    rf.flagged = !rf.flagged;
+    revPersistReviews();
+    revR3InvalidateFilter();
+    return;
+  }
+  if(action === 'publish'){
+    var rp = revFindReview(id); if(!rp) return;
+    rp.status = 'Published';
+    rp.flagged = false;
+    revPersistReviews();
+    revR3InvalidateFilter();
+    return;
+  }
+  var labels = { read:'Marked as read' };
+  if(typeof showNavToast === 'function') showNavToast(labels[action]||action, 'Action queued for review '+id+'.');
+}
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('.ri-kebab-wrap')) riKebabClose();
+});
+
+/* Right-column block #3 — review list (seed-driven) */
+var REV_R3_PAGE_SIZE = 10;
+var _revR3Page = 1;
+var _revR3Filtered = null;
+function _revR3List(){
+  if(_revR3Filtered) return _revR3Filtered;
+  if(!window.CCLeads || !CCLeads.REVIEWS){ _revR3Filtered = []; return _revR3Filtered; }
+  var sel = (typeof _repCatState !== 'undefined') ? _repCatState : {};
+  var srcSet  = (sel.src  && sel.src.size)  ? sel.src  : null;
+  var sentSet = (sel.sent && sel.sent.size) ? sel.sent : null;
+  var respSet = (sel.resp && sel.resp.size) ? sel.resp : null;
+  var catSet  = (sel.cat  && sel.cat.size)  ? sel.cat  : null;
+  var srcMap = {google:'Google', facebook:'Facebook', cargurus:'CarGurus', carfax:'Carfax', cars:'Cars.com', dealerrater:'DealerRater'};
+  function sentBucket(r){ return r.rating >= 4 ? 'Positive' : (r.rating === 3 ? 'Neutral' : 'Negative'); }
+  function respLabel(r){
+    if(r.responses && r.responses.length) return 'Responded';
+    if(r.status === 'Not Respondable') return 'Not Respondable';
+    return 'Unresponded';
+  }
+  _revR3Filtered = CCLeads.REVIEWS.filter(function(r){
+    if(srcSet  && !srcSet.has(srcMap[r.source])) return false;
+    if(sentSet && !sentSet.has(sentBucket(r))) return false;
+    if(respSet && !respSet.has(respLabel(r))) return false;
+    if(catSet){
+      var attrs = r.attributions || [], hit = false;
+      for(var i=0;i<attrs.length;i++){ if(catSet.has(attrs[i])){ hit = true; break; } }
+      if(!hit) return false;
+    }
+    return true;
+  });
+  var sortKey = _revR3SortKey();
+  _revR3Filtered.sort(function(a, b){
+    if(sortKey.indexOf('activity') === 0){
+      var aRs = a.responses && a.responses.length ? a.responses[a.responses.length-1].ts : a.ts;
+      var bRs = b.responses && b.responses.length ? b.responses[b.responses.length-1].ts : b.ts;
+      return sortKey.indexOf('newest') !== -1 ? bRs - aRs : aRs - bRs;
+    }
+    return sortKey.indexOf('newest') !== -1 ? b.ts - a.ts : a.ts - b.ts;
+  });
+  return _revR3Filtered;
+}
+function _revR3SortKey(){
+  var c = (typeof _repCatState !== 'undefined') ? _repCatState.created : null;
+  var a = (typeof _repCatState !== 'undefined') ? _repCatState.activity : null;
+  if(c && c.size) return 'created-' + (c.has('Oldest') ? 'oldest' : 'newest');
+  if(a && a.size) return 'activity-' + (a.has('Oldest') ? 'oldest' : 'newest');
+  return 'created-newest';
+}
+function revR3InvalidateFilter(){
+  _revR3Filtered = null;
+  _revR3Page = 1;
+  REV_R3 = _revBuildR3();
+  revR3Render();
+}
+function _revInitials(name){ return (name||'?').trim()[0].toUpperCase(); }
+function _revLeadFor(no){ return (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS.find(function(l){return l.no===no;}) : null; }
+function _revBuildR3(){
+  if(!window.CCLeads || !CCLeads.REVIEWS) return [];
+  var list = _revR3List();
+  var start = (_revR3Page - 1) * REV_R3_PAGE_SIZE;
+  return list.slice(start, start + REV_R3_PAGE_SIZE).map(function(r){
+    var lead = _revLeadFor(r.leadNo) || {};
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var responses = (r.responses || []).map(function(rp, i){
+      var d = new Date(rp.ts);
+      return { idx:i, text:rp.text||'', source:rp.source||'user',
+               when: months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear() };
+    });
+    return {
+      id:r.id, source:r.source, biz:r.biz, rating:r.rating, text:r.text,
+      attributions:r.attributions, date:r.date,
+      status: r.status || 'Published',
+      flagged: !!r.flagged,
+      responses: responses,
+      reviewer: lead.name || 'Unknown',
+      reviewerKey: _revInitials(lead.name),
+      reviewerColor: lead.ac || '#6e9dff'
+    };
+  });
+}
+var REV_R3 = _revBuildR3();
+function revR3SourceLogo(src){
+  if(src === 'google'){
+    return '<svg viewBox="0 0 48 48" width="48" height="48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>';
+  }
+  var labels = {facebook:{c:'#1877F2',t:'f'}, cars:{c:'#0095CB',t:'C'}, cargurus:{c:'#542B89',t:'CG'}, dealerrater:{c:'#F7941D',t:'DR'}, carfax:{c:'#0066B2',t:'CX'}};
+  var def = labels[src] || {c:'var(--sur2)', t:(src?src[0].toUpperCase():'?')};
+  return '<div style="width:48px;height:48px;border-radius:8px;background:'+def.c+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:'+(def.t.length>1?'18':'24')+'px;">'+def.t+'</div>';
+}
+function revR3Card(r){
+  var stars = '<div class="rev-stars">'+revStarsHtml(r.rating)+'</div>';
+  var globe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+  var thumbs = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
+  var docIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+  var emoIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
+  return '<div class="rev-card-item">'
+    + '<div class="ri-left">'
+      + '<div class="ri-src-logo">'+revR3SourceLogo(r.source)+(r.flagged?'<span class="ri-src-flag" aria-label="Flagged">'+FLAG_SVG+'</span>':'')+'</div>'
+      + '<div class="ri-biz">'+_revEsc(r.biz)+'</div>'
+      + '<div class="ri-reviewer"><span class="ri-rev-av" style="background:'+r.reviewerColor+';">'+_revEsc(r.reviewerKey)+'</span><span>'+_revEsc(r.reviewer)+'</span></div>'
+      + '<div class="ri-date">'+_revEsc(r.date)+'</div>'
+      + (r.flagged
+          ? '<div class="ri-status is-flagged">'+FLAG_SVG+'<span>Flagged</span></div>'
+          : '<div class="ri-status">'+globe+'<span>'+_revEsc(r.status)+'</span></div>')
+    + '</div>'
+    + '<div class="ri-right">'
+      + '<div class="ri-rating-row">'+stars+'<span class="ri-rating-val">'+r.rating+'/5</span><div class="ri-kebab-wrap"><button class="ri-kebab" type="button" aria-label="More" onclick="riKebabToggle(event,\''+r.id+'\')">&#x22EF;</button><div class="ri-kebab-menu" id="ri-kebab-menu-'+r.id+'"><button class="ri-kebab-item" type="button" onclick="riKebabAct(\''+r.id+'\',\'flag\')">'+(r.flagged?'Unflag':'Flag')+'</button><button class="ri-kebab-item" type="button" onclick="riKebabAct(\''+r.id+'\',\'publish\')">Published</button><button class="ri-kebab-item" type="button" onclick="riKebabAct(\''+r.id+'\',\'read\')">Mark as read</button></div></div></div>'
+      + '<div class="ri-text">'+_revEsc(r.text)+'</div>'
+      + '<div class="ri-attrs">'+r.attributions.map(function(a){return '<span class="ri-attr-chip">'+_revEsc(a)+'</span>';}).join('')+'</div>'
+      + '<button class="ri-attr-add" type="button">Attributions <span>+</span></button>'
+      + (function(){
+          var editingIdx = _revEditing.has(r.id) ? _revEditing.get(r.id) : -1;
+          var parts = [];
+          (r.responses || []).forEach(function(rp){
+            if(editingIdx === rp.idx) return;  // hide saved card while editing it
+            parts.push(
+              '<div class="ri-reply-saved">'
+              + '<div class="ri-reply-saved-head">'
+                + '<span class="ri-reply-saved-label '+(rp.source==='ai'?'is-ai':'is-user')+'">'+(rp.source==='ai'?'<svg class="ri-reply-saved-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>AI reply':'Your reply')+'</span>'
+                + '<span class="ri-reply-saved-time">Responded on '+_revEsc(rp.when)+'</span>'
+                + '<button class="ri-reply-saved-edit" type="button" onclick="revEditResponse(\''+r.id+'\','+rp.idx+')">Edit</button>'
+              + '</div>'
+              + '<div class="ri-reply-saved-text">'+_revEsc(rp.text)+'</div>'
+            + '</div>'
+            );
+          });
+          var editing = editingIdx >= 0;
+          var editingRp = editing ? r.responses[editingIdx] : null;
+          var prefillSrc = editing ? (editingRp.source || 'user') : 'user';
+          var prefillText = editing ? editingRp.text : '';
+          var placeholder = (r.responses && r.responses.length) ? 'Write another reply...or generate one with AI' : 'Write your reply...or generate an AI Suggested Response';
+          parts.push(
+            '<div class="ri-reply-top"><textarea class="ri-reply-input" id="ri-reply-input-'+r.id+'" data-source="'+prefillSrc+'" oninput="revMarkUserEdited(\''+r.id+'\')" placeholder="'+placeholder+'" rows="2">'+ _revEsc(prefillText) +'</textarea><span class="ri-reply-thumbs">'+thumbs+'</span></div>'
+            + '<div class="ri-reply-bottom">'
+              + '<button class="ri-reply-icon" type="button" aria-label="Insert template">'+docIc+'</button>'
+              + '<button class="ri-reply-icon" type="button" aria-label="Insert emoji">'+emoIc+'</button>'
+              + '<span class="ri-reply-sp"></span>'
+              + '<span class="ri-reply-analyze">Analyze</span>'
+              + '<button class="ri-reply-gen" type="button" onclick="revGenAi(\''+r.id+'\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>Generate AI Response</button>'
+              + '<button class="ri-reply-respond" type="button" onclick="revRespond(\''+r.id+'\')"'+ ((editing && prefillText.trim()) ? '' : ' disabled') +'>'+ (editing ? 'Update Response' : 'Respond') +'</button>'
+            + '</div>'
+          );
+          return '<div class="ri-reply">' + parts.join('') + '</div>';
+        })()
+    + '</div>'
+  + '</div>';
+}
+function _revPageNums(page, total){
+  if(total <= 7){
+    var arr = []; for(var i=1;i<=total;i++) arr.push(i); return arr;
+  }
+  var lo, hi;
+  if(page <= 3){ lo = 2; hi = 4; }
+  else if(page >= total - 2){ lo = total - 3; hi = total - 1; }
+  else { lo = page - 1; hi = page + 1; }
+  var out = [1];
+  if(lo > 2) out.push('...');
+  for(var i=lo;i<=hi;i++) out.push(i);
+  if(hi < total - 1) out.push('...');
+  out.push(total);
+  return out;
+}
+function revR3RenderPager(page, pageCount){
+  var p = document.getElementById('rev-r3-pager'); if(!p) return;
+  if(pageCount <= 1){ p.innerHTML = ''; return; }
+  var parts = ['<button class="rev-r3-pgbtn" type="button" onclick="revR3Goto('+(page-1)+')"'+(page===1?' disabled':'')+' aria-label="Previous">&laquo;</button>'];
+  _revPageNums(page, pageCount).forEach(function(item){
+    if(item === '...') parts.push('<span class="rev-r3-pgell">&hellip;</span>');
+    else parts.push('<button class="rev-r3-pgbtn'+(item===page?' active':'')+'" type="button" onclick="revR3Goto('+item+')">'+item+'</button>');
+  });
+  parts.push('<button class="rev-r3-pgbtn" type="button" onclick="revR3Goto('+(page+1)+')"'+(page===pageCount?' disabled':'')+' aria-label="Next">&raquo;</button>');
+  p.innerHTML = parts.join('');
+}
+function revR3Goto(n){
+  var total = _revR3List().length;
+  var pageCount = Math.max(1, Math.ceil(total / REV_R3_PAGE_SIZE));
+  var next = Math.max(1, Math.min(n, pageCount));
+  if(next === _revR3Page) return;
+  _revR3Page = next;
+  REV_R3 = _revBuildR3();
+  revR3Render();
+  var anchor = document.getElementById('rev-r3');
+  if(anchor) window.scrollTo({top: anchor.getBoundingClientRect().top + window.scrollY - 80, behavior:'smooth'});
+}
+var REV_AI_TEMPLATES = {
+  pos:[
+    'Thank you so much, {name}! We are thrilled to hear about your great experience and look forward to seeing you again soon.',
+    'We really appreciate the kind words, {name}. Our team works hard to make every visit a pleasant one — glad it showed!',
+    'Thanks for taking the time to share your experience, {name}. Reviews like yours mean the world to us.'
+  ],
+  neu:[
+    'Thanks for your feedback, {name}. We are always looking for ways to improve and would love to hear more — feel free to reach out directly.',
+    'We appreciate you sharing your thoughts, {name}. If there is anything we can do better next time, please let us know.'
+  ],
+  neg:[
+    'We are sorry to hear about your experience, {name}. This is not the standard we aim for — please reach out so we can make it right.',
+    'Thank you for the honest feedback, {name}. Your concerns are important to us; a member of our team will be in touch shortly.'
+  ]
+};
+function revAiResponseFor(r, lead){
+  var name = ((lead && lead.name) || 'there').split(' ')[0];
+  var tone = r.rating >= 4 ? 'pos' : (r.rating === 3 ? 'neu' : 'neg');
+  var pool = REV_AI_TEMPLATES[tone];
+  var idx = Math.abs((r.id.charCodeAt(3)||0) + r.rating) % pool.length;
+  return pool[idx].replace(/\{name\}/g, name);
+}
+function revFindReview(id){ return CCLeads.REVIEWS.find(function(x){return x.id===id;}); }
+function revPersistReviews(){
+  try{ localStorage.setItem('cc_reviews', JSON.stringify({key:CCLeads.reviewSeedKey, list:CCLeads.REVIEWS})); }catch(e){}
+}
+var _revEditing = new Map();   // reviewId -> reply index being edited
+function revGenAi(id){
+  var r = revFindReview(id); if(!r) return;
+  var lead = _revLeadFor(r.leadNo);
+  var inp = document.getElementById('ri-reply-input-'+id);
+  if(inp){ inp.value = revAiResponseFor(r, lead); inp.dataset.source = 'ai'; inp.focus(); revUpdateRespondBtn(id); }
+}
+function revMarkUserEdited(id){
+  var inp = document.getElementById('ri-reply-input-'+id);
+  if(inp) inp.dataset.source = 'user';
+  revUpdateRespondBtn(id);
+}
+function revUpdateRespondBtn(id){
+  var inp = document.getElementById('ri-reply-input-'+id); if(!inp) return;
+  var wrap = inp.closest('.ri-reply'); if(!wrap) return;
+  var btn = wrap.querySelector('.ri-reply-respond'); if(!btn) return;
+  if(inp.value.trim().length) btn.removeAttribute('disabled');
+  else btn.setAttribute('disabled', '');
+}
+function revEditResponse(id, idx){
+  _revEditing.set(id, idx);
+  revR3InvalidateFilter();
+  var inp = document.getElementById('ri-reply-input-'+id);
+  if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+}
+function revRespond(id){
+  var r = revFindReview(id); if(!r) return;
+  var inp = document.getElementById('ri-reply-input-'+id);
+  var text = (inp && inp.value.trim()) || '';
+  if(!text) return;
+  var source = (inp && inp.dataset.source) || 'user';
+  if(!r.responses) r.responses = [];
+  if(_revEditing.has(id)){
+    var idx = _revEditing.get(id);
+    if(r.responses[idx]){
+      r.responses[idx].text = text;
+      r.responses[idx].source = source;
+      r.responses[idx].ts = Date.now();
+    }
+    _revEditing.delete(id);
+  } else {
+    r.responses.push({ text:text, ts:Date.now(), author:'Team', source:source });
+  }
+  revPersistReviews();
+  if(window.CCLeads && CCLeads.clearReviewStatsCache) CCLeads.clearReviewStatsCache();
+  revR3InvalidateFilter();
+  REV_R2 = _revBuildR2(); revR2Render();
+  REV_DATA = _revBuildData();
+}
+function revR3Render(){
+  var listEl = document.getElementById('rev-r3-list'); if(!listEl) return;
+  var total = _revR3List().length;
+  var pageCount = Math.max(1, Math.ceil(total / REV_R3_PAGE_SIZE));
+  var cnt = document.getElementById('rev-r3-count');
+  if(total === 0){
+    listEl.innerHTML = '<div class="rev-r3-empty">No reviews match the selected filters.</div>';
+    if(cnt) cnt.innerHTML = '0 of <strong>0</strong> Reviews';
+    revR3RenderPager(1, 1);
+    return;
+  }
+  listEl.innerHTML = REV_R3.map(revR3Card).join('');
+  var from = REV_R3.length ? (_revR3Page - 1) * REV_R3_PAGE_SIZE + 1 : 0;
+  var to = from + REV_R3.length - 1;
+  if(cnt) cnt.innerHTML = from+' - '+to+' of <strong>'+total+'</strong> Reviews';
+  revR3RenderPager(_revR3Page, pageCount);
+}
+function _revBuildR2(){
+  var s = _revStats(); if(!s) return [];
+  var pct = function(n){ return s.total ? Math.round((n / s.total) * 100) + '%' : '0%'; };
+  return [
+    { key:'all',     title:'All Reviews',      value:s.total,                                tip:'Total number of reviews' },
+    { key:'resp',    title:'Responded',        value:s.responded,       pct:pct(s.responded),       tip:'Reviews you have responded to' },
+    { key:'unresp',  title:'Unresponded',      value:s.unresponded,     pct:pct(s.unresponded),     tip:'Reviews still awaiting a response' },
+    { key:'notresp', title:'Not Respondable',  value:s.notRespondable,  pct:pct(s.notRespondable),  tip:'Reviews that cannot be responded to' },
+    { key:'pending', title:'Pending Approval', value:s.pendingApproval,                              tip:'Responses pending approval before posting' }
+  ];
+}
+var REV_R2 = _revBuildR2();
+var REV_R2_INFO_SVG = '<svg class="rev-r2-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+function _revEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function revR2Render(){
+  var el = document.getElementById('rev-r2'); if(!el) return;
+  el.innerHTML = REV_R2.map(function(c){
+    var info = '<span class="rev-r2-tipwrap" tabindex="0" data-tip="'+_revEsc(c.tip||'')+'">'+REV_R2_INFO_SVG+'</span>';
+    return '<div class="rev-r2-cell">'
+      + '<div class="rev-r2-head"><span class="rev-r2-title">'+c.title+'</span>'+info+(c.pct?'<span class="rev-r2-pct">('+c.pct+')</span>':'')+'</div>'
+      + '<div class="rev-r2-val">'+c.value+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+/* Right-column chart card */
+function _revBuildR1(){
+  var s = _revStats();
+  if(!s){
+    return {
+      trend:{buckets:['2025','2026'], pos:[15,400], neu:[1,5], neg:[1,32], rating:[3.0,4.7]},
+      source:{buckets:['Google','DealerRater','Cars.com','CarGurus','Facebook'], pos:[332,32,29,22,4], neu:[7,2,1,1,0], neg:[22,0,1,1,0]},
+      status:{buckets:['2025','2026'], responded:[0,370], unresponded:[12,65], notResp:[5,2]}
+    };
+  }
+  // Sentiment Trend by year
+  var years = Object.keys(s.trendByYear).sort();
+  var trend = {buckets:years, pos:[], neu:[], neg:[], rating:[]};
+  years.forEach(function(y){
+    var t = s.trendByYear[y];
+    trend.pos.push(t.pos); trend.neu.push(t.neu); trend.neg.push(t.neg); trend.rating.push(t.avg);
+  });
+  // Source — split sentiments per source from CCLeads.REVIEWS
+  var srcKeys = ['google','dealerrater','cars','cargurus','facebook'];
+  var srcLabels = {google:'Google', dealerrater:'DealerRater', cars:'Cars.com', cargurus:'CarGurus', facebook:'Facebook'};
+  var bySrc = {}; srcKeys.forEach(function(k){ bySrc[k] = {pos:0, neu:0, neg:0}; });
+  CCLeads.REVIEWS.forEach(function(r){
+    if(!bySrc[r.source]) return;
+    var b = (r.rating >= 4) ? 'pos' : (r.rating === 3 ? 'neu' : 'neg');
+    bySrc[r.source][b]++;
+  });
+  var source = {buckets:srcKeys.map(function(k){return srcLabels[k];}), pos:[], neu:[], neg:[]};
+  srcKeys.forEach(function(k){ source.pos.push(bySrc[k].pos); source.neu.push(bySrc[k].neu); source.neg.push(bySrc[k].neg); });
+  // Status by year
+  var status = {buckets:years, responded:[], unresponded:[], notResp:[]};
+  years.forEach(function(y){ status.responded.push(0); status.unresponded.push(0); status.notResp.push(0); });
+  CCLeads.REVIEWS.forEach(function(r){
+    var year = String(new Date(r.ts).getFullYear());
+    var i = years.indexOf(year); if(i < 0) return;
+    if(r.responses && r.responses.length) status.responded[i]++;
+    else if(r.status === 'Not Respondable') status.notResp[i]++;
+    else status.unresponded[i]++;
+  });
+  return {trend:trend, source:source, status:status};
+}
+var REV_R1 = _revBuildR1();
+function _revNiceMax(v){
+  if(v <= 5) return 5;
+  if(v <= 50) return Math.ceil(v/10)*10;
+  if(v <= 500) return Math.ceil(v/100)*100;
+  return Math.ceil(v/200)*200;
+}
+function revChartStacked(o){
+  // o: {buckets, stacks:[{cls,vals}], totals?, leftTitle, rightAxis?:{vals,max,title}}
+  var W = 860, H = 320, mL = 56, mR = (o.rightAxis ? 56 : 16), mT = 26, mB = 46;
+  var plotW = W - mL - mR, plotH = H - mT - mB;
+  var n = o.buckets.length;
+  var slot = plotW / n;
+  var barW = Math.min(180, slot * 0.55);
+  var maxY = _revNiceMax(o.totals ? Math.max.apply(null, o.totals) : 0);
+  if(o.maxY) maxY = o.maxY;
+  var ticks = 4; // 0, maxY/4 ..
+  var s = '<svg class="rev-r1-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">';
+  // gridlines + left Y labels
+  for(var t=0; t<=ticks; t++){
+    var y = mT + plotH - (t/ticks)*plotH;
+    var v = Math.round((t/ticks)*maxY);
+    s += '<line class="rc-grid" x1="'+mL+'" y1="'+y+'" x2="'+(W-mR)+'" y2="'+y+'"/>';
+    s += '<text class="rc-axis" x="'+(mL-8)+'" y="'+(y+3)+'" text-anchor="end">'+v+'</text>';
+  }
+  // Left Y title
+  s += '<text class="rc-ytitle" transform="translate(14 '+(mT+plotH/2)+') rotate(-90)" text-anchor="middle">'+ (o.leftTitle||'Review Volume') +'</text>';
+  // Right Y axis (line chart only)
+  if(o.rightAxis){
+    for(var t2=0; t2<=5; t2++){
+      var y2 = mT + plotH - (t2/5)*plotH;
+      s += '<text class="rc-axis" x="'+(W-mR+8)+'" y="'+(y2+3)+'" text-anchor="start">'+t2+'</text>';
+    }
+    s += '<text class="rc-ytitle-right" transform="translate('+(W-12)+' '+(mT+plotH/2)+') rotate(-90)" text-anchor="middle">'+o.rightAxis.title+'</text>';
+  }
+  // Bars + totals + x labels
+  var y0 = mT + plotH;
+  for(var i=0; i<n; i++){
+    var bx = mL + i*slot + (slot - barW)/2;
+    var stackSum = 0;
+    o.stacks.forEach(function(stk){ stackSum += stk.vals[i] || 0; });
+    var yTop = y0;
+    o.stacks.forEach(function(stk){
+      var v = stk.vals[i] || 0; if(v <= 0) return;
+      var h = (v/maxY) * plotH;
+      yTop -= h;
+      s += '<rect class="'+stk.cls+'" x="'+bx+'" y="'+yTop+'" width="'+barW+'" height="'+h+'"/>';
+    });
+    if(stackSum > 0){
+      s += '<text class="rc-total" x="'+(bx+barW/2)+'" y="'+(yTop-6)+'">'+stackSum+'</text>';
+    }
+    s += '<text class="rc-axis" x="'+(bx+barW/2)+'" y="'+(y0+18)+'" text-anchor="middle">'+o.buckets[i]+'</text>';
+  }
+  // Right-axis line + dots
+  if(o.rightAxis){
+    var pts = o.rightAxis.vals.map(function(v,i){
+      var cx = mL + i*slot + slot/2;
+      var cy = mT + plotH - (v/5)*plotH;
+      return {cx:cx, cy:cy};
+    });
+    var path = pts.map(function(p){return p.cx+','+p.cy;}).join(' ');
+    s += '<polyline class="rc-line" points="'+path+'"/>';
+    pts.forEach(function(p){ s += '<circle class="rc-dot" cx="'+p.cx+'" cy="'+p.cy+'" r="4"/>'; });
+  }
+  s += '</svg>';
+  return s;
+}
+function revR1Trend(){
+  var d = REV_R1.trend;
+  var totals = d.buckets.map(function(_,i){ return d.pos[i]+d.neu[i]+d.neg[i]; });
+  var svg = revChartStacked({
+    buckets:d.buckets,
+    stacks:[
+      {cls:'rc-stk-neg', vals:d.neg},
+      {cls:'rc-stk-neu', vals:d.neu},
+      {cls:'rc-stk-pos', vals:d.pos}
+    ],
+    totals:totals, leftTitle:'Review Volume',
+    rightAxis:{vals:d.rating, max:5, title:'Average Rating'}
+  });
+  var leg = '<div class="rev-r1-legend">'
+    + '<span class="rev-r1-leg"><i style="background:var(--gr)"></i>Positive</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--am)"></i>Neutral</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--rd)"></i>Negative</span>'
+    + '<span class="rev-r1-leg line"><i></i>Average Rating</span>'
+    + '</div>';
+  return svg + leg;
+}
+function revR1Source(){
+  var d = REV_R1.source;
+  var totals = d.buckets.map(function(_,i){ return d.pos[i]+d.neu[i]+d.neg[i]; });
+  var svg = revChartStacked({
+    buckets:d.buckets,
+    stacks:[
+      {cls:'rc-stk-neg', vals:d.neg},
+      {cls:'rc-stk-neu', vals:d.neu},
+      {cls:'rc-stk-pos', vals:d.pos}
+    ],
+    totals:totals, leftTitle:'Review Volume'
+  });
+  var leg = '<div class="rev-r1-legend">'
+    + '<span class="rev-r1-leg"><i style="background:var(--gr)"></i>Positive</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--am)"></i>Neutral</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--rd)"></i>Negative</span>'
+    + '</div>';
+  return svg + leg;
+}
+function revR1Status(){
+  var d = REV_R1.status;
+  var totals = d.buckets.map(function(_,i){ return d.responded[i]+d.unresponded[i]+d.notResp[i]; });
+  var svg = revChartStacked({
+    buckets:d.buckets,
+    stacks:[
+      {cls:'rc-stk-notresp', vals:d.notResp},
+      {cls:'rc-stk-unresp', vals:d.unresponded},
+      {cls:'rc-stk-resp', vals:d.responded}
+    ],
+    totals:totals, leftTitle:'Review Volume'
+  });
+  var leg = '<div class="rev-r1-legend">'
+    + '<span class="rev-r1-leg"><i style="background:#0f6e56"></i>Responded</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--mu)"></i>Unresponded</span>'
+    + '<span class="rev-r1-leg"><i style="background:var(--teal)"></i>Not Respondable</span>'
+    + '</div>';
+  return svg + leg;
+}
+function revR1Set(tab){
+  document.querySelectorAll('.rev-r1-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab') === tab); });
+  var body = document.getElementById('rev-r1-body'); if(!body) return;
+  if(tab === 'source') body.innerHTML = revR1Source();
+  else if(tab === 'status') body.innerHTML = revR1Status();
+  else body.innerHTML = revR1Trend();
+}
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('#rep-filter')) repFilterClose();
+  if(!e.target.closest('#rep-loc')) repLocClose();
+  if(!e.target.closest('#rep-cat')) repCatClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
+  repFilterClose(); repLocClose(); repCatClose();
+  if(typeof riKebabClose === 'function') riKebabClose();
+});
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'reputation'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome (toggleNotifications/openNotifications/closeNotifications/positionNotifications/setNotifTab/markAllNotificationsRead — shared/notifications.js overrides the renderers) -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>
+
+</body>
+</html>

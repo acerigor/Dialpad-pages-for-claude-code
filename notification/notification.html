@@ -176,6 +176,65 @@ button.nlog-period-mobile{display:none;align-items:center;gap:7px;}
 .nlog-pill.completed{background:rgba(34,200,138,.16);color:#22c88a;}
 .nlog-empty{padding:80px 24px;text-align:center;color:var(--mu);}
 .nlog-empty-ic{font-size:36px;margin-bottom:10px;opacity:.5;}
+
+/* Leads-style FILTER DROPDOWN + chips (ported verbatim from coreconnect_leads_v83) */
+.filter-chips{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:visible;min-width:0;flex-shrink:1;}
+.filter-chips:empty{display:none;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:0 9px;height:32px;border-radius:8px;font-size:12.5px;font-weight:500;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--ac2);cursor:default;white-space:nowrap;flex-shrink:0;position:relative;}
+.chip-label{color:var(--mu);font-weight:400;margin-right:1px;}
+.chip:hover{border-color:var(--ac);}
+.chip-x-corner{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--rd);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:1.5px solid var(--bg);font-size:10px;}
+.chip:hover .chip-x-corner{display:flex;}
+
+.fd-wrap{position:fixed;top:0;left:0;z-index:9400;display:none;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;max-height:calc(100vh - 32px);}
+.fd-wrap.open{display:flex;}
+.fd-mobile-header{display:none;align-items:center;gap:6px;padding:10px 12px;border-bottom:0.5px solid var(--brd2);background:var(--sur);flex-shrink:0;}
+.fd-mobile-back{width:40px;height:40px;border-radius:8px;background:transparent;border:none;color:var(--tx);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;display:none;}
+.fd-mobile-back:hover{background:rgba(255,255,255,.05);}
+.fd-mobile-header.show-back .fd-mobile-back{display:flex;}
+.fd-mobile-title{flex:1;font-size:15px;font-weight:600;color:var(--tx);text-align:center;padding:0 6px;}
+.fd-mobile-close{width:40px;height:40px;border-radius:8px;background:transparent;border:none;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fd-mobile-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.fd-left{width:200px;display:flex;flex-direction:column;border-right:0.5px solid var(--brd2);background:var(--sur);}
+.fd-list{flex:1;padding:6px;overflow-y:auto;min-height:0;}
+.fd-cat{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;color:var(--tx);font-size:12.5px;}
+.fd-cat:hover{background:var(--sur2);color:var(--ac2);}
+.fd-cat.active{background:rgba(79,124,255,.10);color:var(--ac2);}
+.fd-cat-label{flex:1;}
+.fd-cat-count{font-family:var(--mono);font-size:11px;color:var(--ac2);background:rgba(79,124,255,.12);padding:1px 6px;border-radius:4px;min-width:18px;text-align:center;}
+.fd-cat-chev{color:var(--mu);display:flex;align-items:center;font-size:13px;}
+.fd-cat:hover .fd-cat-chev,.fd-cat.active .fd-cat-chev{color:var(--ac2);}
+.fd-foot{padding:8px 12px;border-top:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fd-clear{font-size:11.5px;color:var(--mu);cursor:pointer;}
+.fd-clear:hover{color:var(--rd);}
+.fd-foot-hint{font-size:10.5px;color:var(--mu);font-family:var(--mono);}
+.fd-right{width:280px;display:none;flex-direction:column;background:var(--sur2);}
+.fd-right.show{display:flex;}
+.fd-search{display:flex;align-items:center;gap:7px;padding:10px 12px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.fd-search input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;}
+.fd-search input::placeholder{color:var(--mu);}
+.fd-opts{flex:1;overflow-y:auto;padding:6px;min-height:0;}
+.fd-opt{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;}
+.fd-opt:hover{background:rgba(255,255,255,.04);}
+.fd-opt.chosen{background:rgba(79,124,255,.08);}
+.fd-opt-label{font-size:12.5px;color:var(--tx);flex:1;}
+.fd-opt.chosen .fd-opt-label{color:var(--ac2);}
+.fd-empty{padding:18px 14px;text-align:center;font-size:12px;color:var(--mu);}
+.fp-cb{width:13px;height:13px;border-radius:3px;border:0.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fp-cb.on{background:var(--ac);border-color:var(--ac);}
+.fp-cb.on::after{content:'';width:5px;height:3.5px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+.fp-radio{width:13px;height:13px;border-radius:50%;border:0.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fp-radio.on{border-color:var(--ac);}
+.fp-radio.on::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac);}
+
+@media(max-width:640px){
+  .fd-wrap.open{width:calc(100vw - 16px);height:auto;max-height:calc(100vh - 80px);}
+  .fd-mobile-header{display:flex;}
+  .fd-left{width:100%;}
+  .fd-right{position:absolute;top:60px;left:100%;width:100%;height:calc(100% - 60px);transition:left .2s;}
+  .fd-wrap.fd-show-opts .fd-left{display:none;}
+  .fd-wrap.fd-show-opts .fd-right{display:flex;left:0;}
+}
 </style>
 </head>
 <body>
@@ -285,34 +344,34 @@ button.nlog-period-mobile{display:none;align-items:center;gap:7px;}
           <button class="nlog-cal-clear" onclick="logCalClear()">Clear selection</button>
         </div>
       </div>
-      <button class="nlog-tb-btn" id="nlog-filter-btn" onclick="toggleLogFilter(event)">
+      <button class="nlog-tb-btn" id="nlog-filter-btn" onclick="toggleFilterDropdown(event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
         Filter
         <span class="nlog-tb-badge" id="nlog-filter-badge" style="display:none;">0</span>
       </button>
-      <div class="nlog-fil-pop" id="nlog-fil-pop">
-        <div class="nlog-fil-sec">
-          <div class="nlog-fil-lbl">Status</div>
-          <div class="nlog-fil-chips" id="nlog-fil-statuses"></div>
+      <div class="filter-chips" id="chips-row"></div>
+      <div class="fd-wrap" id="filter-dropdown" onclick="event.stopPropagation()">
+        <div class="fd-mobile-header">
+          <button class="fd-mobile-back" id="fd-mobile-back" onclick="fdMobileBackToCategories()" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+          <span class="fd-mobile-title" id="fd-mobile-title">Filters</span>
+          <button class="fd-mobile-close" onclick="closeFilterDropdown()" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
-        <div class="nlog-fil-sec">
-          <div class="nlog-fil-lbl">Lead</div>
-          <div class="nlog-fil-lead-wrap">
-            <input type="text" class="nlog-fil-lead-input" id="nlog-fil-lead-input" placeholder="Search a lead..." oninput="logFilLeadSearch(this.value)" onfocus="logFilLeadSearch(this.value)" />
-            <div class="nlog-fil-lead-list" id="nlog-fil-lead-list"></div>
-          </div>
-          <div id="nlog-fil-lead-chip-wrap"></div>
-        </div>
-        <div class="nlog-fil-sec">
-          <div class="nlog-fil-lbl">Direction</div>
-          <div class="nlog-fil-chips">
-            <button class="nlog-fil-chip" data-dir="inbound" onclick="logFilToggleDir('inbound')">Inbound</button>
-            <button class="nlog-fil-chip" data-dir="outbound" onclick="logFilToggleDir('outbound')">Outbound</button>
+        <div class="fd-left">
+          <div class="fd-list" id="fd-list"></div>
+          <div class="fd-foot">
+            <span class="fd-clear" onclick="clearDropdownFilters()">Clear all</span>
+            <span class="fd-foot-hint">Esc to close</span>
           </div>
         </div>
-        <div class="nlog-fil-foot">
-          <button class="nlog-fil-clr" onclick="logFilClear()">Clear all</button>
-          <button class="nlog-fil-done" onclick="logFilClose()">Done</button>
+        <div class="fd-right" id="fd-right">
+          <div class="fd-search">
+            <input type="text" id="fd-search-input" placeholder="Search Filter" oninput="filterRightPane(this.value)" />
+          </div>
+          <div class="fd-opts" id="fd-opts"></div>
         </div>
       </div>
       <div class="nlog-search">
@@ -694,70 +753,167 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var p=document.getElementById('nlog-cal-pop'); if(p) p.classList.remove('open'); }});
 
-/* Filter popover */
-var STATUS_OPTIONS = ['Sent','Replied','Missed','Returned','Inbound','Created','Canceled','Completed'];
-function toggleLogFilter(e){
-  if(e) e.stopPropagation();
-  var pop = document.getElementById('nlog-fil-pop');
-  if(pop.classList.contains('open')){ pop.classList.remove('open'); return; }
-  positionLogFilter();
-  renderLogFilterUI();
-  pop.classList.add('open');
-}
-function positionLogFilter(){
-  var btn = document.getElementById('nlog-filter-btn');
-  var pop = document.getElementById('nlog-fil-pop');
-  var r = btn.getBoundingClientRect();
-  pop.style.top = (r.bottom + 6) + 'px';
-  pop.style.left = Math.max(8, r.right - 300) + 'px';
-}
-function renderLogFilterUI(){
-  var sBox = document.getElementById('nlog-fil-statuses');
-  sBox.innerHTML = STATUS_OPTIONS.map(function(s){
-    return '<button class="nlog-fil-chip'+(_filterStatuses.has(s)?' on':'')+'" onclick="logFilToggleStatus(\''+s+'\')">'+s+'</button>';
-  }).join('');
-  document.querySelectorAll('.nlog-fil-chip[data-dir]').forEach(function(b){ b.classList.toggle('on', _filterDirections.has(b.getAttribute('data-dir'))); });
-  renderLogFilLeadChip();
-}
-function renderLogFilLeadChip(){
-  var w = document.getElementById('nlog-fil-lead-chip-wrap');
-  if(_filterLead){
-    w.innerHTML = '<div class="nlog-fil-lead-chip">'+esc(_filterLead.name)+'<span class="nlog-fil-lead-x" onclick="logFilClearLead()">&times;</span></div>';
-  } else { w.innerHTML = ''; }
-}
-function logFilToggleStatus(s){
-  if(_filterStatuses.has(s)) _filterStatuses.delete(s); else _filterStatuses.add(s);
-  renderLogFilterUI(); updateFilterBadge(); renderLog();
-}
-function logFilToggleDir(d){
-  if(_filterDirections.has(d)) _filterDirections.delete(d); else _filterDirections.add(d);
-  renderLogFilterUI(); updateFilterBadge(); renderLog();
-}
-function logFilLeadSearch(q){
-  var list = document.getElementById('nlog-fil-lead-list');
+/* Filter dropdown — leads-page two-pane pattern */
+var filterConfig = [
+  { key:'status', label:'Status', type:'multi', options:[
+    {val:'Sent',label:'Sent'},{val:'Replied',label:'Replied'},{val:'Missed',label:'Missed'},
+    {val:'Returned',label:'Returned'},{val:'Inbound',label:'Inbound'},
+    {val:'Created',label:'Created'},{val:'Canceled',label:'Canceled'},{val:'Completed',label:'Completed'}
+  ]},
+  { key:'direction', label:'Direction', type:'multi', options:[
+    {val:'inbound',label:'Inbound'},{val:'outbound',label:'Outbound'}
+  ]},
+  { key:'lead', label:'Lead', type:'single', options: [] }
+];
+var activeCatKey = null;
+
+function refreshLeadOptions(){
   var leads = (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS : [];
-  var qLow = (q||'').trim().toLowerCase();
-  var matches = qLow ? leads.filter(function(l){ return String(l.name||'').toLowerCase().includes(qLow); }).slice(0,8) : leads.slice(0,8);
-  if(!matches.length){ list.innerHTML = '<div class="nlog-fil-lead-item" style="color:var(--mu);">No matches</div>'; }
-  else { list.innerHTML = matches.map(function(l){ return '<div class="nlog-fil-lead-item" onclick="logFilPickLead('+l.no+')">'+esc(l.name)+'</div>'; }).join(''); }
-  list.classList.add('open');
+  filterConfig.find(function(c){ return c.key==='lead'; }).options = leads.map(function(l){ return { val:String(l.no), label:l.name }; });
 }
-function logFilPickLead(no){
-  var l = CCLeads.LEADS.find(function(x){ return x.no === no; });
-  if(!l) return;
-  _filterLead = { no: l.no, name: l.name };
-  document.getElementById('nlog-fil-lead-input').value = '';
-  document.getElementById('nlog-fil-lead-list').classList.remove('open');
-  renderLogFilLeadChip(); updateFilterBadge(); renderLog();
+
+function toggleFilterDropdown(e){
+  if(e) e.stopPropagation();
+  var dd = document.getElementById('filter-dropdown');
+  if(dd.classList.contains('open')){ closeFilterDropdown(); return; }
+  activeCatKey = null;
+  refreshLeadOptions();
+  renderFilterDropdown();
+  positionFilterDropdown();
+  dd.classList.add('open');
+  setTimeout(positionFilterDropdown, 0);
+  if(window.innerWidth > 640){
+    var def = filterConfig.find(function(c){ return c.type==='multi' || c.type==='single'; });
+    if(def) lockCategory(def.key);
+  }
 }
-function logFilClearLead(){
-  _filterLead = null; renderLogFilLeadChip(); updateFilterBadge(); renderLog();
+function positionFilterDropdown(){
+  var dd = document.getElementById('filter-dropdown');
+  var anchor = document.getElementById('nlog-filter-btn');
+  if(!anchor) return;
+  var r = anchor.getBoundingClientRect();
+  var wasOpen = dd.classList.contains('open');
+  if(!wasOpen){ dd.style.visibility = 'hidden'; dd.classList.add('open'); }
+  var ddH = dd.offsetHeight || 440;
+  if(!wasOpen){ dd.classList.remove('open'); dd.style.visibility = ''; }
+  var top = r.bottom + 6;
+  if(top + ddH > window.innerHeight - 8) top = Math.max(8, r.top - ddH - 6);
+  dd.style.top = top + 'px';
+  dd.style.left = Math.max(8, r.left) + 'px';
 }
-function logFilClear(){
+function closeFilterDropdown(){
+  var dd = document.getElementById('filter-dropdown');
+  dd.classList.remove('open');
+  dd.classList.remove('fd-show-opts');
+  var mt = document.getElementById('fd-mobile-title'); if(mt) mt.textContent = 'Filters';
+  var mh = document.querySelector('.fd-mobile-header'); if(mh) mh.classList.remove('show-back');
+}
+function fdMobileBackToCategories(){
+  var dd = document.getElementById('filter-dropdown');
+  dd.classList.remove('fd-show-opts');
+  document.getElementById('fd-mobile-title').textContent = 'Filters';
+  document.querySelector('.fd-mobile-header').classList.remove('show-back');
+  activeCatKey = null;
+  renderFilterDropdown();
+  document.getElementById('fd-right').classList.remove('show');
+}
+function getCatSelection(key){
+  if(key === 'status') return _filterStatuses;
+  if(key === 'direction') return _filterDirections;
+  if(key === 'lead') return _filterLead ? new Set([String(_filterLead.no)]) : new Set();
+  return new Set();
+}
+function getCatCount(key){
+  if(key === 'status') return _filterStatuses.size;
+  if(key === 'direction') return _filterDirections.size;
+  if(key === 'lead') return _filterLead ? 1 : 0;
+  return 0;
+}
+function renderFilterDropdown(){
+  var list = document.getElementById('fd-list');
+  list.innerHTML = '';
+  filterConfig.forEach(function(cat){
+    var row = document.createElement('div');
+    row.className = 'fd-cat';
+    if(cat.key === activeCatKey) row.classList.add('active');
+    var cnt = getCatCount(cat.key);
+    var badge = cnt > 0 ? '<span class="fd-cat-count">'+cnt+'</span>' : '';
+    row.innerHTML = '<span class="fd-cat-label">'+esc(cat.label)+'</span>'+badge+'<span class="fd-cat-chev">›</span>';
+    row.onclick = function(){ lockCategory(cat.key); };
+    list.appendChild(row);
+  });
+}
+function lockCategory(key){
+  activeCatKey = key;
+  renderFilterDropdown();
+  var cat = filterConfig.find(function(c){ return c.key === key; });
+  if(!cat) return;
+  renderRightPane(cat);
+}
+function renderRightPane(cat){
+  var right = document.getElementById('fd-right');
+  var opts = document.getElementById('fd-opts');
+  var searchInput = document.getElementById('fd-search-input');
+  right.classList.add('show');
+  var dd = document.getElementById('filter-dropdown');
+  dd.classList.add('fd-show-opts');
+  document.getElementById('fd-mobile-title').textContent = cat.label;
+  document.querySelector('.fd-mobile-header').classList.add('show-back');
+  searchInput.value = '';
+  var sel = getCatSelection(cat.key);
+  var isSingle = cat.type === 'single';
+  opts.innerHTML = cat.options.map(function(opt){
+    var on = sel.has(opt.val);
+    var ind = isSingle ? '<div class="fp-radio'+(on?' on':'')+'"></div>' : '<div class="fp-cb'+(on?' on':'')+'"></div>';
+    return '<div class="fd-opt'+(on?' chosen':'')+'" data-label="'+esc(opt.label.toLowerCase())+'" onclick="toggleFilterValue(\''+cat.key+'\',\''+opt.val.replace(/\'/g,"\\'")+'\')">'+ind+'<span class="fd-opt-label">'+esc(opt.label)+'</span></div>';
+  }).join('') || '<div class="fd-empty">No options.</div>';
+}
+function filterRightPane(q){
+  q = (q||'').toLowerCase().trim();
+  document.querySelectorAll('#fd-opts .fd-opt').forEach(function(r){
+    var lab = r.getAttribute('data-label') || '';
+    r.style.display = (!q || lab.includes(q)) ? 'flex' : 'none';
+  });
+}
+function toggleFilterValue(catKey, val){
+  if(catKey === 'status'){
+    if(_filterStatuses.has(val)) _filterStatuses.delete(val); else _filterStatuses.add(val);
+  } else if(catKey === 'direction'){
+    if(_filterDirections.has(val)) _filterDirections.delete(val); else _filterDirections.add(val);
+  } else if(catKey === 'lead'){
+    var no = parseInt(val,10);
+    var lead = CCLeads.LEADS.find(function(l){ return l.no === no; });
+    _filterLead = (_filterLead && _filterLead.no === no) ? null : (lead ? { no:lead.no, name:lead.name } : null);
+  }
+  var cat = filterConfig.find(function(c){ return c.key === catKey; });
+  if(cat) renderRightPane(cat);
+  renderFilterDropdown();
+  updateFilterBadge();
+  renderChips();
+  renderLog();
+}
+function clearDropdownFilters(){
   _filterStatuses.clear(); _filterDirections.clear(); _filterLead = null;
-  renderLogFilterUI(); updateFilterBadge(); renderLog();
+  if(activeCatKey){ var c = filterConfig.find(function(x){ return x.key === activeCatKey; }); if(c) renderRightPane(c); }
+  renderFilterDropdown();
+  updateFilterBadge();
+  renderChips();
+  renderLog();
 }
-function logFilClose(){ document.getElementById('nlog-fil-pop').classList.remove('open'); }
+function renderChips(){
+  var box = document.getElementById('chips-row'); if(!box) return;
+  var chips = [];
+  _filterStatuses.forEach(function(s){
+    chips.push('<span class="chip"><span class="chip-label">Status:</span>'+esc(s)+'<span class="chip-x-corner" onclick="toggleFilterValue(\'status\',\''+s+'\')">&times;</span></span>');
+  });
+  _filterDirections.forEach(function(d){
+    chips.push('<span class="chip"><span class="chip-label">Direction:</span>'+esc(d.charAt(0).toUpperCase()+d.slice(1))+'<span class="chip-x-corner" onclick="toggleFilterValue(\'direction\',\''+d+'\')">&times;</span></span>');
+  });
+  if(_filterLead){
+    chips.push('<span class="chip"><span class="chip-label">Lead:</span>'+esc(_filterLead.name)+'<span class="chip-x-corner" onclick="toggleFilterValue(\'lead\',\''+_filterLead.no+'\')">&times;</span></span>');
+  }
+  box.innerHTML = chips.join('');
+}
 function updateFilterBadge(){
   var n = _filterStatuses.size + _filterDirections.size + (_filterLead ? 1 : 0);
   var badge = document.getElementById('nlog-filter-badge');
@@ -770,11 +926,10 @@ function dirOf(n){
   return null;
 }
 document.addEventListener('click', function(e){
-  var pop = document.getElementById('nlog-fil-pop'), btn = document.getElementById('nlog-filter-btn');
-  if(pop && pop.classList.contains('open') && !pop.contains(e.target) && !(btn && btn.contains(e.target))) pop.classList.remove('open');
-  var list = document.getElementById('nlog-fil-lead-list'), inp = document.getElementById('nlog-fil-lead-input');
-  if(list && list.classList.contains('open') && !list.contains(e.target) && e.target!==inp) list.classList.remove('open');
+  var dd = document.getElementById('filter-dropdown'), btn = document.getElementById('nlog-filter-btn');
+  if(dd && dd.classList.contains('open') && !dd.contains(e.target) && !(btn && btn.contains(e.target))) closeFilterDropdown();
 });
+window.addEventListener('resize', function(){ var dd=document.getElementById('filter-dropdown'); if(dd && dd.classList.contains('open')) positionFilterDropdown(); });
 
 /* Search */
 var _searchT = null;

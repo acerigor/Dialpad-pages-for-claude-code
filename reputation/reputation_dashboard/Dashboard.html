@@ -145,6 +145,87 @@
   .rep-psum-sent .sep{color:var(--brd2);margin:0 3px;}
   .rep-psum-rating{color:var(--am);font-weight:700;font-size:15px;}
   .rep-psum-unit{color:var(--mu);font-size:12px;margin-left:2px;}
+  .sosum-source{display:inline-flex;align-items:center;justify-content:center;margin-right:8px;color:var(--teal);vertical-align:middle;}
+  .sosum-source svg{width:16px;height:16px;}
+  /* Requests · Leaderboard */
+  .rep-leadb{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0;}
+  .rep-leadb-stats{display:flex;flex-wrap:wrap;gap:14px;padding-bottom:14px;border-bottom:0.5px solid var(--brd);}
+  .rep-leadb-stat{flex:1;min-width:140px;display:flex;flex-direction:column;gap:6px;}
+  .rep-leadb-stat-lbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;font-weight:600;}
+  .rep-leadb-stat-val{font-size:18px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px;}
+  .rep-leadb-stars{display:inline-flex;gap:1px;}
+  .rep-leadb-star{width:15px;height:15px;}
+  .rep-leadb-rating-val{color:var(--am);font-weight:700;}
+  .rep-leadb-unit{color:var(--mu);font-size:12px;margin-left:2px;font-weight:500;}
+  .rep-leadb-norate{color:var(--mu);font-style:italic;font-size:12px;}
+  .rep-leadb-link{color:var(--ac2);font-weight:500;}
+  .rep-leadb-table-wrap{overflow-x:auto;}
+  .rep-leadb-table th, .rep-leadb-table td{white-space:nowrap;padding-right:18px;}
+  .rep-leadb-table td{padding-top:10px;}
+  /* Requests · History */
+  .rep-hist-site{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-right:6px;color:var(--mu);opacity:.4;vertical-align:middle;}
+  .rep-hist-site.on{opacity:1;color:inherit;}
+  .rep-hist-status{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;letter-spacing:.2px;}
+  .rep-hist-status.delivered{background:rgba(45,212,191,.14);color:var(--teal);}
+  .rep-hist-status.opened{background:rgba(110,157,255,.14);color:var(--ac2);}
+  .rep-hist-status.clicked{background:rgba(34,200,138,.14);color:var(--gr);}
+  /* Listing · Total Customer Actions (donut) */
+  .rep-lact{display:flex;align-items:center;justify-content:center;flex:1;}
+  .rep-lact-svg{width:100%;max-width:540px;height:auto;display:block;}
+  .lact-arc{fill:none;stroke-width:28;}
+  .lact-arc.calls{stroke:var(--ac2);}
+  .lact-arc.dir{stroke:var(--mu);}
+  .lact-arc.web{stroke:var(--teal);}
+  .lact-arc.search{stroke:var(--teal);}
+  .lact-arc.maps{stroke:var(--ac2);}
+  .lact-center-num{fill:var(--tx);font-size:26px;font-weight:700;font-family:var(--font);}
+  .lact-center-lbl{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .lact-lbl-name{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .lact-lbl-val{fill:var(--tx);font-size:14px;font-weight:700;font-family:var(--font);}
+  .lact-lbl-pct{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .lact-leader{stroke:var(--brd2);stroke-width:1;fill:none;}
+  /* Listing · Listing Impressions Growth (multi-line) */
+  .rep-lig{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .rep-lig-scroll{overflow-x:auto;overflow-y:hidden;}
+  .rep-lig-scroll::-webkit-scrollbar{height:8px;}
+  .rep-lig-scroll::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:8px;}
+  .rep-lig-scroll::-webkit-scrollbar-track{background:transparent;}
+  .rep-lig-svg{width:860px;height:auto;display:block;overflow:visible;}
+  .rep-lig-svg .st-grid{stroke:var(--brd);stroke-width:1;}
+  .rep-lig-svg .st-axis{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-lig-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .lig-line{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;}
+  .lig-line.bing{stroke:#0f3d4c;}
+  .lig-line.facebook{stroke:var(--mu);}
+  .lig-line.google{stroke:#6e9dff;}
+  .lig-line.yelp{stroke:var(--gr);}
+  .lig-line.apple{stroke:#0f6e56;}
+  .lig-line.website{stroke:#0f6e56;}
+  .lig-line.directions{stroke:var(--mu);}
+  .lig-line.calls{stroke:var(--ac2);}
+  .rep-lig-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
+  .rep-lig-leg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mu);}
+  .rep-lig-leg i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none;}
+  .lig-leg-bing{background:#0f3d4c;}
+  .lig-leg-facebook{background:var(--mu);}
+  .lig-leg-google{background:#6e9dff;}
+  .lig-leg-yelp{background:var(--gr);}
+  .lig-leg-apple{background:#0f6e56;}
+  .lig-leg-website{background:#0f6e56;}
+  .lig-leg-directions{background:var(--mu);}
+  .lig-leg-calls{background:var(--ac2);}
+  /* Listing · Google Calls By Day of Week */
+  .rep-gcd{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .rep-gcd-scroll{overflow-x:auto;overflow-y:hidden;}
+  .rep-gcd-scroll::-webkit-scrollbar{height:8px;}
+  .rep-gcd-scroll::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:8px;}
+  .rep-gcd-scroll::-webkit-scrollbar-track{background:transparent;}
+  .rep-gcd-svg{width:860px;height:auto;display:block;overflow:visible;}
+  .rep-gcd-svg .st-grid{stroke:var(--brd);stroke-width:1;}
+  .rep-gcd-svg .st-axis{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-gcd-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-gcd-svg .gcd-bar{fill:var(--gr);}
+  .rep-gcd-svg .gcd-xtitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
   /* Sentiment Trend widget (stacked bar chart) */
   .rep-strend{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
   .rep-strend-scroll{overflow-x:auto;overflow-y:hidden;}
@@ -162,6 +243,30 @@
   .rep-strend-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
   .rep-strend-leg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mu);}
   .rep-strend-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none;}
+  /* Rating Trend (single-series bar chart) — reuses .st-grid/.st-axis/.st-ytitle from .rep-strend-svg */
+  .rep-rtrend{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .rep-rtrend-scroll{overflow-x:auto;overflow-y:hidden;}
+  .rep-rtrend-scroll::-webkit-scrollbar{height:8px;}
+  .rep-rtrend-scroll::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:8px;}
+  .rep-rtrend-scroll::-webkit-scrollbar-track{background:transparent;}
+  .rep-rtrend-svg{width:860px;height:auto;display:block;overflow:visible;}
+  .rep-rtrend-svg .st-grid{stroke:var(--brd);stroke-width:1;}
+  .rep-rtrend-svg .st-axis{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-rtrend-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-rtrend-svg .rt-bar{fill:var(--teal);}
+  .rep-rtrend-svg .rt-val{fill:var(--tx);font-size:13px;font-weight:600;font-family:var(--font);}
+  /* Requests Trend (combo: bars + CTR diamond markers, dual Y-axis) */
+  .rep-rqtrend{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0;}
+  .rep-rqtrend-scroll{overflow-x:auto;overflow-y:hidden;}
+  .rep-rqtrend-scroll::-webkit-scrollbar{height:8px;}
+  .rep-rqtrend-scroll::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:8px;}
+  .rep-rqtrend-scroll::-webkit-scrollbar-track{background:transparent;}
+  .rep-rqtrend-svg{width:860px;height:auto;display:block;overflow:visible;}
+  .rep-rqtrend-svg .st-grid{stroke:var(--brd);stroke-width:1;}
+  .rep-rqtrend-svg .st-axis{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-rqtrend-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
+  .rep-rqtrend-svg .rq-bar{fill:var(--teal);}
+  .rep-rqtrend-svg .rq-val{fill:var(--tx);font-size:13px;font-weight:600;font-family:var(--font);}
   @media (max-width:640px){ .rep-wcard{flex-basis:100%;} }
 
   /* ── Mobile drawer ── */
@@ -203,7 +308,7 @@
     </button>
     <div class="logo" onclick="toggleProductSwitcher(event)">
       <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
-      <span class="logo-text">CoreConnect</span>
+      <span class="logo-text">Reputation</span>
     
   <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
   <div class="product-switcher" id="product-switcher">
@@ -373,6 +478,7 @@ function repNav(label){
   items.forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep')===label); });
   if(window.innerWidth<=900) closeRepDrawer();
   if(label==='Dashboards') return; // already here
+  if(label==='Reviews'){ window.location.href = '../reviews/reviews.html'; return; }
   showNavToast(label + ' is coming soon', 'This section is under construction.');
 }
 function toggleRepDrawer(){
@@ -448,6 +554,315 @@ var REP_PSUM_HTML=''
       +'<td><span class="rep-psum-rating">4.3</span><span class="rep-psum-unit">/5</span></td>'
     +'</tr></tbody>'
   +'</table></div>';
+
+function repStarsHtml(rating){
+  rating = Math.max(0, Math.min(5, +rating || 0));
+  var html = '<span class="rep-leadb-stars">';
+  for(var i=1;i<=5;i++){
+    var fill;
+    if(i <= Math.floor(rating)) fill = '100%';
+    else if(i - 1 < rating) fill = (((rating - (i - 1)) * 100).toFixed(0)) + '%';
+    else fill = '0%';
+    var gid = 'rs-g-'+i+'-'+(rating*10|0);
+    html += '<svg viewBox="0 0 24 24" class="rep-leadb-star" aria-hidden="true">'
+      + '<defs><linearGradient id="'+gid+'"><stop offset="'+fill+'" stop-color="var(--am)"/><stop offset="'+fill+'" stop-color="var(--brd2)"/></linearGradient></defs>'
+      + '<polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="url(#'+gid+')"/>'
+    + '</svg>';
+  }
+  html += '</span>';
+  return html;
+}
+
+function repGoogleIcon(on){
+  if(!on) return '<span class="rep-hist-site"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09Z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23Z"/><path fill="currentColor" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.83Z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38Z"/></svg></span>';
+  return '<span class="rep-hist-site on"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.83Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38Z"/></svg></span>';
+}
+function repFbIcon(on){
+  if(!on) return '<span class="rep-hist-site"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.56 9.88v-7H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.1 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.78-1.63 1.57V12h2.78l-.44 2.88h-2.33v7A10 10 0 0 0 22 12Z"/></svg></span>';
+  return '<span class="rep-hist-site on"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#1877F2" d="M22 12a10 10 0 1 0-11.56 9.88v-7H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.1 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.78-1.63 1.57V12h2.78l-.44 2.88h-2.33v7A10 10 0 0 0 22 12Z"/></svg></span>';
+}
+
+function buildListingActions(){
+  var segs = [
+    { key:'web',   name:'Website',    val:25,  display:'25k',  pct:14.7, cls:'web'   },
+    { key:'dir',   name:'Directions', val:45,  display:'45k',  pct:26.5, cls:'dir'   },
+    { key:'calls', name:'Calls',      val:100, display:'100k', pct:58.8, cls:'calls' }
+  ];
+  var W=540, H=300, cx=270, cy=150, r=80;
+  var C = 2*Math.PI*r;
+  var cum = 0;
+  var arcs = '';
+  for(var i=0;i<segs.length;i++){
+    var s = segs[i];
+    var len = (s.pct/100)*C;
+    var gap = C - len;
+    var offset = -((cum/100)*C);
+    arcs += '<circle class="lact-arc '+s.cls+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'" pathLength="'+C.toFixed(2)+'" stroke-dasharray="'+len.toFixed(2)+' '+gap.toFixed(2)+'" stroke-dashoffset="'+offset.toFixed(2)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+    cum += s.pct;
+  }
+  // Label positions (fixed for the prototype): top-left = Website, bottom-left = Directions, right = Calls
+  // Each label: leader line + text rows
+  var labels = ''
+    // Website (top-left)
+    + '<line class="lact-leader" x1="'+(cx-r*0.7)+'" y1="'+(cy-r*0.7)+'" x2="100" y2="40"/>'
+    + '<text class="lact-lbl-name" x="40" y="32" text-anchor="start">Website</text>'
+    + '<text class="lact-lbl-val" x="40" y="52" text-anchor="start">25k</text>'
+    + '<text class="lact-lbl-pct" x="76" y="52" text-anchor="start">(14.7%)</text>'
+    // Directions (bottom-left)
+    + '<line class="lact-leader" x1="'+(cx-r*0.95)+'" y1="'+(cy+r*0.25)+'" x2="98" y2="190"/>'
+    + '<text class="lact-lbl-name" x="20" y="183" text-anchor="start">Directions</text>'
+    + '<text class="lact-lbl-val" x="20" y="204" text-anchor="start">45k</text>'
+    + '<text class="lact-lbl-pct" x="56" y="204" text-anchor="start">(26.5%)</text>'
+    // Calls (bottom-right)
+    + '<line class="lact-leader" x1="'+(cx+r*0.7)+'" y1="'+(cy+r*0.6)+'" x2="440" y2="220"/>'
+    + '<text class="lact-lbl-name" x="440" y="216" text-anchor="start">Calls</text>'
+    + '<text class="lact-lbl-val" x="440" y="237" text-anchor="start">100k</text>'
+    + '<text class="lact-lbl-pct" x="478" y="237" text-anchor="start">(58.8%)</text>';
+
+  var center = ''
+    + '<text class="lact-center-num" x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle">170k</text>'
+    + '<text class="lact-center-lbl" x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle">Actions</text>';
+
+  var svg = '<svg class="rep-lact-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Total customer actions donut chart">'+arcs+center+labels+'</svg>';
+  return '<div class="rep-lact">'+svg+'</div>';
+}
+var REP_LACT_HTML = buildListingActions();
+
+function buildListingImpressions(){
+  var series = [
+    { key:'bing',     name:'Bing',     vals:[30,40,50,60,70] },
+    { key:'facebook', name:'Facebook', vals:[17,22,25,45,58] },
+    { key:'google',   name:'Google',   vals:[10,17,23,38,47] },
+    { key:'yelp',     name:'Yelp',     vals:[14,14,14,14,14] },
+    { key:'apple',    name:'Apple',    vals:[10,10,10,10,10] }
+  ];
+  var W=860,H=320,mL=56,mR=16,mT=28,mB=46;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH, maxY=80;
+  function yp(v){ return y0 - (v/maxY)*plotH; }
+  var n = series[0].vals.length;
+  var s = '<svg class="rep-lig-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Listing impressions growth multi-line chart">';
+  // gridlines + y labels (0, 20k, 40k, 60k, 80k)
+  for(var v=0; v<=maxY; v+=20){
+    var gy=yp(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+(v===0?'0':(v+'k'))+'</text>';
+  }
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Listing Views</text>';
+  // x bucket labels (centered under data points)
+  for(var i=0;i<n;i++){
+    var bx = mL + (i+0.5)*(plotW/n);
+    s+='<text class="st-axis" x="'+bx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket '+(i+1)+'</text>';
+  }
+  // one polyline per series
+  series.forEach(function(ser){
+    var pts = ser.vals.map(function(v,i){
+      var x = mL + (i+0.5)*(plotW/n);
+      return x.toFixed(1) + ',' + yp(v).toFixed(1);
+    }).join(' ');
+    s += '<polyline class="lig-line '+ser.key+'" points="'+pts+'"/>';
+  });
+  s += '</svg>';
+  var legend = '<div class="rep-lig-legend">'
+    + series.map(function(ser){ return '<span class="rep-lig-leg"><i class="lig-leg-'+ser.key+'"></i>'+ser.name+'</span>'; }).join('')
+    + '</div>';
+  return '<div class="rep-lig"><div class="rep-lig-scroll">'+s+'</div>'+legend+'</div>';
+}
+var REP_LIMP_HTML = buildListingImpressions();
+
+function buildCustomerActionsGrowth(){
+  var series = [
+    { key:'website',    name:'Website',    vals:[39,28,78,65,89] },
+    { key:'directions', name:'Directions', vals:[ 1, 2, 3, 2, 4] },
+    { key:'calls',      name:'Calls',      vals:[ 0,13,17,16,21] }
+  ];
+  var W=860,H=320,mL=56,mR=16,mT=28,mB=46;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH, maxY=100;
+  function yp(v){ return y0 - (v/maxY)*plotH; }
+  var n = series[0].vals.length;
+  var s = '<svg class="rep-lig-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Customer actions growth multi-line chart">';
+  for(var v=0; v<=maxY; v+=20){
+    var gy=yp(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+v+'</text>';
+  }
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Actions</text>';
+  for(var i=0;i<n;i++){
+    var bx = mL + (i+0.5)*(plotW/n);
+    s+='<text class="st-axis" x="'+bx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket '+(i+1)+'</text>';
+  }
+  series.forEach(function(ser){
+    var pts = ser.vals.map(function(v,i){
+      var x = mL + (i+0.5)*(plotW/n);
+      return x.toFixed(1) + ',' + yp(v).toFixed(1);
+    }).join(' ');
+    s += '<polyline class="lig-line '+ser.key+'" points="'+pts+'"/>';
+  });
+  s += '</svg>';
+  var legend = '<div class="rep-lig-legend">'
+    + series.map(function(ser){ return '<span class="rep-lig-leg"><i class="lig-leg-'+ser.key+'"></i>'+ser.name+'</span>'; }).join('')
+    + '</div>';
+  return '<div class="rep-lig"><div class="rep-lig-scroll">'+s+'</div>'+legend+'</div>';
+}
+var REP_CAG_HTML = buildCustomerActionsGrowth();
+
+function buildGoogleCallsDay(){
+  var vals = [10,20,30,40,30,20,10]; // thousands per bucket
+  var W=860,H=320,mL=56,mR=16,mT=28,mB=64;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH, maxY=50;
+  function yp(v){ return y0 - (v/maxY)*plotH; }
+  var s='<svg class="rep-gcd-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Google calls by day of week bar chart">';
+  for(var v=0; v<=maxY; v+=10){
+    var gy=yp(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+(v===0?'0':(v+'k'))+'</text>';
+  }
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Calls</text>';
+  var n=vals.length, slot=plotW/n, barW=slot*0.6;
+  for(var i=0;i<n;i++){
+    var val=vals[i];
+    var bx=mL + i*slot + (slot-barW)/2, cx=bx+barW/2;
+    var barH=(val/maxY)*plotH;
+    var yTop=y0-barH;
+    s+='<rect class="gcd-bar" x="'+bx+'" y="'+yTop+'" width="'+barW+'" height="'+barH+'" rx="1.5"/>';
+    s+='<text class="st-axis" x="'+cx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket</text>';
+  }
+  s+='<text class="gcd-xtitle" x="'+(mL+plotW/2)+'" y="'+(y0+44)+'" text-anchor="middle">Day of the Week</text>';
+  s+='</svg>';
+  return '<div class="rep-gcd"><div class="rep-gcd-scroll">'+s+'</div></div>';
+}
+var REP_GCD_HTML = buildGoogleCallsDay();
+
+function buildGoogleImpressions(){
+  var segs = [
+    { key:'search', name:'Search', display:'4.06m',  pct:28.3, cls:'search' },
+    { key:'maps',   name:'Maps',   display:'10.27m', pct:71.7, cls:'maps'   }
+  ];
+  var W=540, H=300, cx=270, cy=150, r=80;
+  var C = 2*Math.PI*r;
+  var cum = 0;
+  var arcs = '';
+  for(var i=0;i<segs.length;i++){
+    var s = segs[i];
+    var len = (s.pct/100)*C;
+    var gap = C - len;
+    var offset = -((cum/100)*C);
+    arcs += '<circle class="lact-arc '+s.cls+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'" pathLength="'+C.toFixed(2)+'" stroke-dasharray="'+len.toFixed(2)+' '+gap.toFixed(2)+'" stroke-dashoffset="'+offset.toFixed(2)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+    cum += s.pct;
+  }
+  // Labels: Search top-right, Maps bottom-left
+  var labels = ''
+    // Search (top-right)
+    + '<line class="lact-leader" x1="'+(cx+r*0.7)+'" y1="'+(cy-r*0.65)+'" x2="430" y2="55"/>'
+    + '<text class="lact-lbl-name" x="430" y="50" text-anchor="start">Search</text>'
+    + '<text class="lact-lbl-val" x="430" y="72" text-anchor="start">4.06m</text>'
+    + '<text class="lact-lbl-pct" x="478" y="72" text-anchor="start">(28.3%)</text>'
+    // Maps (bottom-left)
+    + '<line class="lact-leader" x1="'+(cx-r*0.85)+'" y1="'+(cy+r*0.6)+'" x2="92" y2="225"/>'
+    + '<text class="lact-lbl-name" x="20" y="218" text-anchor="start">Maps</text>'
+    + '<text class="lact-lbl-val" x="20" y="240" text-anchor="start">10.27m</text>'
+    + '<text class="lact-lbl-pct" x="76" y="240" text-anchor="start">(71.7%)</text>';
+
+  var center = ''
+    + '<text class="lact-center-num" x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle">14.33m</text>'
+    + '<text class="lact-center-lbl" x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle">Impressions</text>';
+
+  var svg = '<svg class="rep-lact-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Google impressions donut chart">'+arcs+center+labels+'</svg>';
+  return '<div class="rep-lact">'+svg+'</div>';
+}
+var REP_GIMP_HTML = buildGoogleImpressions();
+
+var REP_SOSUM_HTML=''
+  +'<div class="rep-psum"><table class="rep-psum-table">'
+    +'<thead><tr><th>Source (1)</th><th>Total Reviews</th><th>Average Rating</th></tr></thead>'
+    +'<tbody><tr>'
+      +'<td><span class="sosum-source"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><rect x="5" y="5" width="14" height="16" rx="2"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg></span>Survey</td>'
+      +'<td><span class="rep-psum-num">411</span><span class="rep-psum-sent"><span class="neg">10%</span><span class="sep">|</span><span class="neu">7%</span><span class="sep">|</span><span class="pos">83%</span></span></td>'
+      +'<td><span class="rep-psum-rating">4.2</span><span class="rep-psum-unit">/5</span></td>'
+    +'</tr></tbody>'
+  +'</table></div>';
+
+var REP_RUNSUB_HTML=''
+  +'<div class="rep-leadb-table-wrap"><table class="rep-psum-table rep-leadb-table">'
+  +  '<thead><tr><th>Location</th><th>Email Address</th><th>Phone</th><th>Template</th><th>Sent Date</th><th>Unsubscribed Date</th></tr></thead>'
+  +  '<tbody>'
+  +    '<tr><td><span class="rep-leadb-link">Location 1</span></td><td><span class="rep-leadb-link">Recipient Email</span></td><td><span class="rep-leadb-link">Recipient Phone</span></td><td><span class="rep-leadb-link">Template 1</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td></tr>'
+  +    '<tr><td><span class="rep-leadb-link">Location 2</span></td><td><span class="rep-leadb-link">Recipient Email</span></td><td><span class="rep-leadb-link">Recipient Phone</span></td><td><span class="rep-leadb-link">Template 2</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td></tr>'
+  +    '<tr><td><span class="rep-leadb-link">Location 3</span></td><td><span class="rep-leadb-link">Recipient Email</span></td><td><span class="rep-leadb-link">Recipient Phone</span></td><td><span class="rep-leadb-link">Template 3</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td><td><span class="rep-leadb-link">Jun 30, 2026</span></td></tr>'
+  +  '</tbody>'
+  +'</table></div>';
+
+var REP_RHIST_HTML=''
+  +'<div class="rep-leadb-table-wrap"><table class="rep-psum-table rep-leadb-table rep-hist-table">'
+  +  '<thead><tr><th>Mode</th><th>Location</th><th>Template Name</th><th>Requester</th><th>To Email</th><th>To Phone</th><th>Status</th><th>Sites</th><th>Sent Date</th></tr></thead>'
+  +  '<tbody>'
+  +    '<tr>'
+  +      '<td><span class="rep-leadb-link">Email</span></td>'
+  +      '<td><span class="rep-leadb-link">Location 1</span></td>'
+  +      '<td><span class="rep-leadb-link">Template 1</span></td>'
+  +      '<td><span class="rep-leadb-link">Requester Name</span></td>'
+  +      '<td><span class="rep-leadb-link">Recipient Email</span></td>'
+  +      '<td></td>'
+  +      '<td><span class="rep-hist-status delivered">Delivered</span></td>'
+  +      '<td>'+repGoogleIcon(false)+repFbIcon(false)+'</td>'
+  +      '<td><span class="rep-leadb-link">Jun 30, 2026</span></td>'
+  +    '</tr>'
+  +    '<tr>'
+  +      '<td><span class="rep-leadb-link">Kiosk</span></td>'
+  +      '<td><span class="rep-leadb-link">Location 2</span></td>'
+  +      '<td><span class="rep-leadb-link">Template 1</span></td>'
+  +      '<td><span class="rep-leadb-link">Requester Name</span></td>'
+  +      '<td><span class="rep-leadb-link">Recipient Email</span></td>'
+  +      '<td></td>'
+  +      '<td><span class="rep-hist-status opened">Opened</span></td>'
+  +      '<td>'+repGoogleIcon(false)+repFbIcon(false)+'</td>'
+  +      '<td><span class="rep-leadb-link">Jun 30, 2026</span></td>'
+  +    '</tr>'
+  +    '<tr>'
+  +      '<td><span class="rep-leadb-link">SMS</span></td>'
+  +      '<td><span class="rep-leadb-link">Location 3</span></td>'
+  +      '<td><span class="rep-leadb-link">Template 1</span></td>'
+  +      '<td><span class="rep-leadb-link">Requester Name</span></td>'
+  +      '<td><span class="rep-leadb-link">Recipient Email</span></td>'
+  +      '<td><span class="rep-leadb-link">+1234567890</span></td>'
+  +      '<td><span class="rep-hist-status clicked">Clicked</span></td>'
+  +      '<td>'+repGoogleIcon(true)+repFbIcon(false)+'</td>'
+  +      '<td><span class="rep-leadb-link">Jun 30, 2026</span></td>'
+  +    '</tr>'
+  +  '</tbody>'
+  +'</table></div>';
+
+var REP_RLEAD_HTML=''
+  +'<div class="rep-leadb">'
+  +  '<div class="rep-leadb-stats">'
+  +    '<div class="rep-leadb-stat"><div class="rep-leadb-stat-lbl">Requests Sent</div><div class="rep-leadb-stat-val">6</div></div>'
+  +    '<div class="rep-leadb-stat"><div class="rep-leadb-stat-lbl">Clicks to Review &amp; Survey</div><div class="rep-leadb-stat-val">4</div></div>'
+  +    '<div class="rep-leadb-stat"><div class="rep-leadb-stat-lbl">Attributed Reviews &amp; Surveys</div><div class="rep-leadb-stat-val">54</div></div>'
+  +    '<div class="rep-leadb-stat"><div class="rep-leadb-stat-lbl">Average Star Rating</div><div class="rep-leadb-stat-val">'+repStarsHtml(4.3)+' <span class="rep-leadb-rating-val">4.3</span><span class="rep-leadb-unit">/5</span></div></div>'
+  +  '</div>'
+  +  '<div class="rep-leadb-table-wrap"><table class="rep-psum-table rep-leadb-table">'
+  +    '<thead><tr><th>Rank</th><th>Location</th><th>Requests Sent</th><th>Clicks to Review &amp; Survey</th><th>Attributed Reviews &amp; Surveys</th><th>Average Star Rating</th></tr></thead>'
+  +    '<tbody>'
+  +      '<tr><td><span class="rep-leadb-link">1</span></td><td><span class="rep-leadb-link">Location 1</span></td><td>3</td><td>2</td><td>0</td><td><span class="rep-leadb-norate">No Rating Specified</span></td></tr>'
+  +      '<tr><td><span class="rep-leadb-link">3</span></td><td><span class="rep-leadb-link">Location 2</span></td><td>1</td><td>1</td><td>10</td><td>'+repStarsHtml(3.4)+' <span class="rep-leadb-rating-val">3.4</span><span class="rep-leadb-unit">/5</span></td></tr>'
+  +      '<tr><td><span class="rep-leadb-link">2</span></td><td><span class="rep-leadb-link">Location 3</span></td><td>2</td><td>1</td><td>4</td><td>'+repStarsHtml(5)+' <span class="rep-leadb-rating-val">5</span><span class="rep-leadb-unit">/5</span></td></tr>'
+  +    '</tbody>'
+  +  '</table></div>'
+  +'</div>';
+
+var REP_RPSUM_HTML=''
+  +'<div class="rep-psum"><table class="rep-psum-table">'
+    +'<thead><tr><th>Period</th><th>Sent</th><th>Opened</th><th>Clicked</th><th>CTR</th></tr></thead>'
+    +'<tbody><tr>'
+      +'<td>Current Period</td>'
+      +'<td><span class="rep-psum-num">4</span></td>'
+      +'<td><span class="rep-psum-num">3</span></td>'
+      +'<td><span class="rep-psum-num">2</span></td>'
+      +'<td><span class="rep-psum-rating">67%</span></td>'
+    +'</tr></tbody>'
+  +'</table></div>';
 function buildSentimentTrend(){
   var data=[
     {neg:12,neu:3,pos:44},{neg:7,neu:4,pos:51},{neg:5,neu:4,pos:57},{neg:4,neu:3,pos:77},
@@ -490,10 +905,92 @@ function buildSentimentTrend(){
   +'</div>';
 }
 var REP_STREND_HTML=buildSentimentTrend();
+
+function buildRatingTrend(){
+  var data=[4.1,4.4,4.5,4.7,4.4,4.5,4.1,4.4,4.4,4.4,4.4,4.4];
+  var W=860,H=320,mL=46,mR=16,mT=28,mB=46;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH, maxY=5;
+  function yp(v){ return y0 - (v/maxY)*plotH; }
+  var s='<svg class="rep-rtrend-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Average rating trend bar chart">';
+  // gridlines + y labels (0,1,2,3,4,5)
+  for(var v=0; v<=maxY; v+=1){
+    var gy=yp(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+v.toFixed(1)+'</text>';
+  }
+  // y-axis title
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Average Rating</text>';
+  // bars
+  var n=data.length, slot=plotW/n, barW=slot*0.6;
+  for(var i=0;i<n;i++){
+    var val=data[i];
+    var bx=mL + i*slot + (slot-barW)/2, cx=bx+barW/2;
+    var barH=(val/maxY)*plotH;
+    var yTop=y0-barH;
+    s+='<rect class="rt-bar" x="'+bx+'" y="'+yTop+'" width="'+barW+'" height="'+barH+'" rx="1.5"/>';
+    s+='<text class="rt-val" x="'+cx+'" y="'+(yTop-8)+'" text-anchor="middle">'+val.toFixed(1)+'</text>';
+    s+='<text class="st-axis" x="'+cx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket '+(i+1)+'</text>';
+  }
+  s+='</svg>';
+  return '<div class="rep-rtrend"><div class="rep-rtrend-scroll">'+s+'</div>'
+    +'<div class="rep-strend-legend">'
+      +'<span class="rep-strend-leg"><i style="background:var(--teal)"></i>Average Rating</span>'
+    +'</div>'
+  +'</div>';
+}
+var REP_RTREND_HTML=buildRatingTrend();
+
+function buildRequestsTrend(){
+  var bars=[34,85,38,21,45,12,36,28,17,6,16,4];
+  var W=860,H=320,mL=52,mR=16,mT=28,mB=46;
+  var plotW=W-mL-mR, plotH=H-mT-mB, y0=mT+plotH;
+  var maxL=100;
+  function ypL(v){ return y0 - (v/maxL)*plotH; }
+  var s='<svg class="rep-rqtrend-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Requests trend bar chart">';
+  for(var v=0; v<=maxL; v+=20){
+    var gy=ypL(v);
+    s+='<line class="st-grid" x1="'+mL+'" y1="'+gy+'" x2="'+(W-mR)+'" y2="'+gy+'"/>';
+    s+='<text class="st-axis" x="'+(mL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+v+'</text>';
+  }
+  var midY=mT+plotH/2;
+  s+='<text class="st-ytitle" x="14" y="'+midY+'" text-anchor="middle" transform="rotate(-90 14 '+midY+')">Requests Sent</text>';
+  var n=bars.length, slot=plotW/n, barW=slot*0.5;
+  for(var i=0;i<n;i++){
+    var val=bars[i];
+    var bx=mL + i*slot + (slot-barW)/2, cx=bx+barW/2;
+    var barH=(val/maxL)*plotH;
+    var yTop=y0-barH;
+    s+='<rect class="rq-bar" x="'+bx+'" y="'+yTop+'" width="'+barW+'" height="'+barH+'" rx="1.5"/>';
+    s+='<text class="rq-val" x="'+cx+'" y="'+(yTop-8)+'" text-anchor="middle">'+val+'</text>';
+    s+='<text class="st-axis" x="'+cx+'" y="'+(y0+18)+'" text-anchor="middle">Bucket '+(i+1)+'</text>';
+  }
+  s+='</svg>';
+  return '<div class="rep-rqtrend"><div class="rep-rqtrend-scroll">'+s+'</div>'
+    +'<div class="rep-strend-legend">'
+      +'<span class="rep-strend-leg"><i style="background:var(--teal)"></i>Requests Sent</span>'
+    +'</div>'
+  +'</div>';
+}
+var REP_REQTREND_HTML=buildRequestsTrend();
 function repWidgetBody(w){
   if(w.id==='reviews-overall-summary') return REP_OSUM_HTML;
   if(w.id==='reviews-period-summary') return REP_PSUM_HTML;
   if(w.id==='reviews-sentiment-trend') return REP_STREND_HTML;
+  if(w.id==='surveys-sentiment-trend') return REP_STREND_HTML;
+  if(w.id==='reviews-rating-trend') return REP_RTREND_HTML;
+  if(w.id==='surveys-rating-trend') return REP_RTREND_HTML;
+  if(w.id==='requests-period-summary') return REP_RPSUM_HTML;
+  if(w.id==='requests-trend') return REP_REQTREND_HTML;
+  if(w.id==='requests-leaderboard') return REP_RLEAD_HTML;
+  if(w.id==='requests-history') return REP_RHIST_HTML;
+  if(w.id==='requests-unsubscribers') return REP_RUNSUB_HTML;
+  if(w.id==='listing-total-customer-actions') return REP_LACT_HTML;
+  if(w.id==='listing-impressions-growth') return REP_LIMP_HTML;
+  if(w.id==='listing-customer-actions-growth') return REP_CAG_HTML;
+  if(w.id==='listing-google-calls-dow') return REP_GCD_HTML;
+  if(w.id==='listing-google-impressions') return REP_GIMP_HTML;
+  if(w.id==='surveys-overall-summary') return REP_SOSUM_HTML;
   return '<div class="rep-w-ph">'+REP_PH_SVG+'<span>Preview coming soon</span></div>';
 }
 function repBuildCard(w){

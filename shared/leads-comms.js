@@ -245,12 +245,203 @@
     if(i >= 0){ TEAM.splice(i, 1); saveTeam(); }
   }
 
+  // ── Reviews seed (synced to LEADS) ────────────────────────────────────────
+  // Deterministic per-lead generator → stable ~454 reviews across reloads.
+  // Cached in localStorage['cc_reviews'] keyed by REVIEW_SEED_KEY.
+  var REVIEW_SEED_KEY = 'v3';
+  var REVIEW_CACHE_KEY = 'cc_reviews';
+  var REVIEW_SOURCES = [
+    {key:'google',      weight:80}, {key:'dealerrater', weight:7},
+    {key:'cars',        weight:7},  {key:'cargurus',    weight:5},
+    {key:'facebook',    weight:1}
+  ];
+  var REVIEW_BIZ = [
+    'USA Direct Auto','USA Direct Auto - Downtown','USA Direct Auto - South',
+    'USA Direct Auto - Westside','USA Direct Auto - Express'
+  ];
+  var REVIEW_TEXTS = [
+    'The sales lady Keisy was very professional. My experience there was excellent and I look forward to returning if I see anything new that interests me online',
+    'Smooth process from start to finish. The team really takes the time to understand what you need.',
+    'Great experience! The staff was knowledgeable and patient with all my questions about financing.',
+    'I had a wonderful experience purchasing my vehicle. The whole team was friendly and very helpful.',
+    'Quick response to my inquiry. They had the car ready when I arrived for my appointment.',
+    'Honestly the best dealership experience I have had in years. Highly recommend.',
+    'Service was good but the wait was a bit long. Overall happy with the vehicle.',
+    'Friendly staff and a great selection of vehicles. Will definitely come back.',
+    'Decent experience, though the paperwork process took longer than expected.',
+    'Not the best experience. Felt rushed during the test drive and pricing was unclear.',
+    'Loved working with the team here — straightforward and no pressure.',
+    'They went above and beyond to make sure I drove off happy. Five stars.',
+    'Easy financing options and the team explained everything clearly.',
+    'Communication could be better but the car itself is fantastic.',
+    'Amazing service from the moment I walked in. The whole team treated me like family.'
+  ];
+  var REVIEW_ATTRS = [
+    'Staff - People','Staff Behavior - Professionalism','Purchase Experience - Sales Staff',
+    'Vehicle - Quality','Service - Speed','Pricing - Fair','Facility - Cleanliness',
+    'Financing - Options','Communication - Responsive'
+  ];
+  var REVIEW_MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function _revMulberry32(seed){
+    var s = seed >>> 0;
+    return function(){
+      s = (s + 0x6D2B79F5) >>> 0;
+      var t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function _revPickWeighted(rnd, items){
+    var total = 0; items.forEach(function(it){ total += it.weight; });
+    var r = rnd() * total, acc = 0;
+    for(var i=0;i<items.length;i++){ acc += items[i].weight; if(r < acc) return items[i].key; }
+    return items[items.length-1].key;
+  }
+  function _revPickRating(rnd){
+    var r = rnd();
+    if(r < 0.78) return 5;
+    if(r < 0.93) return 4;
+    if(r < 0.98) return 3;
+    if(r < 0.99) return 2;
+    return 1;
+  }
+  function _revPickStatus(rnd, rating){
+    // 83% responded / 17% unresponded (negatives lean unresponded)
+    var threshold = (rating <= 2) ? 0.45 : 0.83;
+    return rnd() < threshold ? 'responded' : 'unresponded';
+  }
+  function _revFormatDate(ts){
+    var d = new Date(ts);
+    return REVIEW_MONTH_NAMES[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+  function _revBuildSeed(){
+    // Spread reviews across 18 months ending now.
+    var nowMs = NOW;
+    var windowMs = 18 * 30 * 24 * 60 * 60 * 1000;
+    var startMs = nowMs - windowMs;
+    var reviews = [];
+    var id = 1;
+    var TARGET = 454;
+    var avgPer = Math.max(1, Math.round(TARGET / LEADS.length));
+    var minPer = Math.max(1, avgPer - 2);
+    var spread = 6; // [min .. min+spread-1]
+    LEADS.forEach(function(lead){
+      var rnd = _revMulberry32(lead.no * 9973 + 17);
+      var count = minPer + Math.floor(rnd() * spread);
+      for(var i=0;i<count;i++){
+        var rating = _revPickRating(rnd);
+        var source = _revPickWeighted(rnd, REVIEW_SOURCES);
+        var biz = REVIEW_BIZ[Math.floor(rnd() * REVIEW_BIZ.length)];
+        var text = REVIEW_TEXTS[Math.floor(rnd() * REVIEW_TEXTS.length)];
+        var nAttr = 2 + Math.floor(rnd() * 2); // 2..3
+        var attrPool = REVIEW_ATTRS.slice();
+        var attributions = [];
+        for(var a=0; a<nAttr && attrPool.length; a++){
+          var idx = Math.floor(rnd() * attrPool.length);
+          attributions.push(attrPool.splice(idx, 1)[0]);
+        }
+        var ts = Math.floor(startMs + rnd() * windowMs);
+        var status = 'Published';
+        var responseState = _revPickStatus(rnd, rating);
+        var responses = (responseState === 'responded')
+          ? [{ text:'Thank you for the kind words!', ts: ts + 24*60*60*1000, author:'Team', source:'user' }]
+          : [];
+        reviews.push({
+          id: 'rv_' + (id++),
+          leadNo: lead.no,
+          source: source,
+          biz: biz,
+          rating: rating,
+          text: text,
+          attributions: attributions,
+          date: _revFormatDate(ts),
+          ts: ts,
+          status: status,
+          responses: responses
+        });
+      }
+    });
+    reviews.sort(function(a,b){ return b.ts - a.ts; });
+    // Pin to exactly 454 for stable headline. Slice if over.
+    if(reviews.length > TARGET) reviews = reviews.slice(0, TARGET);
+    return reviews;
+  }
+  function _revLoadCached(){
+    try{
+      var raw = localStorage.getItem(REVIEW_CACHE_KEY);
+      if(!raw) return null;
+      var obj = JSON.parse(raw);
+      if(!obj || obj.key !== REVIEW_SEED_KEY || !Array.isArray(obj.list)) return null;
+      return obj.list;
+    }catch(e){ return null; }
+  }
+  function _revPersist(list){
+    try{ localStorage.setItem(REVIEW_CACHE_KEY, JSON.stringify({key:REVIEW_SEED_KEY, list:list})); }catch(e){}
+  }
+  var REVIEWS = _revLoadCached();
+  if(!REVIEWS){ REVIEWS = _revBuildSeed(); _revPersist(REVIEWS); }
+
+  function reviewsByLead(leadNo){
+    return REVIEWS.filter(function(r){ return r.leadNo === leadNo; });
+  }
+  var _revStatsCache = null;
+  function reviewStats(){
+    if(_revStatsCache) return _revStatsCache;
+    var s = {
+      total: REVIEWS.length, avg: 0, responded:0, unresponded:0,
+      notRespondable:0, pendingApproval:0,
+      bySource:{google:0, facebook:0, cars:0, cargurus:0, dealerrater:0, carfax:0},
+      sentiment:{pos:0, neu:0, neg:0},
+      trendByYear:{}
+    };
+    var ratingSum = 0;
+    REVIEWS.forEach(function(r){
+      ratingSum += r.rating;
+      var hasResp = (r.responses && r.responses.length > 0);
+      if(hasResp) s.responded++;
+      else if(r.status === 'Not Respondable') s.notRespondable++;
+      else if(r.status === 'Pending Approval') s.pendingApproval++;
+      else s.unresponded++;
+      if(s.bySource[r.source] !== undefined) s.bySource[r.source]++;
+      var bucket = (r.rating >= 4) ? 'pos' : (r.rating === 3 ? 'neu' : 'neg');
+      s.sentiment[bucket]++;
+      var year = String(new Date(r.ts).getFullYear());
+      var t = s.trendByYear[year] || (s.trendByYear[year] = {pos:0, neu:0, neg:0, ratingSum:0, n:0});
+      t[bucket]++; t.ratingSum += r.rating; t.n++;
+    });
+    s.avg = s.total ? Math.round((ratingSum / s.total) * 10) / 10 : 0;
+    Object.keys(s.trendByYear).forEach(function(y){
+      var t = s.trendByYear[y];
+      t.avg = t.n ? Math.round((t.ratingSum / t.n) * 10) / 10 : 0;
+    });
+    _revStatsCache = s;
+    return s;
+  }
+
   global.CCLeads = {
     LEADS, emailCountsForLead, emailTotals, EMAIL_SEED_OUT, EMAIL_SEED_IN,
     smsCountsForLead, smsTotals,
     callCountsForLead, callTotals,
     NOW, createdOffsets, leadHoursBack, leadInPeriod, getPeriod, setPeriod,
     getActivities, addActivity, removeActivity, updateActivity,
-    TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember
+    TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember,
+    REVIEWS, reviewsByLead, reviewStats, reviewSeedKey: REVIEW_SEED_KEY,
+    clearReviewStatsCache: function(){ _revStatsCache = null; }
   };
+
+  // Dynamic logo text: "CoreConnect" on main app, "Reputation" on Reputation pages.
+  function _syncLogoText(){
+    try{
+      var inRep = location.pathname.indexOf('/reputation/') >= 0;
+      document.querySelectorAll('.logo-text').forEach(function(el){
+        el.textContent = inRep ? 'Reputation' : 'CoreConnect';
+      });
+    }catch(e){}
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', _syncLogoText);
+  } else {
+    _syncLogoText();
+  }
 })(window);

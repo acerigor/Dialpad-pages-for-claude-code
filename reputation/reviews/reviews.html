@@ -31,7 +31,25 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-item.active:hover{background:var(--ac);color:#fff;}
 .rep-item svg{width:18px;height:18px;flex:none;}
 .rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+.rep-item.active .rep-caret{color:#fff;}
+.rep-item:hover .rep-caret{color:var(--tx);}
+.rep-item-wrap{position:relative;}
+.rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+.rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+.rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+.rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-submenu-mhead{display:none;}
+@media (max-width:900px){
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+  .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-submenu-back svg{width:20px;height:20px;}
+  .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
 
 /* ── Content ── */
 .rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
@@ -78,6 +96,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rev-r1-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:7px 14px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
 .rev-r1-tab:hover{color:var(--tx);}
 .rev-r1-tab.active{background:var(--sur);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.rev-r1-select{display:none;}
 .rev-r1-body{min-height:360px;}
 .rev-r1-svg{width:100%;height:auto;display:block;overflow:visible;}
 .rev-r1-svg .rc-grid{stroke:var(--brd);stroke-width:0.5;}
@@ -120,13 +139,17 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rev-r3-count strong{color:var(--tx);font-weight:700;}
 .rev-r3-actions{display:flex;gap:8px;flex-wrap:wrap;}
 .rev-r3-btn{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;height:36px;padding:0 12px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:default;display:flex;align-items:center;gap:6px;}
-.rev-r3-chev{color:var(--mu);font-size:10px;}
+.rev-r3-chev{width:12px;height:12px;color:var(--mu);transition:transform .15s ease-out;flex:none;}
+.rev-r3-dl-wrap.open .rev-r3-chev{transform:rotate(180deg);}
+.rev-r3-dl-wrap{position:relative;}
+.rev-r3-dl-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:180px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+.rev-r3-dl-menu.open{display:flex;flex-direction:column;}
+.rev-r3-dl-item{display:flex;align-items:center;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 14px;cursor:pointer;transition:background .12s,color .12s;}
+.rev-r3-dl-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
 .rev-r3-list{display:flex;flex-direction:column;gap:12px;}
 .rev-card-item{display:flex;gap:20px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:18px 20px;}
 .ri-left{flex:0 0 200px;display:flex;flex-direction:column;gap:10px;min-width:0;}
 .ri-src-logo{width:48px;height:48px;display:flex;align-items:center;justify-content:center;position:relative;}
-.ri-src-flag{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--rd);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--sur);box-shadow:0 2px 6px rgba(0,0,0,.4);}
-.ri-src-flag svg{width:10px;height:10px;}
 .ri-biz{font-size:14px;font-weight:600;color:var(--tx);line-height:1.3;}
 .ri-reviewer{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx);font-weight:500;}
 .ri-rev-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex:none;}
@@ -318,8 +341,9 @@ body.mso-active .rep-bar{display:none;}
 
 @media (max-width:900px){
   .hamburger-btn{display:flex;}
-  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
   .rep-sb.open{transform:translateX(0);}
+  .rep-backdrop{z-index:205;}
   .rep-main{margin-left:0;}
   .rep-bar{padding:10px 14px;}
 }
@@ -377,7 +401,29 @@ body.mso-active .rep-bar{display:none;}
   #rep-cat-menu.rep-menu-wide{min-width:0;}
   body.rep-sheet-open{overflow:hidden;}
   body.rep-sheet-open .rep-menu-backdrop{display:block;}
-  body.rep-sheet-open .rep-bar{z-index:auto;}
+  body.rep-sheet-open .rep-bar{z-index:200;}
+  /* ── Phase 2 touch-target audit (display area + review list) ── */
+  .ri-reply-input{font-size:16px;}
+  .ri-kebab{width:44px;height:44px;}
+  .ri-kebab-item{min-height:44px;padding:11px 14px;}
+  .ri-reply-icon{width:44px;height:44px;}
+  .ri-reply-gen{height:44px;padding:0 14px;}
+  .ri-reply-respond{min-height:44px;padding:10px 18px;}
+  .ri-reply-thumbs{width:44px;height:44px;}
+  .ri-attr-add{min-height:44px;padding:10px 14px;}
+  .ri-reply-saved-edit{min-height:44px;padding:8px 12px;}
+  .rev-r3-btn{height:44px;}
+  .rev-r1-tabs{display:none;}
+  .rev-r1-select{display:block;margin:0 auto 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:500;min-height:44px;padding:0 36px 0 14px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a4a8b4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;background-size:14px;max-width:100%;}
+  .rev-r1-select option{background:var(--sur);color:var(--tx);}
+  .ri-reply-bottom{flex-wrap:wrap;gap:6px;}
+  .ri-reply-analyze{display:none;}
+  .rev-r3-dl-item{min-height:44px;padding:11px 14px;}
+  .rep-submenu-item{min-height:44px;padding:11px 12px;}
+  .rep-submenu{min-width:180px;}
+  /* Only the SVG chart scrolls horizontally on mobile; legend stays in normal flow */
+  .rev-r1-chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .rev-r1-chart-scroll .rev-r1-svg{width:700px;min-width:700px;max-width:none;}
 }
 
 /* ── nav toast ── */
@@ -458,38 +504,23 @@ body.mso-active .rep-bar{display:none;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span class="rep-lbl">Reviews</span>
     </div>
-    <div class="rep-item" data-rep="Listings" onclick="repNav('Listings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
-      <span class="rep-lbl">Listings</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Requests" onclick="repNav('Requests')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      <span class="rep-lbl">Requests</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Surveys" onclick="repNav('Surveys')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
-      <span class="rep-lbl">Surveys</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Insights" onclick="repNav('Insights')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
-      <span class="rep-lbl">Insights</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Reputation Score X" onclick="repNav('Reputation Score X')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4 4 0 1 0 5 0z"/></svg>
-      <span class="rep-lbl">Reputation Score X</span>
-    </div>
-    <div class="rep-item" data-rep="Reports" onclick="repNav('Reports')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
-      <span class="rep-lbl">Reports</span>
-    </div>
-    <div class="rep-item" data-rep="Resources" onclick="repNav('Resources')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span class="rep-lbl">Resources</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead">
+          <button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="rep-submenu-mtitle">Requests</span>
+        </div>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
     </div>
   </div>
 </div>
@@ -584,6 +615,11 @@ body.mso-active .rep-bar{display:none;}
           <button class="rev-r1-tab" data-tab="source" onclick="revR1Set('source')">Sentiment by Source</button>
           <button class="rev-r1-tab" data-tab="status" onclick="revR1Set('status')">Response Status</button>
         </div>
+        <select class="rev-r1-select" id="rev-r1-select" onchange="revR1Set(this.value)" aria-label="Chart filter">
+          <option value="trend">Sentiment Trend</option>
+          <option value="source">Sentiment by Source</option>
+          <option value="status">Response Status</option>
+        </select>
         <div class="rev-r1-body" id="rev-r1-body"></div>
       </div>
       <div class="rev-card rev-r2" id="rev-r2"></div>
@@ -591,7 +627,14 @@ body.mso-active .rep-bar{display:none;}
         <div class="rev-r3-bar">
           <div class="rev-r3-count" id="rev-r3-count">1 - 10 of <strong>454</strong> Reviews</div>
           <div class="rev-r3-actions">
-            <button class="rev-r3-btn" type="button">Download Reviews <span class="rev-r3-chev">&#9662;</span></button>
+            <div class="rev-r3-dl-wrap">
+              <button class="rev-r3-btn" type="button" id="rev-r3-dl-btn" onclick="revR3DlToggle(event)">Download Reviews <svg class="rev-r3-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+              <div class="rev-r3-dl-menu" id="rev-r3-dl-menu">
+                <button class="rev-r3-dl-item" type="button" onclick="revR3DlPick('csv')">Download CSV</button>
+                <button class="rev-r3-dl-item" type="button" onclick="revR3DlPick('pdf')">Download PDF</button>
+                <button class="rev-r3-dl-item" type="button" onclick="revR3DlPick('excel')">Download Excel</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="rev-r3-list" id="rev-r3-list"></div>
@@ -708,7 +751,7 @@ var REP_CAT_FACETS = [
   { key:'cat',  title:'Categories', opts:['Staff - People','Staff Behavior - Professionalism','Purchase Experience - Sales Staff','Vehicle - Quality','Service - Speed','Pricing - Fair','Facility - Cleanliness','Financing - Options','Communication - Responsive'] },
   { key:'resp', title:'Response Status', opts:['Unresponded','Responded','Not Respondable'] },
   { key:'sent', title:'Sentiment', opts:['Positive','Negative','Neutral','None'] },
-  { key:'src',  title:'Source', opts:['Google','Facebook','CarGurus','Carfax','Cars.com','DealerRater'] },
+  { key:'src',  title:'Source', opts:['Google','USA Direct Auto'] },
   { key:'created',  title:'Created',  opts:['Newest','Oldest'] },
   { key:'activity', title:'Activity', opts:['Newest','Oldest'] }
 ];
@@ -954,6 +997,80 @@ document.addEventListener('DOMContentLoaded', function(){
   revR3Render();
 });
 var FLAG_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 21V3h2v18H4zm3-3V4h11l-2 5 2 5H7z"/></svg>';
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = '';
+    menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+var _repHoverTimer = null;
+function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
+function repHoverOpen(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
+  if(w.classList.contains('open')) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
+  var r = item.getBoundingClientRect();
+  menu.style.top = r.top + 'px';
+  menu.style.left = (r.right + 6) + 'px';
+  w.classList.add('open');
+}
+function repHoverClose(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer) clearTimeout(_repHoverTimer);
+  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
+}
+function _repBindHoverFlyouts(){
+  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
+    var key = (w.id || '').replace('rep-sub-','');
+    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
+    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
+  });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
+else _repBindHoverFlyouts();
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Review request'){ window.location.href = '../requests/review_request/review_request.html'; return; }
+  if(label === 'Leaderboard'){ window.location.href = '../requests/leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){ window.location.href = '../requests/template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+function revR3DlToggle(ev){
+  if(ev) ev.stopPropagation();
+  var m = document.getElementById('rev-r3-dl-menu'); if(!m) return;
+  var w = m.closest('.rev-r3-dl-wrap');
+  var willOpen = !m.classList.contains('open');
+  m.classList.toggle('open', willOpen);
+  if(w) w.classList.toggle('open', willOpen);
+}
+function revR3DlClose(){
+  var m = document.getElementById('rev-r3-dl-menu'); if(m) m.classList.remove('open');
+  var w = document.querySelector('.rev-r3-dl-wrap'); if(w) w.classList.remove('open');
+}
+function revR3DlPick(fmt){
+  revR3DlClose();
+  var labels = {csv:'Download CSV', pdf:'Download PDF', excel:'Download Excel'};
+  if(typeof showNavToast === 'function') showNavToast(labels[fmt]||'Download', 'Export coming soon.');
+}
 function riKebabToggle(ev, id){
   if(ev) ev.stopPropagation();
   var m = document.getElementById('ri-kebab-menu-'+id); if(!m) return;
@@ -986,6 +1103,8 @@ function riKebabAct(id, action){
 }
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('.ri-kebab-wrap')) riKebabClose();
+  if(!e.target.closest('.rev-r3-dl-wrap')) revR3DlClose();
+  if(!e.target.closest('.rep-item-wrap')) repSubClose();
 });
 
 /* Right-column block #3 — review list (seed-driven) */
@@ -1000,7 +1119,7 @@ function _revR3List(){
   var sentSet = (sel.sent && sel.sent.size) ? sel.sent : null;
   var respSet = (sel.resp && sel.resp.size) ? sel.resp : null;
   var catSet  = (sel.cat  && sel.cat.size)  ? sel.cat  : null;
-  var srcMap = {google:'Google', facebook:'Facebook', cargurus:'CarGurus', carfax:'Carfax', cars:'Cars.com', dealerrater:'DealerRater'};
+  var srcMap = {google:'Google', usadirect:'USA Direct Auto'};
   function sentBucket(r){ return r.rating >= 4 ? 'Positive' : (r.rating === 3 ? 'Neutral' : 'Negative'); }
   function respLabel(r){
     if(r.responses && r.responses.length) return 'Responded';
@@ -1073,9 +1192,9 @@ function revR3SourceLogo(src){
   if(src === 'google'){
     return '<svg viewBox="0 0 48 48" width="48" height="48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>';
   }
-  var labels = {facebook:{c:'#1877F2',t:'f'}, cars:{c:'#0095CB',t:'C'}, cargurus:{c:'#542B89',t:'CG'}, dealerrater:{c:'#F7941D',t:'DR'}, carfax:{c:'#0066B2',t:'CX'}};
-  var def = labels[src] || {c:'var(--sur2)', t:(src?src[0].toUpperCase():'?')};
-  return '<div style="width:48px;height:48px;border-radius:8px;background:'+def.c+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:'+(def.t.length>1?'18':'24')+'px;">'+def.t+'</div>';
+  var labels = {usadirect:{c:'#0f6e56',t:'UDA'}};
+  var def = labels[src] || {c:'#0f6e56', t:'UDA'};
+  return '<div style="width:48px;height:48px;border-radius:8px;background:'+def.c+';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:.5px;">'+def.t+'</div>';
 }
 function revR3Card(r){
   var stars = '<div class="rev-stars">'+revStarsHtml(r.rating)+'</div>';
@@ -1085,7 +1204,7 @@ function revR3Card(r){
   var emoIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
   return '<div class="rev-card-item">'
     + '<div class="ri-left">'
-      + '<div class="ri-src-logo">'+revR3SourceLogo(r.source)+(r.flagged?'<span class="ri-src-flag" aria-label="Flagged">'+FLAG_SVG+'</span>':'')+'</div>'
+      + '<div class="ri-src-logo">'+revR3SourceLogo(r.source)+'</div>'
       + '<div class="ri-biz">'+_revEsc(r.biz)+'</div>'
       + '<div class="ri-reviewer"><span class="ri-rev-av" style="background:'+r.reviewerColor+';">'+_revEsc(r.reviewerKey)+'</span><span>'+_revEsc(r.reviewer)+'</span></div>'
       + '<div class="ri-date">'+_revEsc(r.date)+'</div>'
@@ -1295,7 +1414,7 @@ function _revBuildR1(){
   if(!s){
     return {
       trend:{buckets:['2025','2026'], pos:[15,400], neu:[1,5], neg:[1,32], rating:[3.0,4.7]},
-      source:{buckets:['Google','DealerRater','Cars.com','CarGurus','Facebook'], pos:[332,32,29,22,4], neu:[7,2,1,1,0], neg:[22,0,1,1,0]},
+      source:{buckets:['Google','USA Direct Auto'], pos:[420,0], neu:[0,5], neg:[0,29]},
       status:{buckets:['2025','2026'], responded:[0,370], unresponded:[12,65], notResp:[5,2]}
     };
   }
@@ -1307,8 +1426,8 @@ function _revBuildR1(){
     trend.pos.push(t.pos); trend.neu.push(t.neu); trend.neg.push(t.neg); trend.rating.push(t.avg);
   });
   // Source — split sentiments per source from CCLeads.REVIEWS
-  var srcKeys = ['google','dealerrater','cars','cargurus','facebook'];
-  var srcLabels = {google:'Google', dealerrater:'DealerRater', cars:'Cars.com', cargurus:'CarGurus', facebook:'Facebook'};
+  var srcKeys = ['google','usadirect'];
+  var srcLabels = {google:'Google', usadirect:'USA Direct Auto'};
   var bySrc = {}; srcKeys.forEach(function(k){ bySrc[k] = {pos:0, neu:0, neg:0}; });
   CCLeads.REVIEWS.forEach(function(r){
     if(!bySrc[r.source]) return;
@@ -1415,7 +1534,7 @@ function revR1Trend(){
     + '<span class="rev-r1-leg"><i style="background:var(--rd)"></i>Negative</span>'
     + '<span class="rev-r1-leg line"><i></i>Average Rating</span>'
     + '</div>';
-  return svg + leg;
+  return '<div class="rev-r1-chart-scroll">'+svg+'</div>' + leg;
 }
 function revR1Source(){
   var d = REV_R1.source;
@@ -1434,7 +1553,7 @@ function revR1Source(){
     + '<span class="rev-r1-leg"><i style="background:var(--am)"></i>Neutral</span>'
     + '<span class="rev-r1-leg"><i style="background:var(--rd)"></i>Negative</span>'
     + '</div>';
-  return svg + leg;
+  return '<div class="rev-r1-chart-scroll">'+svg+'</div>' + leg;
 }
 function revR1Status(){
   var d = REV_R1.status;
@@ -1453,10 +1572,11 @@ function revR1Status(){
     + '<span class="rev-r1-leg"><i style="background:var(--mu)"></i>Unresponded</span>'
     + '<span class="rev-r1-leg"><i style="background:var(--teal)"></i>Not Respondable</span>'
     + '</div>';
-  return svg + leg;
+  return '<div class="rev-r1-chart-scroll">'+svg+'</div>' + leg;
 }
 function revR1Set(tab){
   document.querySelectorAll('.rev-r1-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab') === tab); });
+  var sel = document.getElementById('rev-r1-select'); if(sel && sel.value !== tab) sel.value = tab;
   var body = document.getElementById('rev-r1-body'); if(!body) return;
   if(tab === 'source') body.innerHTML = revR1Source();
   else if(tab === 'status') body.innerHTML = revR1Status();
@@ -1473,6 +1593,8 @@ document.addEventListener('keydown', function(e){
   var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
   repFilterClose(); repLocClose(); repCatClose();
   if(typeof riKebabClose === 'function') riKebabClose();
+  if(typeof revR3DlClose === 'function') revR3DlClose();
+  if(typeof repSubClose === 'function') repSubClose();
 });
 </script>
 

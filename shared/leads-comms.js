@@ -248,13 +248,9 @@
   // ── Reviews seed (synced to LEADS) ────────────────────────────────────────
   // Deterministic per-lead generator → stable ~454 reviews across reloads.
   // Cached in localStorage['cc_reviews'] keyed by REVIEW_SEED_KEY.
-  var REVIEW_SEED_KEY = 'v3';
+  var REVIEW_SEED_KEY = 'v4';
   var REVIEW_CACHE_KEY = 'cc_reviews';
-  var REVIEW_SOURCES = [
-    {key:'google',      weight:80}, {key:'dealerrater', weight:7},
-    {key:'cars',        weight:7},  {key:'cargurus',    weight:5},
-    {key:'facebook',    weight:1}
-  ];
+  var REVIEW_SOURCES = [{key:'google'},{key:'usadirect'}];
   var REVIEW_BIZ = [
     'USA Direct Auto','USA Direct Auto - Downtown','USA Direct Auto - South',
     'USA Direct Auto - Westside','USA Direct Auto - Express'
@@ -331,7 +327,7 @@
       var count = minPer + Math.floor(rnd() * spread);
       for(var i=0;i<count;i++){
         var rating = _revPickRating(rnd);
-        var source = _revPickWeighted(rnd, REVIEW_SOURCES);
+        var source = (rating >= 4) ? 'google' : 'usadirect';
         var biz = REVIEW_BIZ[Math.floor(rnd() * REVIEW_BIZ.length)];
         var text = REVIEW_TEXTS[Math.floor(rnd() * REVIEW_TEXTS.length)];
         var nAttr = 2 + Math.floor(rnd() * 2); // 2..3
@@ -391,7 +387,7 @@
     var s = {
       total: REVIEWS.length, avg: 0, responded:0, unresponded:0,
       notRespondable:0, pendingApproval:0,
-      bySource:{google:0, facebook:0, cars:0, cargurus:0, dealerrater:0, carfax:0},
+      bySource:{google:0, usadirect:0},
       sentiment:{pos:0, neu:0, neg:0},
       trendByYear:{}
     };

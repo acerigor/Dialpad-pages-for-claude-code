@@ -40,7 +40,25 @@
   .rep-item.active:hover{background:var(--ac);color:#fff;}
   .rep-item svg{width:18px;height:18px;flex:none;}
   .rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .rep-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+  .rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+  .rep-item.active .rep-caret{color:#fff;}
+  .rep-item:hover .rep-caret{color:var(--tx);}
+  .rep-item-wrap{position:relative;}
+  .rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+  .rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+  .rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+  .rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+  .rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+  .rep-submenu-mhead{display:none;}
+  @media (max-width:900px){
+    .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+    .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+    .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+    .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+    .rep-submenu-back svg{width:20px;height:20px;}
+    .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+    .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+  }
 
   /* ── Content ── */
   .rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
@@ -55,6 +73,12 @@
   .rep-sp{flex:1;}
   .rep-content{padding:24px 20px 60px;}
   .rep-tbtn{display:flex;align-items:center;gap:5px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+  .period-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;flex-shrink:0;}
+  .pt-seg{display:flex;align-items:center;justify-content:center;min-height:32px;padding:0 16px;border-radius:7px;background:transparent;border:none;cursor:pointer;color:var(--mu);font-size:12.5px;font-weight:500;font-family:var(--font);transition:color .12s, background .12s;white-space:nowrap;}
+  .pt-seg:hover{color:var(--tx);}
+  .pt-seg.active{background:var(--ac);color:#fff;}
+  .pt-seg.active:hover{color:#fff;}
+  .pt-seg:focus-visible{outline:2px solid var(--ac);outline-offset:1px;}
   .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
   .rep-tbtn svg{width:15px;height:15px;flex:none;}
   .rep-chev{transition:transform .15s;}
@@ -267,15 +291,20 @@
   .rep-rqtrend-svg .st-ytitle{fill:var(--mu);font-size:12px;font-family:var(--font);}
   .rep-rqtrend-svg .rq-bar{fill:var(--teal);}
   .rep-rqtrend-svg .rq-val{fill:var(--tx);font-size:13px;font-weight:600;font-family:var(--font);}
-  @media (max-width:640px){ .rep-wcard{flex-basis:100%;} }
+  @media (max-width:640px){
+    .rep-wcard{flex-basis:100%;}
+    .period-toggle{padding:4px;}
+    .pt-seg{min-height:40px;padding:0 14px;}
+  }
 
   /* ── Mobile drawer ── */
   .rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
   .rep-backdrop.show{display:block;}
   @media (max-width:900px){
     .hamburger-btn{display:flex;}
-    .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+    .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
     .rep-sb.open{transform:translateX(0);}
+    .rep-backdrop{z-index:205;}
     .rep-main{margin-left:0;}
     .rep-bar{padding:10px 14px;}
     .rep-content{padding:18px 14px 60px;}
@@ -335,38 +364,18 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span class="rep-lbl">Reviews</span>
     </div>
-    <div class="rep-item" data-rep="Listings" onclick="repNav('Listings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
-      <span class="rep-lbl">Listings</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Requests" onclick="repNav('Requests')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      <span class="rep-lbl">Requests</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Surveys" onclick="repNav('Surveys')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
-      <span class="rep-lbl">Surveys</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Insights" onclick="repNav('Insights')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
-      <span class="rep-lbl">Insights</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>
-    <div class="rep-item" data-rep="Reputation Score X" onclick="repNav('Reputation Score X')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4 4 0 1 0 5 0z"/></svg>
-      <span class="rep-lbl">Reputation Score X</span>
-    </div>
-    <div class="rep-item" data-rep="Reports" onclick="repNav('Reports')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
-      <span class="rep-lbl">Reports</span>
-    </div>
-    <div class="rep-item" data-rep="Resources" onclick="repNav('Resources')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span class="rep-lbl">Resources</span>
-      <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead"><button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="rep-submenu-mtitle">Requests</span></div>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
     </div>
   </div>
 </div>
@@ -376,20 +385,11 @@
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="rep-bar">
-      <div class="rep-dd" id="rep-filter">
-        <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)" aria-haspopup="menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-          <span id="rep-filter-label">Current Year</span>
-          <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="rep-menu" id="rep-filter-menu" role="menu">
-          <button class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-          <button class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-          <button class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-          <button class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-        </div>
+      <div class="period-toggle" role="tablist" aria-label="Period">
+        <button class="pt-seg active" data-period="monthly" onclick="repSetPeriod(this,'Monthly')" role="tab">Monthly</button>
+        <button class="pt-seg" data-period="weekly"  onclick="repSetPeriod(this,'Weekly')"  role="tab">Weekly</button>
+        <button class="pt-seg" data-period="daily"   onclick="repSetPeriod(this,'Daily')"   role="tab">Daily</button>
+        <button class="pt-seg" data-period="all"     onclick="repSetPeriod(this,'All')"     role="tab">All</button>
       </div>
       <div class="rep-sp"></div>
       <button class="rep-tbtn" onclick="repWidgetsOpen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span>Widgets</span></button>
@@ -489,13 +489,105 @@ function closeRepDrawer(){
   document.getElementById('rep-sb').classList.remove('open');
   document.getElementById('rep-backdrop').classList.remove('show');
 }
-/* toolbar: filter dropdown */
-function repFilterToggle(e){ if(e) e.stopPropagation(); document.getElementById('rep-filter').classList.toggle('open'); }
-function repFilterClose(){ var f=document.getElementById('rep-filter'); if(f) f.classList.remove('open'); }
-function repFilterPick(el, label){
-  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it===el); });
-  var lbl=document.getElementById('rep-filter-label'); if(lbl) lbl.textContent=label;
-  repFilterClose();
+/* Requests submenu handling (matches other Reputation pages) */
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = ''; menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Review request'){ window.location.href = '../requests/review_request/review_request.html'; return; }
+  if(label === 'Leaderboard'){    window.location.href = '../requests/leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){       window.location.href = '../requests/template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+var _repHoverTimer = null;
+function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
+function repHoverOpen(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
+  if(w.classList.contains('open')) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
+  var r = item.getBoundingClientRect();
+  menu.style.top = r.top + 'px';
+  menu.style.left = (r.right + 6) + 'px';
+  w.classList.add('open');
+}
+function repHoverClose(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer) clearTimeout(_repHoverTimer);
+  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
+}
+function _repBindHoverFlyouts(){
+  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
+    var key = (w.id || '').replace('rep-sub-','');
+    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
+    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
+  });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
+else _repBindHoverFlyouts();
+
+/* toolbar: period segmented toggle */
+var _repPeriod = 'Monthly';
+function repPeriodScale(){
+  switch(_repPeriod){
+    case 'Daily':  return 1/30;
+    case 'Weekly': return 7/30;
+    case 'All':    return 24;
+    default:       return 1;
+  }
+}
+function _repFmtNum(n){ return Math.round(n).toLocaleString('en-US'); }
+function repApplyPeriod(){
+  var scale = repPeriodScale();
+  var sels = ['.rep-osum-num', '.rep-psum-num', '.rep-leadb-stat-val'];
+  sels.forEach(function(sel){
+    document.querySelectorAll('#rep-grid ' + sel).forEach(function(el){
+      if(el.classList.contains('rating')) return;
+      if(el.querySelector('svg')) return;
+      var base = el.getAttribute('data-base');
+      if(base == null){
+        var raw = (el.firstChild && el.firstChild.nodeType === 3) ? el.firstChild.nodeValue : el.textContent;
+        var num = parseFloat(String(raw).replace(/[,\s]/g,''));
+        if(isNaN(num)) return;
+        base = String(num);
+        el.setAttribute('data-base', base);
+      }
+      var next = _repFmtNum(parseFloat(base) * scale);
+      if(el.firstChild && el.firstChild.nodeType === 3){
+        el.firstChild.nodeValue = next;
+      } else {
+        el.textContent = next;
+      }
+    });
+  });
+}
+function repSetPeriod(el, label){
+  _repPeriod = label;
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
+    s.classList.toggle('active', s === el);
+  });
+  repApplyPeriod();
 }
 /* toolbar: widgets drawer */
 function repWidgetsOpen(){ document.querySelectorAll('.rep-wgroup').forEach(function(x){ x.classList.add('collapsed'); }); repSyncDrawer(); document.getElementById('rep-widgets-panel').classList.add('open'); document.getElementById('rep-widgets-backdrop').classList.add('show'); }
@@ -1015,7 +1107,7 @@ function repRenderGrid(){
   repWireDrag();
 }
 function repSyncDrawer(){ document.querySelectorAll('.rep-switch[data-w]').forEach(function(sw){ var w=repGetW(sw.getAttribute('data-w')); if(w) sw.classList.toggle('on', !!w.visible); }); }
-function repRefresh(){ repRenderGrid(); repSyncDrawer(); repWSave(); }
+function repRefresh(){ repRenderGrid(); repSyncDrawer(); repWSave(); if(typeof repApplyPeriod === 'function') repApplyPeriod(); }
 /* drawer toggle */
 function repWidgetToggle(el){ var w=repGetW(el.getAttribute('data-w')); var on=el.classList.toggle('on'); if(w){ w.visible=on; repRefresh(); } }
 /* card kebab + hide */
@@ -1149,14 +1241,13 @@ function repWGroupToggle(head){
   if(willOpen) g.classList.remove('collapsed');
 }
 document.addEventListener('mousedown', function(e){
-  var f=document.getElementById('rep-filter');
-  if(f && f.classList.contains('open') && !(e.target.closest && e.target.closest('#rep-filter'))) repFilterClose();
+  if(!e.target.closest('.rep-item-wrap')) repSubClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key!=='Escape') return;
   var dr=document.getElementById('rep-widgets-panel');
   if(dr && dr.classList.contains('open')){ repWidgetsClose(); return; }
-  repFilterClose();
+  repSubClose();
   closeRepDrawer();
 });
 </script><!-- PRODUCT-SWITCHER:JS START -->

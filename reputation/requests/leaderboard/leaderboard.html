@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation · Leaderboard</title>
+<link rel="stylesheet" href="../../../shared/app.css">
+<link rel="stylesheet" href="../../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Top header ── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid var(--bg);}
+
+/* ── Sidebar ── */
+.rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);background:var(--bg);border-right:0.5px solid var(--brd);display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;transition:transform .2s ease-out;}
+.rep-nav{display:flex;flex-direction:column;gap:3px;}
+.rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;transition:background .12s,color .12s;user-select:none;}
+.rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.rep-item.active{background:var(--ac);color:#fff;}
+.rep-item.active:hover{background:var(--ac);color:#fff;}
+.rep-item svg{width:18px;height:18px;flex:none;}
+.rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+.rep-item.active .rep-caret{color:#fff;}
+.rep-item:hover .rep-caret{color:var(--tx);}
+.rep-item-wrap{position:relative;}
+.rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+.rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+.rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+.rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-submenu-item.active{background:rgba(79,124,255,.10);color:var(--ac2);font-weight:500;}
+.rep-submenu-mhead{display:none;}
+@media (max-width:900px){
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+  .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-submenu-back svg{width:20px;height:20px;}
+  .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
+
+/* ── Content ── */
+.rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+.rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+.rep-backdrop.show{display:block;}
+
+/* ── Toolbar (Period + Location) ── */
+.rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;flex-wrap:wrap;}
+.rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+.rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.rep-tbtn svg{width:15px;height:15px;flex:none;}
+.rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
+.rep-chev{transition:transform .15s;}
+.rep-dd{position:relative;}
+.rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
+.rep-dd.open .rep-tbtn svg{color:var(--ac2);}
+.rep-dd.open .rep-chev{transform:rotate(180deg);}
+.rep-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+.rep-dd.open .rep-menu{display:block;}
+.rep-menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 13px;background:transparent;border:none;border-bottom:0.5px solid var(--brd);color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;cursor:pointer;transition:background .12s,color .12s;}
+.rep-menu-item:last-child{border-bottom:none;}
+.rep-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
+.rep-menu-item.checked{color:var(--ac2);}
+.rep-menu-item.checked .rep-mi-check{opacity:1;}
+.rep-menu-srch{display:flex;align-items:center;gap:8px;margin:8px 10px;padding:7px 11px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;transition:border-color .12s;}
+.rep-menu-srch:focus-within{border-color:var(--ac);}
+.rep-menu-srch svg{width:13px;height:13px;color:var(--mu);flex:none;}
+.rep-menu-srch input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;padding:0;}
+.rep-menu-srch input::placeholder{color:var(--mu);}
+.rep-menu-empty{padding:14px 13px;color:var(--mu);font-size:13px;text-align:center;display:none;}
+.rep-menu-empty.show{display:block;}
+.rep-menu-mhead{display:none;}
+.rep-menu-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:140;}
+
+/* ── Body ── */
+.rep-content{padding:0;}
+.lb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;padding:24px;}
+.lb-card{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:18px 20px;}
+.kpi{display:flex;flex-direction:column;gap:10px;}
+.kpi-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.kpi-num{font-size:32px;font-weight:600;line-height:.95;letter-spacing:-1.2px;font-family:var(--font);}
+.kpi-sub{font-size:11.5px;color:var(--mu);margin-top:-3px;}
+.ca-window{display:flex;align-items:center;gap:6px;margin-top:12px;padding-top:10px;border-top:0.5px solid var(--brd);font-family:var(--mono);font-size:10.5px;color:var(--mu);}
+.ca-window-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);flex-shrink:0;}
+.kpi-outbound .kpi-icon{background:rgba(196,181,253,.16);color:var(--purple);}
+.kpi-inbound  .kpi-icon{background:rgba(45,212,191,.14); color:var(--teal);}
+.kpi-answered .kpi-icon{background:rgba(34,200,138,.14); color:var(--gr);}
+.kpi-returned .kpi-icon{background:rgba(79,124,255,.14); color:var(--ac2);}
+.kpi-outbound .kpi-num{color:var(--purple);}
+.kpi-inbound  .kpi-num{color:var(--teal);}
+.kpi-answered .kpi-num{color:var(--gr);}
+.kpi-returned .kpi-num{color:var(--ac2);}
+/* Most-sent-by-user table */
+.lb-widget{margin:0 24px 24px;padding:20px 24px;}
+.lb-widget-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.lb-widget-title{font-size:14px;font-weight:600;color:var(--tx);}
+.lb-widget-sub{font-family:var(--mono);font-size:10.5px;color:var(--mu);}
+.lb-tbl-wrap{overflow-x:auto;}
+.lb-tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;color:var(--tx);}
+.lb-tbl th{font-size:11.5px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;text-align:right;padding:0 14px 10px;font-family:var(--font);}
+.lb-tbl th.lb-th-num,.lb-tbl th.lb-th-rep{text-align:left;}
+.lb-tbl td{padding:14px;vertical-align:middle;color:var(--mu);text-align:right;border-top:0.5px solid var(--brd);position:relative;}
+.lb-tbl tbody tr:first-child td{border-top:none;}
+.lb-tbl .lb-td-num{color:var(--mu);width:32px;text-align:left;padding-left:4px;}
+.lb-tbl .lb-td-rep{text-align:left;}
+.lb-tbl .lb-td-rep-inner{display:flex;align-items:center;gap:10px;}
+.lb-tbl .lb-td-tot{color:var(--tx);font-weight:700;}
+.lb-tbl .lb-td-rep-av{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex:none;}
+.lb-tbl .lb-td-rep-name{color:var(--tx);font-weight:500;}
+.lb-tbl-bar{position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:transparent;pointer-events:none;}
+.lb-tbl-bar-fill{height:100%;background:var(--ac);border-radius:2px;}
+@media (max-width:640px){
+  .lb-widget{margin:0 14px 14px;padding:16px;}
+  .lb-tbl th, .lb-tbl td{padding:10px 8px;font-size:12px;}
+}
+
+@media (max-width:900px){
+  .hamburger-btn{display:flex;}
+  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
+  .rep-sb.open{transform:translateX(0);}
+  .rep-backdrop{z-index:205;}
+  .rep-main{margin-left:0;}
+  .rep-bar{padding:10px 14px;}
+}
+@media (max-width:640px){
+  #rep-filter-btn > span,
+  #rep-loc-btn > span{display:none;}
+  #rep-filter-btn .rep-chev,
+  #rep-loc-btn .rep-chev{display:none;}
+  #rep-filter-btn,
+  #rep-loc-btn{padding:0;width:40px;justify-content:center;gap:0;}
+  .rep-menu{position:fixed;inset:0;width:100%;max-width:100%;min-width:0;border-radius:0;border:none;z-index:150;}
+  .rep-dd.open .rep-menu{display:flex;flex-direction:column;}
+  .rep-menu-mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-menu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-menu-mclose{width:44px;height:44px;border:none;background:var(--sur2);color:var(--mu);border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .rep-menu-item{padding:16px 20px;min-height:52px;font-size:15px;}
+  .rep-menu-srch{margin:12px 14px;padding:11px 12px;}
+  .rep-menu-srch input{font-size:16px;}
+  .rep-tbtn{min-height:44px;}
+  #rep-filter-btn,#rep-loc-btn{width:44px;}
+  .rep-item{min-height:44px;}
+  body.rep-sheet-open{overflow:hidden;}
+  body.rep-sheet-open .rep-menu-backdrop{display:block;}
+  body.rep-sheet-open .rep-bar{z-index:200;}
+  /* Mobile a11y sweep */
+  .lb-grid{grid-template-columns:1fr;padding:16px;}
+}
+
+/* nav toast */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;transform:translateX(380px);opacity:0;pointer-events:none;transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+
+/* Notifications panel */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">Reputation</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification panel -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item active" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead"><button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="rep-submenu-mtitle">Requests</span></div>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item active" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="rep-bar">
+    <!-- Period dropdown -->
+    <div class="rep-dd" id="rep-filter">
+      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="rep-menu" id="rep-filter-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Period</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+    </div>
+    <!-- Location dropdown -->
+    <div class="rep-dd" id="rep-loc">
+      <button class="rep-tbtn" id="rep-loc-btn" onclick="repLocToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="rep-tbtn-val" id="rep-loc-label">All locations</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="rep-menu" id="rep-loc-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Location</span><button class="rep-menu-mclose" onclick="repLocClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="rep-menu-srch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="rep-loc-srch-input" placeholder="Search location..." oninput="repLocFilter(this.value)" />
+        </div>
+        <div class="rep-menu-item checked" onclick="repLocPick(this,'All locations')"><span>All locations</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 1')"><span>Location 1</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 2')"><span>Location 2</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-item" onclick="repLocPick(this,'Location 3')"><span>Location 3</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="rep-menu-empty" id="rep-loc-empty">No matching location.</div>
+      </div>
+    </div>
+  </div>
+  <div class="rep-content">
+    <div class="lb-grid" id="lb-kpi"></div>
+    <div class="lb-widget lb-card" id="lb-most-sent">
+      <div class="lb-widget-head">
+        <div class="lb-widget-title">Most sent reviews by users</div>
+        <div class="lb-widget-sub" id="lb-most-sent-sub">Current Year</div>
+      </div>
+      <div class="lb-tbl-wrap">
+        <table class="lb-tbl">
+          <thead>
+            <tr>
+              <th class="lb-th-num">#</th>
+              <th class="lb-th-rep">Rep</th>
+              <th>Sent</th>
+              <th>Received</th>
+              <th>Clicked</th>
+              <th class="lb-th-tot">Total</th>
+            </tr>
+          </thead>
+          <tbody id="lb-most-sent-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();repLocClose();"></div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script src="../../../shared/leads-comms.js"></script>
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+
+function repNav(label){
+  document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Dashboards'){ window.location.href = '../../reputation_dashboard/Dashboard.html'; return; }
+  if(label === 'Reviews'){ window.location.href = '../../reviews/reviews.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb = document.getElementById('rep-sb'), bd = document.getElementById('rep-backdrop');
+  var open = sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+
+/* Submenu handling (shared pattern) */
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = '';
+    menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Leaderboard') return; // we ARE this page
+  if(label === 'Review request'){ window.location.href = '../review_request/review_request.html'; return; }
+  if(label === 'Template'){ window.location.href = '../template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+var _repHoverTimer = null;
+function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
+function repHoverOpen(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
+  if(w.classList.contains('open')) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
+  var r = item.getBoundingClientRect();
+  menu.style.top = r.top + 'px';
+  menu.style.left = (r.right + 6) + 'px';
+  w.classList.add('open');
+}
+function repHoverClose(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer) clearTimeout(_repHoverTimer);
+  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
+}
+function _repBindHoverFlyouts(){
+  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
+    var key = (w.id || '').replace('rep-sub-','');
+    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
+    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
+  });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
+else _repBindHoverFlyouts();
+
+/* Toolbar dropdowns */
+function _repSyncSheet(){
+  var f = document.getElementById('rep-filter'), l = document.getElementById('rep-loc');
+  var anyOpen = (f && f.classList.contains('open')) || (l && l.classList.contains('open'));
+  document.body.classList.toggle('rep-sheet-open', !!anyOpen);
+}
+function repFilterToggle(e){ if(e) e.stopPropagation(); repLocClose(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
+function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
+function repFilterPick(el, label){
+  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
+  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
+  repFilterClose();
+  if(typeof lbRenderKpi === 'function') lbRenderKpi();
+  if(typeof lbRenderMostSent === 'function') lbRenderMostSent();
+}
+function repLocToggle(e){
+  if(e) e.stopPropagation();
+  repFilterClose();
+  var dd = document.getElementById('rep-loc');
+  var opening = !dd.classList.contains('open');
+  dd.classList.toggle('open');
+  if(opening){
+    var inp = document.getElementById('rep-loc-srch-input');
+    if(inp){ inp.value = ''; repLocFilter(''); if(window.innerWidth > 640) setTimeout(function(){ inp.focus(); }, 30); }
+  }
+  _repSyncSheet();
+}
+function repLocFilter(q){
+  var query = String(q||'').trim().toLowerCase();
+  var items = document.querySelectorAll('#rep-loc-menu .rep-menu-item');
+  var shown = 0;
+  items.forEach(function(it){
+    var t = (it.textContent||'').trim().toLowerCase();
+    var match = !query || t.indexOf(query) !== -1;
+    it.style.display = match ? '' : 'none';
+    if(match) shown++;
+  });
+  var empty = document.getElementById('rep-loc-empty');
+  if(empty) empty.classList.toggle('show', shown === 0);
+}
+function repLocClose(){ var f = document.getElementById('rep-loc'); if(f) f.classList.remove('open'); _repSyncSheet(); }
+function repLocPick(el, label){
+  document.querySelectorAll('#rep-loc-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
+  var lbl = document.getElementById('rep-loc-label'); if(lbl) lbl.textContent = label;
+  repLocClose();
+}
+
+/* KPI cards */
+var LB_ICONS = {
+  sent:     '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+  received: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  highest:  '<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>',
+  requests: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+};
+var LB_KPI = [
+  { key:'sent',     cls:'outbound', title:'Sent Reviews',         value:128   },
+  { key:'received', cls:'inbound',  title:'Received Reviews',     value:84    },
+  { key:'highest',  cls:'answered', title:'Highest Reviews',      value:'4.8' },
+  { key:'requests', cls:'returned', title:'Requests Review Sent', value:96    }
+];
+function lbEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function lbRenderKpi(){
+  var el = document.getElementById('lb-kpi'); if(!el) return;
+  var win = document.getElementById('rep-filter-label');
+  var winLbl = (win && win.textContent) || 'Current Year';
+  el.innerHTML = LB_KPI.map(function(c){
+    return '<div class="lb-card kpi kpi-'+c.cls+'">'
+      + '<div class="kpi-icon">'+(LB_ICONS[c.key]||'')+'</div>'
+      + '<div><div class="kpi-num">'+lbEsc(String(c.value))+'</div></div>'
+      + '<div class="kpi-sub">'+lbEsc(c.title)+'</div>'
+      + '<div class="ca-window"><span class="ca-window-dot"></span><span>'+lbEsc(winLbl)+'</span></div>'
+      + '</div>';
+  }).join('');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lbRenderKpi);
+else lbRenderKpi();
+
+/* Most sent reviews by users */
+function _lbSeededNum(seed, min, max){
+  var h = 0;
+  for(var i=0;i<seed.length;i++){ h = ((h<<5) - h + seed.charCodeAt(i))|0; }
+  var r = Math.abs(h) % 1000 / 1000;
+  return Math.round(min + r*(max-min));
+}
+function lbBuildMostSent(){
+  var team = (window.CCLeads && CCLeads.TEAM) || [];
+  return team.map(function(t){
+    var sent     = _lbSeededNum(t.name+':s', 12, 48);
+    var received = _lbSeededNum(t.name+':r', 4,  Math.max(5, sent-6));
+    var clicked  = _lbSeededNum(t.name+':c', 2,  Math.max(3, received-1));
+    return { key:t.key, name:t.name, color:t.color, sent:sent, received:received, clicked:clicked, total:sent+received+clicked };
+  }).sort(function(a,b){ return b.total - a.total; }).slice(0, 8);
+}
+function lbRenderMostSent(){
+  var body = document.getElementById('lb-most-sent-body'); if(!body) return;
+  var rows = lbBuildMostSent();
+  var max  = Math.max.apply(null, rows.map(function(r){return r.total;}).concat([1]));
+  body.innerHTML = rows.map(function(r, i){
+    var pct = Math.round((r.total / max) * 100);
+    return '<tr>'
+      + '<td class="lb-td-num">'+(i+1)+'</td>'
+      + '<td class="lb-td-rep"><div class="lb-td-rep-inner"><span class="lb-td-rep-av" style="background:'+r.color+';">'+lbEsc(r.key)+'</span><span class="lb-td-rep-name">'+lbEsc(r.name)+'</span></div></td>'
+      + '<td>'+r.sent+'</td>'
+      + '<td>'+r.received+'</td>'
+      + '<td>'+r.clicked+'</td>'
+      + '<td class="lb-td-tot">'+r.total+'<div class="lb-tbl-bar"><div class="lb-tbl-bar-fill" style="width:'+pct+'%;"></div></div></td>'
+      + '</tr>';
+  }).join('');
+  var sub = document.getElementById('lb-most-sent-sub');
+  var win = document.getElementById('rep-filter-label');
+  if(sub && win) sub.textContent = win.textContent || 'Current Year';
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lbRenderMostSent);
+else lbRenderMostSent();
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('.rep-item-wrap')) repSubClose();
+  if(!e.target.closest('#rep-filter')) repFilterClose();
+  if(!e.target.closest('#rep-loc')) repLocClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  repSubClose(); repFilterClose(); repLocClose();
+});
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'reputation'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../../shared/notifications.js"></script>
+<script src="../../../shared/contact-panel.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation · Review Request</title>
+<link rel="stylesheet" href="../../../shared/app.css">
+<link rel="stylesheet" href="../../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Top header ── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid var(--bg);}
+
+/* ── Sidebar ── */
+.rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);background:var(--bg);border-right:0.5px solid var(--brd);display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;transition:transform .2s ease-out;}
+.rep-nav{display:flex;flex-direction:column;gap:3px;}
+.rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;transition:background .12s,color .12s;user-select:none;}
+.rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.rep-item.active{background:var(--ac);color:#fff;}
+.rep-item.active:hover{background:var(--ac);color:#fff;}
+.rep-item svg{width:18px;height:18px;flex:none;}
+.rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+.rep-item.active .rep-caret{color:#fff;}
+.rep-item:hover .rep-caret{color:var(--tx);}
+.rep-item-wrap{position:relative;}
+.rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+.rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+.rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+.rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-submenu-item.active{background:rgba(79,124,255,.10);color:var(--ac2);font-weight:500;}
+.rep-submenu-mhead{display:none;}
+@media (max-width:900px){
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+  .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-submenu-back svg{width:20px;height:20px;}
+  .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
+
+/* ── Content ── */
+.rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+.rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+.rep-backdrop.show{display:block;}
+
+/* Review request toolbar + composer */
+.rq-toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;}
+.rq-tabs{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:3px;}
+.rq-tab{width:38px;height:32px;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+.rq-tab:hover{color:var(--tx);}
+.rq-tab.active{background:var(--sur);color:var(--ac2);}
+.rq-tab svg{width:16px;height:16px;}
+
+.rq-grid{display:flex;gap:16px;padding:20px;align-items:stretch;}
+.rq-col{flex:1;min-width:0;display:flex;flex-direction:column;}
+.rq-col-left{max-width:520px;}
+.rq-card{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;}
+.rq-field{display:flex;flex-direction:column;gap:6px;}
+.rq-label{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;font-weight:600;}
+.rq-input{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;min-height:40px;outline:none;transition:border-color .12s;}
+.rq-input:focus{border-color:var(--ac);}
+.rq-input::placeholder{color:var(--mu);}
+.rq-textarea{min-height:120px;resize:vertical;line-height:1.5;font-family:var(--font);}
+.rq-recip{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:6px;transition:border-color .12s;}
+.rq-recip:focus-within{border-color:var(--ac);}
+.rq-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.rq-chips:empty{display:none;}
+.rq-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px 3px 4px;border-radius:16px;background:var(--sur);border:0.5px solid var(--brd2);font-size:12px;color:var(--tx);}
+.rq-chip-av{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex:none;}
+.rq-chip-x{cursor:pointer;color:var(--mu);font-size:12px;margin-left:1px;transition:color .15s;}
+.rq-chip-x:hover{color:var(--rd);}
+.rq-pick{position:relative;}
+.rq-pick-input{width:100%;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13.5px;padding:6px 4px;min-height:28px;}
+.rq-pick-input::placeholder{color:var(--mu);}
+.rq-dd{display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:60;max-height:220px;overflow-y:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:5px;box-shadow:0 14px 36px rgba(0,0,0,.55);}
+.rq-dd.show{display:block;}
+.rq-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;}
+.rq-item:hover{background:var(--sur2);}
+.rq-item-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex:none;}
+.rq-item-info{display:flex;flex-direction:column;min-width:0;flex:1;}
+.rq-item-name{font-size:12.5px;color:var(--tx);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rq-item-email{font-size:11px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rq-item-check{color:var(--gr);font-size:14px;opacity:0;flex:none;}
+.rq-item.added .rq-item-check{opacity:1;}
+.rq-dd-empty{padding:12px;text-align:center;font-size:12.5px;color:var(--mu);}
+.rq-stars{display:flex;gap:6px;}
+.rq-stars svg{width:28px;height:28px;color:var(--mu);cursor:pointer;transition:color .12s;}
+.rq-stars svg:hover{color:var(--am);}
+.rq-hint{font-size:11.5px;color:var(--mu);}
+.rq-hint strong{color:var(--tx);font-weight:600;}
+.rq-template{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:0.5px solid var(--brd2);background:var(--sur2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:pointer;align-self:flex-start;}
+.rq-template svg{width:12px;height:12px;color:var(--mu);}
+.rq-template:hover{border-color:var(--ac);color:var(--ac2);}
+.rq-tmpl-wrap{position:relative;align-self:flex-start;}
+.rq-tmpl-menu{display:none;position:absolute;left:0;top:calc(100% + 5px);z-index:60;min-width:260px;max-height:280px;overflow-y:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:5px;box-shadow:0 14px 36px rgba(0,0,0,.55);}
+.rq-tmpl-menu.show{display:block;}
+.rq-tmpl-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;cursor:pointer;color:var(--tx);font-family:var(--font);font-size:12.5px;}
+.rq-tmpl-item:hover{background:var(--sur2);color:var(--ac2);}
+.rq-tmpl-item.active{color:var(--ac2);background:rgba(79,124,255,.08);}
+.rq-tmpl-item-body{display:flex;flex-direction:column;min-width:0;flex:1;}
+.rq-tmpl-item-sub{color:var(--mu);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
+.rq-tmpl-empty{padding:14px 12px;text-align:center;color:var(--mu);font-size:12.5px;}
+.rq-tmpl-srch{display:flex;align-items:center;gap:8px;margin:2px 4px 6px;padding:7px 11px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:7px;transition:border-color .12s;}
+.rq-tmpl-srch:focus-within{border-color:var(--ac);}
+.rq-tmpl-srch svg{width:13px;height:13px;color:var(--mu);flex:none;}
+.rq-tmpl-srch input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;padding:0;}
+.rq-tmpl-srch input::placeholder{color:var(--mu);}
+.rq-actions{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+.rq-btn-primary{background:#0f6e56;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;font-family:var(--font);}
+.rq-btn-primary:hover{background:#0d5c48;}
+.rq-btn-secondary{background:var(--sur2);color:var(--tx);border:0.5px solid var(--brd2);padding:10px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font);}
+.rq-btn-secondary:hover{border-color:var(--ac);color:var(--ac2);}
+.rq-btn-ai{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));border:0.5px solid rgba(79,124,255,.4);color:var(--tx);font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;margin-left:auto;}
+.rq-btn-ai:hover{background:linear-gradient(135deg, rgba(79,124,255,.32), rgba(196,181,253,.32));border-color:var(--ac);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,124,255,.18);}
+.rq-btn-ai svg{width:14px;height:14px;color:var(--ac2);}
+
+.rq-col-right{align-items:stretch;}
+.rq-preview-wrap{display:flex;justify-content:center;align-items:flex-start;padding:24px;background:var(--sur);border-radius:14px;min-height:560px;flex:1;border:0.5px solid var(--brd2);}
+.rq-preview{background:#fff;color:#111;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.3);padding:36px 32px;transition:width .25s ease-out;font-family:'DM Sans',sans-serif;}
+.rq-preview-scope.rq-view-desktop .rq-preview{width:640px;max-width:100%;}
+.rq-preview-scope.rq-view-mobile .rq-preview{width:340px;max-width:100%;}
+.rq-pv-title{font-size:20px;font-weight:700;margin-bottom:12px;color:#111;text-align:center;}
+.rq-pv-body{font-size:14px;color:#333;line-height:1.55;text-align:center;margin-bottom:22px;white-space:pre-line;}
+.rq-pv-stars{display:flex;justify-content:center;gap:8px;margin:18px 0 14px;}
+.rq-pv-stars svg{width:36px;height:36px;color:#e2e5ed;cursor:pointer;transition:color .12s;}
+.rq-pv-stars svg:hover,.rq-pv-stars svg.on{color:#f5a623;}
+.rq-pv-sub{font-size:12.5px;color:#666;text-align:center;margin-bottom:24px;}
+.rq-pv-footer{border-top:1px solid #e5e7ee;padding-top:14px;font-size:11px;color:#888;text-align:center;}
+
+@media (max-width:900px){
+  .hamburger-btn{display:flex;}
+  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
+  .rep-sb.open{transform:translateX(0);}
+  .rep-backdrop{z-index:205;}
+  .rep-main{margin-left:0;}
+  .rq-grid{flex-direction:column;padding:14px;}
+  .rq-col-left{max-width:none;}
+  .rq-preview-scope.rq-view-desktop .rq-preview,
+  .rq-preview-scope.rq-view-mobile .rq-preview{width:100%;}
+}
+
+/* ── Mobile a11y sweep: touch targets ≥44 + iOS-zoom-safe inputs ── */
+@media (max-width:640px){
+  .rq-input, .rq-textarea, .rq-pick-input, .rq-tmpl-srch input{font-size:16px;}
+  .rq-chip-x{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;}
+  .rq-chip{padding:4px 10px 4px 4px;}
+  .rq-chip-av{width:24px;height:24px;font-size:10px;}
+  .rq-pick-input{min-height:44px;padding:10px 6px;}
+  .rq-item, .rq-tmpl-item{min-height:44px;padding:10px 12px;}
+  .rq-item-av{width:32px;height:32px;font-size:11px;}
+  .rq-btn-primary, .rq-btn-secondary, .rq-btn-ai, .rq-template{min-height:44px;padding:12px 18px;}
+  .rq-actions{gap:10px;}
+  .rq-pv-stars svg{width:44px;height:44px;}
+}
+
+/* nav toast */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;transform:translateX(380px);opacity:0;pointer-events:none;transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+
+/* Notifications panel */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">Reputation</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification panel -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item active" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead"><button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="rep-submenu-mtitle">Requests</span></div>
+        <button class="rep-submenu-item active" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="rq-toolbar">
+    <div class="rq-tabs" role="tablist" aria-label="Preview device">
+      <button class="rq-tab active" data-view="desktop" onclick="rqSetView('desktop')" role="tab" aria-label="View as desktop" title="View as desktop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </button>
+      <button class="rq-tab" data-view="mobile" onclick="rqSetView('mobile')" role="tab" aria-label="View as mobile" title="View as mobile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="rq-grid rq-preview-scope rq-view-desktop" id="rq-preview-scope">
+    <div class="rq-col rq-col-left">
+      <div class="rq-card">
+        <div class="rq-field">
+          <label class="rq-label" for="rq-from">From</label>
+          <input class="rq-input" id="rq-from" type="text" value="reviews@usadirectauto.com"/>
+        </div>
+        <div class="rq-field">
+          <label class="rq-label" for="rq-to-input">To</label>
+          <div class="rq-recip">
+            <div class="rq-chips" id="rq-to-chips"></div>
+            <div class="rq-pick">
+              <input class="rq-pick-input" id="rq-to-input" type="text"
+                     placeholder="Add lead or type email…"
+                     oninput="rqRecipFilter(this.value)"
+                     onfocus="rqRecipFilter(this.value)"
+                     onkeydown="rqRecipKey(event)"
+                     onblur="rqRecipBlur()"/>
+              <div class="rq-dd" id="rq-to-dd"></div>
+            </div>
+          </div>
+        </div>
+        <div class="rq-field">
+          <label class="rq-label" for="rq-subject">Subject</label>
+          <input class="rq-input" id="rq-subject" type="text" placeholder="Email subject" oninput="rqUpdatePreview()"/>
+        </div>
+        <div class="rq-field">
+          <label class="rq-label" for="rq-message">Message</label>
+          <textarea class="rq-input rq-textarea" id="rq-message" rows="5" placeholder="Write your review request message..." oninput="rqUpdatePreview()"></textarea>
+        </div>
+        <div class="rq-field">
+          <label class="rq-label">Star Rating</label>
+          <div class="rq-stars" aria-label="Star rating preview">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          </div>
+          <div class="rq-hint"><strong>1–3★</strong> → USA Direct Auto (internal) · <strong>4–5★</strong> → Google (public)</div>
+        </div>
+        <div class="rq-field">
+          <label class="rq-label">Template</label>
+          <div class="rq-tmpl-wrap" id="rq-tmpl-wrap">
+            <button class="rq-template" onclick="rqTmplToggle(event)"><span id="rq-tmpl-label">Default template</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="rq-tmpl-menu" id="rq-tmpl-menu"></div>
+          </div>
+        </div>
+        <div class="rq-actions">
+          <button class="rq-btn-primary" onclick="rqSend()">Send</button>
+          <button class="rq-btn-secondary" onclick="rqDiscard()">Discard</button>
+          <button class="rq-btn-ai" onclick="rqAiCompose()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>AI compose</button>
+        </div>
+      </div>
+    </div>
+    <div class="rq-col rq-col-right">
+      <div class="rq-preview-wrap">
+        <div class="rq-preview">
+          <div class="rq-pv-title">How was your experience?</div>
+          <div class="rq-pv-body">Hi Lead — thanks for choosing USA Direct Auto. We'd love to hear how we did. Please rate your experience below.</div>
+          <div class="rq-pv-stars" id="rq-pv-stars">
+            <svg data-val="1" onclick="rqPvRate(1)" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg data-val="2" onclick="rqPvRate(2)" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg data-val="3" onclick="rqPvRate(3)" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg data-val="4" onclick="rqPvRate(4)" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <svg data-val="5" onclick="rqPvRate(5)" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          </div>
+          <div class="rq-pv-sub">Tap a star to leave your rating.</div>
+          <div class="rq-pv-footer">USA Direct Auto · reviews@usadirectauto.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script src="../../../shared/leads-comms.js"></script>
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+
+function repNav(label){
+  document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Dashboards'){ window.location.href = '../../reputation_dashboard/Dashboard.html'; return; }
+  if(label === 'Reviews'){ window.location.href = '../../reviews/reviews.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb = document.getElementById('rep-sb'), bd = document.getElementById('rep-backdrop');
+  var open = sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+
+/* Submenu handling (shared pattern) */
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = '';
+    menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Review request') return; // we ARE this page
+  if(label === 'Leaderboard'){ window.location.href = '../leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){ window.location.href = '../template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+var _repHoverTimer = null;
+function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
+function repHoverOpen(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
+  if(w.classList.contains('open')) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
+  var r = item.getBoundingClientRect();
+  menu.style.top = r.top + 'px';
+  menu.style.left = (r.right + 6) + 'px';
+  w.classList.add('open');
+}
+function repHoverClose(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer) clearTimeout(_repHoverTimer);
+  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
+}
+function _repBindHoverFlyouts(){
+  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
+    var key = (w.id || '').replace('rep-sub-','');
+    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
+    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
+  });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
+else _repBindHoverFlyouts();
+
+/* Review request specific */
+function rqSetView(v){
+  document.querySelectorAll('.rq-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-view')===v); });
+  var scope = document.getElementById('rq-preview-scope');
+  scope.classList.toggle('rq-view-desktop', v==='desktop');
+  scope.classList.toggle('rq-view-mobile', v==='mobile');
+}
+function rqUpdatePreview(){
+  var t = document.getElementById('rq-subject');
+  var m = document.getElementById('rq-message');
+  var pt = document.querySelector('.rq-pv-title');
+  var pb = document.querySelector('.rq-pv-body');
+  if(pt && t) pt.textContent = t.value.trim() || 'How was your experience?';
+  if(pb && m) pb.textContent = m.value;
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', rqUpdatePreview);
+else rqUpdatePreview();
+var RQ_DEFAULTS = {
+  from: 'reviews@usadirectauto.com',
+  to: '',
+  subject: '',
+  message: ''
+};
+function rqEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function rqAttr(s){ return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function rqInitials(name){ var p=String(name||'').trim().split(/\s+/); return (((p[0]&&p[0][0])||'')+((p.length>1&&p[p.length-1][0])||'')).toUpperCase(); }
+var _rqContacts=null;
+function rqContacts(){
+  if(_rqContacts) return _rqContacts;
+  var out=[], seen={}, C=window.CCLeads||{};
+  (C.LEADS||[]).forEach(function(l){
+    var em=String(l.email||'').toLowerCase();
+    if(!em || seen[em]) return; seen[em]=1;
+    out.push({name:l.name, email:em, color:l.ac||'#534AB7', initials:rqInitials(l.name)});
+  });
+  _rqContacts=out; return out;
+}
+var _rqRecip=[];
+function rqRecipHas(email){ var e=String(email).toLowerCase(); return _rqRecip.some(function(r){ return r.email.toLowerCase()===e; }); }
+function rqRecipChips(){
+  var box=document.getElementById('rq-to-chips'); if(!box) return;
+  box.innerHTML=_rqRecip.map(function(c){
+    return '<span class="rq-chip"><span class="rq-chip-av" style="background:'+c.color+';">'+rqEsc(c.initials||'?')+'</span>'+rqEsc(c.name)
+      +'<span class="rq-chip-x" onclick="rqRecipToggle(\''+rqAttr(c.email)+'\')" title="Remove">&#x2715;</span></span>';
+  }).join('');
+}
+function rqRecipToggle(email){
+  if(rqRecipHas(email)){ var e=String(email).toLowerCase(); _rqRecip=_rqRecip.filter(function(r){ return r.email.toLowerCase()!==e; }); }
+  else {
+    var c=rqContacts().filter(function(x){ return x.email.toLowerCase()===String(email).toLowerCase(); })[0];
+    if(!c){ c={name:email, email:email, color:'#4f7cff', initials:(String(email)[0]||'?').toUpperCase()}; }
+    _rqRecip.push(c);
+  }
+  rqRecipChips();
+  var inp=document.getElementById('rq-to-input');
+  if(inp){ inp.value=''; rqRecipFilter(''); inp.focus(); }
+}
+function rqRecipFilter(q){
+  var dd=document.getElementById('rq-to-dd'); if(!dd) return;
+  var query=(q||'').trim().toLowerCase();
+  var list=rqContacts().filter(function(c){ return !query || c.name.toLowerCase().indexOf(query)>=0 || c.email.toLowerCase().indexOf(query)>=0; }).slice(0,40);
+  var html=list.map(function(c){
+    var on=rqRecipHas(c.email);
+    return '<div class="rq-item'+(on?' added':'')+'" onmousedown="event.preventDefault()" onclick="rqRecipToggle(\''+rqAttr(c.email)+'\')">'
+      +'<span class="rq-item-av" style="background:'+c.color+';">'+rqEsc(c.initials||'?')+'</span>'
+      +'<span class="rq-item-info"><span class="rq-item-name">'+rqEsc(c.name)+'</span><span class="rq-item-email">'+rqEsc(c.email)+'</span></span>'
+      +'<span class="rq-item-check">&#10003;</span></div>';
+  }).join('');
+  var typed=(q||'').trim();
+  if(typed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typed) && !rqContacts().some(function(c){ return c.email.toLowerCase()===typed.toLowerCase(); }) && !rqRecipHas(typed)){
+    html='<div class="rq-item" onmousedown="event.preventDefault()" onclick="rqRecipToggle(\''+rqAttr(typed)+'\')">'
+      +'<span class="rq-item-av" style="background:var(--sur2);color:var(--mu);">+</span>'
+      +'<span class="rq-item-info"><span class="rq-item-name">Add &ldquo;'+rqEsc(typed)+'&rdquo;</span><span class="rq-item-email">Use this email address</span></span></div>'+html;
+  }
+  dd.innerHTML = html || '<div class="rq-dd-empty">No matches</div>';
+  dd.classList.add('show');
+}
+function rqRecipBlur(){ setTimeout(function(){ var dd=document.getElementById('rq-to-dd'); if(dd) dd.classList.remove('show'); }, 160); }
+function rqRecipKey(e){
+  var inp=e.target;
+  if(e.key==='Enter'){
+    var v=(inp.value||'').trim();
+    if(v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && !rqRecipHas(v)){
+      e.preventDefault();
+      rqRecipToggle(v);
+    }
+  } else if(e.key==='Backspace' && !inp.value && _rqRecip.length){
+    _rqRecip.pop(); rqRecipChips(); rqRecipFilter('');
+  }
+}
+function rqResetForm(){
+  document.getElementById('rq-from').value    = RQ_DEFAULTS.from;
+  _rqRecip = []; rqRecipChips();
+  var inp=document.getElementById('rq-to-input'); if(inp) inp.value='';
+  document.getElementById('rq-subject').value = RQ_DEFAULTS.subject;
+  document.getElementById('rq-message').value = RQ_DEFAULTS.message;
+  if(typeof rqTmplResetLabel === 'function') rqTmplResetLabel();
+  rqUpdatePreview();
+}
+function rqSend(){
+  if(!_rqRecip.length){
+    showNavToast('Recipients required','Add at least one recipient in the To field.');
+    var inp=document.getElementById('rq-to-input'); if(inp) inp.focus();
+    return;
+  }
+  var subject = document.getElementById('rq-subject').value.trim() || '(no subject)';
+  var summary = _rqRecip.length === 1
+    ? 'To ' + _rqRecip[0].email
+    : 'To ' + _rqRecip.length + ' recipients';
+  showNavToast('Review request sent', summary + ' · Subject: ' + subject);
+  rqResetForm();
+}
+function rqDiscard(){
+  document.getElementById('rq-from').value    = RQ_DEFAULTS.from;
+  _rqRecip = []; rqRecipChips();
+  var inp=document.getElementById('rq-to-input'); if(inp) inp.value='';
+  document.getElementById('rq-subject').value = '';
+  document.getElementById('rq-message').value = '';
+  if(typeof rqTmplResetLabel === 'function') rqTmplResetLabel();
+  rqUpdatePreview();
+  showNavToast('Draft discarded','Composer cleared.');
+}
+function rqPvRate(n){
+  var stars = document.querySelectorAll('#rq-pv-stars svg');
+  stars.forEach(function(s){ s.classList.toggle('on', parseInt(s.getAttribute('data-val'),10) <= n); });
+  if(n >= 4){
+    showNavToast(n + '★ · Public review', 'Redirecting to Google to leave a public review.');
+  } else {
+    showNavToast(n + '★ · Internal feedback', 'Routed to USA Direct Auto — the team will follow up privately.');
+  }
+}
+var RQ_AI = [
+  {
+    subject: 'How was your experience with USA Direct Auto?',
+    message: "Hi {name},\n\nThanks for choosing USA Direct Auto — we hope everything's going great with your new vehicle. It would mean a lot if you could take a moment to rate your experience below.\n\nThank you!\nThe USA Direct Auto team"
+  },
+  {
+    subject: 'Quick favor — share your experience?',
+    message: "Hi {name},\n\nWe'd love to hear how we did. Your feedback helps us improve and helps other buyers find us. Tap a star below to leave a quick rating.\n\nAppreciate you,\nThe USA Direct Auto team"
+  },
+  {
+    subject: 'A minute of your time?',
+    message: "Hi {name},\n\nThanks again for stopping by. Would you mind sharing how your experience went? A quick star rating is all it takes.\n\nThanks,\nThe USA Direct Auto team"
+  }
+];
+function rqAiCompose(){
+  if(typeof rqAiCompose._i !== 'number') rqAiCompose._i = 0;
+  var d = RQ_AI[rqAiCompose._i % RQ_AI.length];
+  rqAiCompose._i++;
+  var firstName = (_rqRecip.length && _rqRecip[0].name)
+    ? _rqRecip[0].name.split(' ')[0] : 'there';
+  document.getElementById('rq-subject').value = d.subject;
+  document.getElementById('rq-message').value = d.message.replace(/\{name\}/g, firstName);
+  rqUpdatePreview();
+  showNavToast('AI draft ready','Subject and message populated. Edit as needed before sending.');
+}
+var _rqTmplId = null;
+var _rqTmplQuery = '';
+function rqTmplLoad(){
+  try{
+    var raw = localStorage.getItem('cc_rq_templates');
+    if(!raw) return [];
+    var o = JSON.parse(raw);
+    if(!o || !Array.isArray(o.list)) return [];
+    return o.list;
+  }catch(e){ return []; }
+}
+function rqTmplRenderBody(){
+  var body = document.getElementById('rq-tmpl-body'); if(!body) return;
+  var q = _rqTmplQuery.trim().toLowerCase();
+  var rows = rqTmplLoad();
+  var filtered = q ? rows.filter(function(t){
+    return (t.name||'').toLowerCase().indexOf(q) >= 0
+        || (t.subject||'').toLowerCase().indexOf(q) >= 0;
+  }) : rows;
+  if(!filtered.length){
+    body.innerHTML = '<div class="rq-tmpl-empty">'+ (rows.length ? 'No templates match.' : 'No templates yet. Create one on the Template page.') +'</div>';
+    return;
+  }
+  body.innerHTML = filtered.map(function(t){
+    var active = (t.id === _rqTmplId) ? ' active' : '';
+    var sub = t.subject ? '<div class="rq-tmpl-item-sub">'+rqEsc(t.subject)+'</div>' : '';
+    return '<div class="rq-tmpl-item'+active+'" onclick="rqTmplPick(\''+rqAttr(t.id)+'\')">'
+      + '<div class="rq-tmpl-item-body"><div>'+rqEsc(t.name)+'</div>'+sub+'</div>'
+      + '</div>';
+  }).join('');
+}
+function rqTmplRender(){
+  var m = document.getElementById('rq-tmpl-menu'); if(!m) return;
+  m.innerHTML = ''
+    + '<div class="rq-tmpl-srch">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+      + '<input type="text" id="rq-tmpl-srch-input" placeholder="Search templates..." oninput="rqTmplFilter(this.value)"/>'
+    + '</div>'
+    + '<div id="rq-tmpl-body"></div>';
+  rqTmplRenderBody();
+}
+function rqTmplFilter(v){ _rqTmplQuery = v || ''; rqTmplRenderBody(); }
+function rqTmplToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('rq-tmpl-menu'); if(!m) return;
+  var opening = !m.classList.contains('show');
+  if(opening){ _rqTmplQuery = ''; rqTmplRender(); }
+  m.classList.toggle('show');
+  if(opening && window.innerWidth > 640){
+    setTimeout(function(){ var i=document.getElementById('rq-tmpl-srch-input'); if(i) i.focus(); }, 30);
+  }
+}
+function rqTmplClose(){
+  var m = document.getElementById('rq-tmpl-menu');
+  if(m) m.classList.remove('show');
+}
+function rqTmplPick(id){
+  var rows = rqTmplLoad();
+  var t = rows.filter(function(x){return x.id===id;})[0];
+  if(!t){ rqTmplClose(); return; }
+  _rqTmplId = id;
+  var firstName = (_rqRecip.length && _rqRecip[0].name) ? _rqRecip[0].name.split(' ')[0] : 'there';
+  document.getElementById('rq-subject').value = t.subject || '';
+  document.getElementById('rq-message').value = String(t.body || '').replace(/\{name\}/g, firstName);
+  var lbl = document.getElementById('rq-tmpl-label'); if(lbl) lbl.textContent = t.name;
+  rqUpdatePreview();
+  rqTmplClose();
+  showNavToast('Template applied', t.name+' was loaded.');
+}
+function rqTmplResetLabel(){
+  _rqTmplId = null;
+  var lbl = document.getElementById('rq-tmpl-label'); if(lbl) lbl.textContent = 'Default template';
+}
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('.rep-item-wrap')) repSubClose();
+  if(!e.target.closest('#rq-tmpl-wrap')) rqTmplClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  repSubClose();
+  rqTmplClose();
+});
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'reputation'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../../shared/notifications.js"></script>
+<script src="../../../shared/contact-panel.js"></script>
+
+</body>
+</html>

@@ -62,7 +62,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rev-grid{display:flex;gap:16px;padding:20px;align-items:flex-start;}
 .rev-col-left{flex:0 0 20%;display:flex;flex-direction:column;gap:16px;min-width:0;}
 .rev-col-right{flex:1;min-width:0;}
-.rev-card{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:20px;}
+/* .rev-card migrated to shared `.card` */
 .rev-card-title{font-size:14px;font-weight:600;color:var(--tx);text-align:center;margin-bottom:18px;}
 .rev-avg-num{font-size:42px;font-weight:700;color:var(--tx);text-align:center;line-height:1;font-family:var(--font);}
 .rev-avg-num .rev-avg-unit{font-size:24px;color:var(--mu);font-weight:500;margin-left:2px;}
@@ -81,10 +81,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rev-count-num{font-size:42px;font-weight:700;color:var(--tx);text-align:center;line-height:1;}
 .rev-count-sub{font-size:13px;color:var(--mu);text-align:center;margin-top:10px;}
 .rev-count-sub strong{color:var(--ac2);font-weight:700;}
-.rev-empty{margin:0;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
-.rev-empty-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
-.rev-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
-.rev-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+/* .rev-empty (dead CSS — no markup references it) — use shared `.empty-state` instead */
 @media (max-width:900px){
   .rev-grid{flex-direction:column;padding:16px;}
   .rev-col-left,.rev-col-right{flex:1 1 auto;width:100%;}
@@ -235,6 +232,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;flex-wrap:wrap;}
 .rep-sp{flex:1;}
 .rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+/* .period-toggle / .pt-seg migrated to shared/app.css */
 .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
 .rep-tbtn svg{width:15px;height:15px;flex:none;}
 .rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
@@ -243,19 +241,17 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
 .rep-dd.open .rep-tbtn svg{color:var(--ac2);}
 .rep-dd.open .rep-chev{transform:rotate(180deg);}
-.rep-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);overflow:hidden;z-index:60;}
+/* .rep-menu / .rep-menu-item migrated to shared `.dropdown-menu` / `.dropdown-item`.
+   Keep .rep-menu for the parent-open toggle + list-style row dividers. */
+.rep-menu{display:none;padding:0;}
 .rep-dd.open .rep-menu{display:block;}
-.rep-menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 13px;background:transparent;border:none;border-bottom:0.5px solid var(--brd);color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;cursor:pointer;transition:background .12s,color .12s;}
+.rep-menu-item{justify-content:space-between;padding:10px 13px;border-radius:0;border-bottom:0.5px solid var(--brd);}
 .rep-menu-item:last-child{border-bottom:none;}
-.rep-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
 .rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
 .rep-menu-item.checked{color:var(--ac2);}
 .rep-menu-item.checked .rep-mi-check{opacity:1;}
-.rep-srch{display:flex;align-items:center;gap:7px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;height:40px;width:260px;}
-.rep-srch:focus-within{border-color:var(--ac);}
-.rep-srch svg{width:14px;height:14px;color:var(--mu);flex:none;}
-.rep-srch input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;width:100%;}
-.rep-srch input::placeholder{color:var(--mu);}
+/* .rep-srch migrated to shared `.search-pill` (in shared/app.css) */
+.rep-srch{width:260px;}
 
 /* ── Mobile drawer ── */
 .rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
@@ -348,12 +344,10 @@ body.mso-active .rep-bar{display:none;}
   .rep-bar{padding:10px 14px;}
 }
 @media (max-width:640px){
-  #rep-filter-btn > span,
   #rep-loc-btn > span{display:none;}
-  #rep-filter-btn .rep-chev,
   #rep-loc-btn .rep-chev{display:none;}
-  #rep-filter-btn,
   #rep-loc-btn{padding:0;width:40px;justify-content:center;gap:0;}
+  /* .period-toggle / .pt-seg mobile bumps — shared/app.css handles it */
   .rep-bar #rep-srch-desktop{display:none;}
   .rep-bar .mobile-search-toggle{display:flex;padding:0;width:40px;justify-content:center;gap:0;}
   /* Filter/Location dropdowns become full-screen sheets */
@@ -392,7 +386,7 @@ body.mso-active .rep-bar{display:none;}
   .mso-clear{width:44px;height:44px;}
   .nav-toast-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;}
   .rep-tbtn{min-height:44px;}
-  #rep-filter-btn,#rep-loc-btn,.rep-bar .mobile-search-toggle{width:44px;}
+  #rep-loc-btn,.rep-bar .mobile-search-toggle{width:44px;}
   .rep-item{min-height:44px;}
   .notif-tab{min-height:44px;padding:11px 12px;}
   .rep-menu-srch input{font-size:16px;}
@@ -530,22 +524,12 @@ body.mso-active .rep-bar{display:none;}
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="rep-bar">
-    <!-- Filter dropdown -->
-    <div class="rep-dd" id="rep-filter">
-      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
-        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="rep-menu" id="rep-filter-menu">
-        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Filter</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
-        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      </div>
+    <!-- Period segmented toggle -->
+    <div class="period-toggle" role="tablist" aria-label="Period">
+      <button class="pt-seg active" data-period="monthly" onclick="repSetPeriod(this,'Monthly')" role="tab">Monthly</button>
+      <button class="pt-seg" data-period="weekly"  onclick="repSetPeriod(this,'Weekly')"  role="tab">Weekly</button>
+      <button class="pt-seg" data-period="daily"   onclick="repSetPeriod(this,'Daily')"   role="tab">Daily</button>
+      <button class="pt-seg" data-period="all"     onclick="repSetPeriod(this,'All')"     role="tab">All</button>
     </div>
     <!-- Location dropdown -->
     <div class="rep-dd" id="rep-loc">
@@ -554,16 +538,16 @@ body.mso-active .rep-bar{display:none;}
         <span class="rep-tbtn-val" id="rep-loc-label">All locations</span>
         <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="rep-menu" id="rep-loc-menu">
+      <div class="dropdown-menu rep-menu" id="rep-loc-menu">
         <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Location</span><button class="rep-menu-mclose" onclick="repLocClose()" aria-label="Close">&#x2715;</button></div>
         <div class="rep-menu-srch">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="rep-loc-srch-input" placeholder="Search location..." oninput="repLocFilter(this.value)" />
         </div>
-        <div class="rep-menu-item checked" onclick="repLocPick(this,'All locations')"><span>All locations</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repLocPick(this,'Location 1')"><span>Location 1</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repLocPick(this,'Location 2')"><span>Location 2</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repLocPick(this,'Location 3')"><span>Location 3</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item checked" onclick="repLocPick(this,'All locations')"><span>All locations</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="repLocPick(this,'Location 1')"><span>Location 1</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="repLocPick(this,'Location 2')"><span>Location 2</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="repLocPick(this,'Location 3')"><span>Location 3</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="rep-menu-empty" id="rep-loc-empty">No matching location.</div>
       </div>
     </div>
@@ -575,7 +559,7 @@ body.mso-active .rep-bar{display:none;}
         <span class="rep-tbtn-badge" id="rep-cat-badge" hidden>0</span>
         <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="rep-menu rep-menu-wide" id="rep-cat-menu">
+      <div class="dropdown-menu rep-menu rep-menu-wide" id="rep-cat-menu">
         <div class="rep-menu-mhead"><button class="rep-menu-mback" id="rep-fd-back" onclick="repFdBack()" aria-label="Back">&#x2190;</button><span class="rep-menu-mtitle" id="rep-cat-mtitle">Filters</span><button class="rep-menu-mclose" onclick="repCatClose()" aria-label="Close">&#x2715;</button></div>
         <div class="fd-wrap" id="rep-fd">
           <div class="fd-left">
@@ -601,7 +585,7 @@ body.mso-active .rep-bar{display:none;}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
     </button>
     <!-- Search -->
-    <div class="rep-srch" id="rep-srch-desktop">
+    <div class="search-pill rep-srch" id="rep-srch-desktop">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="rep-reviews-search" placeholder="Search reviews..." oninput="repReviewsSearch(this.value)" />
     </div>
@@ -609,7 +593,7 @@ body.mso-active .rep-bar{display:none;}
   <div class="rev-grid">
     <div class="rev-col rev-col-left" id="rev-col-left"></div>
     <div class="rev-col rev-col-right" id="rev-col-right">
-      <div class="rev-card rev-r1">
+      <div class="card rev-card rev-r1">
         <div class="rev-r1-tabs">
           <button class="rev-r1-tab active" data-tab="trend" onclick="revR1Set('trend')">Sentiment Trend</button>
           <button class="rev-r1-tab" data-tab="source" onclick="revR1Set('source')">Sentiment by Source</button>
@@ -622,7 +606,7 @@ body.mso-active .rep-bar{display:none;}
         </select>
         <div class="rev-r1-body" id="rev-r1-body"></div>
       </div>
-      <div class="rev-card rev-r2" id="rev-r2"></div>
+      <div class="card rev-card rev-r2" id="rev-r2"></div>
       <div class="rev-r3" id="rev-r3">
         <div class="rev-r3-bar">
           <div class="rev-r3-count" id="rev-r3-count">1 - 10 of <strong>454</strong> Reviews</div>
@@ -644,7 +628,7 @@ body.mso-active .rep-bar{display:none;}
   </div>
 </div>
 
-<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();repLocClose();repCatClose();"></div>
+<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repLocClose();repCatClose();"></div>
 
 <!-- MOBILE SEARCH OVERLAY -->
 <div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
@@ -701,22 +685,52 @@ function closeRepDrawer(){
 }
 
 function _repSyncSheet(){
-  var f = document.getElementById('rep-filter'), l = document.getElementById('rep-loc'), c = document.getElementById('rep-cat');
-  var anyOpen = (f && f.classList.contains('open')) || (l && l.classList.contains('open')) || (c && c.classList.contains('open'));
+  var l = document.getElementById('rep-loc'), c = document.getElementById('rep-cat');
+  var anyOpen = (l && l.classList.contains('open')) || (c && c.classList.contains('open'));
   document.body.classList.toggle('rep-sheet-open', !!anyOpen);
 }
-/* Filter dropdown */
-function repFilterToggle(e){ if(e) e.stopPropagation(); repLocClose(); repCatClose(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
-function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
-function repFilterPick(el, label){
-  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
-  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
-  repFilterClose();
+/* Period segmented toggle */
+var _repPeriod = 'Monthly';
+function repPeriodScale(){
+  switch(_repPeriod){
+    case 'Daily':  return 1/30;
+    case 'Weekly': return 7/30;
+    case 'All':    return 24;
+    default:       return 1;
+  }
+}
+function _revFmtInt(n){ return Math.round(n).toLocaleString('en-US'); }
+function repApplyPeriod(){
+  var scale = repPeriodScale();
+  var sels = [
+    '#rev-col-left .rev-count-num',
+    '#rev-r2 .rev-r2-val',
+    '#rev-r3-count strong'
+  ];
+  sels.forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(el){
+      var base = el.getAttribute('data-base');
+      if(base == null){
+        var raw = el.textContent.replace(/[,\s]/g,'');
+        var n = parseFloat(raw);
+        if(isNaN(n)) return;
+        base = String(n);
+        el.setAttribute('data-base', base);
+      }
+      el.textContent = _revFmtInt(parseFloat(base) * scale);
+    });
+  });
+}
+function repSetPeriod(el, label){
+  _repPeriod = label;
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
+    s.classList.toggle('active', s === el);
+  });
+  repApplyPeriod();
 }
 /* Location dropdown */
 function repLocToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose();
   repCatClose();
   var dd = document.getElementById('rep-loc');
   var opening = !dd.classList.contains('open');
@@ -858,7 +872,7 @@ function repCatSyncBadge(){
 }
 function repCatToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose(); repLocClose();
+  repLocClose();
   var dd = document.getElementById('rep-cat');
   var opening = !dd.classList.contains('open');
   dd.classList.toggle('open');
@@ -968,7 +982,7 @@ function _revBuildData(){
 }
 var REV_DATA = _revBuildData();
 function revAvgCard(d){
-  return '<div class="rev-card">'
+  return '<div class="card rev-card">'
     + '<div class="rev-card-title">Average Rating</div>'
     + '<div class="rev-avg-num">'+d.avg.toFixed(1)+'<span class="rev-avg-unit">/5</span></div>'
     + '<div class="rev-stars">'+revStarsHtml(d.avg)+'</div>'
@@ -983,7 +997,7 @@ function revAvgCard(d){
     + '</div>';
 }
 function revCountCard(d){
-  return '<div class="rev-card">'
+  return '<div class="card rev-card">'
     + '<div class="rev-card-title">Ratings and Reviews</div>'
     + '<div class="rev-count-num">'+d.totalReviews+'</div>'
     + '<div class="rev-count-sub">across <strong>'+d.locations+'</strong> locations</div>'
@@ -995,6 +1009,13 @@ document.addEventListener('DOMContentLoaded', function(){
   revR1Set('trend');
   revR2Render();
   revR3Render();
+  if(typeof revR2Render === 'function' && !revR2Render._wrapped){
+    var _r2 = revR2Render; revR2Render = function(){ _r2.apply(this, arguments); repApplyPeriod(); }; revR2Render._wrapped = true;
+  }
+  if(typeof revR3Render === 'function' && !revR3Render._wrapped){
+    var _r3 = revR3Render; revR3Render = function(){ _r3.apply(this, arguments); repApplyPeriod(); }; revR3Render._wrapped = true;
+  }
+  repApplyPeriod();
 });
 var FLAG_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 21V3h2v18H4zm3-3V4h11l-2 5 2 5H7z"/></svg>';
 function repItemToggle(key, ev){
@@ -1584,14 +1605,13 @@ function revR1Set(tab){
 }
 
 document.addEventListener('mousedown', function(e){
-  if(!e.target.closest('#rep-filter')) repFilterClose();
   if(!e.target.closest('#rep-loc')) repLocClose();
   if(!e.target.closest('#rep-cat')) repCatClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
   var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
-  repFilterClose(); repLocClose(); repCatClose();
+  repLocClose(); repCatClose();
   if(typeof riKebabClose === 'function') riKebabClose();
   if(typeof revR3DlClose === 'function') revR3DlClose();
   if(typeof repSubClose === 'function') repSubClose();

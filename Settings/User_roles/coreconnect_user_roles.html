@@ -1,5 +1,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -2818,12 +2819,6 @@
 
 
 /* ===== SETTINGS HUB (page content) ===== */
-.set-page-head{display:flex;align-items:center;gap:16px;padding:18px 24px;
-  border-bottom:0.5px solid var(--brd);flex-shrink:0;}
-.set-page-title{font-size:19px;font-weight:600;letter-spacing:-.3px;color:var(--tx);}
-.set-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
-.set-section{margin-bottom:30px;}
-.set-section:last-child{margin-bottom:0;}
 .set-grp{font-size:10.5px;font-weight:500;color:var(--mu);text-transform:uppercase;
   letter-spacing:.7px;margin:0 0 14px;}
 .set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
@@ -2843,17 +2838,8 @@
 /* ===== USER ROLES PAGE ===== */
 /* Page head adopts set-page-head; add a right-aligned primary action button */
 .ur-head-spacer{flex:1;}
-.ur-add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ac);border:none;
-  border-radius:8px;padding:0 16px;height:36px;color:#fff;font-size:13px;font-weight:500;
-  font-family:var(--font);cursor:pointer;transition:background .15s;flex-shrink:0;}
-.ur-add-btn:hover{background:var(--ac2);}
-.ur-add-btn svg{width:15px;height:15px;}
+/* .ur-add-btn migrated to shared `.btn.btn-primary` (in shared/app.css) */
 /* Back-to-Settings button in the page head (matches calendar-settings .cs-back) */
-.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;
-  font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
-.ur-back:hover{background:var(--sur2);color:var(--tx);}
-.ur-back svg{width:16px;height:16px;}
-
 /* Roles list section — single surface card containing rows */
 .ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
 .ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;
@@ -2876,9 +2862,10 @@
 .ur-act-del:hover{background:rgba(232,85,85,.12);color:var(--rd);}
 
 @media (max-width:640px){
-  .ur-add-btn{padding:0 13px;height:34px;}
+  /* .ur-add-btn mobile override removed — shared `.btn` handles 44px mobile touch target */
   .ur-row{padding:14px 14px;gap:11px;}
   .ur-row-ic{width:36px;height:36px;}
+  .ur-act-btn{width:44px;height:44px;}
 }
 
 @media (max-width:640px){
@@ -3047,7 +3034,7 @@
     </a>
     <span class="set-page-title">User Roles</span>
     <span class="ur-head-spacer"></span>
-    <button class="ur-add-btn" onclick="openRoleModal()">
+    <button class="btn btn-primary" onclick="openRoleModal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add
     </button>

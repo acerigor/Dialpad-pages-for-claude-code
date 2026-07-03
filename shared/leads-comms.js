@@ -415,6 +415,8 @@
     return s;
   }
 
+  var STATUS_LIST = ['Dead','Active','Follow Up','Sold','Deposit',
+    'BDC - Show','BDC - No Show','BDC - Reschedule','BDC - Follow Up','BDC - Appt Set'];
   global.CCLeads = {
     LEADS, emailCountsForLead, emailTotals, EMAIL_SEED_OUT, EMAIL_SEED_IN,
     smsCountsForLead, smsTotals,
@@ -423,7 +425,8 @@
     getActivities, addActivity, removeActivity, updateActivity,
     TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember,
     REVIEWS, reviewsByLead, reviewStats, reviewSeedKey: REVIEW_SEED_KEY,
-    clearReviewStatsCache: function(){ _revStatsCache = null; }
+    clearReviewStatsCache: function(){ _revStatsCache = null; },
+    STATUS_LIST: STATUS_LIST
   };
 
   // Dynamic logo text: "CoreConnect" on main app, "Reputation" on Reputation pages.

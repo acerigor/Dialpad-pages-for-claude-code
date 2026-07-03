@@ -1,0 +1,35 @@
+/* ============================================================================
+   CoreConnect — shared Settings sub-page chrome
+   ----------------------------------------------------------------------------
+   Building blocks reused across every Settings/* sub-page: the sticky page
+   head (back-link + title), scrollable body, and the back-link chip. Loaded
+   AFTER shared/app.css and BEFORE each page's inline <style> so any local
+   override still wins.
+   ========================================================================= */
+
+/* Page head — back-link + title + right-side actions */
+.set-page-head{display:flex;align-items:center;gap:16px;padding:18px 24px;
+  border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.set-page-title{font-size:19px;font-weight:600;letter-spacing:-.3px;color:var(--tx);}
+
+/* Scrollable page body under the head */
+.set-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
+
+/* Section grouping helpers used on multi-section pages */
+.set-section{margin-bottom:30px;}
+.set-section:last-child{margin-bottom:0;}
+
+/* Back-link chip (← Settings) — used in every sub-page's head */
+.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);
+  text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;
+  border-radius:8px;transition:all .12s;flex-shrink:0;}
+.ur-back:hover{background:var(--sur2);color:var(--tx);}
+.ur-back svg{width:16px;height:16px;}
+
+/* Mobile a11y — tighter head padding, larger title */
+@media (max-width:640px){
+  .set-page-head{padding:14px 16px;}
+  .set-page-title{font-size:16px;}
+  .set-scroll{padding:18px 16px 60px;}
+  .ur-back{min-height:44px;padding:10px 14px;}
+}

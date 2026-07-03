@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
 <link rel="stylesheet" href="../../shared/time-picker.css">
+<link rel="stylesheet" href="../../shared/date-picker.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;color:var(--tx);}
@@ -132,6 +133,7 @@ select.ais-input::-ms-expand{display:none;}
 .ais-df-timebox:has(.ais-df-tsel:disabled){opacity:.4;}
 .ais-df-timebox.ais-biz-tbox{background:transparent;border:none;padding:0;cursor:pointer;}
 .ais-df-timebox.ais-biz-tbox:hover{border-color:transparent;}
+.ais-weekly-tbox.is-disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
 /* Filters card */
 .ais-flt-card{gap:14px;}
 .ais-flt-title{font-size:14px;font-weight:600;color:var(--tx);border-bottom:0.5px solid var(--brd);padding-bottom:10px;}
@@ -631,7 +633,16 @@ select.ais-input::-ms-expand{display:none;}
                   <select class="ais-df-tsel" id="ais-freq-daily-ap" aria-label="AM/PM" tabindex="-1"><option>AM</option><option>PM</option></select>
                 </span>
               </span></label>
-              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span>Weekly</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span class="ais-df-daily">Weekly at
+                <span class="ais-df-timebox ais-weekly-tbox" id="ais-weekly-date-tbox" role="button" tabindex="0" onclick="aisWeeklyDateOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisWeeklyDateOpen(event);}">
+                  <span class="ais-df-tval" id="ais-weekly-date-disp">07/04/2025</span>
+                </span>
+                <span class="ais-df-timebox ais-weekly-tbox" id="ais-weekly-time-tbox" role="button" tabindex="0" onclick="aisWeeklyTimeOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisWeeklyTimeOpen(event);}">
+                  <span class="ais-df-tval" id="ais-weekly-time-disp">9:00 AM</span>
+                </span>
+                <input type="hidden" id="ais-weekly-date" value="07/04/2025"/>
+                <input type="hidden" id="ais-weekly-time" value="09:00"/>
+              </span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="monthly" onchange="aisFreqSync()"><span>Monthly</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-min" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-min" type="number" min="1" disabled/> Minutes</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-hr" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-hr" type="number" min="1" disabled/> Hours</span></label>
@@ -1261,6 +1272,50 @@ function aisFreqSync(){
   ['ais-freq-daily-hh','ais-freq-daily-mm','ais-freq-daily-ap'].forEach(function(id){
     var s = document.getElementById(id); if(s) s.disabled = dailyDis;
   });
+  var weeklyDis = (mode !== 'weekly');
+  ['ais-weekly-date-tbox','ais-weekly-time-tbox'].forEach(function(id){
+    var b = document.getElementById(id); if(b){
+      b.classList.toggle('is-disabled', weeklyDis);
+      b.setAttribute('aria-disabled', weeklyDis ? 'true' : 'false');
+    }
+  });
+}
+function aisWeeklyDateOpen(e){
+  if(e) e.stopPropagation();
+  var box = document.getElementById('ais-weekly-date-tbox'); if(!box) return;
+  if(box.classList.contains('is-disabled')) return;
+  if(!window.CCDatePicker) return;
+  var hidden = document.getElementById('ais-weekly-date');
+  var disp = document.getElementById('ais-weekly-date-disp');
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function')  aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  CCDatePicker.open({
+    anchor: box,
+    value: hidden.value,
+    onChange: function(v){ hidden.value = v; disp.textContent = v; }
+  });
+}
+function aisWeeklyTimeOpen(e){
+  if(e) e.stopPropagation();
+  var box = document.getElementById('ais-weekly-time-tbox'); if(!box) return;
+  if(box.classList.contains('is-disabled')) return;
+  if(!window.CCTimePicker) return;
+  var hidden = document.getElementById('ais-weekly-time');
+  var disp = document.getElementById('ais-weekly-time-disp');
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function')  aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  CCTimePicker.open({
+    anchor: box,
+    value: _aisTo12h(hidden.value),
+    onChange: function(v){
+      hidden.value = _aisTo24h(v);
+      disp.textContent = _aisFmt12(v);
+    }
+  });
 }
 function aisDailyTimeInit(){
   var hh = document.getElementById('ais-freq-daily-hh');
@@ -1637,6 +1692,7 @@ window.addEventListener('resize', function(){ var p=document.getElementById('not
 <script src="../../shared/notifications.js"></script>
 <script src="../../shared/contact-panel.js"></script>
 <script src="../../shared/time-picker.js"></script>
+<script src="../../shared/date-picker.js"></script>
 
 <div class="assign-popup label-popup" id="ais-label-popup" style="display:none;">
   <div class="assign-popup-title">Label</div>

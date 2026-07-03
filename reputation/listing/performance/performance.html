@@ -170,11 +170,8 @@ body.mso-active .rep-bar{display:none;}
   .rep-bar{padding:10px 14px;}
 }
 @media (max-width:640px){
-  #rep-filter-btn > span,
   #rep-loc-btn > span{display:none;}
-  #rep-filter-btn .rep-chev,
   #rep-loc-btn .rep-chev{display:none;}
-  #rep-filter-btn,
   #rep-loc-btn{padding:0;width:40px;justify-content:center;gap:0;}
   #rep-cat-btn .rep-tbtn-val{display:none;}
   #rep-cat-btn{padding:0 10px;gap:6px;}
@@ -212,7 +209,7 @@ body.mso-active .rep-bar{display:none;}
   .mso-clear{width:44px;height:44px;}
   .nav-toast-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;}
   .rep-tbtn{min-height:44px;}
-  #rep-filter-btn,#rep-loc-btn,.rep-bar .mobile-search-toggle{width:44px;}
+  #rep-loc-btn,.rep-bar .mobile-search-toggle{width:44px;}
   .rep-item{min-height:44px;}
   .rep-menu-srch input{font-size:16px;}
   .fd-clear{min-height:44px;display:flex;align-items:center;font-size:14px;}
@@ -329,22 +326,12 @@ body.mso-active .rep-bar{display:none;}
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="rep-bar">
-    <!-- Filter dropdown (period) -->
-    <div class="rep-dd" id="rep-filter">
-      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
-        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="rep-menu" id="rep-filter-menu">
-        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Filter</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
-        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      </div>
+    <!-- Period segmented toggle -->
+    <div class="period-toggle" role="tablist" aria-label="Period">
+      <button class="pt-seg active" data-period="monthly" onclick="repSetPeriod(this,'Monthly')" role="tab">Monthly</button>
+      <button class="pt-seg" data-period="weekly"  onclick="repSetPeriod(this,'Weekly')"  role="tab">Weekly</button>
+      <button class="pt-seg" data-period="daily"   onclick="repSetPeriod(this,'Daily')"   role="tab">Daily</button>
+      <button class="pt-seg" data-period="all"     onclick="repSetPeriod(this,'All')"     role="tab">All</button>
     </div>
     <!-- Location dropdown -->
     <div class="rep-dd" id="rep-loc">
@@ -374,7 +361,7 @@ body.mso-active .rep-bar{display:none;}
         <span class="rep-tbtn-badge" id="rep-cat-badge" hidden>0</span>
         <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="rep-menu rep-menu-wide" id="rep-cat-menu">
+      <div class="dropdown-menu rep-menu rep-menu-wide" id="rep-cat-menu">
         <div class="rep-menu-mhead"><button class="rep-menu-mback" id="rep-fd-back" onclick="repFdBack()" aria-label="Back">&#x2190;</button><span class="rep-menu-mtitle" id="rep-cat-mtitle">Filters</span><button class="rep-menu-mclose" onclick="repCatClose()" aria-label="Close">&#x2715;</button></div>
         <div class="fd-wrap" id="rep-fd">
           <div class="fd-left">
@@ -426,7 +413,7 @@ body.mso-active .rep-bar{display:none;}
   </div>
 </div>
 
-<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();repLocClose();repCatClose();"></div>
+<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repLocClose();repCatClose();"></div>
 
 <!-- MOBILE SEARCH OVERLAY -->
 <div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
@@ -542,13 +529,13 @@ function repSubPick(label){
 }
 
 function _repSyncSheet(){
-  var f = document.getElementById('rep-filter'), l = document.getElementById('rep-loc'), c = document.getElementById('rep-cat'), d = document.getElementById('rep-dl');
-  var anyOpen = (f && f.classList.contains('open')) || (l && l.classList.contains('open')) || (c && c.classList.contains('open')) || (d && d.classList.contains('open'));
+  var l = document.getElementById('rep-loc'), c = document.getElementById('rep-cat'), d = document.getElementById('rep-dl');
+  var anyOpen = (l && l.classList.contains('open')) || (c && c.classList.contains('open')) || (d && d.classList.contains('open'));
   document.body.classList.toggle('rep-sheet-open', !!anyOpen);
 }
 function repDlToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose(); repLocClose(); repCatClose();
+  repLocClose(); repCatClose();
   document.getElementById('rep-dl').classList.toggle('open');
   _repSyncSheet();
 }
@@ -562,17 +549,17 @@ function repDlPick(fmt){
   if(typeof showNavToast === 'function') showNavToast(labels[fmt]||'Download', 'Export coming soon.');
 }
 /* Filter dropdown (period) */
-function repFilterToggle(e){ if(e) e.stopPropagation(); repLocClose(); repCatClose(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
-function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
-function repFilterPick(el, label){
-  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
-  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
-  repFilterClose();
+/* Period segmented toggle */
+var _repPeriod = 'Monthly';
+function repSetPeriod(el, label){
+  _repPeriod = label;
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
+    s.classList.toggle('active', s === el);
+  });
 }
 /* Location dropdown */
 function repLocToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose();
   repCatClose();
   var dd = document.getElementById('rep-loc');
   var opening = !dd.classList.contains('open');
@@ -697,7 +684,7 @@ function repCatSyncBadge(){
 }
 function repCatToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose(); repLocClose();
+  repLocClose();
   var dd = document.getElementById('rep-cat');
   var opening = !dd.classList.contains('open');
   dd.classList.toggle('open');
@@ -765,7 +752,6 @@ window.addEventListener('popstate', function(){
 });
 
 document.addEventListener('mousedown', function(e){
-  if(!e.target.closest('#rep-filter')) repFilterClose();
   if(!e.target.closest('#rep-loc')) repLocClose();
   if(!e.target.closest('#rep-cat')) repCatClose();
   if(!e.target.closest('#rep-dl')) repDlClose();
@@ -774,7 +760,7 @@ document.addEventListener('mousedown', function(e){
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
   var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
-  repFilterClose(); repLocClose(); repCatClose(); repDlClose();
+  repLocClose(); repCatClose(); repDlClose();
   if(typeof repSubClose === 'function') repSubClose();
 });
 </script>

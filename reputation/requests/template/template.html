@@ -79,27 +79,19 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-menu-item.checked .rep-mi-check{opacity:1;}
 .rep-menu-mhead{display:none;}
 .rep-menu-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:140;}
-.rep-srch{display:flex;align-items:center;gap:7px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 11px;height:40px;width:280px;max-width:100%;transition:border-color .12s;}
-.rep-srch:focus-within{border-color:var(--ac);}
-.rep-srch svg{width:14px;height:14px;color:var(--mu);flex:none;}
-.rep-srch input{background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;width:100%;}
-.rep-srch input::placeholder{color:var(--mu);}
+/* .rep-srch migrated to shared `.search-pill` (in shared/app.css) */
+.rep-srch{width:280px;}
 
 /* ── Body ── */
 .rep-content{padding:24px 20px;display:block;}
 .tmpl-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 20px 12px;}
 .tmpl-title{font-size:14px;font-weight:600;color:var(--tx);}
 .tmpl-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);}
-.table-wrap{flex:none;overflow-x:auto;margin:0 20px;border:0.5px solid var(--brd2);border-radius:12px;background:var(--sur);scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
-.table-wrap::-webkit-scrollbar{height:8px;}
-.table-wrap::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px;}
-.tmpl-tbl{width:100%;border-collapse:separate;border-spacing:0;font-family:var(--font);color:var(--tx);}
-.tmpl-tbl thead th{background:var(--sur2);padding:13px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd2);}
+/* .table-wrap + .tmpl-tbl base migrated to shared `.table-wrap` / `.data-table` (shared/app.css).
+   Keep local hooks: outer margin, header/body 16px padding override, action column right-align. */
+.table-wrap{flex:none;margin:0 20px;}
+.tmpl-tbl thead th, .tmpl-tbl tbody td{padding:13px 16px;}
 .tmpl-tbl thead th.tmpl-th-act{text-align:right;}
-.tmpl-tbl tbody tr{transition:background .1s;}
-.tmpl-tbl tbody tr:hover{background:rgba(79,124,255,.04);}
-.tmpl-tbl tbody td{padding:13px 16px;vertical-align:middle;border-bottom:0.5px solid var(--brd);font-size:13px;color:var(--tx);}
-.tmpl-tbl tbody tr:last-child td{border-bottom:none;}
 .tmpl-td-name{color:var(--tx);font-weight:500;}
 .tmpl-td-act{text-align:right;white-space:nowrap;}
 .tmpl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;margin-left:6px;}
@@ -108,9 +100,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .tmpl-btn.del{color:var(--mu);}
 .tmpl-btn.del:hover{border-color:var(--rd);color:var(--rd);}
 .tmpl-empty{padding:32px 16px;text-align:center;color:var(--mu);font-size:13px;}
-.tmpl-textarea{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:11px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;line-height:1.5;resize:vertical;min-height:140px;outline:none;transition:border-color .12s;}
-.tmpl-textarea:focus{border-color:var(--ac);}
-.tmpl-textarea::placeholder{color:var(--mu);}
+/* .tmpl-textarea migrated to shared `.textarea`. Local: taller default min-height. */
+.tmpl-textarea{min-height:140px;}
 .tmpl-btn-danger{background:transparent;border:0.5px solid var(--brd2);color:var(--rd);border-radius:8px;padding:0 16px;height:34px;font-family:var(--font);font-size:13px;cursor:pointer;transition:all .12s;}
 .tmpl-btn-danger:hover{border-color:var(--rd);background:rgba(232,85,85,.08);}
 @media (max-width:640px){
@@ -120,6 +111,15 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .tmpl-tbl thead th, .tmpl-tbl tbody td{padding:10px 12px;font-size:12px;}
   .tmpl-btn{padding:8px 10px;font-size:12px;}
 }
+/* Type-picker dropdown that opens under Add Template */
+.tmpl-add-wrap{position:relative;}
+#tmpl-add-menu{right:0;left:auto;min-width:180px;}
+#tmpl-add-menu .dropdown-item i{width:16px;text-align:center;color:var(--ac2);}
+.tmpl-type-badge{margin-bottom:4px;}
+#tmpl-modal.is-sms #tmpl-field-subject{display:none;}
+.tmpl-add-chev{width:14px;height:14px;transition:transform .15s;margin-left:2px;}
+#tmpl-add-wrap:has(#tmpl-add-menu:not([hidden])) .tmpl-add-chev{transform:rotate(180deg);}
+@media (max-width:640px){ .tmpl-add-chev{display:none;} }
 
 @media (max-width:900px){
   .hamburger-btn{display:flex;}
@@ -130,11 +130,13 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .rep-bar{padding:10px 14px;}
   .rep-srch{width:100%;order:2;}
   .rep-sp{display:none;}
+  /* Add Template button — icon-only on mobile */
+  #tmpl-add-btn{width:44px;padding:0;order:3;}
+  #tmpl-add-btn svg{width:20px;height:20px;}
+  #tmpl-add-btn .tmpl-add-txt{display:none;}
 }
 @media (max-width:640px){
-  #rep-filter-btn > span{display:none;}
-  #rep-filter-btn .rep-chev{display:none;}
-  #rep-filter-btn{padding:0;width:40px;justify-content:center;gap:0;}
+  /* #rep-filter-btn rules removed — Period dropdown replaced by segmented `.period-toggle` */
   .rep-menu{position:fixed;inset:0;width:100%;max-width:100%;min-width:0;border-radius:0;border:none;z-index:150;}
   .rep-dd.open .rep-menu{display:flex;flex-direction:column;}
   .rep-menu-mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
@@ -142,13 +144,13 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .rep-menu-mclose{width:44px;height:44px;border:none;background:var(--sur2);color:var(--mu);border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .rep-menu-item{padding:16px 20px;min-height:52px;font-size:15px;}
   .rep-tbtn{min-height:44px;}
-  #rep-filter-btn{width:44px;}
+  /* #rep-filter-btn mobile bump removed — segmented `.period-toggle` handled by shared */
   .rep-item{min-height:44px;}
   body.rep-sheet-open{overflow:hidden;}
   body.rep-sheet-open .rep-menu-backdrop{display:block;}
   body.rep-sheet-open .rep-bar{z-index:200;}
   /* Mobile a11y sweep */
-  .tmpl-textarea, .rep-srch input, .rep-menu-srch input{font-size:16px;}
+  .rep-menu-srch input{font-size:16px;}   /* .rep-srch input + .tmpl-textarea handled by shared components */
   .tmpl-btn{min-height:44px;padding:10px 14px;font-size:13px;}
   .tmpl-btn svg{width:16px;height:16px;}
   .modal-cancel, .modal-save, .tmpl-btn-danger{min-height:44px;padding:0 18px;}
@@ -252,28 +254,29 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="rep-bar">
-    <!-- Period dropdown -->
-    <div class="rep-dd" id="rep-filter">
-      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
-        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="rep-menu" id="rep-filter-menu">
-        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Period</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
-        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      </div>
+    <!-- Period segmented toggle -->
+    <div class="period-toggle" role="tablist" aria-label="Template type">
+      <button class="pt-seg" data-type="email" onclick="tmplSetType(this,'email')" role="tab">Email</button>
+      <button class="pt-seg" data-type="sms"   onclick="tmplSetType(this,'sms')"   role="tab">SMS</button>
+      <button class="pt-seg active" data-type="all" onclick="tmplSetType(this,'all')" role="tab">All</button>
     </div>
     <div class="rep-sp"></div>
     <!-- Search -->
-    <div class="rep-srch">
+    <div class="search-pill rep-srch">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="tmpl-search-input" placeholder="Search templates..." oninput="tmplSearch(this.value)"/>
+    </div>
+    <!-- Add -->
+    <div class="tmpl-add-wrap" id="tmpl-add-wrap">
+      <button class="btn btn-primary" id="tmpl-add-btn" onclick="tmplAddTypeToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="tmpl-add-txt">Add Template</span>
+        <svg class="tmpl-add-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="dropdown-menu" id="tmpl-add-menu" hidden>
+        <button class="dropdown-item" onclick="tmplAddOpen('email')"><i class="ti ti-mail" aria-hidden="true"></i> <span class="dropdown-item-label">Email</span></button>
+        <button class="dropdown-item" onclick="tmplAddOpen('sms')"><i class="ti ti-message-circle" aria-hidden="true"></i> <span class="dropdown-item-label">SMS</span></button>
+      </div>
     </div>
   </div>
   <div class="rep-content">
@@ -282,10 +285,11 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
       <div class="tmpl-count" id="tmpl-count"></div>
     </div>
     <div class="table-wrap">
-      <table class="tmpl-tbl">
+      <table class="data-table tmpl-tbl">
         <thead>
           <tr>
             <th class="tmpl-th-name">Template Name</th>
+            <th class="tmpl-th-type">Type</th>
             <th class="tmpl-th-act">Actions</th>
           </tr>
         </thead>
@@ -296,7 +300,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   </div>
 </div>
 
-<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();"></div>
+<div class="rep-menu-backdrop" id="rep-menu-backdrop"></div>
 
 <!-- EDIT TEMPLATE MODAL -->
 <div class="modal-backdrop" id="tmpl-modal" onclick="if(event.target===this)tmplEditCancel()">
@@ -306,17 +310,18 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
       <button class="modal-close" onclick="tmplEditCancel()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="modal-body">
+      <div class="tmpl-type-badge" id="tmpl-modal-type-badge"></div>
       <div>
         <div class="modal-section-title">Template name</div>
         <div class="modal-field"><input type="text" id="tmpl-f-name" placeholder="e.g. Default template"/></div>
       </div>
-      <div>
+      <div id="tmpl-field-subject">
         <div class="modal-section-title">Subject</div>
         <div class="modal-field"><input type="text" id="tmpl-f-subject" placeholder="Email subject"/></div>
       </div>
       <div>
         <div class="modal-section-title">Body</div>
-        <textarea id="tmpl-f-body" class="tmpl-textarea" rows="8" placeholder="Write your review-request message… Use {name} for the recipient's first name."></textarea>
+        <textarea id="tmpl-f-body" class="textarea tmpl-textarea" rows="8" placeholder="Write your review-request message… Use {name} for the recipient's first name."></textarea>
       </div>
     </div>
     <div class="modal-footer" style="justify-content:space-between;">
@@ -433,30 +438,32 @@ function _repSyncSheet(){
   var anyOpen = (f && f.classList.contains('open'));
   document.body.classList.toggle('rep-sheet-open', !!anyOpen);
 }
-function repFilterToggle(e){ if(e) e.stopPropagation(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
-function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
-function repFilterPick(el, label){
-  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
-  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
-  repFilterClose();
+/* Type filter (Email / SMS / All) */
+var _tmplType = 'all';
+function tmplSetType(el, t){
+  _tmplType = t;
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
+    s.classList.toggle('active', s === el);
+  });
+  tmplRender();
 }
 
 /* Templates list */
-var TMPL_KEY = 'cc_rq_templates', TMPL_VER = 'v2';
+var TMPL_KEY = 'cc_rq_templates', TMPL_VER = 'v3';
 var TMPL_DEFAULTS = [
-  { id:'t1', name:'Default template',
+  { id:'t1', name:'Default template', type:'email',
     subject:'How was your experience with USA Direct Auto?',
     body:"Hi {name},\n\nThanks for choosing USA Direct Auto. Tap a star below to rate your experience.\n\nThank you!" },
-  { id:'t2', name:'Post-purchase thank you',
+  { id:'t2', name:'Post-purchase thank you', type:'email',
     subject:'Thanks for your recent purchase',
     body:"Hi {name},\n\nWe hope you love your new vehicle. Mind sharing how the buying process went?" },
-  { id:'t3', name:'Service visit follow-up',
+  { id:'t3', name:'Service visit follow-up', type:'email',
     subject:'Quick note about your recent service',
     body:"Hi {name},\n\nThanks for visiting our service department. Would you take a moment to rate your experience?" },
-  { id:'t4', name:'Test drive follow-up',
+  { id:'t4', name:'Test drive follow-up', type:'email',
     subject:'Following up on your test drive',
     body:"Hi {name},\n\nWe hope you enjoyed the test drive. Let us know if you have questions — and a quick rating below helps others too." },
-  { id:'t5', name:'Referral request',
+  { id:'t5', name:'Referral request', type:'email',
     subject:'A quick favor?',
     body:"Hi {name},\n\nIf you have a moment, a short rating below helps other buyers find us. Thank you!" }
 ];
@@ -471,6 +478,8 @@ function tmplPersist(list){
   try{ localStorage.setItem(TMPL_KEY, JSON.stringify({ver:TMPL_VER, list:list})); }catch(e){}
 }
 var TMPL_LIST = tmplLoad();
+// Seed localStorage on first visit so the Review Request page's Template picker finds the defaults.
+if(!localStorage.getItem(TMPL_KEY)) tmplPersist(TMPL_LIST);
 var _tmplQuery = '';
 function tmplEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 var TMPL_ICONS = {
@@ -479,46 +488,128 @@ var TMPL_ICONS = {
 };
 function tmplFiltered(){
   var q = _tmplQuery.trim().toLowerCase();
-  return q ? TMPL_LIST.filter(function(t){ return t.name.toLowerCase().indexOf(q) >= 0; }) : TMPL_LIST.slice();
+  return TMPL_LIST.filter(function(t){
+    if(_tmplType !== 'all' && (t.type || 'email') !== _tmplType) return false;
+    if(q && t.name.toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
 }
 function tmplRender(){
   var body = document.getElementById('tmpl-body'), empty = document.getElementById('tmpl-empty'), count = document.getElementById('tmpl-count');
   if(!body) return;
   var rows = tmplFiltered();
   body.innerHTML = rows.map(function(t){
+    var typeBadge = (t.type === 'sms')
+      ? '<span class="badge badge--teal"><i class="ti ti-message-circle" aria-hidden="true"></i> SMS</span>'
+      : '<span class="badge badge--accent"><i class="ti ti-mail" aria-hidden="true"></i> Email</span>';
     return '<tr>'
       + '<td class="tmpl-td-name">'+tmplEsc(t.name)+'</td>'
+      + '<td class="tmpl-td-type">'+typeBadge+'</td>'
       + '<td class="tmpl-td-act">'
         + '<button class="tmpl-btn edit" onclick="tmplEditOpen(\''+tmplEsc(t.id)+'\')">'+TMPL_ICONS.edit+'Edit</button>'
         + '<button class="tmpl-btn del"  onclick="tmplDelete(\''+tmplEsc(t.id)+'\')">'+TMPL_ICONS.del+'Delete</button>'
       + '</td>'
       + '</tr>';
   }).join('');
-  if(empty) empty.hidden = rows.length > 0;
+  if(empty){
+    empty.hidden = rows.length > 0;
+    if(!rows.length){
+      empty.textContent = _tmplType === 'sms' ? 'No SMS templates yet.'
+        : _tmplType === 'email' ? 'No Email templates yet.'
+        : 'No templates match your search.';
+    }
+  }
   if(count) count.textContent = TMPL_LIST.length + ' template' + (TMPL_LIST.length===1?'':'s');
 }
 var _tmplEditId = null;
+var _tmplEditMode = 'edit';   /* 'edit' or 'add' */
+var _tmplEditType = 'email';  /* 'email' or 'sms' — locked read-only in the modal */
+
+function tmplTypeBadgeHtml(type){
+  return type === 'sms'
+    ? '<span class="badge badge--teal"><i class="ti ti-message-circle" aria-hidden="true"></i> SMS</span>'
+    : '<span class="badge badge--accent"><i class="ti ti-mail" aria-hidden="true"></i> Email</span>';
+}
+function tmplRenderTypeBadge(){
+  var box = document.getElementById('tmpl-modal-type-badge');
+  if(box) box.innerHTML = tmplTypeBadgeHtml(_tmplEditType);
+}
+function tmplApplyModeChrome(){
+  var m = document.getElementById('tmpl-modal');
+  if(m) m.classList.toggle('is-sms', _tmplEditType === 'sms');
+  var body = document.getElementById('tmpl-f-body');
+  if(body) body.placeholder = (_tmplEditType === 'sms')
+    ? "Write your SMS text… Use {name} for the recipient's first name."
+    : "Write your review-request message… Use {name} for the recipient's first name.";
+}
+function tmplAddTypeToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('tmpl-add-menu');
+  if(!m) return;
+  m.hidden = !m.hidden;
+}
+function tmplAddTypeClose(){
+  var m = document.getElementById('tmpl-add-menu');
+  if(m) m.hidden = true;
+}
+function tmplAddOpen(type){
+  tmplAddTypeClose();
+  _tmplEditId = null;
+  _tmplEditMode = 'add';
+  _tmplEditType = (type === 'sms') ? 'sms' : 'email';
+  var label = (_tmplEditType === 'sms') ? 'SMS' : 'Email';
+  document.getElementById('tmpl-modal-title').textContent = 'New ' + label + ' template';
+  document.getElementById('tmpl-f-name').value = '';
+  document.getElementById('tmpl-f-subject').value = '';
+  document.getElementById('tmpl-f-body').value = '';
+  tmplRenderTypeBadge();
+  tmplApplyModeChrome();
+  var delBtn = document.querySelector('#tmpl-modal .tmpl-btn-danger');
+  if(delBtn) delBtn.style.display = 'none';
+  document.getElementById('tmpl-modal').classList.add('open');
+  setTimeout(function(){ var n=document.getElementById('tmpl-f-name'); if(n) n.focus(); }, 20);
+}
 function tmplEditOpen(id){
   var t = TMPL_LIST.find(function(x){return x.id===id;}); if(!t) return;
   _tmplEditId = id;
+  _tmplEditMode = 'edit';
+  _tmplEditType = (t.type === 'sms') ? 'sms' : 'email';
+  document.getElementById('tmpl-modal-title').textContent = 'Edit template';
   document.getElementById('tmpl-f-name').value    = t.name    || '';
   document.getElementById('tmpl-f-subject').value = t.subject || '';
   document.getElementById('tmpl-f-body').value    = t.body    || '';
+  tmplRenderTypeBadge();
+  tmplApplyModeChrome();
+  var delBtn = document.querySelector('#tmpl-modal .tmpl-btn-danger');
+  if(delBtn) delBtn.style.display = '';
   document.getElementById('tmpl-modal').classList.add('open');
   setTimeout(function(){ var n=document.getElementById('tmpl-f-name'); if(n) n.focus(); }, 20);
 }
 function tmplEditCancel(){
   _tmplEditId = null;
+  _tmplEditMode = 'edit';
   var m = document.getElementById('tmpl-modal'); if(m) m.classList.remove('open');
 }
 function tmplEditSave(){
-  if(!_tmplEditId) return;
   var name = document.getElementById('tmpl-f-name').value.trim();
   if(!name){ showNavToast('Name required','Enter a template name to save.'); return; }
+  var subject = document.getElementById('tmpl-f-subject').value;
+  var body    = document.getElementById('tmpl-f-body').value;
+  if(_tmplEditMode === 'add'){
+    var id = 't_'+Date.now();
+    TMPL_LIST.push({ id:id, name:name, type:_tmplEditType, subject:subject, body:body });
+    tmplPersist(TMPL_LIST);
+    tmplRender();
+    tmplEditCancel();
+    showNavToast('Template created', name+' was added.');
+    return;
+  }
+  if(!_tmplEditId) return;
   var t = TMPL_LIST.find(function(x){return x.id===_tmplEditId;}); if(!t) return;
   t.name    = name;
-  t.subject = document.getElementById('tmpl-f-subject').value;
-  t.body    = document.getElementById('tmpl-f-body').value;
+  t.subject = subject;
+  t.body    = body;
+  if(!t.type) t.type = _tmplEditType;   /* backfill for pre-v3 rows */
   tmplPersist(TMPL_LIST);
   tmplRender();
   tmplEditCancel();
@@ -542,13 +633,14 @@ else tmplRender();
 
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('.rep-item-wrap')) repSubClose();
-  if(!e.target.closest('#rep-filter')) repFilterClose();
+  if(!e.target.closest('#tmpl-add-wrap')) tmplAddTypeClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
   var m = document.getElementById('tmpl-modal');
   if(m && m.classList.contains('open')){ tmplEditCancel(); return; }
-  repSubClose(); repFilterClose();
+  tmplAddTypeClose();
+  repSubClose();
 });
 </script>
 

@@ -60,10 +60,9 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 /* Review request toolbar + composer */
 .rq-toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;}
 .rq-tabs{display:flex;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:3px;}
-.rq-tab{width:38px;height:32px;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+.rq-tab{padding:0 14px;height:32px;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;font-family:var(--font);font-size:12.5px;font-weight:500;white-space:nowrap;}
 .rq-tab:hover{color:var(--tx);}
 .rq-tab.active{background:var(--sur);color:var(--ac2);}
-.rq-tab svg{width:16px;height:16px;}
 
 .rq-grid{display:flex;gap:16px;padding:20px;align-items:stretch;}
 .rq-col{flex:1;min-width:0;display:flex;flex-direction:column;}
@@ -140,6 +139,10 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rq-pv-stars svg:hover,.rq-pv-stars svg.on{color:#f5a623;}
 .rq-pv-sub{font-size:12.5px;color:#666;text-align:center;margin-bottom:24px;}
 .rq-pv-footer{border-top:1px solid #e5e7ee;padding-top:14px;font-size:11px;color:#888;text-align:center;}
+
+/* SMS mode: hide the subject field; the composer is text-only */
+.rq-preview-scope.rq-mode-sms #rq-field-subject{display:none;}
+.rq-preview-scope.rq-mode-sms #rq-field-stars .rq-hint{display:none;}
 
 @media (max-width:900px){
   .hamburger-btn{display:flex;}
@@ -265,15 +268,11 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 <div class="rep-main" id="rep-main">
   <div class="rq-toolbar">
     <div class="rq-tabs" role="tablist" aria-label="Preview device">
-      <button class="rq-tab active" data-view="desktop" onclick="rqSetView('desktop')" role="tab" aria-label="View as desktop" title="View as desktop">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      </button>
-      <button class="rq-tab" data-view="mobile" onclick="rqSetView('mobile')" role="tab" aria-label="View as mobile" title="View as mobile">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      </button>
+      <button class="rq-tab active" data-view="desktop" onclick="rqSetView('desktop')" role="tab" aria-label="Email mode" title="Email mode">Email</button>
+      <button class="rq-tab" data-view="mobile" onclick="rqSetView('mobile')" role="tab" aria-label="SMS mode" title="SMS mode">SMS</button>
     </div>
   </div>
-  <div class="rq-grid rq-preview-scope rq-view-desktop" id="rq-preview-scope">
+  <div class="rq-grid rq-preview-scope rq-view-desktop rq-mode-email" id="rq-preview-scope">
     <div class="rq-col rq-col-left">
       <div class="rq-card">
         <div class="rq-field">
@@ -295,7 +294,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
             </div>
           </div>
         </div>
-        <div class="rq-field">
+        <div class="rq-field" id="rq-field-subject">
           <label class="rq-label" for="rq-subject">Subject</label>
           <input class="rq-input" id="rq-subject" type="text" placeholder="Email subject" oninput="rqUpdatePreview()"/>
         </div>
@@ -303,7 +302,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
           <label class="rq-label" for="rq-message">Message</label>
           <textarea class="rq-input rq-textarea" id="rq-message" rows="5" placeholder="Write your review request message..." oninput="rqUpdatePreview()"></textarea>
         </div>
-        <div class="rq-field">
+        <div class="rq-field" id="rq-field-stars">
           <label class="rq-label">Star Rating</label>
           <div class="rq-stars" aria-label="Star rating preview">
             <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
@@ -447,11 +446,41 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 else _repBindHoverFlyouts();
 
 /* Review request specific */
+var _rqMode = 'email';   // 'email' = desktop view · 'sms' = mobile view
+var RQ_SMS_FROM = 'USA Direct Auto — (979) 406-6920';
+var RQ_EMAIL_FROM = 'reviews@usadirectauto.com';
 function rqSetView(v){
   document.querySelectorAll('.rq-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-view')===v); });
   var scope = document.getElementById('rq-preview-scope');
   scope.classList.toggle('rq-view-desktop', v==='desktop');
   scope.classList.toggle('rq-view-mobile', v==='mobile');
+  var newMode = (v === 'mobile') ? 'sms' : 'email';
+  if(newMode !== _rqMode){
+    _rqMode = newMode;
+    scope.classList.toggle('rq-mode-sms', _rqMode === 'sms');
+    scope.classList.toggle('rq-mode-email', _rqMode === 'email');
+    rqApplyMode();
+  }
+}
+function rqApplyMode(){
+  _rqContacts = null;                 // recompute contact source (email vs. phone)
+  _rqRecip = []; rqRecipChips();       // clear picked recipients (different address type)
+  var inp = document.getElementById('rq-to-input');
+  if(inp){
+    inp.value='';
+    inp.placeholder = (_rqMode === 'sms') ? 'Add lead or type mobile number…' : 'Add lead or type email…';
+  }
+  var dd = document.getElementById('rq-to-dd'); if(dd){ dd.classList.remove('show'); dd.innerHTML=''; }
+  var from = document.getElementById('rq-from');
+  if(from) from.value = (_rqMode === 'sms') ? RQ_SMS_FROM : RQ_EMAIL_FROM;
+  document.getElementById('rq-subject').value = '';
+  document.getElementById('rq-message').value = '';
+  var msg = document.getElementById('rq-message');
+  if(msg) msg.placeholder = (_rqMode === 'sms')
+    ? 'Write your SMS review request… (keep it short)'
+    : 'Write your review request message...';
+  if(typeof rqTmplResetLabel === 'function') rqTmplResetLabel();
+  rqUpdatePreview();
 }
 function rqUpdatePreview(){
   var t = document.getElementById('rq-subject');
@@ -473,22 +502,31 @@ function rqEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</
 function rqAttr(s){ return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function rqInitials(name){ var p=String(name||'').trim().split(/\s+/); return (((p[0]&&p[0][0])||'')+((p.length>1&&p[p.length-1][0])||'')).toUpperCase(); }
 var _rqContacts=null;
+function rqNormPhone(p){ return String(p||'').replace(/\D+/g,''); }
 function rqContacts(){
   if(_rqContacts) return _rqContacts;
   var out=[], seen={}, C=window.CCLeads||{};
   (C.LEADS||[]).forEach(function(l){
-    var em=String(l.email||'').toLowerCase();
-    if(!em || seen[em]) return; seen[em]=1;
-    out.push({name:l.name, email:em, color:l.ac||'#534AB7', initials:rqInitials(l.name)});
+    if(_rqMode === 'sms'){
+      var digits = rqNormPhone(l.phone);
+      if(!digits || seen[digits]) return; seen[digits]=1;
+      out.push({name:l.name, email:digits, display:l.phone||digits, color:l.ac||'#534AB7', initials:rqInitials(l.name)});
+    } else {
+      var em=String(l.email||'').toLowerCase();
+      if(!em || seen[em]) return; seen[em]=1;
+      out.push({name:l.name, email:em, display:em, color:l.ac||'#534AB7', initials:rqInitials(l.name)});
+    }
   });
   _rqContacts=out; return out;
 }
+function rqAddressLabel(){ return (_rqMode === 'sms') ? 'mobile number' : 'email'; }
 var _rqRecip=[];
 function rqRecipHas(email){ var e=String(email).toLowerCase(); return _rqRecip.some(function(r){ return r.email.toLowerCase()===e; }); }
 function rqRecipChips(){
   var box=document.getElementById('rq-to-chips'); if(!box) return;
   box.innerHTML=_rqRecip.map(function(c){
-    return '<span class="rq-chip"><span class="rq-chip-av" style="background:'+c.color+';">'+rqEsc(c.initials||'?')+'</span>'+rqEsc(c.name)
+    var label = c.name && c.name !== c.email ? c.name : (c.display || c.email);
+    return '<span class="rq-chip"><span class="rq-chip-av" style="background:'+c.color+';">'+rqEsc(c.initials||'?')+'</span>'+rqEsc(label)
       +'<span class="rq-chip-x" onclick="rqRecipToggle(\''+rqAttr(c.email)+'\')" title="Remove">&#x2715;</span></span>';
   }).join('');
 }
@@ -496,7 +534,7 @@ function rqRecipToggle(email){
   if(rqRecipHas(email)){ var e=String(email).toLowerCase(); _rqRecip=_rqRecip.filter(function(r){ return r.email.toLowerCase()!==e; }); }
   else {
     var c=rqContacts().filter(function(x){ return x.email.toLowerCase()===String(email).toLowerCase(); })[0];
-    if(!c){ c={name:email, email:email, color:'#4f7cff', initials:(String(email)[0]||'?').toUpperCase()}; }
+    if(!c){ c={name:email, email:email, display:email, color:'#4f7cff', initials:(String(email)[0]||'?').toUpperCase()}; }
     _rqRecip.push(c);
   }
   rqRecipChips();
@@ -506,19 +544,34 @@ function rqRecipToggle(email){
 function rqRecipFilter(q){
   var dd=document.getElementById('rq-to-dd'); if(!dd) return;
   var query=(q||'').trim().toLowerCase();
-  var list=rqContacts().filter(function(c){ return !query || c.name.toLowerCase().indexOf(query)>=0 || c.email.toLowerCase().indexOf(query)>=0; }).slice(0,40);
+  var qDigits=(_rqMode === 'sms') ? rqNormPhone(q) : '';
+  var list=rqContacts().filter(function(c){
+    if(!query) return true;
+    if(c.name.toLowerCase().indexOf(query)>=0) return true;
+    if(c.email.toLowerCase().indexOf(query)>=0) return true;
+    if(qDigits && c.email.indexOf(qDigits)>=0) return true;
+    return false;
+  }).slice(0,40);
   var html=list.map(function(c){
     var on=rqRecipHas(c.email);
     return '<div class="rq-item'+(on?' added':'')+'" onmousedown="event.preventDefault()" onclick="rqRecipToggle(\''+rqAttr(c.email)+'\')">'
       +'<span class="rq-item-av" style="background:'+c.color+';">'+rqEsc(c.initials||'?')+'</span>'
-      +'<span class="rq-item-info"><span class="rq-item-name">'+rqEsc(c.name)+'</span><span class="rq-item-email">'+rqEsc(c.email)+'</span></span>'
+      +'<span class="rq-item-info"><span class="rq-item-name">'+rqEsc(c.name)+'</span><span class="rq-item-email">'+rqEsc(c.display||c.email)+'</span></span>'
       +'<span class="rq-item-check">&#10003;</span></div>';
   }).join('');
   var typed=(q||'').trim();
-  if(typed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typed) && !rqContacts().some(function(c){ return c.email.toLowerCase()===typed.toLowerCase(); }) && !rqRecipHas(typed)){
-    html='<div class="rq-item" onmousedown="event.preventDefault()" onclick="rqRecipToggle(\''+rqAttr(typed)+'\')">'
+  var isValid=false, addKey=typed, addLabel='';
+  if(typed){
+    if(_rqMode === 'sms'){
+      if(qDigits.length >= 10){ isValid=true; addKey=qDigits; addLabel='Use this mobile number'; }
+    } else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typed)){
+      isValid=true; addLabel='Use this email address';
+    }
+  }
+  if(isValid && !rqContacts().some(function(c){ return c.email.toLowerCase()===String(addKey).toLowerCase(); }) && !rqRecipHas(addKey)){
+    html='<div class="rq-item" onmousedown="event.preventDefault()" onclick="rqRecipToggle(\''+rqAttr(addKey)+'\')">'
       +'<span class="rq-item-av" style="background:var(--sur2);color:var(--mu);">+</span>'
-      +'<span class="rq-item-info"><span class="rq-item-name">Add &ldquo;'+rqEsc(typed)+'&rdquo;</span><span class="rq-item-email">Use this email address</span></span></div>'+html;
+      +'<span class="rq-item-info"><span class="rq-item-name">Add &ldquo;'+rqEsc(typed)+'&rdquo;</span><span class="rq-item-email">'+addLabel+'</span></span></div>'+html;
   }
   dd.innerHTML = html || '<div class="rq-dd-empty">No matches</div>';
   dd.classList.add('show');
@@ -527,17 +580,19 @@ function rqRecipBlur(){ setTimeout(function(){ var dd=document.getElementById('r
 function rqRecipKey(e){
   var inp=e.target;
   if(e.key==='Enter'){
-    var v=(inp.value||'').trim();
-    if(v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && !rqRecipHas(v)){
-      e.preventDefault();
-      rqRecipToggle(v);
+    var v=(inp.value||'').trim(); if(!v) return;
+    if(_rqMode === 'sms'){
+      var d=rqNormPhone(v);
+      if(d.length >= 10 && !rqRecipHas(d)){ e.preventDefault(); rqRecipToggle(d); }
+    } else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && !rqRecipHas(v)){
+      e.preventDefault(); rqRecipToggle(v);
     }
   } else if(e.key==='Backspace' && !inp.value && _rqRecip.length){
     _rqRecip.pop(); rqRecipChips(); rqRecipFilter('');
   }
 }
 function rqResetForm(){
-  document.getElementById('rq-from').value    = RQ_DEFAULTS.from;
+  document.getElementById('rq-from').value = (_rqMode === 'sms') ? RQ_SMS_FROM : RQ_EMAIL_FROM;
   _rqRecip = []; rqRecipChips();
   var inp=document.getElementById('rq-to-input'); if(inp) inp.value='';
   document.getElementById('rq-subject').value = RQ_DEFAULTS.subject;
@@ -547,19 +602,29 @@ function rqResetForm(){
 }
 function rqSend(){
   if(!_rqRecip.length){
-    showNavToast('Recipients required','Add at least one recipient in the To field.');
+    showNavToast('Recipients required','Add at least one ' + rqAddressLabel() + ' in the To field.');
     var inp=document.getElementById('rq-to-input'); if(inp) inp.focus();
     return;
   }
-  var subject = document.getElementById('rq-subject').value.trim() || '(no subject)';
+  var msg = document.getElementById('rq-message').value.trim();
+  if(!msg){
+    showNavToast('Message required','Write a message before sending.');
+    var m=document.getElementById('rq-message'); if(m) m.focus();
+    return;
+  }
   var summary = _rqRecip.length === 1
-    ? 'To ' + _rqRecip[0].email
+    ? 'To ' + (_rqRecip[0].display || _rqRecip[0].email)
     : 'To ' + _rqRecip.length + ' recipients';
-  showNavToast('Review request sent', summary + ' · Subject: ' + subject);
+  if(_rqMode === 'sms'){
+    showNavToast('SMS review request sent', summary);
+  } else {
+    var subject = document.getElementById('rq-subject').value.trim() || '(no subject)';
+    showNavToast('Review request sent', summary + ' · Subject: ' + subject);
+  }
   rqResetForm();
 }
 function rqDiscard(){
-  document.getElementById('rq-from').value    = RQ_DEFAULTS.from;
+  document.getElementById('rq-from').value = (_rqMode === 'sms') ? RQ_SMS_FROM : RQ_EMAIL_FROM;
   _rqRecip = []; rqRecipChips();
   var inp=document.getElementById('rq-to-input'); if(inp) inp.value='';
   document.getElementById('rq-subject').value = '';
@@ -591,32 +656,64 @@ var RQ_AI = [
     message: "Hi {name},\n\nThanks again for stopping by. Would you mind sharing how your experience went? A quick star rating is all it takes.\n\nThanks,\nThe USA Direct Auto team"
   }
 ];
+var RQ_AI_SMS = [
+  "Hi {name}! Thanks for choosing USA Direct Auto. Mind rating your experience? {link}",
+  "Hey {name}, quick favor — could you rate your recent visit with us? {link} Thanks!",
+  "Hi {name}, your feedback helps other buyers find us. Tap a star: {link}"
+];
 function rqAiCompose(){
   if(typeof rqAiCompose._i !== 'number') rqAiCompose._i = 0;
-  var d = RQ_AI[rqAiCompose._i % RQ_AI.length];
-  rqAiCompose._i++;
   var firstName = (_rqRecip.length && _rqRecip[0].name)
     ? _rqRecip[0].name.split(' ')[0] : 'there';
-  document.getElementById('rq-subject').value = d.subject;
-  document.getElementById('rq-message').value = d.message.replace(/\{name\}/g, firstName);
+  if(_rqMode === 'sms'){
+    var s = RQ_AI_SMS[rqAiCompose._i % RQ_AI_SMS.length];
+    rqAiCompose._i++;
+    document.getElementById('rq-message').value = s
+      .replace(/\{name\}/g, firstName)
+      .replace(/\{link\}/g, 'usadirect.co/r/xyz');
+  } else {
+    var d = RQ_AI[rqAiCompose._i % RQ_AI.length];
+    rqAiCompose._i++;
+    document.getElementById('rq-subject').value = d.subject;
+    document.getElementById('rq-message').value = d.message.replace(/\{name\}/g, firstName);
+  }
   rqUpdatePreview();
-  showNavToast('AI draft ready','Subject and message populated. Edit as needed before sending.');
+  showNavToast('AI draft ready', (_rqMode === 'sms' ? 'Message' : 'Subject and message') + ' populated. Edit as needed before sending.');
 }
 var _rqTmplId = null;
 var _rqTmplQuery = '';
+var RQ_TMPL_DEFAULTS = [
+  { id:'t1', name:'Default template', type:'email',
+    subject:'How was your experience with USA Direct Auto?',
+    body:"Hi {name},\n\nThanks for choosing USA Direct Auto. Tap a star below to rate your experience.\n\nThank you!" },
+  { id:'t2', name:'Post-purchase thank you', type:'email',
+    subject:'Thanks for your recent purchase',
+    body:"Hi {name},\n\nWe hope you love your new vehicle. Mind sharing how the buying process went?" },
+  { id:'t3', name:'Service visit follow-up', type:'email',
+    subject:'Quick note about your recent service',
+    body:"Hi {name},\n\nThanks for visiting our service department. Would you take a moment to rate your experience?" },
+  { id:'t4', name:'Test drive follow-up', type:'email',
+    subject:'Following up on your test drive',
+    body:"Hi {name},\n\nWe hope you enjoyed the test drive. Let us know if you have questions — and a quick rating below helps others too." },
+  { id:'t5', name:'Referral request', type:'email',
+    subject:'A quick favor?',
+    body:"Hi {name},\n\nIf you have a moment, a short rating below helps other buyers find us. Thank you!" }
+];
 function rqTmplLoad(){
   try{
     var raw = localStorage.getItem('cc_rq_templates');
-    if(!raw) return [];
+    if(!raw) return RQ_TMPL_DEFAULTS.slice();
     var o = JSON.parse(raw);
-    if(!o || !Array.isArray(o.list)) return [];
+    if(!o || !Array.isArray(o.list)) return RQ_TMPL_DEFAULTS.slice();
     return o.list;
-  }catch(e){ return []; }
+  }catch(e){ return RQ_TMPL_DEFAULTS.slice(); }
 }
 function rqTmplRenderBody(){
   var body = document.getElementById('rq-tmpl-body'); if(!body) return;
   var q = _rqTmplQuery.trim().toLowerCase();
-  var rows = rqTmplLoad();
+  /* Filter templates to the composer's current mode.
+     Rows without an explicit `type` default to email (pre-v3 data). */
+  var rows = rqTmplLoad().filter(function(t){ return (t.type || 'email') === _rqMode; });
   var filtered = q ? rows.filter(function(t){
     return (t.name||'').toLowerCase().indexOf(q) >= 0
         || (t.subject||'').toLowerCase().indexOf(q) >= 0;

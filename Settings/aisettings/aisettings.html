@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — AI Settings</title>
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/settings.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;color:var(--tx);}
+
+/* Layout */
+.root{margin-left:64px;margin-top:64px;min-height:calc(100vh - 64px);display:flex;flex-direction:column;background:var(--bg);}
+
+/* Notifications panel (default hidden — opened by the bell) */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.55);z-index:9999;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;align-items:center;gap:6px;}
+.notif-markall{background:transparent;border:none;color:var(--ac2);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .12s;}
+.notif-markall:hover{background:rgba(79,124,255,.10);}
+.notif-close{display:none;width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:var(--mu);cursor:pointer;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;}
+.notif-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:transparent;border:none;color:var(--mu);font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;padding:8px 12px;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:6px;border-bottom:2px solid transparent;margin-bottom:-0.5px;transition:color .12s;}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);background:var(--sur2);padding:1px 6px;border-radius:9px;min-width:18px;text-align:center;}
+.notif-tab.active .notif-tab-count{color:var(--ac2);background:rgba(79,124,255,.16);}
+.notif-body{overflow-y:auto;flex:1;min-height:120px;scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+.notif-body::-webkit-scrollbar{width:6px;}
+.notif-body::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+.notif-footer{padding:8px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+.notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;padding:8px;border-radius:6px;transition:background .12s;}
+.notif-seeall:hover{background:rgba(79,124,255,.08);}
+.header-bell-dot{display:none;}
+
+/* Mobile drawer (hidden by default; shown on phone via drawer.open class) */
+.mobile-drawer-backdrop{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s ease;pointer-events:none;}
+.mobile-drawer-backdrop.show{display:block;opacity:1;pointer-events:auto;}
+.mobile-drawer{display:none;position:fixed;top:0;left:0;bottom:0;width:260px;z-index:9001;background:var(--bg);border-right:0.5px solid var(--brd2);transform:translateX(-100%);transition:transform .25s ease;flex-direction:column;padding:14px 10px;overflow-y:auto;}
+.mobile-drawer.open{transform:translateX(0);}
+.md-nav{display:flex;flex-direction:column;gap:2px;}
+.md-item{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:10px;color:var(--mu);cursor:pointer;font-size:14px;font-weight:500;font-family:var(--font);transition:all .12s;}
+.md-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.md-item.active{background:var(--ac);color:#fff;}
+.md-item.active:hover{background:var(--ac);}
+.md-divider{height:0.5px;background:var(--brd);margin:8px 14px;}
+.md-account{margin-top:4px;}
+.md-account-av{width:24px;height:24px;border-radius:50%;background:var(--gr);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+
+/* Settings sub-page chrome (ported from Settings sub-pages) */
+/* AI Settings page body */
+.ais-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.ais-pane{min-width:0;}
+/* .ais-card base migrated to shared `.card`. Keep local flex-column layout + horizontal padding override. */
+.ais-card{padding:20px 22px;display:flex;flex-direction:column;gap:16px;}
+/* .ais-fld / .ais-lbl migrated to shared `.field` / `.field-label` */
+.ais-help{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--sur2);color:var(--ac2);font-size:9px;font-weight:700;cursor:help;}
+/* .ais-input base + focus + placeholder migrated to shared `.input` (shared/app.css).
+   Keep local: custom chevron background for <select> variants. */
+select.ais-input{padding-right:32px;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 12px;cursor:pointer;}
+select.ais-input::-ms-expand{display:none;}
+.ais-select{position:relative;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-size:13.5px;min-height:40px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .12s;}
+.ais-select:hover{border-color:var(--ac);}
+.ais-select .ais-input{background:none;border:none;padding:0;min-height:0;flex:1;}
+.ais-select-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ais-select-val.ais-mu{color:var(--mu);}
+.ais-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+.ais-select.open .ais-chev{transform:rotate(180deg);}
+.ais-x{background:none;border:none;color:var(--mu);cursor:pointer;padding:2px 6px;font-size:14px;line-height:1;}
+.ais-x:hover{color:var(--rd);}
+.ais-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+/* .ais-menu / .ais-menu-item migrated to shared `.dropdown-menu` / `.dropdown-item`.
+   Keep .ais-menu class only to stretch the popover to the parent field's full width. */
+.ais-menu.dropdown-menu{right:0;}
+.ais-menu-item input{accent-color:var(--ac);cursor:pointer;}
+#ais-sender-menu{padding:0;min-width:280px;max-height:400px;overflow:hidden;flex-direction:column;}
+#ais-sender-menu:not([hidden]){display:flex;}
+#ais-sender-menu[hidden]{display:none;}
+#ais-sender-menu .cp-from-tabs,
+#ais-sender-menu .cp-from-search{flex:none;}
+#ais-sender-menu .cp-from-list{max-height:none;flex:1;min-height:0;overflow-y:auto;}
+.ais-status-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.ais-status-dot.s-dead{background:var(--rd);}
+.ais-status-dot.s-active{background:var(--gr);}
+.ais-status-dot.s-followup{background:var(--am);}
+.ais-status-dot.s-sold{background:#2dd4bf;}
+.ais-status-dot.s-deposit{background:var(--ac2);}
+.ais-status-dot.s-bdc{background:#c4b5fd;}
+.ais-time-row{display:flex;align-items:center;gap:12px;}
+.ais-time{flex:1;display:flex;align-items:center;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:4px 6px 4px 4px;gap:8px;min-height:40px;}
+.ais-time-tag{background:var(--sur);color:var(--mu);font-size:12px;padding:6px 10px;border-radius:6px;}
+.ais-time input[type=time]{flex:1;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13.5px;outline:none;color-scheme:dark;}
+.ais-time-sep{color:var(--mu);}
+.ais-side-placeholder{align-items:center;justify-content:center;text-align:center;min-height:320px;border-style:dashed;}
+.ais-side-icon{font-size:32px;opacity:.6;margin-bottom:8px;}
+.ais-side-title{font-size:14px;font-weight:600;color:var(--tx);}
+.ais-side-sub{font-size:12.5px;color:var(--mu);margin-top:4px;}
+/* Days & Frequency card */
+.ais-df-card{gap:14px;}
+.ais-df-title{font-size:14px;font-weight:600;color:var(--tx);border-bottom:0.5px solid var(--brd);padding-bottom:10px;}
+.ais-df-sec{display:flex;flex-direction:column;gap:10px;}
+.ais-df-head{font-size:13.5px;font-weight:600;color:var(--tx);}
+.ais-df-hint{font-size:12px;color:var(--mu);line-height:1.4;}
+.ais-df-sep{height:0.5px;background:var(--brd);margin:4px 0;}
+.ais-df-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 14px;}
+.ais-df-cb,.ais-df-rd{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--tx);cursor:pointer;user-select:none;padding:4px 2px;}
+.ais-df-cb input[type=checkbox],.ais-df-rd input[type=radio]{width:18px;height:18px;accent-color:var(--ac);cursor:pointer;flex:none;}
+.ais-df-cb span,.ais-df-rd span{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.ais-df-num{width:52px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:6px;padding:5px 6px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;text-align:center;}
+.ais-df-num:focus{border-color:var(--ac);}
+.ais-df-num:disabled{opacity:.4;cursor:not-allowed;}
+/* Filters card */
+.ais-flt-card{gap:14px;}
+.ais-flt-title{font-size:14px;font-weight:600;color:var(--tx);border-bottom:0.5px solid var(--brd);padding-bottom:10px;}
+.ais-flt-sub{font-size:12px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.ais-req{color:var(--rd);}
+.ais-flt-primary{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ais-flt-list{display:flex;flex-direction:column;gap:10px;}
+.ais-flt-row{display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:10px;align-items:end;}
+.ais-flt-del{width:32px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--rd);color:var(--rd);background:transparent;border-radius:8px;cursor:pointer;transition:background .12s;align-self:end;}
+.ais-flt-del svg{width:14px;height:14px;}
+.ais-flt-del:hover{background:rgba(232,85,85,.10);}
+.ais-flt-add{background:rgba(79,124,255,.08);border:0.5px dashed var(--brd2);color:var(--ac2);border-radius:8px;height:40px;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
+.ais-flt-add:hover{background:rgba(79,124,255,.14);border-color:var(--ac);color:var(--ac2);}
+.ais-flt-add svg{width:16px;height:16px;}
+@media (max-width:640px){
+  .ais-flt-primary{grid-template-columns:1fr;}
+  .ais-flt-row{grid-template-columns:1fr;}
+  .ais-flt-del{width:100%;height:36px;}
+}
+/* Chatbot Messages card */
+.ais-msg-card{gap:12px;}
+.ais-msg-head{display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--brd);padding-bottom:10px;gap:12px;}
+.ais-msg-title{font-size:14px;font-weight:600;color:var(--tx);}
+.ais-msg-list{display:flex;flex-direction:column;}
+.ais-msg-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--brd);}
+.ais-msg-item:last-child{border-bottom:none;}
+.ais-msg-text{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--tx);white-space:pre-wrap;word-wrap:break-word;}
+.ais-msg-actions{display:flex;align-items:center;gap:4px;flex:none;}
+.ais-msg-act{width:32px;height:32px;background:transparent;border:none;color:var(--mu);cursor:pointer;padding:6px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;}
+.ais-msg-act svg{width:16px;height:16px;}
+.ais-msg-act.a-edit:hover{color:var(--ac2);background:rgba(79,124,255,.10);}
+.ais-msg-act.a-del:hover{color:var(--rd);background:rgba(232,85,85,.10);}
+.ais-msg-empty{padding:24px 8px;text-align:center;color:var(--mu);font-size:13px;}
+.ais-msg-textarea{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:11px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;line-height:1.5;resize:vertical;min-height:140px;outline:none;transition:border-color .12s;}
+.ais-msg-textarea:focus{border-color:var(--ac);}
+.ais-msg-textarea::placeholder{color:var(--mu);}
+@media (max-width:900px){
+  .ais-row{grid-template-columns:1fr;}
+  .ais-grid2{grid-template-columns:1fr;}
+}
+
+/* AI Rules list (landing view) */
+.ais-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;}
+.ais-list-head-left{display:flex;align-items:baseline;gap:12px;flex:1;min-width:0;}
+.ais-list-title{font-size:14px;font-weight:600;color:var(--tx);}
+.ais-list-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);}
+/* .table-wrap migrated to shared/app.css */
+/* .ais-tbl base + thead/tbody migrated to shared `.data-table` (shared/app.css) */
+.ais-tbl thead th.c-act{text-align:center;width:44px;}
+.ais-tbl .c-no{color:var(--mu);font-family:var(--mono);}
+.ais-tbl .c-nm{color:var(--ac2);font-weight:500;cursor:pointer;}
+.ais-tbl .c-nm:hover{text-decoration:underline;}
+.ais-tbl .c-sender{color:var(--ac2);}
+.ais-tbl .c-lastrun{font-family:var(--mono);font-size:12px;color:var(--tx);line-height:1.3;}
+.ais-tbl .c-lastrun small{display:block;color:var(--mu);}
+.ais-tbl .c-act{text-align:center;width:44px;}
+.ais-tbl .c-act button{background:transparent;border:none;color:var(--mu);cursor:pointer;padding:6px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;}
+.ais-tbl .c-act button svg{width:16px;height:16px;}
+.ais-tbl .c-act .a-view:hover,.ais-tbl .c-act .a-edit:hover{color:var(--ac2);background:rgba(79,124,255,.10);}
+.ais-tbl .c-act .a-del:hover{color:var(--rd);background:rgba(232,85,85,.10);}
+/* .ais-bot / .ais-stage migrated to shared `.badge` variants (badge--success, badge, badge--accent) */
+.ais-detail-head{display:flex;align-items:center;gap:12px;margin:0 0 16px;flex-wrap:wrap;}
+.ais-detail-spacer{flex:1;}
+.ais-ai-cb{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--tx);cursor:pointer;user-select:none;padding:6px 10px;border-radius:8px;transition:background .12s;}
+.ais-ai-cb:hover{background:var(--sur2);}
+.ais-ai-cb input[type=checkbox]{width:16px;height:16px;accent-color:var(--ac);cursor:pointer;flex:none;}
+@media (max-width:640px){
+  .ais-detail-head{gap:8px;}
+  .ais-ai-cb{font-size:12px;padding:4px 8px;}
+}
+.ais-back{background:none;border:none;color:var(--mu);font-family:var(--font);font-size:13px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:all .12s;}
+.ais-back:hover{background:var(--sur2);color:var(--tx);}
+.ais-detail-title{font-size:14px;font-weight:600;color:var(--tx);}
+
+/* Head-row controls: master autobot switch + Add button */
+.ais-head-spacer{flex:1;}
+.ais-sw-wrap{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;color:var(--tx);font-size:12.5px;font-weight:500;padding:6px 8px;border-radius:8px;transition:background .12s;}
+.ais-sw-wrap:hover{background:var(--sur2);}
+.ais-sw-lbl{white-space:nowrap;}
+.ais-sw{position:relative;width:36px;height:20px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:12px;transition:background .12s,border-color .12s;flex:none;}
+.ais-sw::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--mu);border-radius:50%;transition:transform .18s ease-out,background .12s;}
+.ais-sw.on{background:var(--ac);border-color:var(--ac);}
+.ais-sw.on::after{background:#fff;transform:translateX(16px);}
+.ais-sw:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+/* .ais-add-btn migrated to shared `.btn.btn-primary` (in shared/app.css) */
+/* .ais-srch migrated to shared `.search-pill` (in shared/app.css) */
+.ais-srch{width:240px;}
+.ais-empty-row{padding:32px 14px;text-align:center;color:var(--mu);font-size:13px;}
+/* AutoBot Message Logs modal */
+.ais-logs .modal-header{display:flex;align-items:center;gap:12px;}
+.ais-logs-srch{display:flex;align-items:center;gap:8px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 10px;height:34px;width:240px;margin-left:auto;transition:border-color .12s;}
+.ais-logs-srch:focus-within{border-color:var(--ac);}
+.ais-logs-srch svg{width:13px;height:13px;color:var(--mu);flex:none;}
+.ais-logs-srch input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:12.5px;min-width:0;}
+.ais-logs-srch input::placeholder{color:var(--mu);}
+.ais-logs-clear{background:none;border:none;color:var(--mu);border-radius:6px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;flex:none;transition:color .12s,background .12s;}
+.ais-logs-clear:hover{color:var(--tx);background:rgba(255,255,255,.04);}
+/* .ais-logs-tbl base migrated to shared `.data-table`. Local: `vertical-align:top` override for wrapping content. */
+.ais-logs-tbl tbody td{vertical-align:top;}
+.ais-logs-tbl .c-no{color:var(--mu);font-family:var(--mono);width:56px;}
+.ais-logs-tbl .c-date{font-family:var(--mono);font-size:12px;color:var(--mu);white-space:nowrap;width:180px;}
+.ais-logs-tbl .c-msg{min-width:340px;line-height:1.5;}
+.ais-logs-to{display:flex;flex-direction:column;gap:2px;align-items:flex-start;}
+.ais-logs-to-name{color:var(--tx);font-weight:500;font-size:13px;}
+.ais-logs-to-contact{color:var(--mu);font-size:12px;font-family:var(--mono);}
+.ais-logs-to .ais-logs-chan{margin-top:5px;}
+.ais-logs-chan{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--ac2);transition:all .12s;}
+.ais-logs-chan svg{width:12px;height:12px;}
+.ais-logs-chan.is-click{cursor:pointer;}
+.ais-logs-chan.is-click:hover{border-color:var(--ac);color:var(--ac);background:rgba(79,124,255,.10);}
+.ais-logs-chan.is-click:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+.ais-logs-more{color:var(--ac2);cursor:pointer;font-weight:500;}
+.ais-logs-more:hover{text-decoration:underline;}
+.ais-logs-empty{padding:36px 14px;text-align:center;color:var(--mu);font-size:13px;}
+/* Pager (.ais-logs-pager / .ais-logs-pgbtn / .ais-logs-pgell) migrated to shared `.pager` / `.pager-btn` / `.pager-ell` (shared/app.css) */
+@media (max-width:640px){
+  .ais-logs .modal-header{flex-wrap:wrap;}
+  .ais-logs-srch{width:100%;margin-left:0;order:3;}
+  /* Full-screen takeover on mobile */
+  #ais-logs-modal .modal{width:100vw !important;max-width:100vw !important;height:100vh;max-height:100vh;border-radius:0;border:none;display:flex;flex-direction:column;}
+  #ais-logs-modal.modal-backdrop{padding:0;}
+  #ais-logs-modal .modal-header{border-radius:0;}
+  #ais-logs-modal .modal-body{flex:1;min-height:0;overflow-y:auto;padding:12px;}
+  /* Stacked cards on mobile */
+  #ais-logs-modal .table-wrap{border:none;background:transparent;overflow:visible;border-radius:0;}
+  .ais-logs-tbl, .ais-logs-tbl tbody, .ais-logs-tbl tr, .ais-logs-tbl td{display:block;width:100%;}
+  .ais-logs-tbl thead{display:none;}
+  .ais-logs-tbl tr{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+  .ais-logs-tbl tr:hover{background:var(--sur);}
+  .ais-logs-tbl tbody tr:last-child td{border-bottom:none;}
+  /* Header bar: SR NO + number */
+  .ais-logs-tbl td.c-no{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);font-family:var(--mono);color:var(--tx);width:100%;}
+  .ais-logs-tbl td.c-no::before{content:attr(data-label);font-family:var(--font);font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  /* Body field blocks */
+  .ais-logs-tbl td:not(.c-no){display:flex;flex-direction:column;gap:5px;padding:10px 14px;border-bottom:0.5px solid var(--brd);white-space:normal;}
+  .ais-logs-tbl td:not(.c-no)::before{content:attr(data-label);font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  .ais-logs-tbl tr td:last-child{border-bottom:none;}
+  .ais-logs-tbl .c-date{font-family:var(--mono);color:var(--tx);width:auto;}
+  .ais-logs-tbl .c-msg{min-width:0;}
+  .ais-logs-to{width:100%;}
+  .ais-logs-tbl tr td.ais-logs-empty{padding:24px 14px;border:none;background:var(--sur);}
+  .ais-logs-tbl tr td.ais-logs-empty::before{content:none;}
+}
+@media (max-width:640px){
+  .set-page-head{flex-wrap:wrap;}
+  .ais-sw-lbl{display:none;}
+  .ais-srch{width:100%;order:2;}
+  #ais-add-rule-btn{order:1;}
+}
+
+@media (max-width:900px){
+  .root{margin-left:0;}
+}
+@media (max-width:640px){
+  .set-page-head{padding:14px 16px;}
+  .set-page-title{font-size:16px;}
+  .set-scroll{padding:18px 16px 60px;}
+  .ais-empty{margin:24px auto;padding:32px 20px;}
+  .ais-time-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .ais-time{width:100%;}
+  .ais-time-sep{display:none;}
+}
+/* Mobile a11y sweep — ≥44 touch targets + 16px inputs (iOS zoom safe) */
+@media (max-width:640px){
+  /* Inputs — prevent iOS zoom on focus */
+  .ais-input, .ais-msg-textarea, .ais-df-num,
+  .ais-time input[type=time],
+  #ais-search-input, #ais-logs-search, #ais-msg-input{font-size:16px;}
+  /* List head */
+  /* .ais-add-btn removed — shared `.btn` handles the mobile 44px touch target */
+  /* .ais-srch mobile height — shared `.search-pill` provides 44px */
+  .ais-sw-wrap{min-height:44px;padding:8px 10px;}
+  /* List table icon buttons */
+  .ais-tbl .c-act button{min-width:44px;min-height:44px;padding:10px;}
+  .ais-tbl th, .ais-tbl td{padding:12px;font-size:12.5px;}
+  /* Detail view */
+  .ais-back{min-height:44px;padding:10px 14px;}
+  .ais-input, .ais-select, .ais-time{min-height:44px;}
+  .ais-df-num{min-height:32px;}
+  .ais-x{min-width:44px;min-height:44px;padding:0 12px;}
+  /* Status dropdown items */
+  /* .ais-menu-item mobile bump — shared `.dropdown-item` provides 44px on mobile */
+  /* Follow up AI / Auto Responder AI checkbox pills — override the earlier shrink */
+  .ais-ai-cb{font-size:14px;padding:10px 12px;min-height:44px;}
+  /* Days & Frequency rows */
+  .ais-df-cb, .ais-df-rd{min-height:44px;padding:8px 4px;font-size:15px;}
+  /* Filters card */
+  .ais-flt-add{min-height:44px;}
+  .ais-flt-del{min-height:44px;}
+  /* Chatbot Messages actions */
+  .ais-msg-act{width:44px;height:44px;}
+  /* Chatbot Message modal footer buttons */
+  #ais-msg-modal .modal-cancel, #ais-msg-modal .modal-save,
+  #ais-logs-modal .modal-close{min-height:44px;padding:0 18px;}
+  /* AutoBot Message Logs modal */
+  .ais-logs-srch{height:44px;}
+  .ais-logs-clear{width:44px;height:44px;font-size:14px;}
+  .ais-logs-chan{width:44px;height:44px;border-radius:8px;}
+  .ais-logs-chan svg{width:16px;height:16px;}
+  .ais-logs-more{display:inline-block;padding:8px 4px;min-height:44px;line-height:28px;}
+  /* .ais-logs-pgbtn mobile — shared `.pager-btn` provides 44×44 */
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <div class="sb-item" data-nav="home" data-label="Dashboard" onclick="navClick('Home')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628A.5.5 0 0 1 8.35375 2.14628L14.5 8.29315"/></svg>
+    </div>
+    <div class="sb-item" data-nav="crm" data-label="CRM Customer" onclick="navClick('CRM')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9C6.38 9 7.5 7.88 7.5 6.5S6.38 4 5 4 2.5 5.12 2.5 6.5 3.62 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44 10.28 3.14 9 5 9s3.56 1.28 4 3"/></svg>
+    </div>
+    <div class="sb-item" data-nav="call" data-label="Call History" onclick="navClick('Call')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </div>
+    <div class="sb-item" data-nav="message" data-label="Message History" onclick="navClick('Message')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="sb-item" data-nav="voicemail" data-label="Voicemail History" onclick="navClick('Voicemail')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+    </div>
+    <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="sidebar-nav-spacer"></div>
+    <div class="sb-divider"></div>
+    <div class="sb-item active" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+    </div>
+  </div>
+  <div class="sb-account" onclick="navClick('Account')" title="Account">DP</div>
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="md-nav">
+    <div class="md-item" onclick="navClick('Home');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="md-item" onclick="navClick('CRM');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21c1-4 4-6 6-6s5 2 6 6"/><line x1="15" y1="6" x2="21" y2="6"/><line x1="15" y1="10" x2="21" y2="10"/></svg>
+      <span>CRM Customer</span>
+    </div>
+    <div class="md-item" onclick="navClick('Call');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 2.11 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Call History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Message');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Message History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Voicemail');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+      <span>Voicemail History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Appointments');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Appointments</span>
+    </div>
+    <div class="md-divider"></div>
+    <div class="md-item active" onclick="navClick('Settings');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+      <span>Settings</span>
+    </div>
+    <div class="md-item md-account" onclick="navClick('Account');closeMobileDrawer();">
+      <span class="md-account-av">DP</span>
+      <span>Account</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="root" id="root">
+  <div class="set-page-head">
+    <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">AI Settings</span>
+    <div class="ais-head-spacer"></div>
+    <div class="search-pill ais-srch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="ais-search-input" placeholder="Search rules..." oninput="aisSearch(this.value)"/>
+    </div>
+    <button class="btn btn-primary" id="ais-add-rule-btn" onclick="aisAddNew()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add
+    </button>
+  </div>
+  <div class="set-scroll">
+    <div class="ais-view" id="ais-list">
+      <div class="ais-list-head">
+        <div class="ais-list-head-left">
+          <div class="ais-list-title">AI Rules</div>
+          <div class="ais-list-count" id="ais-count"></div>
+        </div>
+        <label class="ais-sw-wrap" title="Allow the AI to send autobot messages">
+          <span class="ais-sw-lbl">Allow to send autobot message</span>
+          <span class="ais-sw" id="ais-autobot-sw" role="switch" tabindex="0" aria-checked="false" onclick="aisAutobotToggle()" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();aisAutobotToggle();}"></span>
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table ais-tbl">
+          <thead>
+            <tr>
+              <th class="c-no">No.</th>
+              <th class="c-nm">Name</th>
+              <th>Hour</th>
+              <th>Status</th>
+              <th>Business Time Start</th>
+              <th>Business Time End</th>
+              <th>Default Sender</th>
+              <th>Bot Status</th>
+              <th>Last Run</th>
+              <th>Stage</th>
+              <th class="c-act" title="View">L</th>
+              <th class="c-act" title="Delete">D</th>
+            </tr>
+          </thead>
+          <tbody id="ais-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ais-view" id="ais-detail" hidden>
+      <div class="ais-detail-head">
+        <button class="ais-back" onclick="aisShowList()">← Back to list</button>
+        <div class="ais-detail-title" id="ais-detail-title">Edit AI Rule</div>
+        <div class="ais-detail-spacer"></div>
+        <label class="ais-ai-cb"><input type="checkbox" id="ais-followup-ai" checked/> <span>Follow up AI</span></label>
+        <label class="ais-ai-cb"><input type="checkbox" id="ais-autoresp-ai" checked/> <span>Auto Responder AI</span></label>
+      </div>
+      <div class="ais-row ais-row-1">
+      <div class="ais-pane ais-pane-form">
+        <div class="card ais-card">
+          <div class="field ais-fld">
+            <label class="field-label ais-lbl" for="ais-name">Name</label>
+            <input class="input ais-input" id="ais-name" type="text" value="DAY 2 FOLLOW UP (EVERY 24 HOURS)"/>
+          </div>
+          <div class="ais-grid2">
+            <div class="field ais-fld">
+              <label class="field-label ais-lbl">Default Sender <span class="ais-help" title="Sender used when no lead-specific sender is set">i</span></label>
+              <div class="ais-select" id="ais-sender-sel" onclick="aisSenderToggle(event)">
+                <input class="input ais-input" id="ais-sender" type="text" value="Daisy Perez — 9794066920" readonly/>
+                <button class="ais-x" onclick="event.stopPropagation();aisSenderClear()" aria-label="Clear">✕</button>
+                <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dropdown-menu ais-menu" id="ais-sender-menu" hidden>
+                <div class="cp-from-tabs">
+                  <div class="cp-from-tab active" data-tab="users" onclick="aisFromSetTab(this,'users')">Users</div>
+                  <div class="cp-from-tab" data-tab="depts" onclick="aisFromSetTab(this,'depts')">Department</div>
+                </div>
+                <div class="cp-from-search">
+                  <i class="ti ti-search" aria-hidden="true"></i>
+                  <input type="text" id="ais-from-search" placeholder="Search…" oninput="aisFromSearch(this.value)"/>
+                </div>
+                <div class="cp-from-list" id="ais-from-list"></div>
+              </div>
+            </div>
+            <div class="field ais-fld">
+              <label class="field-label ais-lbl">Status</label>
+              <div class="ais-select" id="ais-status-sel" onclick="aisStatusToggle(event)">
+                <span class="ais-select-val" id="ais-status-lbl">2 Status Selected</span>
+                <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dropdown-menu ais-menu" id="ais-status-menu" hidden></div>
+            </div>
+          </div>
+          <div class="field ais-fld">
+            <label class="field-label ais-lbl">Labels</label>
+            <div class="ais-select" onclick="aisLabelToggle()">
+              <span class="ais-select-val ais-mu" id="ais-labels-lbl">Select Label</span>
+              <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="field ais-fld">
+            <label class="field-label ais-lbl">Primary Method</label>
+            <div class="ais-select" onclick="aisMethodToggle()">
+              <span class="ais-select-val" id="ais-method-lbl">SMS</span>
+              <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="field ais-fld">
+            <label class="field-label ais-lbl">Business Time</label>
+            <div class="ais-time-row">
+              <div class="ais-time"><span class="ais-time-tag">Start</span><input type="time" value="08:00"/></div>
+              <span class="ais-time-sep">—</span>
+              <div class="ais-time"><span class="ais-time-tag">End</span><input type="time" value="20:00"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ais-pane ais-pane-side">
+        <div class="card ais-card ais-df-card">
+          <div class="ais-df-title">Days &amp; Frequency</div>
+          <div class="ais-df-sec">
+            <div class="ais-df-head">Days</div>
+            <div class="ais-df-hint">Select the specific days of the week to apply this schedule.</div>
+            <div class="ais-df-grid" id="ais-days">
+              <label class="ais-df-cb"><input type="checkbox" data-day="mon" checked onchange="aisDaySync()"><span>Monday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="tue" checked onchange="aisDaySync()"><span>Tuesday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="wed" checked onchange="aisDaySync()"><span>Wednesday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="thu" checked onchange="aisDaySync()"><span>Thursday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="fri" checked onchange="aisDaySync()"><span>Friday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="sat" checked onchange="aisDaySync()"><span>Saturday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="sun" onchange="aisDaySync()"><span>Sunday</span></label>
+              <label class="ais-df-cb"><input type="checkbox" data-day="all" onchange="aisDayAllToggle(this.checked)"><span>All</span></label>
+            </div>
+          </div>
+          <div class="ais-df-sep"></div>
+          <div class="ais-df-sec">
+            <div class="ais-df-head">Frequency</div>
+            <div class="ais-df-hint">Choose how often you want this task to run.</div>
+            <div class="ais-df-grid" id="ais-freq">
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="daily" checked onchange="aisFreqSync()"><span>Daily</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span>Weekly</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="monthly" onchange="aisFreqSync()"><span>Monthly</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-min" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-min" type="number" min="1" disabled/> Minutes</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-hr" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-hr" type="number" min="1" disabled/> Hours</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="once" onchange="aisFreqSync()"><span>Once</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ais-row ais-row-2">
+      <div class="ais-pane" style="grid-column:1/-1;">
+        <div class="card ais-card ais-flt-card">
+          <div class="ais-flt-title">Filters</div>
+          <div class="ais-flt-sub">Filter Settings</div>
+          <div class="ais-flt-primary">
+            <div class="field ais-fld">
+              <label class="field-label ais-lbl"><span class="ais-req">*</span> Select Field</label>
+              <div class="ais-select">
+                <input class="input ais-input" id="ais-flt-field" type="text" value="Last Engage Hours" readonly/>
+                <button class="ais-x" onclick="aisClearField('ais-flt-field')" aria-label="Clear">✕</button>
+                <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="field ais-fld">
+              <label class="field-label ais-lbl"><span class="ais-req">*</span> Value</label>
+              <input class="input ais-input" id="ais-flt-value" type="text" value="24:00"/>
+            </div>
+          </div>
+          <div class="ais-flt-list" id="ais-filters-body"></div>
+          <button class="ais-flt-add" onclick="aisFltAdd()" title="Add filter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="ais-row ais-row-3">
+      <div class="ais-pane" style="grid-column:1/-1;">
+        <div class="card ais-card ais-msg-card">
+          <div class="ais-msg-head">
+            <div class="ais-msg-title">Chatbot Messages</div>
+            <button class="btn btn-primary" onclick="aisMsgAdd()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Message
+            </button>
+          </div>
+          <div class="ais-msg-list" id="ais-msg-list"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATBOT MESSAGE MODAL -->
+<div class="modal-backdrop" id="ais-msg-modal" onclick="if(event.target===this)aisMsgCancel()">
+  <div class="modal" style="width:520px;max-width:calc(100vw - 32px);">
+    <div class="modal-header">
+      <div class="modal-title" id="ais-msg-modal-title">Add message</div>
+      <button class="modal-close" onclick="aisMsgCancel()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Message</div>
+        <textarea id="ais-msg-input" class="ais-msg-textarea" rows="6" placeholder="Write a chatbot message… Use #Vehicle# and #Name# tokens for lead-specific values."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="aisMsgCancel()">Cancel</button>
+      <button class="modal-save" onclick="aisMsgSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTOBOT MESSAGE LOGS MODAL -->
+<div class="modal-backdrop" id="ais-logs-modal" onclick="if(event.target===this)aisLogsClose()">
+  <div class="modal ais-logs" style="width:980px;max-width:calc(100vw - 32px);">
+    <div class="modal-header ais-logs-head">
+      <div class="modal-title">AutoBot Message Logs</div>
+      <div class="ais-logs-srch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="ais-logs-search" placeholder="Search..." oninput="aisLogsSearch(this.value)"/>
+        <button class="ais-logs-clear" onclick="aisLogsClearSearch()" aria-label="Clear">&#x2715;</button>
+      </div>
+      <button class="modal-close" onclick="aisLogsClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrap">
+        <table class="data-table ais-logs-tbl">
+          <thead><tr>
+            <th class="c-no">Sr No</th>
+            <th>From</th>
+            <th>To</th>
+            <th class="c-msg">Message</th>
+            <th class="c-date">Date</th>
+          </tr></thead>
+          <tbody id="ais-logs-body"></tbody>
+        </table>
+      </div>
+      <div class="pager ais-logs-pager" id="ais-logs-pager"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script src="../../shared/leads-comms.js"></script>
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+function navClick(label){
+  document.querySelectorAll('.sb-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-nav') === label.toLowerCase() || label === 'Settings' && el.getAttribute('data-nav') === 'settings'); });
+  if(label === 'Home'){ window.location.href='../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html'; return; }
+  if(label === 'CRM'){ window.location.href='../../coreconnect_leads_v83/coreconnect_leads_v83.html'; return; }
+  if(label === 'Call'){ window.location.href='../../call_history/coreconnect_call_history_v31.html'; return; }
+  if(label === 'Message'){ window.location.href='../../coreconnect_message_history_v41/coreconnect_message_history_v41.html'; return; }
+  if(label === 'Voicemail'){ window.location.href='../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html'; return; }
+  if(label === 'Appointments'){ window.location.href='../../coreconnect_appointments/coreconnect_appointments.html'; return; }
+  if(label === 'Settings'){ window.location.href='../Settings_main_page/coreconnect_settings.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+/* AI Settings — list + detail */
+var AIS_KEY = 'cc_ai_settings', AIS_VER = 'v3';
+var AIS_MSG_SEED = [
+  "Good Day! This is USA Direct Auto checking in to see if you're still interested in the #Vehicle# you inquired about. We're here whenever you're ready!",
+  "Just wanted to follow up and see if you had any questions regarding financing, trade-ins, or vehicle availability.",
+  "We'd love the opportunity to earn your business. Let us know if you'd like to schedule a test drive or receive more information."
+];
+var AIS_DEFAULTS = [
+  { id:'a1', no:1, name:'FIRST RESPONSE (3 min)', hourText:'00:03',
+    statusList:['Active'], bizStart:'08:00', bizEnd:'20:00',
+    sender:'Daisy Perez — 9794066920', botDone:true,
+    lastRun:'Jul 02, 2026|18:02', stage:'Demo',
+    followUpAI:true, autoResponderAI:true,
+    chatbotMessages: AIS_MSG_SEED.slice() },
+  { id:'a2', no:2, name:'DAY 2 FOLLOW UP (EVERY 24 HOURS)', hourText:'24:00',
+    statusList:['Follow Up','Active'], bizStart:'08:00', bizEnd:'20:00',
+    sender:'Daisy Perez — 9794066920', botDone:true,
+    lastRun:'Jul 01, 2026|21:27', stage:'Demo',
+    followUpAI:true, autoResponderAI:true,
+    chatbotMessages: AIS_MSG_SEED.slice() }
+];
+function aisApplyAiFlags(followUp, autoResp){
+  var f = document.getElementById('ais-followup-ai');
+  var a = document.getElementById('ais-autoresp-ai');
+  if(f) f.checked = !!followUp;
+  if(a) a.checked = !!autoResp;
+}
+function aisLoad(){
+  try{ var r=localStorage.getItem(AIS_KEY); if(r){ var o=JSON.parse(r); if(o&&o.ver===AIS_VER&&Array.isArray(o.list)) return o.list; } }catch(e){}
+  return AIS_DEFAULTS.slice();
+}
+function aisPersist(list){ try{ localStorage.setItem(AIS_KEY, JSON.stringify({ver:AIS_VER,list:list})); }catch(e){} }
+var AIS_LIST = aisLoad();
+function aisEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var AIS_ICONS = {
+  view: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  del:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>'
+};
+var _aisQuery = '';
+function aisSearch(v){ _aisQuery = String(v||''); aisRender(); }
+function aisFilteredList(){
+  var q = _aisQuery.trim().toLowerCase();
+  return q ? AIS_LIST.filter(function(r){ return String(r.name||'').toLowerCase().indexOf(q) >= 0; }) : AIS_LIST.slice();
+}
+function aisRender(){
+  var body = document.getElementById('ais-body'); if(!body) return;
+  var rows = aisFilteredList();
+  if(!rows.length){
+    body.innerHTML = '<tr><td colspan="12" class="ais-empty-row">No rules match your search.</td></tr>';
+    var count0 = document.getElementById('ais-count');
+    if(count0) count0.textContent = AIS_LIST.length + ' rule' + (AIS_LIST.length===1?'':'s');
+    return;
+  }
+  body.innerHTML = rows.map(function(r,i){
+    var lr = String(r.lastRun||'').split('|');
+    var bot = r.botDone
+      ? '<span class="badge badge--success">&check; Done</span>'
+      : '<span class="badge">Pending</span>';
+    return '<tr>'
+      + '<td class="c-no">'+(i+1)+'</td>'
+      + '<td class="c-nm" onclick="aisEditRow(\''+aisEsc(r.id)+'\')">'+aisEsc(r.name)+'</td>'
+      + '<td>'+aisEsc(r.hourText)+'</td>'
+      + '<td>'+aisEsc((r.statusList||[]).join(', '))+'</td>'
+      + '<td>'+aisEsc(r.bizStart)+'</td>'
+      + '<td>'+aisEsc(r.bizEnd)+'</td>'
+      + '<td class="c-sender">'+aisEsc(r.sender)+'</td>'
+      + '<td>'+bot+'</td>'
+      + '<td class="c-lastrun">'+aisEsc(lr[0]||'')+'<small>'+aisEsc(lr[1]||'')+'</small></td>'
+      + '<td><span class="badge badge--accent">'+aisEsc(r.stage)+'</span></td>'
+      + '<td class="c-act"><button class="a-view" title="View" onclick="aisViewRow(\''+aisEsc(r.id)+'\')">'+AIS_ICONS.view+'</button></td>'
+      + '<td class="c-act"><button class="a-del"  title="Delete" onclick="aisDeleteRow(\''+aisEsc(r.id)+'\')">'+AIS_ICONS.del+'</button></td>'
+      + '</tr>';
+  }).join('');
+  var count = document.getElementById('ais-count');
+  if(count) count.textContent = AIS_LIST.length + ' rule' + (AIS_LIST.length===1?'':'s');
+}
+/* AutoBot Message Logs */
+var AIS_LOGS_PAGE_SIZE = 10;
+var _aisLogsCache = new Map();
+var _aisLogsRule = null, _aisLogsQuery = '', _aisLogsPage = 1;
+var _aisLogsExpanded = new Set();
+var AIS_LOGS_ICONS = {
+  sms: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg>'
+};
+function _aisSeededPick(seedStr, mod){
+  var h = 0; for(var i=0;i<seedStr.length;i++) h = ((h<<5)-h + seedStr.charCodeAt(i))|0;
+  return Math.abs(h) % Math.max(1, mod);
+}
+function _aisFmtDate(ts){
+  var d = new Date(ts);
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dd = String(d.getDate()).padStart(2,'0');
+  var hh = String(d.getHours()).padStart(2,'0');
+  var mm = String(d.getMinutes()).padStart(2,'0');
+  return mo[d.getMonth()]+' '+dd+' '+d.getFullYear()+', '+hh+':'+mm;
+}
+function _aisFmtPhone(p){
+  var s = String(p||'').replace(/\D/g,'');
+  if(s.length === 11 && s[0] === '1') s = s.slice(1);
+  if(s.length === 10) return '('+s.slice(0,3)+') '+s.slice(3,6)+'-'+s.slice(6);
+  return String(p||'');
+}
+function _aisBuildLogsForRule(rule){
+  var leads = (window.CCLeads && CCLeads.LEADS) || [];
+  var isSMS = /SMS/i.test(rule.name), isEmail = /EMAIL/i.test(rule.name);
+  var rows = [], now = Date.now();
+  var count = Math.min(40, Math.max(6, leads.length));
+  for(var i=0;i<count;i++){
+    var lead = leads.length ? leads[_aisSeededPick(rule.id+':L:'+i, leads.length)] : {name:'Lead '+(i+1), email:'lead'+(i+1)+'@example.com', phone:'5555550'+String(100+i), vehicle:'2024 Vehicle'};
+    var channel = isSMS ? 'sms' : isEmail ? 'email' : ((_aisSeededPick(rule.id+':C:'+i, 2)===0) ? 'email' : 'sms');
+    var first = String(lead.name||'').split(' ')[0] || 'there';
+    var tpl = AIS_MSG_SEED[_aisSeededPick(rule.id+':M:'+i, AIS_MSG_SEED.length)];
+    var msg = tpl.replace(/#Name#/g, first).replace(/#Vehicle#/g, lead.vehicle || 'vehicle');
+    var ts = now - (i * 3600000) - _aisSeededPick(rule.id+':T:'+i, 3600000);
+    rows.push({
+      id: rule.id+'_l'+i,
+      leadNo: (lead && lead.no) || null,
+      leadName: (lead && lead.name) || 'Unknown lead',
+      from: channel==='sms' ? '(979) 406-6920' : 'sales@usadirectauto.com',
+      to:   channel==='sms' ? _aisFmtPhone(lead.phone||'') : (lead.email||'unknown@lead.com'),
+      channel: channel,
+      message: msg,
+      ts: _aisFmtDate(ts)
+    });
+  }
+  return rows;
+}
+function _aisLogsList(){
+  if(!_aisLogsRule) return [];
+  if(!_aisLogsCache.has(_aisLogsRule.id))
+    _aisLogsCache.set(_aisLogsRule.id, _aisBuildLogsForRule(_aisLogsRule));
+  var all = _aisLogsCache.get(_aisLogsRule.id);
+  var q = _aisLogsQuery.trim().toLowerCase();
+  if(!q) return all;
+  return all.filter(function(r){
+    return (r.from+' '+r.to+' '+(r.leadName||'')+' '+r.message).toLowerCase().indexOf(q) >= 0;
+  });
+}
+function _aisPageNums(page, total){
+  var out = [];
+  if(total <= 7){ for(var i=1;i<=total;i++) out.push(i); return out; }
+  out.push(1);
+  if(page > 3) out.push('...');
+  var s = Math.max(2, page-1), e = Math.min(total-1, page+1);
+  for(var j=s;j<=e;j++) out.push(j);
+  if(page < total-2) out.push('...');
+  out.push(total);
+  return out;
+}
+function aisLogsRenderPager(page, pageCount){
+  var el = document.getElementById('ais-logs-pager'); if(!el) return;
+  if(pageCount <= 1){ el.innerHTML = ''; return; }
+  var parts = ['<button class="pager-btn ais-logs-pgbtn"'+(page<=1?' disabled':'')+' onclick="aisLogsGoto('+(page-1)+')">Prev</button>'];
+  _aisPageNums(page, pageCount).forEach(function(n){
+    if(n === '...') parts.push('<span class="pager-ell ais-logs-pgell">…</span>');
+    else parts.push('<button class="pager-btn ais-logs-pgbtn'+(n===page?' active':'')+'" onclick="aisLogsGoto('+n+')">'+n+'</button>');
+  });
+  parts.push('<button class="pager-btn ais-logs-pgbtn"'+(page>=pageCount?' disabled':'')+' onclick="aisLogsGoto('+(page+1)+')">Next</button>');
+  el.innerHTML = parts.join('');
+}
+function aisLogsRender(){
+  var body = document.getElementById('ais-logs-body'); if(!body) return;
+  var list = _aisLogsList();
+  var total = list.length;
+  var pageCount = Math.max(1, Math.ceil(total / AIS_LOGS_PAGE_SIZE));
+  if(_aisLogsPage > pageCount) _aisLogsPage = pageCount;
+  if(!total){
+    body.innerHTML = '<tr><td colspan="5" class="ais-logs-empty">No messages found.</td></tr>';
+    aisLogsRenderPager(1, 1);
+    return;
+  }
+  var start = (_aisLogsPage-1)*AIS_LOGS_PAGE_SIZE;
+  var slice = list.slice(start, start+AIS_LOGS_PAGE_SIZE);
+  body.innerHTML = slice.map(function(r, i){
+    var expanded = _aisLogsExpanded.has(r.id);
+    var msg;
+    if(r.message.length > 140){
+      msg = expanded
+        ? aisEsc(r.message)+' <span class="ais-logs-more" onclick="aisLogsToggleMore(\''+aisEsc(r.id)+'\')">Read Less</span>'
+        : aisEsc(r.message.slice(0,140))+'… <span class="ais-logs-more" onclick="aisLogsToggleMore(\''+aisEsc(r.id)+'\')">Read More</span>';
+    } else {
+      msg = aisEsc(r.message);
+    }
+    return '<tr>'
+      + '<td class="c-no" data-label="Sr No">'+(start+i+1)+'</td>'
+      + '<td data-label="From">'+aisEsc(r.from)+'</td>'
+      + '<td data-label="To"><div class="ais-logs-to">'
+        + '<div class="ais-logs-to-name">'+aisEsc(r.leadName || 'Unknown lead')+'</div>'
+        + '<div class="ais-logs-to-contact">'+aisEsc(r.to)+'</div>'
+        + (r.leadNo
+            ? '<span class="ais-logs-chan is-click" role="button" tabindex="0" title="Open contact panel" onclick="aisLogsOpenLead('+r.leadNo+', event)" onkeydown="if(event.key===\' \'||event.key===\'Enter\'){event.preventDefault();aisLogsOpenLead('+r.leadNo+', event);}">'+AIS_LOGS_ICONS[r.channel]+'</span>'
+            : '<span class="ais-logs-chan" title="No lead linked">'+AIS_LOGS_ICONS[r.channel]+'</span>')
+        + '</div></td>'
+      + '<td class="c-msg" data-label="Message">'+msg+'</td>'
+      + '<td class="c-date" data-label="Date">'+aisEsc(r.ts)+'</td>'
+      + '</tr>';
+  }).join('');
+  aisLogsRenderPager(_aisLogsPage, pageCount);
+}
+function aisLogsGoto(n){ _aisLogsPage = n; aisLogsRender(); }
+function aisLogsSearch(v){ _aisLogsQuery = String(v||''); _aisLogsPage = 1; aisLogsRender(); }
+function aisLogsClearSearch(){
+  var i = document.getElementById('ais-logs-search'); if(i){ i.value=''; i.focus(); }
+  aisLogsSearch('');
+}
+function aisLogsToggleMore(id){
+  if(_aisLogsExpanded.has(id)) _aisLogsExpanded.delete(id);
+  else _aisLogsExpanded.add(id);
+  aisLogsRender();
+}
+function aisLogsClose(){
+  var m = document.getElementById('ais-logs-modal'); if(m) m.classList.remove('open');
+  _aisLogsRule = null;
+}
+function aisViewRow(id){
+  var t = AIS_LIST.find(function(x){return x.id===id;}); if(!t) return;
+  _aisLogsRule = t;
+  _aisLogsQuery = ''; _aisLogsPage = 1; _aisLogsExpanded = new Set();
+  var i = document.getElementById('ais-logs-search'); if(i) i.value = '';
+  document.getElementById('ais-logs-modal').classList.add('open');
+  aisLogsRender();
+}
+function aisLogsOpenLead(leadNo, ev){
+  if(ev){ ev.stopPropagation(); }
+  var m = document.getElementById('ais-logs-modal'); if(m) m.classList.remove('open');
+  window._cpFromAisLogs = true;
+  if(typeof window.openContactPanel === 'function') window.openContactPanel(leadNo, 'all');
+}
+(function(){
+  function wrap(){
+    if(window._aisCloseWrapped) return;
+    var orig = window.closeContactPanel;
+    if(typeof orig !== 'function') return;
+    window.closeContactPanel = function(){
+      var fromLogs = !!window._cpFromAisLogs;
+      orig();
+      if(fromLogs){
+        window._cpFromAisLogs = false;
+        setTimeout(function(){
+          var m = document.getElementById('ais-logs-modal');
+          if(m && _aisLogsRule) m.classList.add('open');
+        }, 260);
+      }
+    };
+    window._aisCloseWrapped = true;
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wrap);
+  else setTimeout(wrap, 0);
+})();
+function aisEditRow(id){
+  var t = AIS_LIST.find(function(x){return x.id===id;}); if(!t) return;
+  var dt = document.getElementById('ais-detail-title'); if(dt) dt.textContent = 'Edit AI Rule — ' + t.name;
+  var name = document.getElementById('ais-name');    if(name) name.value = t.name;
+  var send = document.getElementById('ais-sender');  if(send) send.value = t.sender;
+  aisRenderStatusMenu(t.statusList || []);
+  aisApplyAiFlags(t.followUpAI !== false, t.autoResponderAI !== false);
+  aisMsgLoadFor(t);
+  aisShowDetail();
+  _aisSetHash('#/edit/' + encodeURIComponent(id));
+}
+function aisDeleteRow(id){
+  var t = AIS_LIST.find(function(x){return x.id===id;}); if(!t) return;
+  AIS_LIST = AIS_LIST.filter(function(x){return x.id!==id;});
+  aisPersist(AIS_LIST); aisRender();
+  showNavToast('Rule deleted', t.name + ' was removed.');
+}
+function aisShowList(){
+  var l=document.getElementById('ais-list'), d=document.getElementById('ais-detail');
+  if(l) l.hidden = false; if(d) d.hidden = true;
+  _aisSetHash('#/list');
+}
+function aisShowDetail(){
+  var l=document.getElementById('ais-list'), d=document.getElementById('ais-detail');
+  if(l) l.hidden = true; if(d) d.hidden = false;
+}
+/* Router: persist current view in URL hash so reloads land back on the same page */
+function aisReadHash(){
+  var h = String(location.hash || '').replace(/^#\/?/, '');
+  if(!h || h === 'list') return { view:'list' };
+  if(h === 'new')        return { view:'new' };
+  var m = h.match(/^edit\/(.+)$/);
+  if(m) return { view:'edit', id: decodeURIComponent(m[1]) };
+  return { view:'list' };
+}
+function _aisSetHash(next){ if(location.hash === next) return; history.replaceState(null, '', next); }
+function aisApplyHash(){
+  var r = aisReadHash();
+  if(r.view === 'edit'){
+    var t = AIS_LIST.find(function(x){return x.id===r.id;});
+    if(!t){ aisShowList(); return; }
+    aisEditRow(r.id);
+  } else if(r.view === 'new'){
+    aisAddNew();
+  } else {
+    aisShowList();
+  }
+}
+window.addEventListener('hashchange', aisApplyHash);
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisRender(); aisApplyHash(); });
+else { aisRender(); aisApplyHash(); }
+
+/* Master autobot switch + Add */
+var AIS_AUTO_KEY = 'cc_ai_autobot_enabled';
+function aisAutobotLoad(){ try{ return localStorage.getItem(AIS_AUTO_KEY) === '1'; }catch(e){ return false; } }
+function aisAutobotSet(on){
+  try{ localStorage.setItem(AIS_AUTO_KEY, on ? '1' : '0'); }catch(e){}
+  var el = document.getElementById('ais-autobot-sw');
+  if(el){ el.classList.toggle('on', on); el.setAttribute('aria-checked', on ? 'true' : 'false'); }
+}
+function aisAutobotToggle(){
+  var wasOn = aisAutobotLoad();
+  aisAutobotSet(!wasOn);
+  showNavToast(!wasOn ? 'Autobot enabled' : 'Autobot disabled',
+               !wasOn ? 'AI can now send autobot messages.' : 'Autobot messages paused.');
+}
+function aisAddNew(){
+  var dt = document.getElementById('ais-detail-title'); if(dt) dt.textContent = 'New AI Rule';
+  var name = document.getElementById('ais-name'); if(name){ name.value = ''; setTimeout(function(){ name.focus(); }, 30); }
+  var send = document.getElementById('ais-sender'); if(send) send.value = '';
+  aisRenderStatusMenu([]);
+  aisApplyAiFlags(true, true);
+  aisMsgLoadFor({chatbotMessages: []});
+  aisShowDetail();
+  _aisSetHash('#/new');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisAutobotSet(aisAutobotLoad()); aisRenderStatusMenu(['Follow Up','Active']); });
+else { aisAutobotSet(aisAutobotLoad()); aisRenderStatusMenu(['Follow Up','Active']); }
+
+/* AI Settings — Row 1 handlers */
+function aisClearField(id){ var el=document.getElementById(id); if(el){ el.value=''; el.focus(); } }
+function aisStatusClass(name){
+  var s = String(name||'').toLowerCase();
+  if(s === 'dead') return 's-dead';
+  if(s === 'active') return 's-active';
+  if(s === 'follow up') return 's-followup';
+  if(s === 'sold') return 's-sold';
+  if(s === 'deposit') return 's-deposit';
+  if(s.indexOf('bdc') === 0) return 's-bdc';
+  return 's-active';
+}
+function aisStatusOptions(){ return (window.CCLeads && CCLeads.STATUS_LIST) || ['Active']; }
+function aisRenderStatusMenu(selected){
+  var m = document.getElementById('ais-status-menu'); if(!m) return;
+  var opts = aisStatusOptions();
+  var sel = selected || [];
+  m.innerHTML = opts.map(function(name){
+    var on = sel.indexOf(name) >= 0 ? 'checked' : '';
+    return '<label class="dropdown-item ais-menu-item">'
+      + '<input type="checkbox" data-val="'+aisEsc(name)+'" '+on+' onchange="aisStatusSync()"/>'
+      + '<span class="ais-status-dot '+aisStatusClass(name)+'"></span>'
+      + aisEsc(name)
+      + '</label>';
+  }).join('');
+  aisStatusSync();
+}
+function aisStatusSync(){
+  var m = document.getElementById('ais-status-menu'); if(!m) return;
+  var checks = m.querySelectorAll('input[type=checkbox]');
+  var count = 0, firstLabel = '';
+  checks.forEach(function(c){ if(c.checked){ count++; if(!firstLabel) firstLabel = c.getAttribute('data-val') || ''; } });
+  var lbl = document.getElementById('ais-status-lbl');
+  if(lbl) lbl.textContent = count===0 ? 'Select Status' : (count===1 ? firstLabel : count+' Status Selected');
+}
+function aisStatusToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('ais-status-menu'); if(!m) return;
+  m.hidden = !m.hidden;
+  var sel = document.getElementById('ais-status-sel'); if(sel) sel.classList.toggle('open', !m.hidden);
+}
+function aisStatusClose(){
+  var m = document.getElementById('ais-status-menu'); if(m) m.hidden = true;
+  var sel = document.getElementById('ais-status-sel'); if(sel) sel.classList.remove('open');
+}
+/* Default Sender dropdown — CCLeads.TEAM + Departments (Users/Department tabs) */
+var _aisFromTab = 'users', _aisFromQuery = '';
+var AIS_DEPTS = [
+  {key:'SA', name:'Sales',     color:'#4f7cff'},
+  {key:'BD', name:'BDC',       color:'#22c88a'},
+  {key:'SV', name:'Service',   color:'#f5a623'},
+  {key:'MK', name:'Marketing', color:'#a78bfa'},
+  {key:'FI', name:'Finance',   color:'#e85555'}
+];
+function aisSenderList(){ return (window.CCLeads && CCLeads.TEAM) || []; }
+function aisRenderSenderMenu(){
+  var list = document.getElementById('ais-from-list'); if(!list) return;
+  var q = _aisFromQuery.trim().toLowerCase();
+  var cur = (document.getElementById('ais-sender').value || '').trim();
+  if(_aisFromTab === 'users'){
+    var users = aisSenderList();
+    var matches = users.filter(function(u){ return u.name.toLowerCase().indexOf(q) >= 0 || (u.role||'').toLowerCase().indexOf(q) >= 0; });
+    if(!matches.length){ list.innerHTML = '<div class="cp-from-empty">No users found</div>'; return; }
+    list.innerHTML = matches.map(function(u){
+      return '<div class="cp-from-item'+(cur===u.name?' selected':'')+'" onclick="aisSenderPick(\''+aisEsc(u.key)+'\')">'
+        + '<div class="cp-from-item-av" style="background:'+aisEsc(u.color||'#4f7cff')+';">'+aisEsc(u.key)+'</div>'
+        + '<div><div class="cp-from-item-name">'+aisEsc(u.name)+'</div><div class="cp-from-item-role">'+aisEsc(u.role||'')+'</div></div>'
+      + '</div>';
+    }).join('');
+  } else {
+    var depts = AIS_DEPTS.filter(function(d){ return d.name.toLowerCase().indexOf(q) >= 0; });
+    if(!depts.length){ list.innerHTML = '<div class="cp-from-empty">No departments found</div>'; return; }
+    list.innerHTML = depts.map(function(d){
+      var disp = d.name + ' (Dept)';
+      return '<div class="cp-from-item'+(cur===disp?' selected':'')+'" onclick="aisSenderPickDept(\''+aisEsc(d.key)+'\')">'
+        + '<div class="cp-from-item-av cp-from-item-dept-av" style="background:'+aisEsc(d.color)+';">'+aisEsc(d.key)+'</div>'
+        + '<div><div class="cp-from-item-name">'+aisEsc(d.name)+'</div><div class="cp-from-item-role">Department</div></div>'
+      + '</div>';
+    }).join('');
+  }
+}
+function aisFromSetTab(el, tab){
+  _aisFromTab = tab; _aisFromQuery = '';
+  document.querySelectorAll('#ais-sender-menu .cp-from-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === tab); });
+  var inp = document.getElementById('ais-from-search'); if(inp) inp.value = '';
+  aisRenderSenderMenu();
+}
+function aisFromSearch(v){ _aisFromQuery = String(v||''); aisRenderSenderMenu(); }
+function aisSenderToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('ais-sender-menu'); if(!m) return;
+  var opening = m.hidden;
+  if(opening){
+    _aisFromTab = 'users'; _aisFromQuery = '';
+    document.querySelectorAll('#ais-sender-menu .cp-from-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === 'users'); });
+    var inp = document.getElementById('ais-from-search'); if(inp) inp.value = '';
+    aisRenderSenderMenu();
+  }
+  m.hidden = !m.hidden;
+  var sel = document.getElementById('ais-sender-sel'); if(sel) sel.classList.toggle('open', !m.hidden);
+  aisStatusClose();
+}
+function aisSenderClose(){
+  var m = document.getElementById('ais-sender-menu'); if(m) m.hidden = true;
+  var sel = document.getElementById('ais-sender-sel'); if(sel) sel.classList.remove('open');
+}
+function aisSenderPick(key){
+  var u = aisSenderList().find(function(x){return x.key===key;});
+  if(!u){ aisSenderClose(); return; }
+  var inp = document.getElementById('ais-sender'); if(inp) inp.value = u.name;
+  aisSenderClose();
+}
+function aisSenderPickDept(key){
+  var d = AIS_DEPTS.find(function(x){return x.key===key;});
+  if(!d){ aisSenderClose(); return; }
+  var inp = document.getElementById('ais-sender'); if(inp) inp.value = d.name + ' (Dept)';
+  aisSenderClose();
+}
+function aisSenderClear(){
+  var inp = document.getElementById('ais-sender'); if(inp){ inp.value = ''; }
+  aisSenderClose();
+}
+/* Days & Frequency handlers */
+function aisDayInputs(){ return document.querySelectorAll('#ais-days input[type=checkbox][data-day]:not([data-day="all"])'); }
+function aisDayAllInput(){ return document.querySelector('#ais-days input[data-day="all"]'); }
+function aisDaySync(){
+  var inputs = aisDayInputs();
+  var all = aisDayAllInput();
+  var total = inputs.length, checked = 0;
+  inputs.forEach(function(i){ if(i.checked) checked++; });
+  if(all) all.checked = (checked === total);
+}
+function aisDayAllToggle(on){
+  aisDayInputs().forEach(function(i){ i.checked = !!on; });
+}
+function aisFreqSync(){
+  var pick = document.querySelector('#ais-freq input[type=radio]:checked');
+  var mode = pick ? pick.value : 'daily';
+  var minI = document.getElementById('ais-freq-min');
+  var hrI  = document.getElementById('ais-freq-hr');
+  if(minI) minI.disabled = (mode !== 'every-min');
+  if(hrI)  hrI.disabled  = (mode !== 'every-hr');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisDaySync(); aisFreqSync(); });
+else { aisDaySync(); aisFreqSync(); }
+
+/* Filters (Row 2) — additional condition rows */
+var AIS_FLT_FIELDS = ['Last Engage Hours', 'Last Attempt Hours', 'Skip Keyword'];
+var AIS_FLT_OPS    = ['Equal To', 'Greater Than'];
+var _aisFltId = 0;
+var _aisFilters = [
+  { id:'f'+(++_aisFltId), field:'Last Attempt Hours', op:'Greater Than', value:'24:00' },
+  { id:'f'+(++_aisFltId), field:'Skip Keyword',       op:'Equal To',     value:'STOP'  }
+];
+function _aisOpts(list, current){
+  return list.map(function(v){
+    var sel = (v===current) ? ' selected' : '';
+    return '<option value="'+aisEsc(v)+'"'+sel+'>'+aisEsc(v)+'</option>';
+  }).join('');
+}
+function aisFltRender(){
+  var el = document.getElementById('ais-filters-body'); if(!el) return;
+  el.innerHTML = _aisFilters.map(function(r){
+    return '<div class="ais-flt-row" data-id="'+aisEsc(r.id)+'">'
+      + '<div class="field ais-fld"><label class="field-label ais-lbl">Select Field</label>'
+        + '<select class="input ais-input" onchange="aisFltEdit(\''+aisEsc(r.id)+'\',\'field\',this.value)">'+_aisOpts(AIS_FLT_FIELDS, r.field)+'</select></div>'
+      + '<div class="field ais-fld"><label class="field-label ais-lbl">Operator</label>'
+        + '<select class="input ais-input" onchange="aisFltEdit(\''+aisEsc(r.id)+'\',\'op\',this.value)">'+_aisOpts(AIS_FLT_OPS, r.op)+'</select></div>'
+      + '<div class="field ais-fld"><label class="field-label ais-lbl">Value</label>'
+        + '<input class="input ais-input" type="text" value="'+aisEsc(r.value)+'" oninput="aisFltEdit(\''+aisEsc(r.id)+'\',\'value\',this.value)"/></div>'
+      + '<button class="ais-flt-del" title="Remove" onclick="aisFltDelete(\''+aisEsc(r.id)+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>'
+      + '</div>';
+  }).join('');
+}
+function aisFltAdd(){
+  _aisFilters.push({ id:'f'+(++_aisFltId), field:AIS_FLT_FIELDS[0], op:AIS_FLT_OPS[0], value:'' });
+  aisFltRender();
+}
+function aisFltDelete(id){ _aisFilters = _aisFilters.filter(function(r){return r.id!==id;}); aisFltRender(); }
+function aisFltEdit(id, key, val){
+  var r = _aisFilters.find(function(x){return x.id===id;}); if(r) r[key] = val;
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', aisFltRender);
+else aisFltRender();
+
+/* Chatbot Messages (Row 3) */
+var _aisMsgId = 0, _aisMsgList = [], _aisMsgEditingId = null;
+var AIS_MSG_ICONS = {
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  del:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>'
+};
+function aisMsgRender(){
+  var el = document.getElementById('ais-msg-list'); if(!el) return;
+  if(!_aisMsgList.length){
+    el.innerHTML = '<div class="ais-msg-empty">No messages yet. Click + Add Message to write one.</div>';
+    return;
+  }
+  el.innerHTML = _aisMsgList.map(function(m){
+    return '<div class="ais-msg-item">'
+      + '<div class="ais-msg-text">'+aisEsc(m.text)+'</div>'
+      + '<div class="ais-msg-actions">'
+        + '<button class="ais-msg-act a-edit" title="Edit" onclick="aisMsgEditOpen(\''+aisEsc(m.id)+'\')">'+AIS_MSG_ICONS.edit+'</button>'
+        + '<button class="ais-msg-act a-del"  title="Delete" onclick="aisMsgDelete(\''+aisEsc(m.id)+'\')">'+AIS_MSG_ICONS.del+'</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+function aisMsgAdd(){
+  _aisMsgEditingId = null;
+  document.getElementById('ais-msg-modal-title').textContent = 'Add message';
+  document.getElementById('ais-msg-input').value = '';
+  document.getElementById('ais-msg-modal').classList.add('open');
+  setTimeout(function(){ var i=document.getElementById('ais-msg-input'); if(i) i.focus(); }, 20);
+}
+function aisMsgEditOpen(id){
+  var m = _aisMsgList.find(function(x){return x.id===id;}); if(!m) return;
+  _aisMsgEditingId = id;
+  document.getElementById('ais-msg-modal-title').textContent = 'Edit message';
+  document.getElementById('ais-msg-input').value = m.text;
+  document.getElementById('ais-msg-modal').classList.add('open');
+  setTimeout(function(){ var i=document.getElementById('ais-msg-input'); if(i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 20);
+}
+function aisMsgCancel(){
+  _aisMsgEditingId = null;
+  var m = document.getElementById('ais-msg-modal'); if(m) m.classList.remove('open');
+}
+function aisMsgSave(){
+  var txt = document.getElementById('ais-msg-input').value.trim();
+  if(!txt){ showNavToast('Message required','Write a message before saving.'); return; }
+  var wasEditing = !!_aisMsgEditingId;
+  if(wasEditing){
+    var m = _aisMsgList.find(function(x){return x.id===_aisMsgEditingId;});
+    if(m) m.text = txt;
+  } else {
+    _aisMsgList.push({ id:'m'+(++_aisMsgId), text:txt });
+  }
+  aisMsgRender();
+  aisMsgCancel();
+  showNavToast('Saved', wasEditing ? 'Message updated.' : 'Message added.');
+}
+function aisMsgDelete(id){
+  _aisMsgList = _aisMsgList.filter(function(m){return m.id!==id;});
+  aisMsgRender();
+  showNavToast('Deleted','Message removed.');
+}
+function aisMsgLoadFor(rule){
+  var msgs = (rule && rule.chatbotMessages) || [];
+  _aisMsgId = 0;
+  _aisMsgList = msgs.map(function(txt){ return { id:'m'+(++_aisMsgId), text:txt }; });
+  aisMsgRender();
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisMsgLoadFor({chatbotMessages: AIS_MSG_SEED}); });
+else aisMsgLoadFor({chatbotMessages: AIS_MSG_SEED});
+
+function aisLabelToggle(){ showNavToast('Labels','Label picker coming next.'); }
+function aisMethodToggle(){ showNavToast('Method','SMS / Email switcher coming next.'); }
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('#ais-status-sel') && !e.target.closest('#ais-status-menu')) aisStatusClose();
+  if(!e.target.closest('#ais-sender-sel') && !e.target.closest('#ais-sender-menu')) aisSenderClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var lm = document.getElementById('ais-logs-modal');
+  if(lm && lm.classList.contains('open')){ aisLogsClose(); return; }
+  var mm = document.getElementById('ais-msg-modal');
+  if(mm && mm.classList.contains('open')){ aisMsgCancel(); return; }
+  aisSenderClose();
+  aisStatusClose();
+});
+
+function toggleMobileDrawer(){
+  var d=document.getElementById('mobile-drawer'), b=document.getElementById('mobile-drawer-backdrop');
+  var open=d.classList.toggle('open'); b.classList.toggle('show', open);
+}
+function closeMobileDrawer(){
+  document.getElementById('mobile-drawer').classList.remove('open');
+  document.getElementById('mobile-drawer-backdrop').classList.remove('show');
+}
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'coreconnect'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>
+
+</body>
+</html>

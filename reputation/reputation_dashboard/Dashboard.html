@@ -73,12 +73,7 @@
   .rep-sp{flex:1;}
   .rep-content{padding:24px 20px 60px;}
   .rep-tbtn{display:flex;align-items:center;gap:5px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
-  .period-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;flex-shrink:0;}
-  .pt-seg{display:flex;align-items:center;justify-content:center;min-height:32px;padding:0 16px;border-radius:7px;background:transparent;border:none;cursor:pointer;color:var(--mu);font-size:12.5px;font-weight:500;font-family:var(--font);transition:color .12s, background .12s;white-space:nowrap;}
-  .pt-seg:hover{color:var(--tx);}
-  .pt-seg.active{background:var(--ac);color:#fff;}
-  .pt-seg.active:hover{color:#fff;}
-  .pt-seg:focus-visible{outline:2px solid var(--ac);outline-offset:1px;}
+  /* .period-toggle / .pt-seg migrated to shared/app.css */
   .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
   .rep-tbtn svg{width:15px;height:15px;flex:none;}
   .rep-chev{transition:transform .15s;}
@@ -293,8 +288,7 @@
   .rep-rqtrend-svg .rq-val{fill:var(--tx);font-size:13px;font-weight:600;font-family:var(--font);}
   @media (max-width:640px){
     .rep-wcard{flex-basis:100%;}
-    .period-toggle{padding:4px;}
-    .pt-seg{min-height:40px;padding:0 14px;}
+    /* .period-toggle mobile bumps — shared/app.css handles it */
   }
 
   /* ── Mobile drawer ── */

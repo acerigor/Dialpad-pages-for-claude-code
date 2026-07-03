@@ -8,6 +8,7 @@
    ============================================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css');
 
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
@@ -209,6 +210,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   /* Generic icon-only buttons + close buttons */
   .modal-close,
   .notif-close,
+  .nav-toast-close,
   .scp-close, .scp-back,
   .nlog-pd-close{ width:44px !important; height:44px !important; }
 
@@ -271,4 +273,256 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
    ============================================================================ */
 @media (max-width:640px){
   .top-header .logo-text{ display:none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   REUSABLE UI COMPONENTS — the shared design system.
+   ----------------------------------------------------------------------------
+   Use these generic classes for consistent look-and-feel across pages. Prefer
+   them over per-page prefixed classes (`.ais-add-btn`, `.loc-add`, etc.).
+   Additive: existing per-page classes still work; migrate progressively.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+/* Base — apply to every button, then layer a variant class */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:36px;padding:0 16px;border-radius:8px;border:0.5px solid transparent;
+  background:transparent;color:var(--tx);font-family:var(--font);font-size:13px;
+  font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:background .15s, border-color .15s, color .15s;text-decoration:none;}
+.btn svg{width:14px;height:14px;flex:none;}
+.btn:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+.btn[disabled],.btn.is-disabled{opacity:.5;cursor:not-allowed;pointer-events:none;}
+
+/* Primary — accent-fill, used for Add / Save / Send / Confirm */
+.btn-primary{background:var(--ac);color:#fff;border-color:var(--ac);}
+.btn-primary:hover{background:var(--ac2);border-color:var(--ac2);}
+
+/* Secondary — muted outline, used for Cancel / Discard / Back */
+.btn-secondary{background:var(--sur2);border-color:var(--brd2);color:var(--tx);}
+.btn-secondary:hover{border-color:var(--ac);color:var(--ac2);}
+
+/* Danger — red outline, used for Delete / Remove */
+.btn-danger{background:transparent;border-color:var(--brd2);color:var(--rd);}
+.btn-danger:hover{background:rgba(232,85,85,.10);border-color:var(--rd);}
+
+/* Ghost — text-only, transparent, used for tertiary actions */
+.btn-ghost{background:transparent;border-color:transparent;color:var(--mu);}
+.btn-ghost:hover{background:var(--sur2);color:var(--tx);}
+
+/* Size variants */
+.btn-sm{height:32px;padding:0 12px;font-size:12.5px;}
+.btn-sm svg{width:13px;height:13px;}
+.btn-lg{height:44px;padding:0 22px;font-size:14px;}
+.btn-lg svg{width:16px;height:16px;}
+
+/* Icon-only — square, centered icon, no label */
+.btn-icon{width:36px;padding:0;}
+.btn-icon.btn-sm{width:32px;}
+.btn-icon.btn-lg{width:44px;}
+
+/* Mobile a11y — bump every .btn to at least 44px tall for touch */
+@media (max-width:640px){
+  .btn{min-height:44px;}
+  .btn-icon{min-width:44px;}
+  .btn-lg{min-height:48px;}
+}
+
+/* ── Dropdowns / Popover menus ───────────────────────────────────────────── */
+/* Container — position:absolute (anchored via parent .dropdown or inline top/left).
+   Hidden by default via the HTML `hidden` attribute; visible otherwise.
+   Also supports the `.open` class as an alternative visibility toggle. */
+.dropdown-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:200px;
+  background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
+  padding:5px;z-index:60;box-shadow:0 12px 32px rgba(0,0,0,.5);
+  display:block;overflow:hidden;}
+.dropdown-menu[hidden]{display:none;}
+/* .open-style toggle (for pages that use classList.toggle('open')) */
+.dropdown-menu:not(.open):not([data-open]):not([data-toggle="hidden-attr"]){}
+.dropdown-menu.is-hidden{display:none;}
+
+/* Header label — small uppercase muted */
+.dropdown-header{padding:8px 12px 6px;font-size:10.5px;font-weight:600;
+  color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+
+/* Divider — hairline between groups */
+.dropdown-divider{height:0.5px;background:var(--brd);margin:5px 0;}
+
+/* Row inside the menu — button-shaped, full width */
+.dropdown-item{display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 12px;border-radius:7px;background:none;border:none;
+  color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;
+  cursor:pointer;transition:background .12s, color .12s;}
+.dropdown-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.dropdown-item.is-active,.dropdown-item.active{background:rgba(79,124,255,.08);color:var(--ac2);}
+.dropdown-item[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none;}
+.dropdown-item svg{width:15px;height:15px;flex:none;color:currentColor;}
+.dropdown-item .dropdown-item-label{flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.dropdown-item .dropdown-item-hint{color:var(--mu);font-size:11.5px;flex:none;}
+
+/* Mobile — comfortable tap targets */
+@media (max-width:640px){
+  .dropdown-item{min-height:44px;padding:12px 14px;font-size:15px;}
+  .dropdown-header{padding:10px 14px 8px;}
+}
+
+/* ── Search pill — icon + input in a filled pill ─────────────────────────── */
+/* Structure: <div class="search-pill"><svg>...</svg><input type="text"/></div> */
+.search-pill{display:inline-flex;align-items:center;gap:8px;
+  background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+  padding:0 12px;height:38px;width:260px;max-width:100%;
+  transition:border-color .12s;flex-shrink:0;}
+.search-pill:focus-within{border-color:var(--ac);}
+.search-pill svg{width:14px;height:14px;color:var(--mu);flex:none;}
+.search-pill input{flex:1;background:none;border:none;outline:none;
+  color:var(--tx);font-family:var(--font);font-size:13px;min-width:0;}
+.search-pill input::placeholder{color:var(--mu);}
+
+/* Mobile — iOS-zoom-safe input font + comfortable tap height */
+@media (max-width:640px){
+  .search-pill{height:44px;}
+  .search-pill input{font-size:16px;}
+}
+
+/* ── Data tables — scroll card + header + rows ───────────────────────────── */
+/* Wrapper: rounded card with horizontal scroll when the table is wider than the viewport. */
+.table-wrap{overflow-x:auto;border:0.5px solid var(--brd2);border-radius:12px;
+  background:var(--sur);scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+.table-wrap::-webkit-scrollbar{height:8px;}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px;}
+
+/* Base table — apply .data-table to every <table> inside a .table-wrap */
+.data-table{width:100%;border-collapse:separate;border-spacing:0;
+  font-family:var(--font);color:var(--tx);}
+.data-table thead th{background:var(--sur2);padding:13px 14px;text-align:left;
+  font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.5px;border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
+.data-table tbody tr{transition:background .1s;}
+.data-table tbody tr:hover{background:rgba(79,124,255,.04);}
+.data-table tbody td{padding:13px 14px;font-size:13px;color:var(--tx);
+  border-bottom:0.5px solid var(--brd);vertical-align:middle;white-space:nowrap;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+
+/* Variants */
+.data-table--compact thead th,.data-table--compact tbody td{padding:10px 12px;font-size:12.5px;}
+.data-table--right-actions thead th:last-child,
+.data-table--right-actions tbody td:last-child{text-align:right;}
+
+/* Mobile — comfortable row padding, still allows horizontal scroll */
+@media (max-width:640px){
+  .data-table thead th,.data-table tbody td{padding:12px;font-size:12.5px;}
+}
+
+/* ── Pager — numbered page navigation (Prev · 1 2 3 … · Next) ────────────── */
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;
+  flex-wrap:wrap;padding:14px 0 4px;}
+.pager-btn{min-width:36px;height:34px;padding:0 10px;background:var(--sur2);
+  border:0.5px solid var(--brd2);border-radius:7px;color:var(--tx);
+  font-family:var(--font);font-size:12.5px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color .12s,color .12s,background .12s;}
+.pager-btn:hover:not([disabled]){border-color:var(--ac);color:var(--ac2);}
+.pager-btn[disabled]{opacity:.4;cursor:default;}
+.pager-btn.active,.pager-btn.is-active{background:var(--ac);border-color:var(--ac);color:#fff;}
+.pager-ell{color:var(--mu);padding:0 4px;user-select:none;}
+
+@media (max-width:640px){
+  .pager-btn{min-width:44px;height:44px;}
+}
+
+/* ── Cards — surface with border + radius ────────────────────────────────── */
+.card{background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;padding:20px;}
+.card--sm{padding:16px;}
+.card--lg{padding:24px 26px;}
+.card--flush{padding:0;overflow:hidden;}   /* wrapper card containing a list/table */
+.card--dashed{border-style:dashed;}
+.card-title{font-size:14px;font-weight:600;color:var(--tx);}
+.card-sub{font-size:12.5px;color:var(--mu);margin-top:4px;}
+
+/* ── Badges — colored pills for status / counts ──────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:12px;border:0.5px solid var(--mu);color:var(--mu);
+  font-size:11.5px;font-weight:500;background:transparent;white-space:nowrap;line-height:1.3;}
+.badge svg{width:12px;height:12px;flex:none;}
+.badge--sm{font-size:10.5px;padding:2px 8px;border-radius:10px;}
+.badge--lg{font-size:12.5px;padding:4px 12px;border-radius:14px;}
+
+/* Color variants */
+.badge--success{border-color:var(--gr);color:var(--gr);background:rgba(34,200,138,.10);}
+.badge--accent{border-color:var(--ac2);color:var(--ac2);background:rgba(79,124,255,.10);}
+.badge--warn{border-color:var(--am);color:var(--am);background:rgba(245,166,35,.10);}
+.badge--danger{border-color:var(--rd);color:var(--rd);background:rgba(232,85,85,.10);}
+.badge--teal{border-color:var(--teal);color:var(--teal);background:rgba(45,212,191,.10);}
+.badge--purple{border-color:var(--purple);color:var(--purple);background:rgba(196,181,253,.14);}
+
+/* Solid variants (filled bg, white text) — for high-emphasis */
+.badge--solid-success{background:var(--gr);border-color:var(--gr);color:#0f1117;}
+.badge--solid-accent{background:var(--ac);border-color:var(--ac);color:#fff;}
+.badge--solid-danger{background:var(--rd);border-color:var(--rd);color:#fff;}
+
+/* ── Empty states ────────────────────────────────────────────────────────── */
+/* Large dashed placeholder — for empty pages / sections */
+.empty-state{border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);
+  min-height:340px;padding:40px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;text-align:center;}
+.empty-state-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
+.empty-state-title{font-size:15px;font-weight:600;color:var(--tx);}
+.empty-state-sub{font-size:13px;color:var(--mu);max-width:400px;line-height:1.5;}
+
+/* Compact inline empty message — for menus/dropdowns/small containers */
+.empty-inline{padding:24px 14px;text-align:center;color:var(--mu);font-size:13px;}
+.empty-inline-sm{padding:14px 8px;text-align:center;color:var(--mu);font-size:12px;}
+
+/* ── Form fields — label + input, textarea, hint ─────────────────────────── */
+/* Field wrapper: <div class="field"><label class="field-label">...</label><input class="input"/></div> */
+.field{display:flex;flex-direction:column;gap:6px;position:relative;}
+.field-label{font-size:12px;color:var(--mu);font-weight:600;
+  text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:4px;}
+.field-label--required::after{content:'*';color:var(--rd);margin-left:2px;}
+.field-hint{font-size:11.5px;color:var(--mu);line-height:1.4;}
+.field-error{font-size:11.5px;color:var(--rd);line-height:1.4;}
+
+/* Base input — applies to text/email/tel/number/select inputs */
+.input{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+  padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;
+  min-height:40px;outline:none;transition:border-color .12s;width:100%;
+  line-height:1.4;}
+.input:focus{border-color:var(--ac);}
+.input::placeholder{color:var(--mu);}
+.input[readonly]{cursor:pointer;}
+.input[disabled],.input.is-disabled{opacity:.5;cursor:not-allowed;}
+
+/* Size variants */
+.input--sm{min-height:34px;padding:7px 10px;font-size:12.5px;}
+.input--lg{min-height:44px;padding:12px 14px;font-size:14px;}
+
+/* Textarea — same visual as .input but multi-line + resize handle */
+.textarea{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+  padding:11px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;
+  line-height:1.5;resize:vertical;min-height:120px;outline:none;
+  transition:border-color .12s;width:100%;}
+.textarea:focus{border-color:var(--ac);}
+.textarea::placeholder{color:var(--mu);}
+
+/* Mobile — iOS-zoom-safe font size (16px) + comfortable tap targets */
+@media (max-width:640px){
+  .input, .textarea{font-size:16px;}
+  .input{min-height:44px;}
+}
+
+/* ── Period segmented toggle (Monthly / Weekly / Daily / All) ────────────── */
+.period-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;
+  background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;flex-shrink:0;}
+.pt-seg{display:flex;align-items:center;justify-content:center;
+  min-height:32px;padding:0 16px;border-radius:7px;background:transparent;
+  border:none;cursor:pointer;color:var(--mu);font-size:12.5px;font-weight:500;
+  font-family:var(--font);transition:color .12s, background .12s;white-space:nowrap;}
+.pt-seg:hover{color:var(--tx);}
+.pt-seg.active{background:var(--ac);color:#fff;}
+.pt-seg.active:hover{color:#fff;}
+.pt-seg:focus-visible{outline:2px solid var(--ac);outline-offset:1px;}
+@media (max-width:640px){
+  .period-toggle{padding:4px;}
+  .pt-seg{min-height:40px;padding:0 14px;}
 }

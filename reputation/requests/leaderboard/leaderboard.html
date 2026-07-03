@@ -137,11 +137,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .rep-bar{padding:10px 14px;}
 }
 @media (max-width:640px){
-  #rep-filter-btn > span,
   #rep-loc-btn > span{display:none;}
-  #rep-filter-btn .rep-chev,
   #rep-loc-btn .rep-chev{display:none;}
-  #rep-filter-btn,
   #rep-loc-btn{padding:0;width:40px;justify-content:center;gap:0;}
   .rep-menu{position:fixed;inset:0;width:100%;max-width:100%;min-width:0;border-radius:0;border:none;z-index:150;}
   .rep-dd.open .rep-menu{display:flex;flex-direction:column;}
@@ -152,7 +149,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .rep-menu-srch{margin:12px 14px;padding:11px 12px;}
   .rep-menu-srch input{font-size:16px;}
   .rep-tbtn{min-height:44px;}
-  #rep-filter-btn,#rep-loc-btn{width:44px;}
+  #rep-loc-btn{width:44px;}
   .rep-item{min-height:44px;}
   body.rep-sheet-open{overflow:hidden;}
   body.rep-sheet-open .rep-menu-backdrop{display:block;}
@@ -258,22 +255,12 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="rep-bar">
-    <!-- Period dropdown -->
-    <div class="rep-dd" id="rep-filter">
-      <button class="rep-tbtn" id="rep-filter-btn" onclick="repFilterToggle(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="rep-tbtn-val" id="rep-filter-label">Current Year</span>
-        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="rep-menu" id="rep-filter-menu">
-        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Period</span><button class="rep-menu-mclose" onclick="repFilterClose()" aria-label="Close">&#x2715;</button></div>
-        <div class="rep-menu-item checked" onclick="repFilterPick(this,'Current Year')"><span>Current Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous Year')"><span>Previous Year</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 2 Years')"><span>Previous 2 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Previous 3 Years')"><span>Previous 3 Years</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2024')"><span>Calendar Year 2024</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="rep-menu-item" onclick="repFilterPick(this,'Calendar Year 2023')"><span>Calendar Year 2023</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      </div>
+    <!-- Period segmented toggle -->
+    <div class="period-toggle" role="tablist" aria-label="Period">
+      <button class="pt-seg active" data-period="monthly" onclick="repSetPeriod(this,'Monthly')" role="tab">Monthly</button>
+      <button class="pt-seg" data-period="weekly"  onclick="repSetPeriod(this,'Weekly')"  role="tab">Weekly</button>
+      <button class="pt-seg" data-period="daily"   onclick="repSetPeriod(this,'Daily')"   role="tab">Daily</button>
+      <button class="pt-seg" data-period="all"     onclick="repSetPeriod(this,'All')"     role="tab">All</button>
     </div>
     <!-- Location dropdown -->
     <div class="rep-dd" id="rep-loc">
@@ -301,7 +288,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
     <div class="lb-widget lb-card" id="lb-most-sent">
       <div class="lb-widget-head">
         <div class="lb-widget-title">Most sent reviews by users</div>
-        <div class="lb-widget-sub" id="lb-most-sent-sub">Current Year</div>
+        <div class="lb-widget-sub" id="lb-most-sent-sub">Monthly</div>
       </div>
       <div class="lb-tbl-wrap">
         <table class="lb-tbl">
@@ -322,7 +309,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   </div>
 </div>
 
-<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repFilterClose();repLocClose();"></div>
+<div class="rep-menu-backdrop" id="rep-menu-backdrop" onclick="repLocClose();"></div>
 
 <!-- NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
@@ -424,22 +411,22 @@ else _repBindHoverFlyouts();
 
 /* Toolbar dropdowns */
 function _repSyncSheet(){
-  var f = document.getElementById('rep-filter'), l = document.getElementById('rep-loc');
-  var anyOpen = (f && f.classList.contains('open')) || (l && l.classList.contains('open'));
+  var l = document.getElementById('rep-loc');
+  var anyOpen = l && l.classList.contains('open');
   document.body.classList.toggle('rep-sheet-open', !!anyOpen);
 }
-function repFilterToggle(e){ if(e) e.stopPropagation(); repLocClose(); document.getElementById('rep-filter').classList.toggle('open'); _repSyncSheet(); }
-function repFilterClose(){ var f = document.getElementById('rep-filter'); if(f) f.classList.remove('open'); _repSyncSheet(); }
-function repFilterPick(el, label){
-  document.querySelectorAll('#rep-filter-menu .rep-menu-item').forEach(function(it){ it.classList.toggle('checked', it === el); });
-  var lbl = document.getElementById('rep-filter-label'); if(lbl) lbl.textContent = label;
-  repFilterClose();
+/* Period segmented toggle */
+var _repPeriod = 'Monthly';
+function repSetPeriod(el, label){
+  _repPeriod = label;
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
+    s.classList.toggle('active', s === el);
+  });
   if(typeof lbRenderKpi === 'function') lbRenderKpi();
   if(typeof lbRenderMostSent === 'function') lbRenderMostSent();
 }
 function repLocToggle(e){
   if(e) e.stopPropagation();
-  repFilterClose();
   var dd = document.getElementById('rep-loc');
   var opening = !dd.classList.contains('open');
   dd.classList.toggle('open');
@@ -485,8 +472,7 @@ var LB_KPI = [
 function lbEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function lbRenderKpi(){
   var el = document.getElementById('lb-kpi'); if(!el) return;
-  var win = document.getElementById('rep-filter-label');
-  var winLbl = (win && win.textContent) || 'Current Year';
+  var winLbl = (typeof _repPeriod !== 'undefined' && _repPeriod) || 'Monthly';
   el.innerHTML = LB_KPI.map(function(c){
     return '<div class="lb-card kpi kpi-'+c.cls+'">'
       + '<div class="kpi-icon">'+(LB_ICONS[c.key]||'')+'</div>'
@@ -531,20 +517,18 @@ function lbRenderMostSent(){
       + '</tr>';
   }).join('');
   var sub = document.getElementById('lb-most-sent-sub');
-  var win = document.getElementById('rep-filter-label');
-  if(sub && win) sub.textContent = win.textContent || 'Current Year';
+  if(sub) sub.textContent = (typeof _repPeriod !== 'undefined' && _repPeriod) || 'Monthly';
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lbRenderMostSent);
 else lbRenderMostSent();
 
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('.rep-item-wrap')) repSubClose();
-  if(!e.target.closest('#rep-filter')) repFilterClose();
   if(!e.target.closest('#rep-loc')) repLocClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  repSubClose(); repFilterClose(); repLocClose();
+  repSubClose(); repLocClose();
 });
 </script>
 

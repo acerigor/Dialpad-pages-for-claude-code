@@ -1125,6 +1125,82 @@
      END RESPONSIVE — PHASE 2A (rewritten as Phase 2D in v53)
      ──────────────────────────────────────────────────────────────────────── */
 
+/* ── Mobile shell (Phase 3 — CRM-parity full-screen takeover ≤640px) ── */
+@media (max-width:640px){
+  .contact-panel{width:100%;right:-100%;box-shadow:none;border-left:none;}
+  .contact-panel.open{right:0;}
+
+  /* Mobile back arrow visible */
+  .cp-mobile-back{display:flex !important;align-items:center;justify-content:center;
+    width:44px !important;height:44px !important;border-radius:8px;
+    background:transparent;border:none;color:var(--tx);cursor:pointer;flex:none;
+    padding:0;margin-right:6px;transition:background .12s;}
+  .cp-mobile-back:hover{background:rgba(255,255,255,.05);}
+  .cp-mobile-back svg{width:20px;height:20px;}
+
+  /* Top bar: back left · centered name · buttons right; hide desktop title + ✕ close */
+  .cp-topbar{padding:10px 12px;gap:6px;position:relative;}
+  .cp-topbar .cp-topbar-left{display:none;}
+  .cp-topbar .cp-lead-online{position:absolute;left:50%;transform:translateX(-50%);flex:0 1 auto;max-width:60%;}
+  .cp-topbar .cp-lead-online .cp-online-dot{display:none;}
+  .cp-topbar .cp-lead-fullname{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cp-topbar-btns > button[onclick="closeContactPanel()"]{display:none;}
+  .cp-topbar-btns{gap:4px;}
+  .cp-top-btn{width:40px;height:40px;}
+
+  /* Body: sidebar becomes a full-screen overlay */
+  .cp-body{flex-direction:row;position:relative;overflow:hidden;}
+
+  .cp-sidebar{
+    position:absolute;top:0;left:0;bottom:0;width:100%;
+    flex-direction:column;flex-wrap:nowrap;gap:14px;padding:64px 16px 18px;
+    border-right:none;border-bottom:none;
+    max-height:none;overflow-y:auto;
+    background:#181c27;z-index:6;
+    transform:translateX(0);
+    transition:transform .18s ease-out;
+    display:flex !important;
+  }
+  .cp-body.sb-collapsed .cp-sidebar{display:flex !important;transform:translateX(-100%);}
+  .cp-sidebar-field{flex:0 0 auto;width:100%;min-width:0;gap:6px;}
+  .cp-sidebar-label{font-size:10.5px;}
+  .cp-sidebar-value{font-size:14px;}
+  .cp-label-select{min-height:40px;font-size:13px;padding:9px 11px;}
+  .cp-assign-av{width:30px;height:30px;font-size:10px;}
+  .cp-assign-name{font-size:13px;}
+
+  /* Edge-tab collapse handle */
+  .cp-sidebar-collapse{
+    position:absolute;top:50%;width:22px;height:48px;
+    background:#181c27;border:0.5px solid rgba(255,255,255,.13);
+    z-index:7;color:#7a7f94;
+    transition:left .18s ease-out, right .18s ease-out, transform .18s ease-out;
+  }
+  .cp-body:not(.sb-collapsed) .cp-sidebar-collapse{display:none;}
+  .cp-body.sb-collapsed .cp-sidebar-collapse{
+    display:flex;left:0 !important;right:auto;transform:translate(0,-50%) !important;
+    border-radius:0 5px 5px 0;border-left:none;
+  }
+
+  /* Show floating ✕ inside sidebar only when open */
+  .cp-body:not(.sb-collapsed) .cp-sidebar-close{display:flex;}
+
+  /* Tabs scroll horizontally */
+  .cp-tabs{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;}
+  .cp-tabs::-webkit-scrollbar{display:none;}
+  .cp-tab{flex-shrink:0;white-space:nowrap;min-height:44px;}
+
+  /* Composer touch-safe + iOS-zoom-safe */
+  .cp-compose, .cp-composer{padding:10px 12px;gap:8px;}
+  .cp-compose textarea, .cp-composer textarea, .cp-compose input[type=text]{font-size:16px;min-height:44px;}
+  .cp-send-btn, .cp-ai-btn, .cp-compose-icon, .cp-composer-btn{min-width:44px;min-height:44px;}
+
+  /* Summary card touch targets */
+  .cp-summary-refresh{width:44px;height:44px;}
+  .cp-sug-act{height:44px;padding:0 16px;}
+  .cp-help-btn{height:44px;}
+}
+
   /* ════════════════════════════════════════════════════════════════════════════
      RESPONSIVE — PHASE 2B: Contact panel, Dialer, Notifications (full-screen on phone)
      ──────────────────────────────────────────────────────────────────────── */

@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../../shared/app.css">
 <link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
+<link rel="stylesheet" href="../../shared/time-picker.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;color:var(--tx);}
@@ -95,6 +96,8 @@ select.ais-input::-ms-expand{display:none;}
 .ais-time{flex:1;display:flex;align-items:center;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:4px 6px 4px 4px;gap:8px;min-height:40px;}
 .ais-time-tag{background:var(--sur);color:var(--mu);font-size:12px;padding:6px 10px;border-radius:6px;}
 .ais-time input[type=time]{flex:1;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13.5px;outline:none;color-scheme:dark;}
+.ais-biz-tbox{flex:1;justify-content:flex-start;}
+.ais-df-tval{font-family:var(--font);font-size:13.5px;color:var(--tx);font-variant-numeric:tabular-nums;padding:2px 4px;user-select:none;}
 .ais-time-sep{color:var(--mu);}
 .ais-side-placeholder{align-items:center;justify-content:center;text-align:center;min-height:320px;border-style:dashed;}
 .ais-side-icon{font-size:32px;opacity:.6;margin-bottom:8px;}
@@ -114,6 +117,21 @@ select.ais-input::-ms-expand{display:none;}
 .ais-df-num{width:52px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:6px;padding:5px 6px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;text-align:center;}
 .ais-df-num:focus{border-color:var(--ac);}
 .ais-df-num:disabled{opacity:.4;cursor:not-allowed;}
+.ais-df-daily{flex-wrap:nowrap !important;white-space:nowrap;}
+.ais-df-tsel{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:6px;padding:4px 6px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;color-scheme:dark;-webkit-appearance:none;appearance:none;padding-right:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a7f94' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:10px 10px;cursor:pointer;}
+.ais-df-tsel:focus{border-color:var(--ac);}
+.ais-df-tsel:disabled{opacity:.4;cursor:not-allowed;}
+.ais-df-timebox{display:inline-flex;align-items:center;flex-wrap:nowrap;flex-shrink:0;gap:2px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:6px;padding:2px 6px;transition:border-color .12s;white-space:nowrap;cursor:pointer;}
+.ais-df-timebox:hover{border-color:var(--ac);}
+.ais-df-timebox .ais-df-tsel{pointer-events:none;}
+.ais-df-timebox:focus-within{border-color:var(--ac);}
+.ais-df-timebox .ais-df-tsel{background:transparent;border:none;background-image:none;padding:2px 4px;min-width:0;}
+.ais-df-timebox .ais-df-tsel:focus{border:none;}
+.ais-df-tsep{color:var(--mu);font-size:13px;user-select:none;}
+.ais-df-tsep-dot{margin:0 2px;}
+.ais-df-timebox:has(.ais-df-tsel:disabled){opacity:.4;}
+.ais-df-timebox.ais-biz-tbox{background:transparent;border:none;padding:0;cursor:pointer;}
+.ais-df-timebox.ais-biz-tbox:hover{border-color:transparent;}
 /* Filters card */
 .ais-flt-card{gap:14px;}
 .ais-flt-title{font-size:14px;font-weight:600;color:var(--tx);border-bottom:0.5px solid var(--brd);padding-bottom:10px;}
@@ -129,6 +147,8 @@ select.ais-input::-ms-expand{display:none;}
 .ais-flt-add:hover{background:rgba(79,124,255,.14);border-color:var(--ac);color:var(--ac2);}
 .ais-flt-add svg{width:16px;height:16px;}
 @media (max-width:640px){
+  .ais-df-grid{grid-template-columns:1fr;}
+  #ais-days{grid-template-columns:1fr 1fr;}
   .ais-flt-primary{grid-template-columns:1fr;}
   .ais-flt-row{grid-template-columns:1fr;}
   .ais-flt-del{width:100%;height:36px;}
@@ -180,6 +200,9 @@ select.ais-input::-ms-expand{display:none;}
 .ais-ai-cb{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--tx);cursor:pointer;user-select:none;padding:6px 10px;border-radius:8px;transition:background .12s;}
 .ais-ai-cb:hover{background:var(--sur2);}
 .ais-ai-cb input[type=checkbox]{width:16px;height:16px;accent-color:var(--ac);cursor:pointer;flex:none;}
+.ais-ai-kebab{display:none;background:none;border:none;color:var(--mu);cursor:pointer;width:44px;height:44px;border-radius:8px;align-items:center;justify-content:center;padding:0;transition:background .12s,color .12s;}
+.ais-ai-kebab:hover{background:var(--sur2);color:var(--tx);}
+.ais-ai-menu{display:inline-flex;align-items:center;gap:8px;}
 @media (max-width:640px){
   .ais-detail-head{gap:8px;}
   .ais-ai-cb{font-size:12px;padding:4px 8px;}
@@ -227,6 +250,7 @@ select.ais-input::-ms-expand{display:none;}
 .ais-logs-chan.is-click:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
 .ais-logs-more{color:var(--ac2);cursor:pointer;font-weight:500;}
 .ais-logs-more:hover{text-decoration:underline;}
+#ais-label-popup{width:322.25px;min-width:322.25px;}
 .ais-logs-empty{padding:36px 14px;text-align:center;color:var(--mu);font-size:13px;}
 /* Pager (.ais-logs-pager / .ais-logs-pgbtn / .ais-logs-pgell) migrated to shared `.pager` / `.pager-btn` / `.pager-ell` (shared/app.css) */
 @media (max-width:640px){
@@ -281,7 +305,8 @@ select.ais-input::-ms-expand{display:none;}
   /* Inputs — prevent iOS zoom on focus */
   .ais-input, .ais-msg-textarea, .ais-df-num,
   .ais-time input[type=time],
-  #ais-search-input, #ais-logs-search, #ais-msg-input{font-size:16px;}
+  #ais-search-input, #ais-logs-search, #ais-msg-input,
+  #ais-label-new-name, #ais-from-search{font-size:16px;}
   /* List head */
   /* .ais-add-btn removed — shared `.btn` handles the mobile 44px touch target */
   /* .ais-srch mobile height — shared `.search-pill` provides 44px */
@@ -292,7 +317,17 @@ select.ais-input::-ms-expand{display:none;}
   /* Detail view */
   .ais-back{min-height:44px;padding:10px 14px;}
   .ais-input, .ais-select, .ais-time{min-height:44px;}
-  .ais-df-num{min-height:32px;}
+  .ais-df-num{min-height:44px;}
+  #ais-freq-daily-tbox{min-height:44px;padding:6px 10px;}
+  #ais-biz-start-tbox, #ais-biz-end-tbox{min-height:44px;}
+  .ais-detail-title{text-align:center;width:100%;order:3;}
+  .ais-detail-head{position:relative;}
+  .ais-ai-kebab{display:flex;order:2;margin-left:auto;}
+  .ais-back{order:1;}
+  .ais-detail-spacer{display:none;}
+  .ais-ai-menu{display:none;position:absolute;top:44px;right:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;min-width:220px;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.4);flex-direction:column;gap:0;order:4;}
+  .ais-ai-menu.open{display:flex;}
+  .ais-ai-menu .ais-ai-cb{width:100%;justify-content:flex-start;border-radius:7px;}
   .ais-x{min-width:44px;min-height:44px;padding:0 12px;}
   /* Status dropdown items */
   /* .ais-menu-item mobile bump — shared `.dropdown-item` provides 44px on mobile */
@@ -477,10 +512,15 @@ select.ais-input::-ms-expand{display:none;}
     <div class="ais-view" id="ais-detail" hidden>
       <div class="ais-detail-head">
         <button class="ais-back" onclick="aisShowList()">← Back to list</button>
+        <button class="ais-ai-kebab" id="ais-ai-kebab" onclick="aisAiMenuToggle(event)" aria-label="AI flags menu">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+        </button>
         <div class="ais-detail-title" id="ais-detail-title">Edit AI Rule</div>
         <div class="ais-detail-spacer"></div>
-        <label class="ais-ai-cb"><input type="checkbox" id="ais-followup-ai" checked/> <span>Follow up AI</span></label>
-        <label class="ais-ai-cb"><input type="checkbox" id="ais-autoresp-ai" checked/> <span>Auto Responder AI</span></label>
+        <div class="ais-ai-menu" id="ais-ai-menu">
+          <label class="ais-ai-cb"><input type="checkbox" id="ais-followup-ai" checked/> <span>Follow up AI</span></label>
+          <label class="ais-ai-cb"><input type="checkbox" id="ais-autoresp-ai" checked/> <span>Auto Responder AI</span></label>
+        </div>
       </div>
       <div class="ais-row ais-row-1">
       <div class="ais-pane ais-pane-form">
@@ -518,26 +558,44 @@ select.ais-input::-ms-expand{display:none;}
               <div class="dropdown-menu ais-menu" id="ais-status-menu" hidden></div>
             </div>
           </div>
-          <div class="field ais-fld">
-            <label class="field-label ais-lbl">Labels</label>
-            <div class="ais-select" onclick="aisLabelToggle()">
-              <span class="ais-select-val ais-mu" id="ais-labels-lbl">Select Label</span>
-              <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="ais-grid2">
+            <div class="field ais-fld" id="ais-label-field">
+              <label class="field-label ais-lbl">Labels</label>
+              <div class="ais-select" onclick="aisLabelToggle(event)">
+                <span class="ais-select-val ais-mu" id="ais-labels-lbl">Select Label</span>
+                <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
             </div>
-          </div>
-          <div class="field ais-fld">
-            <label class="field-label ais-lbl">Primary Method</label>
-            <div class="ais-select" onclick="aisMethodToggle()">
-              <span class="ais-select-val" id="ais-method-lbl">SMS</span>
-              <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="field ais-fld" id="ais-method-field">
+              <label class="field-label ais-lbl">Primary Method</label>
+              <div class="ais-select" id="ais-method-sel" onclick="aisMethodToggle(event)">
+                <span class="ais-select-val" id="ais-method-lbl">SMS</span>
+                <svg class="ais-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="dropdown-menu ais-menu" id="ais-method-menu" hidden>
+                <button class="dropdown-item" onclick="aisMethodPick('SMS')"><i class="ti ti-message-circle" aria-hidden="true"></i> <span class="dropdown-item-label">SMS</span></button>
+                <button class="dropdown-item" onclick="aisMethodPick('Email')"><i class="ti ti-mail" aria-hidden="true"></i> <span class="dropdown-item-label">Email</span></button>
+              </div>
             </div>
           </div>
           <div class="field ais-fld">
             <label class="field-label ais-lbl">Business Time</label>
             <div class="ais-time-row">
-              <div class="ais-time"><span class="ais-time-tag">Start</span><input type="time" value="08:00"/></div>
+              <div class="ais-time">
+                <span class="ais-time-tag">Start</span>
+                <span class="ais-df-timebox ais-biz-tbox" id="ais-biz-start-tbox" role="button" tabindex="0" onclick="aisBizTimeOpen('start', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisBizTimeOpen('start', event);}">
+                  <span class="ais-df-tval" id="ais-biz-start-disp">08:00 AM</span>
+                </span>
+                <input type="hidden" id="ais-biz-start" value="08:00"/>
+              </div>
               <span class="ais-time-sep">—</span>
-              <div class="ais-time"><span class="ais-time-tag">End</span><input type="time" value="20:00"/></div>
+              <div class="ais-time">
+                <span class="ais-time-tag">End</span>
+                <span class="ais-df-timebox ais-biz-tbox" id="ais-biz-end-tbox" role="button" tabindex="0" onclick="aisBizTimeOpen('end', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisBizTimeOpen('end', event);}">
+                  <span class="ais-df-tval" id="ais-biz-end-disp">08:00 PM</span>
+                </span>
+                <input type="hidden" id="ais-biz-end" value="20:00"/>
+              </div>
             </div>
           </div>
         </div>
@@ -564,7 +622,15 @@ select.ais-input::-ms-expand{display:none;}
             <div class="ais-df-head">Frequency</div>
             <div class="ais-df-hint">Choose how often you want this task to run.</div>
             <div class="ais-df-grid" id="ais-freq">
-              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="daily" checked onchange="aisFreqSync()"><span>Daily</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="daily" checked onchange="aisFreqSync()"><span class="ais-df-daily">Daily at
+                <span class="ais-df-timebox" id="ais-freq-daily-tbox" role="button" tabindex="0" onclick="aisTimeOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisTimeOpen(event);}">
+                  <select class="ais-df-tsel" id="ais-freq-daily-hh" aria-label="Hour" tabindex="-1"></select>
+                  <span class="ais-df-tsep">:</span>
+                  <select class="ais-df-tsel" id="ais-freq-daily-mm" aria-label="Minute" tabindex="-1"></select>
+                  <span class="ais-df-tsep ais-df-tsep-dot">·</span>
+                  <select class="ais-df-tsel" id="ais-freq-daily-ap" aria-label="AM/PM" tabindex="-1"><option>AM</option><option>PM</option></select>
+                </span>
+              </span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span>Weekly</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="monthly" onchange="aisFreqSync()"><span>Monthly</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-min" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-min" type="number" min="1" disabled/> Minutes</span></label>
@@ -723,6 +789,13 @@ var AIS_DEFAULTS = [
     followUpAI:true, autoResponderAI:true,
     chatbotMessages: AIS_MSG_SEED.slice() }
 ];
+function aisAiMenuToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('ais-ai-menu'); if(m) m.classList.toggle('open');
+}
+function aisAiMenuClose(){
+  var m = document.getElementById('ais-ai-menu'); if(m) m.classList.remove('open');
+}
 function aisApplyAiFlags(followUp, autoResp){
   var f = document.getElementById('ais-followup-ai');
   var a = document.getElementById('ais-autoresp-ai');
@@ -961,6 +1034,11 @@ function aisEditRow(id){
   aisRenderStatusMenu(t.statusList || []);
   aisApplyAiFlags(t.followUpAI !== false, t.autoResponderAI !== false);
   aisMsgLoadFor(t);
+  _aisLabels = new Set(t.labelList || []);
+  aisLabelSyncField();
+  document.getElementById('ais-biz-start').value = t.bizStart || '08:00';
+  document.getElementById('ais-biz-end').value   = t.bizEnd   || '20:00';
+  aisBizTimeSync('start'); aisBizTimeSync('end');
   aisShowDetail();
   _aisSetHash('#/edit/' + encodeURIComponent(id));
 }
@@ -1026,6 +1104,11 @@ function aisAddNew(){
   aisRenderStatusMenu([]);
   aisApplyAiFlags(true, true);
   aisMsgLoadFor({chatbotMessages: []});
+  _aisLabels = new Set();
+  aisLabelSyncField();
+  document.getElementById('ais-biz-start').value = '08:00';
+  document.getElementById('ais-biz-end').value   = '20:00';
+  aisBizTimeSync('start'); aisBizTimeSync('end');
   aisShowDetail();
   _aisSetHash('#/new');
 }
@@ -1174,6 +1257,84 @@ function aisFreqSync(){
   var hrI  = document.getElementById('ais-freq-hr');
   if(minI) minI.disabled = (mode !== 'every-min');
   if(hrI)  hrI.disabled  = (mode !== 'every-hr');
+  var dailyDis = (mode !== 'daily');
+  ['ais-freq-daily-hh','ais-freq-daily-mm','ais-freq-daily-ap'].forEach(function(id){
+    var s = document.getElementById(id); if(s) s.disabled = dailyDis;
+  });
+}
+function aisDailyTimeInit(){
+  var hh = document.getElementById('ais-freq-daily-hh');
+  var mm = document.getElementById('ais-freq-daily-mm');
+  if(hh && !hh.options.length){
+    for(var h=1; h<=12; h++) hh.add(new Option(String(h), String(h)));
+    hh.value = '9';
+  }
+  if(mm && !mm.options.length){
+    for(var m=0; m<60; m++){ var s = (m<10?'0':'')+m; mm.add(new Option(s, s)); }
+    mm.value = '00';
+  }
+}
+aisDailyTimeInit();
+
+function _aisTo12h(hhmm){
+  var p = String(hhmm||'08:00').split(':');
+  var H = parseInt(p[0],10)||0, m = parseInt(p[1],10)||0;
+  var ap = H >= 12 ? 'PM' : 'AM';
+  var h = H % 12; if(h === 0) h = 12;
+  return { h:h, m:m, ap:ap };
+}
+function _aisTo24h(v){
+  var h = v.h % 12; if(v.ap === 'PM') h += 12;
+  return (h<10?'0':'')+h+':'+(v.m<10?'0':'')+v.m;
+}
+function _aisFmt12(v){ return v.h+':'+(v.m<10?'0':'')+v.m+' '+v.ap; }
+function aisBizTimeSync(which){
+  var storeId = which === 'end' ? 'ais-biz-end' : 'ais-biz-start';
+  var dispId  = which === 'end' ? 'ais-biz-end-disp' : 'ais-biz-start-disp';
+  var s = document.getElementById(storeId); if(!s) return;
+  var d = document.getElementById(dispId); if(d) d.textContent = _aisFmt12(_aisTo12h(s.value));
+}
+function aisBizTimeOpen(which, e){
+  if(e) e.stopPropagation();
+  if(!window.CCTimePicker) return;
+  var storeId = which === 'end' ? 'ais-biz-end' : 'ais-biz-start';
+  var tboxId  = which === 'end' ? 'ais-biz-end-tbox' : 'ais-biz-start-tbox';
+  var s = document.getElementById(storeId); if(!s) return;
+  var box = document.getElementById(tboxId); if(!box) return;
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function')  aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  CCTimePicker.open({
+    anchor: box,
+    value: _aisTo12h(s.value),
+    onChange: function(v){
+      s.value = _aisTo24h(v);
+      aisBizTimeSync(which);
+    }
+  });
+}
+function aisTimeOpen(e){
+  if(e) e.stopPropagation();
+  var hh = document.getElementById('ais-freq-daily-hh');
+  var mm = document.getElementById('ais-freq-daily-mm');
+  var ap = document.getElementById('ais-freq-daily-ap');
+  if(!hh || hh.disabled) return;
+  var box = document.getElementById('ais-freq-daily-tbox'); if(!box) return;
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function') aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  if(!(window.CCTimePicker)) return;
+  CCTimePicker.open({
+    anchor: box,
+    value: { h:parseInt(hh.value,10)||12, m:parseInt(mm.value,10)||0, ap:ap.value||'AM' },
+    onChange: function(v){
+      hh.value = String(v.h);
+      mm.value = (v.m<10?'0':'')+v.m;
+      ap.value = v.ap;
+    }
+  });
 }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisDaySync(); aisFreqSync(); });
 else { aisDaySync(); aisFreqSync(); }
@@ -1286,11 +1447,140 @@ function aisMsgLoadFor(rule){
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ aisMsgLoadFor({chatbotMessages: AIS_MSG_SEED}); });
 else aisMsgLoadFor({chatbotMessages: AIS_MSG_SEED});
 
-function aisLabelToggle(){ showNavToast('Labels','Label picker coming next.'); }
-function aisMethodToggle(){ showNavToast('Method','SMS / Email switcher coming next.'); }
+(function _aisSeedLabels(){
+  try{
+    if(localStorage.getItem('cc_lead_labels')) return;
+    var seed = [
+      {id:'hot',      name:'Hot',       color:'#e85555'},
+      {id:'warm',     name:'Warm',      color:'#f5a623'},
+      {id:'cold',     name:'Cold',      color:'#4f7cff'},
+      {id:'vip',      name:'VIP',       color:'#a78bfa'},
+      {id:'followup', name:'Follow-up', color:'#22c88a'}
+    ];
+    localStorage.setItem('cc_lead_labels', JSON.stringify(seed));
+    if(!localStorage.getItem('cc_lead_label_map')){
+      localStorage.setItem('cc_lead_label_map',
+        JSON.stringify({'1':['hot'],'4':['warm'],'5':['cold'],'16':['followup'],'21':['vip']}));
+    }
+  }catch(e){}
+})();
+var AIS_LABEL_PALETTE = ['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#64748b'];
+var _aisLblSort = 'name';
+var _aisLblNewColor = AIS_LABEL_PALETTE[0];
+var _aisLabels = new Set();
+function aisLabelsAll(){
+  try{ return JSON.parse(localStorage.getItem('cc_lead_labels')||'[]'); }catch(e){ return []; }
+}
+function aisLabelsSave(list){
+  try{ localStorage.setItem('cc_lead_labels', JSON.stringify(list)); }catch(e){}
+}
+function aisLabelSortList(list){
+  var arr = list.slice();
+  if(_aisLblSort === 'color'){
+    arr.sort(function(a,b){
+      var ia = AIS_LABEL_PALETTE.indexOf(a.color), ib = AIS_LABEL_PALETTE.indexOf(b.color);
+      if(ia<0) ia=999; if(ib<0) ib=999;
+      if(ia!==ib) return ia-ib;
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+  } else {
+    arr.sort(function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+  }
+  return arr;
+}
+function aisLabelRender(){
+  var list = aisLabelsAll();
+  var el = document.getElementById('ais-label-list'); if(!el) return;
+  el.innerHTML = list.length ? aisLabelSortList(list).map(function(lb){
+    var on = _aisLabels.has(lb.id);
+    return '<div class="lblp-item'+(on?' on':'')+'" onclick="aisLabelToggleId(\''+aisEsc(lb.id)+'\')">'
+      +'<span class="lblp-dot" style="background:'+aisEsc(lb.color)+';"></span>'
+      +'<span class="lblp-name">'+aisEsc(lb.name)+'</span>'
+      +'<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      +'</div>';
+  }).join('') : '<div class="lblp-empty">No labels yet — create one below.</div>';
+  document.querySelectorAll('#ais-label-popup .lblp-sort-btn').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-sort') === _aisLblSort);
+  });
+  var box = document.getElementById('ais-label-swatches');
+  if(box){
+    box.innerHTML = AIS_LABEL_PALETTE.map(function(c){
+      return '<span class="lblp-sw'+(c===_aisLblNewColor?' on':'')+'" style="background:'+c+';" onclick="aisLabelPickColor(\''+c+'\')"></span>';
+    }).join('');
+  }
+}
+function aisLabelPickColor(c){ _aisLblNewColor = c; aisLabelRender(); }
+function aisLabelSort(mode){ _aisLblSort = mode; aisLabelRender(); }
+function aisLabelToggleId(id){
+  if(_aisLabels.has(id)) _aisLabels.delete(id); else _aisLabels.add(id);
+  aisLabelSyncField();
+  aisLabelRender();
+}
+function aisLabelAdd(){
+  var inp = document.getElementById('ais-label-new-name'); if(!inp) return;
+  var name = inp.value.trim(); if(!name){ inp.focus(); return; }
+  var list = aisLabelsAll();
+  var id = 'lbl_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+  list.push({id:id, name:name, color:_aisLblNewColor});
+  aisLabelsSave(list);
+  _aisLabels.add(id);
+  inp.value = '';
+  aisLabelRender();
+  aisLabelSyncField();
+}
+function aisLabelSyncField(){
+  var lbl = document.getElementById('ais-labels-lbl'); if(!lbl) return;
+  var n = _aisLabels.size;
+  if(n === 0){ lbl.textContent = 'Select Label'; lbl.classList.add('ais-mu'); return; }
+  lbl.classList.remove('ais-mu');
+  if(n === 1){
+    var id = Array.from(_aisLabels)[0];
+    var lb = aisLabelsAll().find(function(x){return x.id===id;});
+    lbl.textContent = lb ? lb.name : '1 Label Selected';
+  } else {
+    lbl.textContent = n + ' Labels Selected';
+  }
+}
+function aisLabelToggle(e){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('ais-label-popup'); if(!pop) return;
+  if(pop.style.display === 'block'){ aisLabelClose(); return; }
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  var trig = document.getElementById('ais-label-field'); if(!trig) return;
+  var r = trig.getBoundingClientRect();
+  var w = 322.25;
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  pop.style.left = left + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+  var inp = document.getElementById('ais-label-new-name'); if(inp) inp.value='';
+  aisLabelRender();
+  pop.style.display = 'block';
+}
+function aisLabelClose(){
+  var pop = document.getElementById('ais-label-popup'); if(pop) pop.style.display = 'none';
+}
+function aisMethodToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('ais-method-menu'); if(!m) return;
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  if(typeof aisLabelClose === 'function') aisLabelClose();
+  m.hidden = !m.hidden;
+}
+function aisMethodClose(){
+  var m = document.getElementById('ais-method-menu'); if(m) m.hidden = true;
+}
+function aisMethodPick(v){
+  var lbl = document.getElementById('ais-method-lbl'); if(lbl) lbl.textContent = v;
+  aisMethodClose();
+}
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('#ais-status-sel') && !e.target.closest('#ais-status-menu')) aisStatusClose();
   if(!e.target.closest('#ais-sender-sel') && !e.target.closest('#ais-sender-menu')) aisSenderClose();
+  if(!e.target.closest('#ais-label-field') && !e.target.closest('#ais-label-popup')) aisLabelClose();
+  if(!e.target.closest('#ais-method-field')) aisMethodClose();
+  if(!e.target.closest('#ais-ai-kebab') && !e.target.closest('#ais-ai-menu')) aisAiMenuClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
@@ -1300,6 +1590,9 @@ document.addEventListener('keydown', function(e){
   if(mm && mm.classList.contains('open')){ aisMsgCancel(); return; }
   aisSenderClose();
   aisStatusClose();
+  aisLabelClose();
+  aisMethodClose();
+  aisAiMenuClose();
 });
 
 function toggleMobileDrawer(){
@@ -1343,6 +1636,24 @@ window.addEventListener('resize', function(){ var p=document.getElementById('not
 </script>
 <script src="../../shared/notifications.js"></script>
 <script src="../../shared/contact-panel.js"></script>
+<script src="../../shared/time-picker.js"></script>
+
+<div class="assign-popup label-popup" id="ais-label-popup" style="display:none;">
+  <div class="assign-popup-title">Label</div>
+  <div class="lblp-sort">
+    <span class="lblp-sort-lbl">Sort by</span>
+    <div class="lblp-sort-seg">
+      <button class="lblp-sort-btn on" data-sort="name" onclick="aisLabelSort('name')">Name</button>
+      <button class="lblp-sort-btn" data-sort="color" onclick="aisLabelSort('color')">Color</button>
+    </div>
+  </div>
+  <div class="lblp-list" id="ais-label-list"></div>
+  <div class="lblp-create">
+    <input type="text" id="ais-label-new-name" placeholder="New label name" maxlength="24" onkeydown="if(event.key==='Enter'){event.preventDefault();aisLabelAdd();}">
+    <div class="lblp-swatches" id="ais-label-swatches"></div>
+    <button class="lblp-add-btn" onclick="aisLabelAdd()">Create label</button>
+  </div>
+</div>
 
 </body>
 </html>

@@ -30,13 +30,13 @@
   + '      <div class="cp-kebab-wrap" id="cp-kebab-wrap">'
   + '        <button class="cp-top-btn" id="cp-kebab-btn" onclick="toggleCPKebab(event)" title="More"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>'
   + '        <div class="cp-kebab-menu" id="cp-kebab-menu">'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add Reminder\')">🔔 Add Reminder</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add Appointment\')">📅 Add Appointment</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Business Card\')">🪪 Business Card</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Task\')">☑️ Task</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Send Review Link\')">★ Send Review Link</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add New Deal\')">💼 Add New Deal</div>'
-  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Edit CRM Lead\')">✏️ Edit CRM Lead</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add Reminder\')"><i class="ti ti-bell" aria-hidden="true"></i> Add Reminder</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add Appointment\')"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Add Appointment</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Business Card\')"><i class="ti ti-id" aria-hidden="true"></i> Business Card</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Task\')"><i class="ti ti-checkbox" aria-hidden="true"></i> Task</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Send Review Link\')"><i class="ti ti-star" aria-hidden="true"></i> Send Review Link</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Add New Deal\')"><i class="ti ti-briefcase" aria-hidden="true"></i> Add New Deal</div>'
+  + '          <div class="cp-kebab-item" onclick="cpOpenInCRM(\'Edit CRM Lead\')"><i class="ti ti-pencil" aria-hidden="true"></i> Edit CRM Lead</div>'
   + '        </div>'
   + '      </div>'
   + '      <button class="cp-top-btn" onclick="closeContactPanel()" title="Close" style="color:#e85555;border-color:rgba(232,85,85,.3);">&#x2715;</button>'
@@ -426,6 +426,12 @@
     // Show
     document.getElementById('contact-panel-shared').classList.add('open');
     var bd=document.getElementById('cp-shared-backdrop'); if(bd){ bd.style.opacity='1'; bd.style.visibility='visible'; }
+    // Mobile: start with sidebar collapsed (messages-first, matches CRM)
+    var _cpBody = document.querySelector('#contact-panel-shared .cp-body');
+    if(_cpBody){
+      if(window.innerWidth <= 640) _cpBody.classList.add('sb-collapsed');
+      else _cpBody.classList.remove('sb-collapsed');
+    }
   };
   window.closeContactPanel = function(){
     var p = document.getElementById('contact-panel-shared'); if(p) p.classList.remove('open');

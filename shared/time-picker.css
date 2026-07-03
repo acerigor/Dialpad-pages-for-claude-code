@@ -1,0 +1,12 @@
+/* Shared AM/PM time picker popup — used via window.CCTimePicker (see shared/time-picker.js).
+   Relies on .assign-popup chrome from shared/contact-panel.css for the outer shell
+   (background, border, radius, shadow, z-index). */
+.cc-time-pop{width:280px;padding:0;overflow:hidden;}
+.cc-tp-head{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--sur2);border-bottom:0.5px solid var(--brd);padding:12px 8px;}
+.cc-tp-col-lbl{text-align:center;font-size:12px;font-weight:600;color:var(--tx);font-family:var(--font);}
+.cc-tp-body{display:grid;grid-template-columns:1fr 1fr 1fr;padding:14px 8px 16px;gap:6px;}
+.cc-tp-col{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.cc-tp-btn{width:44px;height:28px;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .1s,color .1s;}
+.cc-tp-btn:hover{background:var(--sur2);color:var(--ac);}
+.cc-tp-btn svg{width:18px;height:18px;}
+.cc-tp-val{font-size:22px;font-weight:600;color:var(--tx);font-family:var(--font);min-width:44px;text-align:center;font-variant-numeric:tabular-nums;user-select:none;}

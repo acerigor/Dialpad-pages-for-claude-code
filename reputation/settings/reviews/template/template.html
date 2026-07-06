@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation · Settings · Templates</title>
+<link rel="stylesheet" href="../../../../shared/app.css">
+<link rel="stylesheet" href="../../../../shared/contact-panel.css">
+<link rel="stylesheet" href="../../../../shared/settings.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Top header (kept from app) ── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid var(--bg);}
+
+/* ── Reputation sidebar ── */
+.rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);background:var(--bg);border-right:0.5px solid var(--brd);display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;transition:transform .2s ease-out;}
+.rep-nav{display:flex;flex-direction:column;gap:3px;}
+.rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;transition:background .12s,color .12s;user-select:none;}
+.rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.rep-item.active{background:var(--ac);color:#fff;}
+.rep-item.active:hover{background:var(--ac);color:#fff;}
+.rep-item svg{width:18px;height:18px;flex:none;}
+.rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+.rep-item.active .rep-caret{color:#fff;}
+.rep-item:hover .rep-caret{color:var(--tx);}
+.rep-item-wrap{position:relative;}
+.rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+.rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+.rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+.rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-submenu-mhead{display:none;}
+@media (max-width:900px){
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);visibility:hidden;transition:transform .25s ease-out,visibility 0s linear .25s;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);visibility:visible;transition:transform .25s ease-out,visibility 0s linear;}
+  .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-submenu-back svg{width:20px;height:20px;}
+  .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
+
+/* ── Content ── */
+.rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+/* Icon-only sidebar (mirrors CoreConnect .sb-item style) */
+.rep-sb{width:72px !important;padding:14px 0 !important;overflow:visible !important;z-index:90 !important;}
+.rep-nav{align-items:center;}
+.rep-item{gap:0 !important;padding:0 !important;width:44px !important;height:44px !important;justify-content:center;margin:0 auto;}
+.rep-item .rep-lbl{display:none;}
+.rep-item .rep-caret{display:none;}
+.rep-item::after{content:attr(data-rep);position:absolute;left:58px;top:50%;transform:translateY(-50%);background:var(--sur2);color:var(--ac2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.rep-item:hover::after{opacity:1;}
+.rep-main{margin-left:72px !important;}
+@media (max-width:900px){
+  .rep-sb{width:100% !important;padding:12px !important;}
+  .rep-nav{align-items:stretch;}
+  .rep-item{width:auto !important;height:auto !important;min-height:44px !important;justify-content:flex-start;padding:0 12px !important;gap:12px !important;margin:0;}
+  .rep-item .rep-lbl{display:block;}
+  .rep-item .rep-caret{display:block;}
+  .rep-item::after{display:none;}
+  .rep-main{margin-left:0 !important;}
+}
+
+/* ── Mobile drawer ── */
+.rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+.rep-backdrop.show{display:block;}
+@media (max-width:900px){
+  .hamburger-btn{display:flex;}
+  .rep-sb{transform:translateX(-100%);visibility:hidden;transition:transform .2s ease-out,visibility 0s linear .2s;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210 !important;width:100%;}
+  .rep-sb.open{transform:translateX(0);visibility:visible;transition:transform .2s ease-out,visibility 0s linear;}
+  .rep-backdrop{z-index:205;}
+  .rep-main{margin-left:0;}
+  .rep-item{min-height:44px;}
+  .rep-submenu-item{min-height:44px;padding:11px 12px;}
+  .rep-submenu{min-width:180px;}
+}
+
+/* ── nav toast ── */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;transform:translateX(380px);opacity:0;pointer-events:none;transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+@media (max-width:640px){
+  .nav-toast-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;}
+}
+
+/* ── Notifications panel (matches the bell drop-down used app-wide) ── */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-tab.active .notif-tab-count{background:var(--ac);color:#fff;}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+  .notif-tab{min-height:44px;padding:11px 12px;}
+}
+
+/* ── Page head (back link + title) ── */
+.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
+.ur-back:hover{background:var(--sur2);color:var(--tx);}
+.ur-back svg{width:16px;height:16px;}
+
+/* ── Toolbar ── */
+.rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;flex-wrap:wrap;}
+.rep-sp{flex:1;}
+/* Mobile search toggle + overlay */
+.rep-tbtn.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--bg);}
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .rep-bar{display:none;}
+.rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+.rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.rep-tbtn svg{width:15px;height:15px;flex:none;}
+.rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
+.rep-chev{transition:transform .15s;}
+.rep-dd{position:relative;}
+#tpl-filter-dd{display:none;}
+.rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
+.rep-dd.open .rep-chev{transform:rotate(180deg);}
+.rep-menu{display:none;padding:0;}
+.rep-dd.open .rep-menu{display:block;}
+.rep-menu-item{justify-content:space-between;padding:10px 13px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+.rep-menu-item:last-child{border-bottom:none;}
+.rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
+.rep-menu-item.checked{color:var(--ac2);}
+.rep-menu-item.checked .rep-mi-check{opacity:1;}
+.rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.tpl-kebab-wrap{position:relative;}
+.tpl-kebab-btn{width:40px;padding:0;justify-content:center;}
+.tpl-kebab-btn svg{width:18px;height:18px;}
+#tpl-kebab-menu{top:calc(100% + 4px);left:auto;right:0;}
+
+/* ── Sentiment multi-select trigger ── */
+.tpl-sent-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
+.tpl-sent-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tpl-sent-val.tpl-sent-mu{color:var(--mu);}
+.tpl-sent-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+#tpl-sent-field.open .tpl-sent-chev{transform:rotate(180deg);}
+#tpl-sent-popup{z-index:3100;}
+.tpl-sent-cb{width:16px;height:16px;border-radius:4px;border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--sur);}
+.lblp-item.on .tpl-sent-cb{background:var(--ac);border-color:var(--ac);}
+.lblp-item.on .tpl-sent-cb::after{content:'';width:8px;height:4px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg);margin-top:-2px;}
+
+/* ── Templates data table ── */
+.tplr-tbl thead th{padding:13px 16px;}
+.tplr-tbl tbody td{padding:13px 16px;vertical-align:middle;}
+.tplr-td-name{color:var(--tx);font-weight:500;cursor:pointer;}
+.tplr-td-name:hover{color:var(--ac2);text-decoration:underline;}
+.tplr-td-sent{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;white-space:normal;}
+.tplr-sent-chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--tx);}
+.tplr-sent-chip .lblp-dot{width:9px;height:9px;}
+.tplr-td-body{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mu);font-size:12.5px;}
+.tplr-td-act{text-align:right;white-space:nowrap;}
+.tplr-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
+.tplr-btn svg{width:14px;height:14px;}
+.tplr-btn.del:hover{border-color:var(--rd);color:var(--rd);}
+.tplr-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
+.tplr-modal-del{margin-right:auto;}
+.tplr-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+@media (max-width:640px){
+  /* Table → card stack: Name → Body → Sentiment */
+  .table-wrap{border:none;background:transparent;overflow:visible;}
+  .tplr-tbl, .tplr-tbl tbody{display:block;}
+  .tplr-tbl thead{display:none;}
+  .tplr-tbl tbody tr{
+    display:flex;flex-direction:column;gap:8px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;
+    padding:14px 16px;margin-bottom:12px;
+  }
+  .tplr-tbl tbody tr:hover{background:var(--sur);}
+  .tplr-tbl tbody td{display:block;padding:0;border:none;white-space:normal;}
+  .tplr-td-name{order:1;font-size:15px;font-weight:600;color:var(--tx);}
+  .tplr-td-name:hover{text-decoration:none;color:var(--ac2);}
+  .tplr-td-body{order:2;max-width:none;font-size:13px;line-height:1.45;color:var(--mu);white-space:normal;overflow:visible;text-overflow:clip;}
+  .tplr-td-sent-cell{order:3;}
+  .tplr-td-sent{gap:6px 10px;}
+}
+
+/* ── Content placeholder ── */
+.rep-content{padding:24px 20px 60px;}
+.rep-empty{margin:0;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
+.rep-empty-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
+.rep-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
+.rep-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+
+@media (max-width:640px){
+  .rep-bar{padding:10px 14px;}
+  .search-pill{width:auto;flex:1 1 160px;}
+  .pt-seg{min-height:44px;}
+  .tpl-kebab-btn{width:44px;height:44px;}
+  .period-toggle{display:none;}
+  #tpl-filter-dd{display:inline-block;}
+  #tpl-filter-btn .rep-tbtn-val,#tpl-filter-btn .rep-chev{display:none;}
+  #tpl-filter-btn{padding:0;width:44px;justify-content:center;gap:0;}
+  #tpl-srch-desktop{display:none;}
+  .rep-bar .mobile-search-toggle{display:flex;padding:0;width:44px;justify-content:center;gap:0;}
+  #tpl-add-btn span{display:none;}
+  #tpl-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
+  .mso-back{width:44px;height:44px;}
+  .mso-clear{width:44px;height:44px;}
+  #tpl-add-modal.modal-backdrop{padding:0;align-items:stretch;}
+  #tpl-add-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
+  #tpl-add-modal .modal-body{flex:1;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification panel (markup; shared/notifications.js wires it up) -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- REPUTATION SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead">
+          <button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="rep-submenu-mtitle">Requests</span>
+        </div>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
+    </div>
+    <div class="rep-item active" data-rep="Settings" onclick="repNav('Settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="rep-lbl">Settings</span>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="set-page-head">
+    <a class="ur-back" href="../../settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">Templates</span>
+  </div>
+  <div class="rep-bar">
+    <!-- Sentiment segmented toggle -->
+    <div class="period-toggle" role="tablist" aria-label="Sentiment">
+      <button class="pt-seg" data-sent="positive" onclick="tplSentSet(this,'positive')" role="tab">Positive</button>
+      <button class="pt-seg" data-sent="negative" onclick="tplSentSet(this,'negative')" role="tab">Negative</button>
+      <button class="pt-seg" data-sent="neutral"  onclick="tplSentSet(this,'neutral')"  role="tab">Neutral</button>
+      <button class="pt-seg active" data-sent="all" onclick="tplSentSet(this,'all')" role="tab">All</button>
+    </div>
+    <div class="rep-dd" id="tpl-filter-dd">
+      <button class="rep-tbtn" id="tpl-filter-btn" onclick="tplFilterToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="rep-tbtn-val" id="tpl-filter-label">All</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="dropdown-menu rep-menu" id="tpl-filter-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Sentiment</span><button class="rep-menu-mclose" onclick="tplFilterClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="dropdown-item rep-menu-item" onclick="tplFilterPick(this,'Positive','positive')"><span>Positive</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="tplFilterPick(this,'Negative','negative')"><span>Negative</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="tplFilterPick(this,'Neutral','neutral')"><span>Neutral</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item checked" onclick="tplFilterPick(this,'All','all')"><span>All</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+    </div>
+    <div class="rep-sp"></div>
+    <!-- Mobile search toggle (magnifier) -->
+    <button class="rep-tbtn mobile-search-toggle" id="tpl-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <!-- Search -->
+    <div class="search-pill rep-srch" id="tpl-srch-desktop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="tpl-search-input" placeholder="Search templates..." oninput="tplSearch(this.value)"/>
+    </div>
+    <!-- Add Template -->
+    <button class="btn btn-primary" id="tpl-add-btn" onclick="tplAddOpen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Add Template</span>
+    </button>
+    <!-- Kebab -->
+    <div class="tpl-kebab-wrap">
+      <button class="rep-tbtn tpl-kebab-btn" id="tpl-kebab-btn" onclick="tplKebabToggle(event)" aria-label="More actions" title="More actions">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+      </button>
+      <div class="dropdown-menu" id="tpl-kebab-menu" hidden>
+        <button class="dropdown-item" onclick="tplKebabPick('download')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span class="dropdown-item-label">Download</span>
+        </button>
+        <button class="dropdown-item" onclick="tplKebabPick('export')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span class="dropdown-item-label">Export</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="rep-content">
+    <div class="table-wrap">
+      <table class="data-table tplr-tbl">
+        <thead>
+          <tr>
+            <th>Template Name</th>
+            <th>Sentiment</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody id="tplr-body"></tbody>
+      </table>
+      <div class="tplr-empty" id="tplr-empty" hidden>No templates yet — click "Add Template" to create one.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TEMPLATE MODAL -->
+<div class="modal-backdrop" id="tpl-add-modal" onclick="if(event.target===this)tplAddClose()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="tpl-modal-title">Add new template</div>
+      <button class="modal-close" onclick="tplAddClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Template name</div>
+        <div class="modal-field"><input type="text" id="tpl-f-name" placeholder="e.g. Thank you for your feedback"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Sentiment</div>
+        <div class="modal-field" id="tpl-sent-field">
+          <button type="button" class="tpl-sent-btn" id="tpl-sent-btn" onclick="tplSentToggle(event)">
+            <span class="tpl-sent-val tpl-sent-mu" id="tpl-sent-val">Select sentiment</span>
+            <svg class="tpl-sent-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="modal-section-title">Body</div>
+        <textarea id="tpl-f-body" class="textarea" rows="8" placeholder="Write your review-response message… Use {name} for the reviewer's first name."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel tplr-modal-del" id="tpl-modal-delete" onclick="tplModalDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="tplAddClose()">Cancel</button>
+      <button class="modal-save" id="tpl-modal-save" onclick="tplAddSave()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- SENTIMENT MULTI-SELECT POPUP -->
+<div class="assign-popup" id="tpl-sent-popup" style="display:none;">
+  <div class="lblp-list" id="tpl-sent-list"></div>
+</div>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search templates..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script src="../../../../shared/leads-comms.js"></script>
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+
+function repNav(label){
+  document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Settings'){ window.location.href = '../../settings.html'; return; }
+  if(label === 'Dashboards'){ window.location.href = '../../../reputation_dashboard/Dashboard.html'; return; }
+  if(label === 'Reviews'){ window.location.href = '../../../reviews/reviews.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb = document.getElementById('rep-sb'), bd = document.getElementById('rep-backdrop');
+  var open = sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = '';
+    menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+var _repHoverTimer = null;
+function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
+function repHoverOpen(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
+  if(w.classList.contains('open')) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
+  var r = item.getBoundingClientRect();
+  menu.style.top = r.top + 'px';
+  menu.style.left = (r.right + 6) + 'px';
+  w.classList.add('open');
+}
+function repHoverClose(key){
+  if(window.innerWidth <= 900) return;
+  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
+  if(_repHoverTimer) clearTimeout(_repHoverTimer);
+  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
+}
+function _repBindHoverFlyouts(){
+  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
+    var key = (w.id || '').replace('rep-sub-','');
+    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
+    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
+  });
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
+else _repBindHoverFlyouts();
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Review request'){ window.location.href = '../../../requests/review_request/review_request.html'; return; }
+  if(label === 'Leaderboard'){ window.location.href = '../../../requests/leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){ window.location.href = '../../../requests/template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+
+/* Sentiment toggle */
+var _tplFilter = 'all';
+function tplSentSet(el, val){
+  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){ s.classList.toggle('active', s.getAttribute('data-sent') === val); });
+  _tplFilter = val;
+  var labelMap = {positive:'Positive', negative:'Negative', neutral:'Neutral', all:'All'};
+  var label = labelMap[val] || 'All';
+  var lbl = document.getElementById('tpl-filter-label'); if(lbl) lbl.textContent = label;
+  document.querySelectorAll('#tpl-filter-menu .rep-menu-item').forEach(function(x){
+    x.classList.toggle('checked', (x.textContent || '').trim() === label);
+  });
+  tplrRender();
+}
+function tplFilterToggle(e){
+  if(e) e.stopPropagation();
+  var d = document.getElementById('tpl-filter-dd'); if(d) d.classList.toggle('open');
+}
+function tplFilterClose(){
+  var d = document.getElementById('tpl-filter-dd'); if(d) d.classList.remove('open');
+}
+function tplFilterPick(el, label, val){
+  document.querySelectorAll('#tpl-filter-menu .rep-menu-item').forEach(function(x){ x.classList.remove('checked'); });
+  el.classList.add('checked');
+  document.getElementById('tpl-filter-label').textContent = label;
+  tplFilterClose();
+  tplSentSet(null, val);
+}
+/* Search */
+var _tplSearchQuery = '';
+function tplSearch(v){
+  _tplSearchQuery = (v || '').trim();
+  tplrRender();
+  msoUpdateDot();
+}
+/* Mobile search overlay */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('tpl-search-toggle'); }
+function msoUpdateDot(){
+  var btn = _msoToggleBtn(); if(!btn) return;
+  if(_tplSearchQuery && _tplSearchQuery.length) btn.classList.add('has-query');
+  else btn.classList.remove('has-query');
+}
+function msoUpdateClear(){
+  var inp = _msoInput(), clr = _msoClearBtn(); if(!inp || !clr) return;
+  if(inp.value && inp.value.length) clr.classList.add('show'); else clr.classList.remove('show');
+}
+function msoOnInput(v){
+  var desktop = document.getElementById('tpl-search-input'); if(desktop) desktop.value = v;
+  tplSearch(v);
+  msoUpdateClear();
+}
+function msoClearInput(){
+  var inp = _msoInput(); if(!inp) return;
+  inp.value = '';
+  var desktop = document.getElementById('tpl-search-input'); if(desktop) desktop.value = '';
+  tplSearch(''); msoUpdateClear(); inp.focus();
+}
+function toggleMobileSearch(){
+  var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
+  inp.value = _tplSearchQuery || ''; msoUpdateClear();
+  document.body.classList.add('mso-active');
+  ov.classList.add('open');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+function closeMobileSearch(){
+  var ov = _msoEl(); if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  document.body.classList.remove('mso-active');
+  var inp = _msoInput(); if(inp) inp.blur();
+  msoUpdateDot();
+}
+/* Add / Edit Template modal */
+var _tplEditId = null;
+function tplAddOpen(id){
+  var m = document.getElementById('tpl-add-modal'); if(!m) return;
+  _tplEditId = (typeof id === 'string' && id) ? id : null;
+  var t = _tplEditId ? TPLR_LIST.find(function(x){return x.id===_tplEditId;}) : null;
+  var title = document.getElementById('tpl-modal-title'); if(title) title.textContent = t ? 'Edit template' : 'Add new template';
+  var saveBtn = document.getElementById('tpl-modal-save'); if(saveBtn) saveBtn.textContent = t ? 'Update' : 'Add';
+  var delBtn = document.getElementById('tpl-modal-delete'); if(delBtn) delBtn.hidden = !t;
+  document.getElementById('tpl-f-name').value = t ? (t.name || '') : '';
+  document.getElementById('tpl-f-body').value = t ? (t.body || '') : '';
+  _tplSent = new Set(t ? (t.sentiment || []) : []);
+  tplSentSync();
+  tplSentClose();
+  m.classList.add('open');
+  setTimeout(function(){ var n = document.getElementById('tpl-f-name'); if(n) n.focus(); }, 20);
+}
+/* Sentiment multi-select popup */
+var TPL_SENT_OPTIONS = [
+  { id:'positive', name:'Positive', color:'#22c88a' },
+  { id:'negative', name:'Negative', color:'#e85555' },
+  { id:'neutral',  name:'Neutral',  color:'#a4a8b4' }
+];
+var _tplSent = new Set();
+function tplSentRender(){
+  var el = document.getElementById('tpl-sent-list'); if(!el) return;
+  el.innerHTML = TPL_SENT_OPTIONS.map(function(o){
+    var on = _tplSent.has(o.id);
+    return '<div class="lblp-item'+(on?' on':'')+'" onclick="tplSentToggleId(\''+o.id+'\')">'
+      + '<span class="tpl-sent-cb"></span>'
+      + '<span class="lblp-dot" style="background:'+o.color+';"></span>'
+      + '<span class="lblp-name">'+o.name+'</span>'
+      + '</div>';
+  }).join('');
+}
+function tplSentToggleId(id){
+  if(_tplSent.has(id)) _tplSent.delete(id); else _tplSent.add(id);
+  tplSentRender();
+  tplSentSync();
+}
+function tplSentSync(){
+  var v = document.getElementById('tpl-sent-val'); if(!v) return;
+  var n = _tplSent.size;
+  if(n === 0){ v.textContent = 'Select sentiment'; v.classList.add('tpl-sent-mu'); return; }
+  v.classList.remove('tpl-sent-mu');
+  if(n === 1){
+    var id = Array.from(_tplSent)[0];
+    var o = TPL_SENT_OPTIONS.find(function(x){return x.id===id;});
+    v.textContent = o ? o.name : '1 Sentiment Selected';
+  } else {
+    v.textContent = n + ' Sentiments Selected';
+  }
+}
+function tplSentToggle(e){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('tpl-sent-popup'); if(!pop) return;
+  var field = document.getElementById('tpl-sent-field');
+  if(pop.style.display === 'block'){ tplSentClose(); return; }
+  var r = field.getBoundingClientRect();
+  var w = 240;
+  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+  tplSentRender();
+  pop.style.display = 'block';
+  field.classList.add('open');
+}
+function tplSentClose(){
+  var pop = document.getElementById('tpl-sent-popup'); if(pop) pop.style.display = 'none';
+  var field = document.getElementById('tpl-sent-field'); if(field) field.classList.remove('open');
+}
+function tplAddClose(){
+  var m = document.getElementById('tpl-add-modal'); if(m) m.classList.remove('open');
+}
+function tplAddSave(){
+  var name = (document.getElementById('tpl-f-name').value || '').trim();
+  var body = (document.getElementById('tpl-f-body').value || '').trim();
+  var sentiment = Array.from(_tplSent);
+  if(!name){ document.getElementById('tpl-f-name').focus(); return; }
+  if(_tplEditId){
+    var row = TPLR_LIST.find(function(x){return x.id===_tplEditId;});
+    if(row){ row.name = name; row.sentiment = sentiment; row.body = body; }
+    tplrPersist(); tplrRender();
+    tplAddClose();
+    showNavToast('Template updated', name + ' was saved.');
+  } else {
+    var id = 'tpl_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+    TPLR_LIST.push({ id:id, name:name, sentiment:sentiment, body:body });
+    tplrPersist(); tplrRender();
+    tplAddClose();
+    showNavToast('Template added', name + ' was created.');
+  }
+}
+/* Persistent template store + table render */
+var TPLR_KEY = 'cc_rev_tmpl', TPLR_VER = 'v1';
+var TPLR_SEED = [
+  { id:'seed_grateful', name:'Grateful reply', sentiment:['positive'], body:"Thanks so much for the kind words, {name}! We're thrilled you had a great experience with our team." },
+  { id:'seed_positive_followup', name:'Positive follow-up', sentiment:['positive'], body:"So glad you enjoyed your visit, {name}! We'd love to see you again — come back and say hi anytime." },
+  { id:'seed_neutral_ack', name:'Neutral acknowledgment', sentiment:['neutral'], body:"Thanks for taking the time to share your feedback, {name}. We appreciate you letting us know." },
+  { id:'seed_apology', name:'Apology (needs follow-up)', sentiment:['negative'], body:"We're sorry to hear this wasn't up to standard, {name}. Please email us at support@example.com so we can make it right." },
+  { id:'seed_constructive', name:'Constructive negative', sentiment:['negative','neutral'], body:"We appreciate your honest review, {name}. Your feedback helps us improve — thank you for taking the time to write it." }
+];
+var TPLR_LIST = tplrLoad();
+function tplrLoad(){
+  try{
+    var raw = localStorage.getItem(TPLR_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    var hasList = p && p.ver === TPLR_VER && Array.isArray(p.list) && p.list.length > 0;
+    if(!hasList){
+      var seed = TPLR_SEED.map(function(t){ return {id:t.id, name:t.name, sentiment:t.sentiment.slice(), body:t.body}; });
+      try{ localStorage.setItem(TPLR_KEY, JSON.stringify({ver:TPLR_VER, list:seed})); }catch(e){}
+      return seed;
+    }
+    return p.list;
+  }catch(e){ return []; }
+}
+function tplrPersist(){
+  try{ localStorage.setItem(TPLR_KEY, JSON.stringify({ver:TPLR_VER, list:TPLR_LIST})); }catch(e){}
+}
+function tplrEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function tplrSentChips(ids){
+  return (ids||[]).map(function(id){
+    var o = TPL_SENT_OPTIONS.find(function(x){return x.id===id;}); if(!o) return '';
+    return '<span class="tplr-sent-chip"><span class="lblp-dot" style="background:'+o.color+';"></span>'+o.name+'</span>';
+  }).join('');
+}
+var TPLR_ICONS = {
+  del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
+};
+function tplrRender(){
+  var body = document.getElementById('tplr-body');
+  var empty = document.getElementById('tplr-empty');
+  if(!body) return;
+  var rows = (_tplFilter === 'all')
+    ? TPLR_LIST
+    : TPLR_LIST.filter(function(t){ return (t.sentiment || []).indexOf(_tplFilter) >= 0; });
+  if(_tplSearchQuery){
+    var q = _tplSearchQuery.toLowerCase();
+    rows = rows.filter(function(t){
+      return (t.name || '').toLowerCase().indexOf(q) >= 0 || (t.body || '').toLowerCase().indexOf(q) >= 0;
+    });
+  }
+  body.innerHTML = rows.map(function(t){
+    return '<tr onclick="tplAddOpen(\''+tplrEsc(t.id)+'\')" style="cursor:pointer;">'
+      + '<td class="tplr-td-name">'+tplrEsc(t.name)+'</td>'
+      + '<td class="tplr-td-sent-cell"><div class="tplr-td-sent">'+tplrSentChips(t.sentiment)+'</div></td>'
+      + '<td class="tplr-td-body">'+tplrEsc(t.body)+'</td>'
+      + '</tr>';
+  }).join('');
+  if(empty){
+    empty.hidden = rows.length > 0;
+    if(!rows.length){
+      if(_tplFilter === 'all'){
+        empty.textContent = 'No templates yet — click "Add Template" to create one.';
+      } else {
+        var label = _tplFilter.charAt(0).toUpperCase() + _tplFilter.slice(1);
+        empty.textContent = 'No ' + label + ' templates yet.';
+      }
+    }
+  }
+}
+function tplrDelete(id){
+  var t = TPLR_LIST.find(function(x){return x.id===id;}); if(!t) return;
+  TPLR_LIST = TPLR_LIST.filter(function(x){return x.id!==id;});
+  tplrPersist(); tplrRender();
+  showNavToast('Template deleted', (t.name || 'Template') + ' was removed.');
+}
+function tplModalDelete(){
+  if(!_tplEditId) return;
+  var id = _tplEditId;
+  tplAddClose();
+  tplrDelete(id);
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tplrRender);
+else tplrRender();
+/* Kebab (Download / Export) */
+function tplKebabToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('tpl-kebab-menu'); if(!m) return;
+  m.hidden = !m.hidden;
+}
+function tplKebabClose(){ var m = document.getElementById('tpl-kebab-menu'); if(m) m.hidden = true; }
+function tplKebabPick(action){
+  tplKebabClose();
+  showNavToast(action === 'download' ? 'Download' : 'Export', 'This section is under construction.');
+}
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('#tpl-kebab-btn') && !e.target.closest('#tpl-kebab-menu')) tplKebabClose();
+  if(!e.target.closest('#tpl-sent-field') && !e.target.closest('#tpl-sent-popup')) tplSentClose();
+  if(!e.target.closest('#tpl-filter-dd')) tplFilterClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
+  tplKebabClose();
+  tplSentClose();
+  tplFilterClose();
+  tplAddClose();
+  if(typeof repSubClose === 'function') repSubClose();
+});
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'reputation'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome (toggleNotifications/openNotifications/closeNotifications/positionNotifications/setNotifTab/markAllNotificationsRead — shared/notifications.js overrides the renderers) -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../../../shared/notifications.js"></script>
+<script src="../../../../shared/contact-panel.js"></script>
+
+</body>
+</html>

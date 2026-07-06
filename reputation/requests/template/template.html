@@ -43,8 +43,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-submenu-item.active{background:rgba(79,124,255,.10);color:var(--ac2);font-weight:500;}
 .rep-submenu-mhead{display:none;}
 @media (max-width:900px){
-  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
-  .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);visibility:hidden;transition:transform .25s ease-out,visibility 0s linear .25s;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);visibility:visible;transition:transform .25s ease-out,visibility 0s linear;}
   .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
   .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
   .rep-submenu-back svg{width:20px;height:20px;}
@@ -54,6 +54,24 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 
 /* ── Content ── */
 .rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+/* Icon-only sidebar (mirrors CoreConnect .sb-item style) */
+.rep-sb{width:72px !important;padding:14px 0 !important;overflow:visible !important;z-index:90 !important;}
+.rep-nav{align-items:center;}
+.rep-item{gap:0 !important;padding:0 !important;width:44px !important;height:44px !important;justify-content:center;margin:0 auto;}
+.rep-item .rep-lbl{display:none;}
+.rep-item .rep-caret{display:none;}
+.rep-item::after{content:attr(data-rep);position:absolute;left:58px;top:50%;transform:translateY(-50%);background:var(--sur2);color:var(--ac2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.rep-item:hover::after{opacity:1;}
+.rep-main{margin-left:72px !important;}
+@media (max-width:900px){
+  .rep-sb{width:100% !important;padding:12px !important;}
+  .rep-nav{align-items:stretch;}
+  .rep-item{width:auto !important;height:auto !important;min-height:44px !important;justify-content:flex-start;padding:0 12px !important;gap:12px !important;margin:0;}
+  .rep-item .rep-lbl{display:block;}
+  .rep-item .rep-caret{display:block;}
+  .rep-item::after{display:none;}
+  .rep-main{margin-left:0 !important;}
+}
 .rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
 .rep-backdrop.show{display:block;}
 
@@ -62,10 +80,28 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-sp{flex:1;min-width:8px;}
 .rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
 .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+/* Mobile search toggle + overlay */
+.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--bg);}
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .rep-bar{display:none;}
 .rep-tbtn svg{width:15px;height:15px;flex:none;}
 .rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
 .rep-chev{transition:transform .15s;}
 .rep-dd{position:relative;}
+#tmpl-type-dd{display:none;}
 .rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
 .rep-dd.open .rep-tbtn svg{color:var(--ac2);}
 .rep-dd.open .rep-chev{transform:rotate(180deg);}
@@ -110,6 +146,15 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .table-wrap{margin:0 14px;border-radius:10px;}
   .tmpl-tbl thead th, .tmpl-tbl tbody td{padding:10px 12px;font-size:12px;}
   .tmpl-btn{padding:8px 10px;font-size:12px;}
+  .period-toggle{display:none;}
+  #tmpl-type-dd{display:inline-block;}
+  #tmpl-type-btn .rep-tbtn-val,#tmpl-type-btn .rep-chev{display:none;}
+  #tmpl-type-btn{padding:0;width:44px;justify-content:center;gap:0;}
+  #tmpl-add-menu.rep-menu:not([hidden]){display:flex;flex-direction:column;top:0;right:0;bottom:0;left:0;}
+  #tmpl-srch-desktop{display:none;}
+  .rep-bar .mobile-search-toggle{display:flex;padding:0;width:44px;justify-content:center;gap:0;}
+  .mso-back{width:44px;height:44px;}
+  .mso-clear{width:44px;height:44px;}
 }
 /* Type-picker dropdown that opens under Add Template */
 .tmpl-add-wrap{position:relative;}
@@ -123,8 +168,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 
 @media (max-width:900px){
   .hamburger-btn{display:flex;}
-  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
-  .rep-sb.open{transform:translateX(0);}
+  .rep-sb{transform:translateX(-100%);visibility:hidden;transition:transform .2s ease-out,visibility 0s linear .2s;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210 !important;width:100%;}
+  .rep-sb.open{transform:translateX(0);visibility:visible;transition:transform .2s ease-out,visibility 0s linear;}
   .rep-backdrop{z-index:205;}
   .rep-main{margin-left:0;}
   .rep-bar{padding:10px 14px;}
@@ -246,6 +291,10 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
         <button class="rep-submenu-item active" type="button" onclick="repSubPick('Template')">Template</button>
       </div>
     </div>
+    <div class="rep-item" data-rep="Settings" onclick="repNav('Settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="rep-lbl">Settings</span>
+    </div>
   </div>
 </div>
 
@@ -260,9 +309,26 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
       <button class="pt-seg" data-type="sms"   onclick="tmplSetType(this,'sms')"   role="tab">SMS</button>
       <button class="pt-seg active" data-type="all" onclick="tmplSetType(this,'all')" role="tab">All</button>
     </div>
+    <div class="rep-dd" id="tmpl-type-dd">
+      <button class="rep-tbtn" id="tmpl-type-btn" onclick="tmplTypeToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="rep-tbtn-val" id="tmpl-type-label">All</span>
+        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="dropdown-menu rep-menu" id="tmpl-type-menu">
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Type</span><button class="rep-menu-mclose" onclick="tmplTypeClose()" aria-label="Close">&#x2715;</button></div>
+        <div class="dropdown-item rep-menu-item" onclick="tmplTypePick(this,'Email','email')"><span>Email</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item" onclick="tmplTypePick(this,'SMS','sms')"><span>SMS</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="dropdown-item rep-menu-item checked" onclick="tmplTypePick(this,'All','all')"><span>All</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+    </div>
     <div class="rep-sp"></div>
+    <!-- Mobile search toggle (magnifier) -->
+    <button class="rep-tbtn mobile-search-toggle" id="tmpl-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
     <!-- Search -->
-    <div class="search-pill rep-srch">
+    <div class="search-pill rep-srch" id="tmpl-srch-desktop">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="tmpl-search-input" placeholder="Search templates..." oninput="tmplSearch(this.value)"/>
     </div>
@@ -273,7 +339,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
         <span class="tmpl-add-txt">Add Template</span>
         <svg class="tmpl-add-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="dropdown-menu" id="tmpl-add-menu" hidden>
+      <div class="dropdown-menu rep-menu" id="tmpl-add-menu" hidden>
+        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">New template</span><button class="rep-menu-mclose" onclick="tmplAddTypeClose()" aria-label="Close">&#x2715;</button></div>
         <button class="dropdown-item" onclick="tmplAddOpen('email')"><i class="ti ti-mail" aria-hidden="true"></i> <span class="dropdown-item-label">Email</span></button>
         <button class="dropdown-item" onclick="tmplAddOpen('sms')"><i class="ti ti-message-circle" aria-hidden="true"></i> <span class="dropdown-item-label">SMS</span></button>
       </div>
@@ -334,6 +401,21 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   </div>
 </div>
 
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search templates..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
@@ -362,6 +444,7 @@ function repNav(label){
   if(window.innerWidth <= 900) closeRepDrawer();
   if(label === 'Dashboards'){ window.location.href = '../../reputation_dashboard/Dashboard.html'; return; }
   if(label === 'Reviews'){ window.location.href = '../../reviews/reviews.html'; return; }
+  if(label === 'Settings'){ window.location.href = '../../settings/settings.html'; return; }
   showNavToast(label + ' is coming soon', 'This section is under construction.');
 }
 function toggleRepDrawer(){
@@ -443,9 +526,31 @@ var _tmplType = 'all';
 function tmplSetType(el, t){
   _tmplType = t;
   document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
-    s.classList.toggle('active', s === el);
+    s.classList.toggle('active', s.getAttribute('data-type') === t);
+  });
+  var labelMap = {email:'Email', sms:'SMS', all:'All'};
+  var label = labelMap[t] || 'All';
+  var lbl = document.getElementById('tmpl-type-label'); if(lbl) lbl.textContent = label;
+  document.querySelectorAll('#tmpl-type-menu .rep-menu-item').forEach(function(x){
+    x.classList.toggle('checked', (x.textContent || '').trim() === label);
   });
   tmplRender();
+}
+function tmplTypeToggle(e){
+  if(e) e.stopPropagation();
+  var d = document.getElementById('tmpl-type-dd'); if(d) d.classList.toggle('open');
+  document.body.classList.toggle('rep-sheet-open', !!(d && d.classList.contains('open')));
+}
+function tmplTypeClose(){
+  var d = document.getElementById('tmpl-type-dd'); if(d) d.classList.remove('open');
+  document.body.classList.remove('rep-sheet-open');
+}
+function tmplTypePick(el, label, val){
+  document.querySelectorAll('#tmpl-type-menu .rep-menu-item').forEach(function(x){ x.classList.remove('checked'); });
+  el.classList.add('checked');
+  document.getElementById('tmpl-type-label').textContent = label;
+  tmplTypeClose();
+  tmplSetType(null, val);
 }
 
 /* Templates list */
@@ -547,10 +652,12 @@ function tmplAddTypeToggle(e){
   var m = document.getElementById('tmpl-add-menu');
   if(!m) return;
   m.hidden = !m.hidden;
+  document.body.classList.toggle('rep-sheet-open', !m.hidden);
 }
 function tmplAddTypeClose(){
   var m = document.getElementById('tmpl-add-menu');
   if(m) m.hidden = true;
+  document.body.classList.remove('rep-sheet-open');
 }
 function tmplAddOpen(type){
   tmplAddTypeClose();
@@ -627,19 +734,61 @@ function tmplDelete(id){
   tmplPersist(TMPL_LIST); tmplRender();
   showNavToast('Template deleted', t.name+' was removed.');
 }
-function tmplSearch(v){ _tmplQuery = v || ''; tmplRender(); }
+function tmplSearch(v){ _tmplQuery = v || ''; tmplRender(); msoUpdateDot(); }
+/* Mobile search overlay */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('tmpl-search-toggle'); }
+function msoUpdateDot(){
+  var btn = _msoToggleBtn(); if(!btn) return;
+  if(_tmplQuery && _tmplQuery.length) btn.classList.add('has-query');
+  else btn.classList.remove('has-query');
+}
+function msoUpdateClear(){
+  var inp = _msoInput(), clr = _msoClearBtn(); if(!inp || !clr) return;
+  if(inp.value && inp.value.length) clr.classList.add('show'); else clr.classList.remove('show');
+}
+function msoOnInput(v){
+  var desktop = document.getElementById('tmpl-search-input'); if(desktop) desktop.value = v;
+  tmplSearch(v);
+  msoUpdateClear();
+}
+function msoClearInput(){
+  var inp = _msoInput(); if(!inp) return;
+  inp.value = '';
+  var desktop = document.getElementById('tmpl-search-input'); if(desktop) desktop.value = '';
+  tmplSearch(''); msoUpdateClear(); inp.focus();
+}
+function toggleMobileSearch(){
+  var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
+  inp.value = _tmplQuery || ''; msoUpdateClear();
+  document.body.classList.add('mso-active');
+  ov.classList.add('open');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+function closeMobileSearch(){
+  var ov = _msoEl(); if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  document.body.classList.remove('mso-active');
+  var inp = _msoInput(); if(inp) inp.blur();
+  msoUpdateDot();
+}
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tmplRender);
 else tmplRender();
 
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('.rep-item-wrap')) repSubClose();
   if(!e.target.closest('#tmpl-add-wrap')) tmplAddTypeClose();
+  if(!e.target.closest('#tmpl-type-dd')) tmplTypeClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
+  var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
   var m = document.getElementById('tmpl-modal');
   if(m && m.classList.contains('open')){ tmplEditCancel(); return; }
   tmplAddTypeClose();
+  tmplTypeClose();
   repSubClose();
 });
 </script>

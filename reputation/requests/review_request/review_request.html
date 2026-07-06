@@ -43,8 +43,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-submenu-item.active{background:rgba(79,124,255,.10);color:var(--ac2);font-weight:500;}
 .rep-submenu-mhead{display:none;}
 @media (max-width:900px){
-  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);transition:transform .25s ease-out;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
-  .rep-item-wrap.open .rep-submenu{transform:translateX(0);}
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);visibility:hidden;transition:transform .25s ease-out,visibility 0s linear .25s;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);visibility:visible;transition:transform .25s ease-out,visibility 0s linear;}
   .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
   .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
   .rep-submenu-back svg{width:20px;height:20px;}
@@ -54,6 +54,24 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 
 /* ── Content ── */
 .rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+/* Icon-only sidebar (mirrors CoreConnect .sb-item style) */
+.rep-sb{width:72px !important;padding:14px 0 !important;overflow:visible !important;z-index:90 !important;}
+.rep-nav{align-items:center;}
+.rep-item{gap:0 !important;padding:0 !important;width:44px !important;height:44px !important;justify-content:center;margin:0 auto;}
+.rep-item .rep-lbl{display:none;}
+.rep-item .rep-caret{display:none;}
+.rep-item::after{content:attr(data-rep);position:absolute;left:58px;top:50%;transform:translateY(-50%);background:var(--sur2);color:var(--ac2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.rep-item:hover::after{opacity:1;}
+.rep-main{margin-left:72px !important;}
+@media (max-width:900px){
+  .rep-sb{width:100% !important;padding:12px !important;}
+  .rep-nav{align-items:stretch;}
+  .rep-item{width:auto !important;height:auto !important;min-height:44px !important;justify-content:flex-start;padding:0 12px !important;gap:12px !important;margin:0;}
+  .rep-item .rep-lbl{display:block;}
+  .rep-item .rep-caret{display:block;}
+  .rep-item::after{display:none;}
+  .rep-main{margin-left:0 !important;}
+}
 .rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
 .rep-backdrop.show{display:block;}
 
@@ -146,8 +164,8 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 
 @media (max-width:900px){
   .hamburger-btn{display:flex;}
-  .rep-sb{transform:translateX(-100%);box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210;width:100%;}
-  .rep-sb.open{transform:translateX(0);}
+  .rep-sb{transform:translateX(-100%);visibility:hidden;transition:transform .2s ease-out,visibility 0s linear .2s;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210 !important;width:100%;}
+  .rep-sb.open{transform:translateX(0);visibility:visible;transition:transform .2s ease-out,visibility 0s linear;}
   .rep-backdrop{z-index:205;}
   .rep-main{margin-left:0;}
   .rq-grid{flex-direction:column;padding:14px;}
@@ -258,6 +276,10 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
         <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
         <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
       </div>
+    </div>
+    <div class="rep-item" data-rep="Settings" onclick="repNav('Settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="rep-lbl">Settings</span>
     </div>
   </div>
 </div>
@@ -375,6 +397,7 @@ function repNav(label){
   if(window.innerWidth <= 900) closeRepDrawer();
   if(label === 'Dashboards'){ window.location.href = '../../reputation_dashboard/Dashboard.html'; return; }
   if(label === 'Reviews'){ window.location.href = '../../reviews/reviews.html'; return; }
+  if(label === 'Settings'){ window.location.href = '../../settings/settings.html'; return; }
   showNavToast(label + ' is coming soon', 'This section is under construction.');
 }
 function toggleRepDrawer(){

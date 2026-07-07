@@ -607,7 +607,22 @@ function closeMobileSearch(){
 }
 
 /* Add rule modal + selectors */
-var RATE_SOURCES = ['Google','Facebook','Yelp','USA Direct Auto'];
+var RATE_SRC_KEY = 'cc_rep_sources', RATE_SRC_VER = 'v1';
+var RATE_SRC_FALLBACK = ['Google','Facebook','Bing','CarGurus','Carfax','DealerRater','USA Direct Auto','Instagram','LinkedIn','Snapchat','TikTok','X (formerly Twitter)','YouTube'];
+function rateSourcesNow(){
+  try{
+    var raw = localStorage.getItem(RATE_SRC_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    if(p && p.ver === RATE_SRC_VER && Array.isArray(p.list) && p.list.length){
+      var seen = {}, out = [];
+      p.list.forEach(function(r){
+        var s = (r && r.source || '').trim(); if(!s || seen[s]) return; seen[s] = 1; out.push(s);
+      });
+      if(out.length) return out;
+    }
+  }catch(e){}
+  return RATE_SRC_FALLBACK.slice();
+}
 var RATE_OPS     = ['Less than','Greater than','Equal to'];
 var RATE_STARS   = [1,2,3,4,5];
 var _rateSrc = null, _rateOp = null, _rateStar = null;
@@ -624,7 +639,7 @@ function _rateStarsRow(n){
 
 function rateSrcRender(){
   var el = document.getElementById('rate-src-list'); if(!el) return;
-  el.innerHTML = RATE_SOURCES.map(function(s){
+  el.innerHTML = rateSourcesNow().map(function(s){
     var on = (_rateSrc === s);
     return '<div class="lblp-item'+(on?' on':'')+'" onclick="rateSrcPick(\''+s.replace(/'/g,"\\'")+'\')"><span class="lblp-name">'+s+'</span></div>';
   }).join('');

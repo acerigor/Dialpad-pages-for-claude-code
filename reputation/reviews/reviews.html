@@ -185,6 +185,20 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .ri-kebab-menu.open{display:flex;flex-direction:column;}
 .ri-kebab-item{display:flex;align-items:center;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 14px;cursor:pointer;transition:background .12s,color .12s;}
 .ri-kebab-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.ri-tmpl-wrap{position:relative;display:inline-flex;}
+.ri-tmpl-menu{display:none;position:fixed;min-width:280px;max-width:min(360px, calc(100vw - 32px));max-height:320px;overflow-y:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9500;padding:4px;}
+.ri-tmpl-menu.open{display:flex;flex-direction:column;}
+.ri-tmpl-item{display:flex;flex-direction:column;gap:4px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 12px;cursor:pointer;border-radius:6px;transition:background .12s;}
+.ri-tmpl-item:hover{background:rgba(255,255,255,.05);}
+.ri-tmpl-name{font-weight:600;color:var(--tx);font-size:13px;}
+.ri-tmpl-meta{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mu);}
+.ri-tmpl-dot{display:inline-block;width:8px;height:8px;border-radius:50%;}
+.ri-tmpl-preview{font-size:12px;color:var(--mu);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ri-tmpl-empty{padding:14px 12px;font-size:12.5px;color:var(--mu);text-align:center;line-height:1.5;}
+@media (max-width:640px){
+  .ri-tmpl-item{min-height:52px;}
+  .ri-tmpl-menu{min-width:240px;}
+}
 .ri-text{font-size:13px;color:var(--tx);line-height:1.5;}
 .ri-attrs{display:flex;flex-wrap:wrap;gap:8px;}
 .ri-attr-chip{background:var(--sur2);color:var(--tx);font-size:12px;padding:5px 10px;border-radius:6px;border:0.5px solid var(--brd);}
@@ -1188,10 +1202,84 @@ function riKebabAct(id, action){
   var labels = { read:'Marked as read' };
   if(typeof showNavToast === 'function') showNavToast(labels[action]||action, 'Action queued for review '+id+'.');
 }
+var TPLR_KEY_R = 'cc_rev_tmpl', TPLR_VER_R = 'v1';
+var TPLR_SENT_COLORS = {positive:'#22c88a', negative:'#e85555', neutral:'#a4a8b4'};
+function revTmplLoad(){
+  try{
+    var raw = localStorage.getItem(TPLR_KEY_R);
+    var p = raw ? JSON.parse(raw) : null;
+    return (p && p.ver === TPLR_VER_R && Array.isArray(p.list)) ? p.list : [];
+  }catch(e){ return []; }
+}
+function _revBucketKey(rating){ return rating >= 4 ? 'positive' : (rating === 3 ? 'neutral' : 'negative'); }
+function revTmplClose(){
+  document.querySelectorAll('.ri-tmpl-menu.open').forEach(function(m){ m.classList.remove('open'); });
+}
+function revTmplToggle(reviewId, rating, ev){
+  if(ev) ev.stopPropagation();
+  var menu = document.getElementById('ri-tmpl-menu-'+reviewId); if(!menu) return;
+  var wasOpen = menu.classList.contains('open');
+  revTmplClose();
+  if(typeof riKebabClose === 'function') riKebabClose();
+  if(wasOpen) return;
+  var list = revTmplLoad();
+  var bucket = _revBucketKey(rating || 0);
+  list.sort(function(a,b){
+    var am = (a.sentiment || []).indexOf(bucket) >= 0 ? 0 : 1;
+    var bm = (b.sentiment || []).indexOf(bucket) >= 0 ? 0 : 1;
+    return am - bm;
+  });
+  menu.innerHTML = list.length ? list.map(function(t){
+    var chips = (t.sentiment || []).map(function(s){
+      var label = s.charAt(0).toUpperCase() + s.slice(1);
+      return '<span class="ri-tmpl-dot" style="background:'+(TPLR_SENT_COLORS[s]||'#888')+';"></span>'+label;
+    }).join(' &middot; ');
+    return '<button type="button" class="ri-tmpl-item" onclick="revTmplPick(\''+reviewId+'\',\''+_revEsc(t.id)+'\')">'
+      + '<span class="ri-tmpl-name">'+_revEsc(t.name || 'Untitled')+'</span>'
+      + (chips ? '<span class="ri-tmpl-meta">'+chips+'</span>' : '')
+      + '<span class="ri-tmpl-preview">'+_revEsc(t.body || '')+'</span>'
+      + '</button>';
+  }).join('') : '<div class="ri-tmpl-empty">No templates yet. Add them in Settings &rarr; Reviews &rarr; Templates.</div>';
+  menu.classList.add('open');
+  var btn = menu.parentElement && menu.parentElement.querySelector('.ri-reply-icon');
+  if(btn){
+    var r = btn.getBoundingClientRect();
+    var menuW = Math.min(360, Math.max(280, menu.offsetWidth));
+    var menuH = menu.offsetHeight;
+    var left = Math.max(8, Math.min(r.left, window.innerWidth - menuW - 8));
+    var top = r.top - menuH - 6;
+    if(top < 8){ top = Math.min(window.innerHeight - menuH - 8, r.bottom + 6); }
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+  }
+}
+function revTmplPick(reviewId, tmplId){
+  var t = revTmplLoad().find(function(x){return x.id === tmplId;});
+  if(!t){ revTmplClose(); return; }
+  var ta = document.getElementById('ri-reply-input-'+reviewId); if(!ta){ revTmplClose(); return; }
+  var body = String(t.body || '');
+  var card = ta.closest('.rev-card-item');
+  var nameEl = card && card.querySelector('.ri-reviewer');
+  if(nameEl){
+    var raw = '';
+    for(var i=0;i<nameEl.childNodes.length;i++){
+      var n = nameEl.childNodes[i];
+      if(n.nodeType === 3) raw += n.nodeValue;
+      else if(n.nodeType === 1 && !n.classList.contains('ri-rev-av')) raw += n.textContent;
+    }
+    var first = raw.trim().split(/\s+/)[0];
+    if(first) body = body.replace(/\{name\}/gi, first);
+  }
+  ta.value = body;
+  ta.focus();
+  if(typeof revMarkUserEdited === 'function') revMarkUserEdited(reviewId);
+  revTmplClose();
+}
 document.addEventListener('mousedown', function(e){
   if(!e.target.closest('.ri-kebab-wrap')) riKebabClose();
   if(!e.target.closest('.rev-r3-dl-wrap')) revR3DlClose();
   if(!e.target.closest('.rep-item-wrap')) repSubClose();
+  if(!e.target.closest('.ri-tmpl-wrap')) revTmplClose();
 });
 
 /* Right-column block #3 — review list (seed-driven) */
@@ -1328,7 +1416,10 @@ function revR3Card(r){
           parts.push(
             '<div class="ri-reply-top"><textarea class="ri-reply-input" id="ri-reply-input-'+r.id+'" data-source="'+prefillSrc+'" oninput="revMarkUserEdited(\''+r.id+'\')" placeholder="'+placeholder+'" rows="2">'+ _revEsc(prefillText) +'</textarea><span class="ri-reply-thumbs">'+thumbs+'</span></div>'
             + '<div class="ri-reply-bottom">'
-              + '<button class="ri-reply-icon" type="button" aria-label="Insert template">'+docIc+'</button>'
+              + '<span class="ri-tmpl-wrap">'
+                + '<button class="ri-reply-icon" type="button" aria-label="Insert template" onclick="revTmplToggle(\''+r.id+'\','+(r.rating||0)+',event)">'+docIc+'</button>'
+                + '<div class="ri-tmpl-menu" id="ri-tmpl-menu-'+r.id+'"></div>'
+              + '</span>'
               + '<button class="ri-reply-icon" type="button" aria-label="Insert emoji">'+emoIc+'</button>'
               + '<span class="ri-reply-sp"></span>'
               + '<span class="ri-reply-analyze">Analyze</span>'
@@ -1682,6 +1773,7 @@ document.addEventListener('keydown', function(e){
   if(typeof riKebabClose === 'function') riKebabClose();
   if(typeof revR3DlClose === 'function') revR3DlClose();
   if(typeof repSubClose === 'function') repSubClose();
+  if(typeof revTmplClose === 'function') revTmplClose();
 });
 </script>
 

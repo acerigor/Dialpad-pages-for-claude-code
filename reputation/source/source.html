@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Reputation · Source</title>
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<link rel="stylesheet" href="../../shared/settings.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+
+/* ── Top header ── */
+.top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
+.top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
+.top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.th-left{display:flex;align-items:center;gap:10px;}
+.hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;flex-shrink:0;transition:background .12s;}
+.hamburger-btn:hover{background:rgba(255,255,255,.05);}
+.top-header-right{display:flex;align-items:center;gap:10px;}
+.header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);transition:all .12s;background:transparent;border:none;}
+.header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:2px solid var(--bg);}
+
+/* ── Reputation sidebar ── */
+.rep-sb{position:fixed;top:64px;left:0;width:232px;height:calc(100vh - 64px);background:var(--bg);border-right:0.5px solid var(--brd);display:flex;flex-direction:column;padding:14px 12px;gap:3px;z-index:55;overflow-y:auto;transition:transform .2s ease-out;}
+.rep-nav{display:flex;flex-direction:column;gap:3px;}
+.rep-item{position:relative;display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-size:13.5px;font-weight:500;transition:background .12s,color .12s;user-select:none;}
+.rep-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.rep-item.active{background:var(--ac);color:#fff;}
+.rep-item.active:hover{background:var(--ac);color:#fff;}
+.rep-item svg{width:18px;height:18px;flex:none;}
+.rep-item .rep-lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rep-caret{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .15s ease-out;}
+.rep-item.active .rep-caret{color:#fff;}
+.rep-item:hover .rep-caret{color:var(--tx);}
+.rep-item-wrap{position:relative;}
+.rep-submenu{display:none;position:fixed;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:9000;}
+.rep-item-wrap.open .rep-submenu{display:flex;flex-direction:column;}
+.rep-item-wrap.open .rep-caret{transform:rotate(90deg);}
+.rep-submenu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.rep-submenu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.rep-submenu-mhead{display:none;}
+@media (max-width:900px){
+  .rep-submenu{position:fixed !important;inset:0 !important;width:auto !important;height:auto !important;min-width:0;border-radius:0;border:none;padding:0;transform:translateX(100%);visibility:hidden;transition:transform .25s ease-out,visibility 0s linear .25s;display:flex;flex-direction:column;z-index:220;background:var(--bg);}
+  .rep-item-wrap.open .rep-submenu{transform:translateX(0);visibility:visible;transition:transform .25s ease-out,visibility 0s linear;}
+  .rep-submenu-mhead{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .rep-submenu-back{width:44px;height:44px;border:none;background:var(--sur2);color:var(--tx);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .rep-submenu-back svg{width:20px;height:20px;}
+  .rep-submenu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .rep-submenu-item{padding:16px 20px;min-height:52px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
+
+/* ── Content ── */
+.rep-main{margin-left:232px;margin-top:64px;min-height:calc(100vh - 64px);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;}
+/* Icon-only sidebar */
+.rep-sb{width:72px !important;padding:14px 0 !important;overflow:visible !important;z-index:90 !important;}
+.rep-nav{align-items:center;}
+.rep-item{gap:0 !important;padding:0 !important;width:44px !important;height:44px !important;justify-content:center;margin:0 auto;}
+.rep-item .rep-lbl{display:none;}
+.rep-item .rep-caret{display:none;}
+.rep-item::after{content:attr(data-rep);position:absolute;left:58px;top:50%;transform:translateY(-50%);background:var(--sur2);color:var(--ac2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
+.rep-item:hover::after{opacity:1;}
+.rep-main{margin-left:72px !important;}
+@media (max-width:900px){
+  .rep-sb{width:100% !important;padding:12px !important;}
+  .rep-nav{align-items:stretch;}
+  .rep-item{width:auto !important;height:auto !important;min-height:44px !important;justify-content:flex-start;padding:0 12px !important;gap:12px !important;margin:0;}
+  .rep-item .rep-lbl{display:block;}
+  .rep-item .rep-caret{display:block;}
+  .rep-item::after{display:none;}
+  .rep-main{margin-left:0 !important;}
+}
+
+/* ── Mobile drawer ── */
+.rep-backdrop{display:none;position:fixed;inset:64px 0 0 0;background:rgba(0,0,0,.5);z-index:54;}
+.rep-backdrop.show{display:block;}
+@media (max-width:900px){
+  .hamburger-btn{display:flex;}
+  .rep-sb{transform:translateX(-100%);visibility:hidden;transition:transform .2s ease-out,visibility 0s linear .2s;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:210 !important;width:100%;}
+  .rep-sb.open{transform:translateX(0);visibility:visible;transition:transform .2s ease-out,visibility 0s linear;}
+  .rep-backdrop{z-index:205;}
+  .rep-main{margin-left:0;}
+  .rep-item{min-height:44px;}
+  .rep-submenu-item{min-height:44px;padding:11px 12px;}
+  .rep-submenu{min-width:180px;}
+}
+
+/* ── nav toast ── */
+.nav-toast{position:fixed;top:80px;right:24px;width:340px;max-width:calc(100vw - 48px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 18px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:9000;transform:translateX(380px);opacity:0;pointer-events:none;transition:transform .25s ease-out, opacity .2s ease-out;display:flex;align-items:center;gap:12px;}
+.nav-toast.show{transform:translateX(0);opacity:1;pointer-events:auto;}
+.nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
+.nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+.nav-toast-text span{color:var(--mu);font-size:12px;}
+.nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
+.nav-toast-close:hover{opacity:1;color:var(--tx);}
+@media (max-width:640px){
+  .nav-toast-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;}
+}
+
+/* ── Notifications panel ── */
+.notif-panel{display:none;position:fixed;top:0;left:0;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);z-index:9100;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--brd);}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;gap:8px;align-items:center;}
+.notif-markall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:12.5px;}
+.notif-close{background:none;border:none;color:var(--mu);cursor:pointer;display:flex;}
+.notif-close:hover{color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:none;border:none;color:var(--mu);padding:9px 12px;font-family:var(--font);font-size:12.5px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab-count{background:var(--sur2);border-radius:999px;font-size:10.5px;min-width:18px;padding:0 6px;line-height:16px;color:var(--mu);}
+.notif-tab.active .notif-tab-count{background:var(--ac);color:#fff;}
+.notif-body{flex:1;overflow-y:auto;}
+.notif-footer{padding:10px 16px;border-top:0.5px solid var(--brd);text-align:center;}
+.notif-seeall{background:none;border:none;color:var(--ac2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;width:100%;padding:6px;}
+@media(max-width:640px){
+  .notif-panel{top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-height:none!important;height:100vh;border-radius:0;border:none;}
+  .notif-tab{min-height:44px;padding:11px 12px;}
+}
+
+/* ── Page head ── */
+.ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
+.ur-back:hover{background:var(--sur2);color:var(--tx);}
+.ur-back svg{width:16px;height:16px;}
+
+/* ── Toolbar ── */
+.rep-bar{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:0.5px solid var(--brd);background:var(--bg);position:sticky;top:64px;z-index:55;flex-wrap:wrap;}
+.rep-sp{flex:1;}
+.rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
+.rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
+.rep-tbtn svg{width:15px;height:15px;flex:none;}
+
+/* Mobile search toggle + overlay */
+.rep-tbtn.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--bg);}
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .rep-bar{display:none;}
+
+/* ── Content placeholder ── */
+.rep-content{padding:24px 20px 60px;}
+.rep-empty{margin:0;border:0.5px dashed var(--brd2);border-radius:14px;background:var(--sur);min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:40px;}
+.rep-empty-icon{font-size:38px;opacity:.55;margin-bottom:6px;}
+.rep-empty-title{font-size:15px;font-weight:600;color:var(--tx);}
+.rep-empty-sub{font-size:13px;color:var(--mu);max-width:360px;}
+
+@media (max-width:640px){
+  .rep-bar{padding:10px 14px;}
+  .search-pill{width:auto;flex:1 1 160px;}
+  #src-srch-desktop{display:none;}
+  .rep-bar .mobile-search-toggle{display:flex;padding:0;width:44px;justify-content:center;gap:0;}
+  #src-add-btn span{display:none;}
+  #src-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
+  .mso-back{width:44px;height:44px;}
+  .mso-clear{width:44px;height:44px;}
+}
+
+/* Add source dropdown + Connection submenu */
+.src-add-wrap{position:relative;}
+.src-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:60;display:flex;flex-direction:column;gap:2px;}
+.src-menu[hidden]{display:none;}
+.src-menu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.src-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.src-menu-ic{width:20px;height:20px;flex:none;color:var(--mu);display:inline-flex;align-items:center;justify-content:center;}
+.src-menu-ic svg{width:16px;height:16px;}
+.src-menu-item:hover .src-menu-ic{color:var(--ac2);}
+.src-menu-label{flex:1;min-width:0;}
+.src-menu-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+.src-menu-item:hover .src-menu-caret{color:var(--ac2);}
+.src-menu-empty{padding:16px 12px;color:var(--mu);font-size:12.5px;text-align:center;}
+.src-menu-mhead{display:none;}
+@media (max-width:640px){
+  .src-menu:not([hidden]){display:flex;flex-direction:column;position:fixed;inset:0;top:0;right:0;left:0;bottom:0;width:auto;min-width:0;border-radius:0;border:none;padding:0;z-index:9000;background:var(--bg);}
+  .src-menu-mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .src-menu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .src-menu-mclose{width:44px;height:44px;background:var(--sur2);border:none;border-radius:8px;color:var(--tx);cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .src-menu-item{min-height:52px;padding:16px 20px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
+
+/* Add Credentials modal */
+.src-cred-status{width:fit-content;}
+.src-sel-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
+.src-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.src-sel-val.src-sel-mu{color:var(--mu);}
+.src-sel-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+.modal-field.open .src-sel-chev{transform:rotate(180deg);}
+#src-cred-src-popup{z-index:3100;}
+@media (max-width:640px){ #src-cred-src-popup .lblp-item{min-height:44px;font-size:15px;} }
+
+/* Sources table */
+.src-tbl thead th{padding:13px 16px;}
+.src-tbl tbody td{padding:13px 16px;vertical-align:middle;}
+.src-tbl-td-source{color:var(--tx);font-weight:500;}
+.src-tbl-td-user{color:var(--tx);font-size:13px;}
+.src-tbl-td-loc{color:var(--mu);font-size:13px;}
+.src-tbl-td-created{color:var(--mu);font-size:12.5px;white-space:nowrap;}
+.src-tbl-td-act{text-align:right;white-space:nowrap;}
+.src-tbl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
+.src-tbl-btn svg{width:14px;height:14px;}
+.src-tbl-btn.del:hover{border-color:var(--rd);color:var(--rd);}
+.src-tbl-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
+@media (max-width:640px){
+  .table-wrap{border:none;background:transparent;overflow:visible;}
+  .src-tbl, .src-tbl tbody{display:block;}
+  .src-tbl thead{display:none;}
+  .src-tbl tbody tr{display:flex;flex-direction:column;gap:8px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+  .src-tbl tbody tr:hover{background:var(--sur);}
+  .src-tbl tbody td{display:block;padding:0;border:none;white-space:normal;}
+  .src-tbl-td-source{order:1;font-size:15px;}
+  .src-tbl-td-user{order:2;font-size:13px;color:var(--mu);}
+  .src-tbl-td-loc{order:3;font-size:12.5px;}
+  .src-tbl-td-created{order:4;font-size:12px;}
+  .src-tbl-td-act{order:5;text-align:left;}
+  .src-tbl-btn{min-height:44px;padding:10px 14px;}
+}
+@media (max-width:640px){
+  #src-cred-modal.modal-backdrop{padding:0;align-items:stretch;}
+  #src-cred-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
+  #src-cred-modal .modal-body{flex:1;}
+  .src-cred-status .pt-seg{min-height:44px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleRepDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" aria-label="Notifications" onclick="toggleNotifications(event)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification panel -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<!-- REPUTATION SIDEBAR -->
+<div class="rep-sb" id="rep-sb">
+  <div class="rep-nav">
+    <div class="rep-item" data-rep="Dashboards" onclick="repNav('Dashboards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a9 9 0 1 1 17 0"/><path d="M12 14l4-3.5"/><circle cx="12" cy="18" r="1"/></svg>
+      <span class="rep-lbl">Dashboards</span>
+    </div>
+    <div class="rep-item" data-rep="Reviews" onclick="repNav('Reviews')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="rep-lbl">Reviews</span>
+    </div>
+    <div class="rep-item-wrap" id="rep-sub-requests">
+      <div class="rep-item" data-rep="Requests" onclick="repItemToggle('requests', event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span class="rep-lbl">Requests</span>
+        <svg class="rep-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="rep-submenu">
+        <div class="rep-submenu-mhead">
+          <button class="rep-submenu-back" onclick="repSubClose()" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="rep-submenu-mtitle">Requests</span>
+        </div>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Review request')">Review request</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Leaderboard')">Leaderboard</button>
+        <button class="rep-submenu-item" type="button" onclick="repSubPick('Template')">Template</button>
+      </div>
+    </div>
+    <div class="rep-item active" data-rep="Settings" onclick="repNav('Settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="rep-lbl">Settings</span>
+    </div>
+  </div>
+</div>
+
+<div class="rep-backdrop" id="rep-backdrop" onclick="toggleRepDrawer()"></div>
+
+<!-- CONTENT -->
+<div class="rep-main" id="rep-main">
+  <div class="set-page-head">
+    <a class="ur-back" href="../settings/settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">Source</span>
+  </div>
+  <div class="rep-bar">
+    <div class="rep-sp"></div>
+    <!-- Mobile search toggle -->
+    <button class="rep-tbtn mobile-search-toggle" id="src-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <!-- Search pill (desktop) -->
+    <div class="search-pill rep-srch" id="src-srch-desktop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="src-search-input" placeholder="Search sources..." oninput="srcSearch(this.value)"/>
+    </div>
+    <!-- Add source -->
+    <div class="src-add-wrap">
+      <button class="btn btn-primary" id="src-add-btn" onclick="srcAddToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add source</span>
+      </button>
+      <div class="src-menu" id="src-add-menu" hidden>
+        <div class="src-menu-mhead"><span class="src-menu-mtitle">Add source</span><button class="src-menu-mclose" onclick="srcAddClose()" aria-label="Close">&#x2715;</button></div>
+        <button class="src-menu-item" type="button" onclick="srcAddPick('credentials')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 8.15-8.15"/><path d="m18 5 1.5 1.5"/><path d="m15.5 7.5 1.5 1.5"/></svg></span>
+          <span class="src-menu-label">Credentials</span>
+        </button>
+        <button class="src-menu-item has-sub" type="button" onclick="srcConnOpen(event)">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+          <span class="src-menu-label">Connection</span>
+          <svg class="src-menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="src-menu" id="src-conn-menu" hidden>
+        <div class="src-menu-mhead"><span class="src-menu-mtitle">Connection</span><button class="src-menu-mclose" onclick="srcConnClose()" aria-label="Close">&#x2715;</button></div>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Google')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a10 10 0 1 1-3.5-7.6"/><path d="M22 4v6h-6"/><path d="M22 12h-10"/></svg></span>
+          <span class="src-menu-label">Google</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Facebook')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12Z"/></svg></span>
+          <span class="src-menu-label">Facebook</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Instagram')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <span class="src-menu-label">Instagram</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('LinkedIn')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/></svg></span>
+          <span class="src-menu-label">LinkedIn</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('TikTok')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 7.4a5.7 5.7 0 0 1-3.3-1.1 5.7 5.7 0 0 1-2.3-3.7V2h-3.5v13.6a2.6 2.6 0 1 1-2.6-2.6c.3 0 .6.1.9.2V9.5a6.1 6.1 0 1 0 5.3 6v-7a9.2 9.2 0 0 0 5.5 1.8V7.4Z"/></svg></span>
+          <span class="src-menu-label">TikTok</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('X (formerly Twitter)')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg></span>
+          <span class="src-menu-label">X (formerly Twitter)</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('YouTube')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg></span>
+          <span class="src-menu-label">YouTube</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="rep-content">
+    <div class="table-wrap">
+      <table class="data-table src-tbl">
+        <thead>
+          <tr><th>Source</th><th>Username</th><th>Location</th><th>Created</th><th></th></tr>
+        </thead>
+        <tbody id="src-tbl-body"></tbody>
+      </table>
+      <div class="src-tbl-empty" id="src-empty" hidden>No sources yet — click "Add source" to add a review platform.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search sources..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CREDENTIALS MODAL -->
+<div class="modal-backdrop" id="src-cred-modal" onclick="if(event.target===this)srcCredClose()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Credentials</div>
+      <button class="modal-close" onclick="srcCredClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Source</div>
+        <div class="modal-field" id="src-cred-src-field">
+          <button type="button" class="src-sel-btn" onclick="srcSrcToggle(event)">
+            <span class="src-sel-val src-sel-mu" id="src-cred-src-val">Select</span>
+            <svg class="src-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <input type="hidden" id="src-cred-source" value=""/>
+      </div>
+      <div>
+        <div class="modal-section-title">Username</div>
+        <div class="modal-field"><input type="text" id="src-cred-user" autocomplete="username"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Password</div>
+        <div class="modal-field"><input type="password" id="src-cred-pass" autocomplete="new-password"/></div>
+      </div>
+      <div hidden>
+        <div class="modal-section-title">Status</div>
+        <div class="period-toggle src-cred-status" role="tablist" aria-label="Status">
+          <button type="button" class="pt-seg active" data-status="Valid" onclick="srcCredStatusSet(this,'Valid')" role="tab">Valid</button>
+          <button type="button" class="pt-seg" data-status="Invalid" onclick="srcCredStatusSet(this,'Invalid')" role="tab">Invalid</button>
+        </div>
+      </div>
+      <div>
+        <div class="modal-section-title">Location</div>
+        <div class="modal-field">
+          <select id="src-cred-loc">
+            <option value="">Select</option>
+            <option value="USA Direct Auto — Express">USA Direct Auto — Express</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="srcCredClose()">Cancel</button>
+      <button class="modal-save" onclick="srcCredSave()">Add</button>
+    </div>
+  </div>
+</div>
+
+<div class="assign-popup" id="src-cred-src-popup" style="display:none;">
+  <div class="lblp-list" id="src-cred-src-list"></div>
+</div>
+
+<!-- NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body"></span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
+</div>
+
+<script>
+var _navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent = body;
+  t.classList.add('show');
+  if(_navToastTimer) clearTimeout(_navToastTimer);
+  _navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(_navToastTimer){ clearTimeout(_navToastTimer); _navToastTimer = null; }
+}
+
+function repNav(label){
+  document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Settings'){ window.location.href = '../settings/settings.html'; return; }
+  if(label === 'Dashboards'){ window.location.href = '../reputation_dashboard/Dashboard.html'; return; }
+  if(label === 'Reviews'){ window.location.href = '../reviews/reviews.html'; return; }
+  showNavToast(label + ' is coming soon', 'This section is under construction.');
+}
+function toggleRepDrawer(){
+  var sb = document.getElementById('rep-sb'), bd = document.getElementById('rep-backdrop');
+  var open = sb.classList.toggle('open'); bd.classList.toggle('show', open);
+}
+function closeRepDrawer(){
+  document.getElementById('rep-sb').classList.remove('open');
+  document.getElementById('rep-backdrop').classList.remove('show');
+}
+
+function repItemToggle(key, ev){
+  if(ev) ev.stopPropagation();
+  var w = document.getElementById('rep-sub-'+key); if(!w) return;
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
+  var willOpen = !w.classList.contains('open');
+  w.classList.toggle('open', willOpen);
+  var menu = w.querySelector('.rep-submenu');
+  if(willOpen && window.innerWidth > 900){
+    var item = w.querySelector('.rep-item');
+    var r = item.getBoundingClientRect();
+    menu.style.top = r.top + 'px';
+    menu.style.left = (r.right + 6) + 'px';
+  } else if(menu){
+    menu.style.top = ''; menu.style.left = '';
+  }
+}
+function repSubClose(){
+  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
+}
+function repSubPick(label){
+  repSubClose();
+  if(window.innerWidth <= 900) closeRepDrawer();
+  if(label === 'Review request'){ window.location.href = '../requests/review_request/review_request.html'; return; }
+  if(label === 'Leaderboard'){ window.location.href = '../requests/leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){ window.location.href = '../requests/template/template.html'; return; }
+  if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
+}
+
+/* Search state */
+var _srcQuery = '';
+function srcSearch(v){ _srcQuery = v || ''; msoUpdateDot(); srcTblRender(); }
+
+/* Sources store + table */
+var SRC_KEY = 'cc_rep_sources', SRC_VER = 'v1';
+var SRC_ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+var SRC_SEED = [
+  {id:'seed_google',      source:'Google',                 username:'usadirectauto',           location:'USA Direct Auto — Express', daysAgo:12},
+  {id:'seed_facebook',    source:'Facebook',               username:'USADirectAuto',           location:'USA Direct Auto — Express', daysAgo:11},
+  {id:'seed_bing',        source:'Bing',                   username:'usadirectauto-express',   location:'USA Direct Auto — Express', daysAgo:10},
+  {id:'seed_cargurus',    source:'CarGurus',               username:'usadirect',               location:'USA Direct Auto — Express', daysAgo:9},
+  {id:'seed_carfax',      source:'Carfax',                 username:'sales@usadirectauto.com', location:'USA Direct Auto — Express', daysAgo:8},
+  {id:'seed_dealerrater', source:'DealerRater',            username:'usa-da-service',          location:'USA Direct Auto — Express', daysAgo:7},
+  {id:'seed_uda',         source:'USA Direct Auto',        username:'admin@usadirectauto.com', location:'USA Direct Auto — Express', daysAgo:6},
+  {id:'seed_instagram',   source:'Instagram',              username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:5},
+  {id:'seed_linkedin',    source:'LinkedIn',               username:'usa-direct-auto',         location:'USA Direct Auto — Express', daysAgo:4},
+  {id:'seed_snapchat',    source:'Snapchat',               username:'usadirectauto',           location:'USA Direct Auto — Express', daysAgo:3},
+  {id:'seed_tiktok',      source:'TikTok',                 username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:2},
+  {id:'seed_x',           source:'X (formerly Twitter)',   username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:1},
+  {id:'seed_youtube',     source:'YouTube',                username:'USA Direct Auto',         location:'USA Direct Auto — Express', daysAgo:0}
+];
+function srcLoad(){
+  try{
+    var raw = localStorage.getItem(SRC_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    var hasList = p && p.ver === SRC_VER && Array.isArray(p.list) && p.list.length > 0;
+    if(!hasList){
+      var now = Date.now();
+      var seed = SRC_SEED.map(function(s){
+        return {id:s.id, source:s.source, username:s.username, location:s.location,
+                createdAt: now - (s.daysAgo || 0) * 86400000};
+      });
+      try{ localStorage.setItem(SRC_KEY, JSON.stringify({ver:SRC_VER, list:seed})); }catch(e){}
+      return seed;
+    }
+    return p.list;
+  }catch(e){ return []; }
+}
+function srcPersist(){
+  try{ localStorage.setItem(SRC_KEY, JSON.stringify({ver:SRC_VER, list:SRC_LIST})); }catch(e){}
+}
+function srcEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function srcFmtDate(ts){ return new Date(ts||Date.now()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+var SRC_LIST = srcLoad();
+function srcTblFiltered(){
+  var q = (_srcQuery || '').trim().toLowerCase();
+  if(!q) return SRC_LIST;
+  return SRC_LIST.filter(function(r){
+    return (r.source||'').toLowerCase().indexOf(q) >= 0
+        || (r.username||'').toLowerCase().indexOf(q) >= 0
+        || (r.location||'').toLowerCase().indexOf(q) >= 0;
+  });
+}
+function srcTblRender(){
+  var body = document.getElementById('src-tbl-body');
+  var empty = document.getElementById('src-empty');
+  if(!body) return;
+  var rows = srcTblFiltered();
+  body.innerHTML = rows.map(function(r){
+    return '<tr>'
+      + '<td class="src-tbl-td-source">'+srcEsc(r.source)+'</td>'
+      + '<td class="src-tbl-td-user">'+srcEsc(r.username)+'</td>'
+      + '<td class="src-tbl-td-loc">'+srcEsc(r.location || '—')+'</td>'
+      + '<td class="src-tbl-td-created">'+srcFmtDate(r.createdAt)+'</td>'
+      + '<td class="src-tbl-td-act"><button class="src-tbl-btn del" onclick="srcTblDelete(\''+srcEsc(r.id)+'\')">'+SRC_ICON_DEL+'Delete</button></td>'
+      + '</tr>';
+  }).join('');
+  if(empty){
+    empty.hidden = rows.length > 0;
+    empty.textContent = (SRC_LIST.length === 0)
+      ? 'No sources yet — click "Add source" to add a review platform.'
+      : 'No sources match your search.';
+  }
+}
+function srcTblDelete(id){
+  var r = SRC_LIST.find(function(x){return x.id===id;}); if(!r) return;
+  SRC_LIST = SRC_LIST.filter(function(x){return x.id!==id;});
+  srcPersist(); srcTblRender();
+  showNavToast('Source removed', (r.source||'Source') + ' — ' + (r.username||'') + ' was removed.');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', srcTblRender);
+else srcTblRender();
+
+/* Mobile search overlay */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('src-search-toggle'); }
+function msoUpdateDot(){
+  var btn = _msoToggleBtn(); if(!btn) return;
+  if(_srcQuery && _srcQuery.length) btn.classList.add('has-query');
+  else btn.classList.remove('has-query');
+}
+function msoUpdateClear(){
+  var inp = _msoInput(), clr = _msoClearBtn(); if(!inp || !clr) return;
+  if(inp.value && inp.value.length) clr.classList.add('show'); else clr.classList.remove('show');
+}
+function msoOnInput(v){
+  var desktop = document.getElementById('src-search-input'); if(desktop) desktop.value = v;
+  srcSearch(v); msoUpdateClear();
+}
+function msoClearInput(){
+  var inp = _msoInput(); if(!inp) return;
+  inp.value = '';
+  var desktop = document.getElementById('src-search-input'); if(desktop) desktop.value = '';
+  srcSearch(''); msoUpdateClear(); inp.focus();
+}
+function toggleMobileSearch(){
+  var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
+  inp.value = _srcQuery || ''; msoUpdateClear();
+  document.body.classList.add('mso-active');
+  ov.classList.add('open');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+function closeMobileSearch(){
+  var ov = _msoEl(); if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  document.body.classList.remove('mso-active');
+  var inp = _msoInput(); if(inp) inp.blur();
+  msoUpdateDot();
+}
+
+function srcAddToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('src-add-menu'); if(!m) return;
+  srcConnClose();
+  m.hidden = !m.hidden;
+}
+function srcAddClose(){ var m = document.getElementById('src-add-menu'); if(m) m.hidden = true; }
+function srcAddPick(action){
+  srcAddClose();
+  if(action === 'credentials'){ srcCredOpen(); return; }
+}
+var _srcCredStatus = 'Valid';
+var SRC_CRED_SOURCES = ['Google','Facebook','Bing','CarGurus','Carfax','DealerRater','USA Direct Auto','Instagram','LinkedIn','Snapchat','TikTok','X (formerly Twitter)','YouTube'];
+function srcSrcRender(){
+  var list = document.getElementById('src-cred-src-list'); if(!list) return;
+  var current = document.getElementById('src-cred-source').value || '';
+  list.innerHTML = SRC_CRED_SOURCES.map(function(name){
+    var on = (name === current) ? ' on' : '';
+    return '<div class="lblp-item'+on+'" onclick="srcSrcPick(\''+name.replace(/'/g,"\\'")+'\')">'
+      + '<span class="lblp-name">'+name+'</span>'
+      + '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      + '</div>';
+  }).join('');
+}
+function srcSrcPick(name){
+  document.getElementById('src-cred-source').value = name;
+  var v = document.getElementById('src-cred-src-val'); v.textContent = name; v.classList.remove('src-sel-mu');
+  srcSrcClose();
+}
+function srcSrcToggle(e){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('src-cred-src-popup'); if(!pop) return;
+  var field = document.getElementById('src-cred-src-field'); if(!field) return;
+  if(pop.style.display === 'block'){ srcSrcClose(); return; }
+  var r = field.getBoundingClientRect();
+  pop.style.width = r.width + 'px';
+  pop.style.left  = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8)) + 'px';
+  pop.style.top   = (r.bottom + 6) + 'px';
+  srcSrcRender();
+  pop.style.display = 'block';
+  field.classList.add('open');
+}
+function srcSrcClose(){
+  var pop = document.getElementById('src-cred-src-popup'); if(pop) pop.style.display = 'none';
+  var f = document.getElementById('src-cred-src-field'); if(f) f.classList.remove('open');
+}
+function srcCredOpen(){
+  var m = document.getElementById('src-cred-modal'); if(!m) return;
+  document.getElementById('src-cred-source').value = '';
+  var v = document.getElementById('src-cred-src-val'); v.textContent = 'Select'; v.classList.add('src-sel-mu');
+  srcSrcClose();
+  document.getElementById('src-cred-user').value = '';
+  document.getElementById('src-cred-pass').value = '';
+  document.getElementById('src-cred-loc').value = '';
+  _srcCredStatus = 'Valid';
+  document.querySelectorAll('.src-cred-status .pt-seg').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-status') === 'Valid');
+  });
+  m.classList.add('open');
+  setTimeout(function(){ var s = document.querySelector('#src-cred-src-field .src-sel-btn'); if(s) s.focus(); }, 20);
+}
+function srcCredClose(){
+  var m = document.getElementById('src-cred-modal'); if(m) m.classList.remove('open');
+}
+function srcCredStatusSet(el, val){
+  _srcCredStatus = val;
+  document.querySelectorAll('.src-cred-status .pt-seg').forEach(function(b){
+    b.classList.toggle('active', b === el);
+  });
+}
+function srcCredSave(){
+  var src  = document.getElementById('src-cred-source').value;
+  var user = document.getElementById('src-cred-user').value.trim();
+  var loc  = document.getElementById('src-cred-loc').value;
+  if(!src){ var sb = document.querySelector('#src-cred-src-field .src-sel-btn'); if(sb) sb.focus(); return; }
+  if(!user){ document.getElementById('src-cred-user').focus(); return; }
+  var id = 'src_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+  SRC_LIST.push({id:id, source:src, username:user, location:loc, createdAt: Date.now()});
+  srcPersist(); srcTblRender();
+  srcCredClose();
+  showNavToast('Credentials added', src + ' — ' + user);
+}
+function srcConnOpen(e){
+  if(e) e.stopPropagation();
+  srcAddClose();
+  var m = document.getElementById('src-conn-menu'); if(m) m.hidden = false;
+}
+function srcConnClose(){ var m = document.getElementById('src-conn-menu'); if(m) m.hidden = true; }
+var GOOGLE_OAUTH_URL = 'https://accounts.google.com/v3/signin/accountchooser?access_type=offline&approval_prompt=force&client_id=447093573387-5j7au4vg6s0dh0tat8tqo3a3pombq84s.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fapp.reputation.com%2Fconnections%2Fgoogle_places%2Fcallback&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbusiness.manage+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.business.manage+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbusinesscommunications+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%7B%22aid%22%3A%221%22%2C%22tid%22%3A%22184319%22%2C%22rid%22%3A%22d9a06660-7a56-11f1-a835-5f840c0def99%22%2C%22pid%22%3A7%2C%22userAuthId%22%3A%223CKJF7Q-W41sKG6ubNU6JQ9HE9nnRTYhsBiME6rFXbkGF7fDXU1mkcDr7lGHHRG1MQGKA27MemRY7fV7A8KdBw%22%7D&dsh=S-1022411535%3A1783464886365259&o2v=1&service=lso&flowName=GeneralOAuthFlow&opparams=%253F&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hAMFYGjNVI-9Dwj4BNYBfVhInL9jx71yIQHMof_IIAAEZvHHqTn_ZAYslVxEYPN-UkpsQGzOv7hftkv4uyx4pH1uYNSp_bzlL6trlNRrxqt71PUVJAYUy8XhVrVnJbyTOTv-2V9a9gU0khRHuKezLYLaEpk-GVWpnYiC4-Gh3X2KPahzBiq0-3-p_yCuZl0uVRBTuLmHvhO94cDrFNuqAcJu2ktkYZg51U40CTrJUgH0nFT_N63ShNywC8pZ-ypcSymiTtH2NpHih3m12_1jEi1bzgPoUa-77S227G8WRhcdxZzIyqx5v7Q2h9ByWdr7jxGfvPt_k6pMdGFU1Pbskecn72zqhkEpmjhRb8HAiycb73nIVKwCGk-k4cgt_OrcgR6s6tz9O3pEvQNCMJgxnXitc6rd9v33yvXiAM2g9LNYdTZeGT19jalsDtoRHOxBXinY5lQNJYnNZvduTNOq1R3Z0wSDPdOwEQhFUC3wfymlasQ70X4%26flowName%3DGeneralOAuthFlow%26as%3DS-1022411535%253A1783464886365259%26client_id%3D447093573387-5j7au4vg6s0dh0tat8tqo3a3pombq84s.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fapp.reputation.com';
+function srcConnPick(platform){
+  srcConnClose();
+  if(platform === 'Google'){ gOAuthOpen(); return; }
+  showNavToast('Connect to ' + platform, 'This section is under construction.');
+}
+function gOAuthOpen(){
+  var w = 500, h = 650;
+  var left = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
+  var top  = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
+  var feats = 'noopener,noreferrer,width='+w+',height='+h+',left='+left+',top='+top;
+  var win = window.open(GOOGLE_OAUTH_URL, 'google_oauth', feats);
+  if(!win){ window.open(GOOGLE_OAUTH_URL, '_blank', 'noopener,noreferrer'); }
+}
+function srcAddOpen(){ srcAddToggle(); }
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('.src-add-wrap')){ srcAddClose(); srcConnClose(); }
+  if(!e.target.closest('#src-cred-src-field') && !e.target.closest('#src-cred-src-popup')) srcSrcClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var srcPop = document.getElementById('src-cred-src-popup');
+  if(srcPop && srcPop.style.display === 'block'){ srcSrcClose(); return; }
+  var cm = document.getElementById('src-cred-modal');
+  if(cm && cm.classList.contains('open')){ srcCredClose(); return; }
+  var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
+  srcAddClose(); srcConnClose();
+  if(typeof repSubClose === 'function') repSubClose();
+});
+</script>
+
+<!-- Product switcher behavior -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'), ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'reputation'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+
+<!-- Bell panel chrome -->
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
+</script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>
+
+</body>
+</html>

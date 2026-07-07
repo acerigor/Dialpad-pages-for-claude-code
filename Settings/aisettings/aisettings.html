@@ -99,6 +99,15 @@ select.ais-input::-ms-expand{display:none;}
 .ais-time input[type=time]{flex:1;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13.5px;outline:none;color-scheme:dark;}
 .ais-biz-tbox{flex:1;justify-content:flex-start;}
 .ais-df-tval{font-family:var(--font);font-size:13.5px;color:var(--tx);font-variant-numeric:tabular-nums;padding:2px 4px;user-select:none;}
+.ais-df-tval--mu{color:var(--mu);}
+@media (max-width:640px){ .weekday-popup .lblp-item{min-height:44px;} }
+.ais-monthly-tbox.is-disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
+.monthday-popup{width:260px;min-width:260px;}
+.dompp-grid{display:grid;grid-template-columns:repeat(7, 1fr);gap:4px;padding:6px;}
+.dompp-cell{background:var(--sur2);border:0.5px solid transparent;border-radius:6px;color:var(--tx);font-family:var(--font);font-size:12.5px;padding:8px 0;cursor:pointer;text-align:center;font-variant-numeric:tabular-nums;transition:background .12s,color .12s,border-color .12s;}
+.dompp-cell:hover{background:rgba(79,124,255,.14);border-color:rgba(79,124,255,.35);}
+.dompp-cell.on{background:var(--ac);color:#fff;border-color:var(--ac);}
+@media (max-width:640px){ .dompp-cell{padding:12px 0;font-size:14px;} }
 .ais-time-sep{color:var(--mu);}
 .ais-side-placeholder{align-items:center;justify-content:center;text-align:center;min-height:320px;border-style:dashed;}
 .ais-side-icon{font-size:32px;opacity:.6;margin-bottom:8px;}
@@ -633,17 +642,26 @@ select.ais-input::-ms-expand{display:none;}
                   <select class="ais-df-tsel" id="ais-freq-daily-ap" aria-label="AM/PM" tabindex="-1"><option>AM</option><option>PM</option></select>
                 </span>
               </span></label>
-              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span class="ais-df-daily">Weekly at
-                <span class="ais-df-timebox ais-weekly-tbox" id="ais-weekly-date-tbox" role="button" tabindex="0" onclick="aisWeeklyDateOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisWeeklyDateOpen(event);}">
-                  <span class="ais-df-tval" id="ais-weekly-date-disp">07/04/2025</span>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="weekly" onchange="aisFreqSync()"><span class="ais-df-daily">Weekly on
+                <span class="ais-df-timebox ais-weekly-tbox" id="ais-weekly-date-tbox" role="button" tabindex="0" onclick="aisWeekdayOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisWeekdayOpen(event);}">
+                  <span class="ais-df-tval ais-df-tval--mu" id="ais-weekly-date-disp">Select days</span>
                 </span>
                 <span class="ais-df-timebox ais-weekly-tbox" id="ais-weekly-time-tbox" role="button" tabindex="0" onclick="aisWeeklyTimeOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisWeeklyTimeOpen(event);}">
                   <span class="ais-df-tval" id="ais-weekly-time-disp">9:00 AM</span>
                 </span>
-                <input type="hidden" id="ais-weekly-date" value="07/04/2025"/>
+                <input type="hidden" id="ais-weekly-date" value=""/>
                 <input type="hidden" id="ais-weekly-time" value="09:00"/>
               </span></label>
-              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="monthly" onchange="aisFreqSync()"><span>Monthly</span></label>
+              <label class="ais-df-rd"><input type="radio" name="ais-freq" value="monthly" onchange="aisFreqSync()"><span class="ais-df-daily">Monthly on
+                <span class="ais-df-timebox ais-monthly-tbox" id="ais-monthly-date-tbox" role="button" tabindex="0" onclick="aisMonthDayOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisMonthDayOpen(event);}">
+                  <span class="ais-df-tval ais-df-tval--mu" id="ais-monthly-date-disp">Select day(s)</span>
+                </span>
+                <span class="ais-df-timebox ais-monthly-tbox" id="ais-monthly-time-tbox" role="button" tabindex="0" onclick="aisMonthlyTimeOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();aisMonthlyTimeOpen(event);}">
+                  <span class="ais-df-tval" id="ais-monthly-time-disp">9:00 AM</span>
+                </span>
+                <input type="hidden" id="ais-monthly-date" value=""/>
+                <input type="hidden" id="ais-monthly-time" value="09:00"/>
+              </span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-min" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-min" type="number" min="1" disabled/> Minutes</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="every-hr" onchange="aisFreqSync()"><span>Every <input class="ais-df-num" id="ais-freq-hr" type="number" min="1" disabled/> Hours</span></label>
               <label class="ais-df-rd"><input type="radio" name="ais-freq" value="once" onchange="aisFreqSync()"><span>Once</span></label>
@@ -1279,22 +1297,161 @@ function aisFreqSync(){
       b.setAttribute('aria-disabled', weeklyDis ? 'true' : 'false');
     }
   });
+  var monthlyDis = (mode !== 'monthly');
+  ['ais-monthly-date-tbox','ais-monthly-time-tbox'].forEach(function(id){
+    var b = document.getElementById(id); if(b){
+      b.classList.toggle('is-disabled', monthlyDis);
+      b.setAttribute('aria-disabled', monthlyDis ? 'true' : 'false');
+    }
+  });
 }
-function aisWeeklyDateOpen(e){
+var AIS_WEEKDAYS = [
+  {id:'mon', name:'Monday',    short:'Mon'},
+  {id:'tue', name:'Tuesday',   short:'Tue'},
+  {id:'wed', name:'Wednesday', short:'Wed'},
+  {id:'thu', name:'Thursday',  short:'Thu'},
+  {id:'fri', name:'Friday',    short:'Fri'},
+  {id:'sat', name:'Saturday',  short:'Sat'},
+  {id:'sun', name:'Sunday',    short:'Sun'}
+];
+var _aisWeekdays = new Set();
+function aisWeekdayRender(){
+  var list = document.getElementById('ais-weekday-list'); if(!list) return;
+  list.innerHTML = AIS_WEEKDAYS.map(function(d){
+    var on = _aisWeekdays.has(d.id) ? ' on' : '';
+    return '<div class="lblp-item'+on+'" onclick="aisWeekdayToggleId(\''+d.id+'\')">'
+      + '<span class="lblp-dot" style="background:var(--sur2);color:var(--tx);display:inline-flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;width:18px;height:18px;border-radius:4px;">'+d.short.slice(0,2)+'</span>'
+      + '<span class="lblp-name">'+d.name+'</span>'
+      + '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      + '</div>';
+  }).join('');
+}
+function aisWeekdayToggleId(id){
+  if(_aisWeekdays.has(id)) _aisWeekdays.delete(id); else _aisWeekdays.add(id);
+  aisWeekdayRender();
+  aisWeekdaySync();
+}
+function aisWeekdaySync(){
+  var ordered = AIS_WEEKDAYS.filter(function(d){ return _aisWeekdays.has(d.id); });
+  var hidden = document.getElementById('ais-weekly-date');
+  var disp = document.getElementById('ais-weekly-date-disp');
+  if(hidden) hidden.value = ordered.map(function(d){return d.id;}).join(',');
+  if(!disp) return;
+  var n = ordered.length;
+  if(n === 0){ disp.textContent = 'Select days'; disp.classList.add('ais-df-tval--mu'); return; }
+  disp.classList.remove('ais-df-tval--mu');
+  if(n === 7){ disp.textContent = 'Every day'; return; }
+  if(n === 1){ disp.textContent = ordered[0].name; return; }
+  disp.textContent = ordered.map(function(d){ return d.short; }).join(', ');
+}
+function aisWeekdayValueArr(){
+  var v = (document.getElementById('ais-weekly-date').value || '').trim();
+  return v ? v.split(',') : [];
+}
+function aisWeekdayOpen(e){
   if(e) e.stopPropagation();
   var box = document.getElementById('ais-weekly-date-tbox'); if(!box) return;
   if(box.classList.contains('is-disabled')) return;
-  if(!window.CCDatePicker) return;
-  var hidden = document.getElementById('ais-weekly-date');
-  var disp = document.getElementById('ais-weekly-date-disp');
+  var pop = document.getElementById('ais-weekday-popup'); if(!pop) return;
+  if(pop.style.display === 'block'){ aisWeekdayClose(); return; }
   if(typeof aisStatusClose === 'function') aisStatusClose();
   if(typeof aisLabelClose === 'function')  aisLabelClose();
   if(typeof aisMethodClose === 'function') aisMethodClose();
   if(typeof aisSenderClose === 'function') aisSenderClose();
-  CCDatePicker.open({
+  _aisWeekdays = new Set(aisWeekdayValueArr());
+  aisWeekdayRender();
+  var r = box.getBoundingClientRect();
+  var w = 240;
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  pop.style.left = left + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+  pop.style.display = 'block';
+}
+function aisWeekdayClose(){
+  var pop = document.getElementById('ais-weekday-popup'); if(pop) pop.style.display = 'none';
+}
+function aisWeeklyDateOpen(e){ aisWeekdayOpen(e); }
+
+var _aisMonthDays = new Set();
+function _aisOrd(n){
+  var s = ['th','st','nd','rd'], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+function aisMonthDayRender(){
+  var g = document.getElementById('ais-monthday-grid'); if(!g) return;
+  var html = '';
+  for(var n=1; n<=31; n++){
+    var on = _aisMonthDays.has(n) ? ' on' : '';
+    html += '<button type="button" class="dompp-cell'+on+'" data-d="'+n+'" onclick="aisMonthDayToggleId('+n+')">'+n+'</button>';
+  }
+  g.innerHTML = html;
+}
+function aisMonthDayToggleId(n){
+  if(_aisMonthDays.has(n)) _aisMonthDays.delete(n); else _aisMonthDays.add(n);
+  aisMonthDayRender();
+  aisMonthDaySync();
+}
+function aisMonthDaySync(){
+  var arr = Array.from(_aisMonthDays).sort(function(a,b){return a-b;});
+  var hidden = document.getElementById('ais-monthly-date');
+  var disp = document.getElementById('ais-monthly-date-disp');
+  if(hidden) hidden.value = arr.join(',');
+  if(!disp) return;
+  var n = arr.length;
+  if(n === 0){ disp.textContent = 'Select day(s)'; disp.classList.add('ais-df-tval--mu'); return; }
+  disp.classList.remove('ais-df-tval--mu');
+  if(n === 31){ disp.textContent = 'Every day'; return; }
+  if(n > 8){ disp.textContent = n + ' days selected'; return; }
+  disp.textContent = arr.map(_aisOrd).join(', ');
+}
+function aisMonthDayValueArr(){
+  var v = (document.getElementById('ais-monthly-date').value || '').trim();
+  if(!v) return [];
+  return v.split(',').map(Number).filter(function(n){ return n >= 1 && n <= 31; });
+}
+function aisMonthDayOpen(e){
+  if(e) e.stopPropagation();
+  var box = document.getElementById('ais-monthly-date-tbox'); if(!box) return;
+  if(box.classList.contains('is-disabled')) return;
+  var pop = document.getElementById('ais-monthday-popup'); if(!pop) return;
+  if(pop.style.display === 'block'){ aisMonthDayClose(); return; }
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function')  aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  if(typeof aisWeekdayClose === 'function') aisWeekdayClose();
+  _aisMonthDays = new Set(aisMonthDayValueArr());
+  aisMonthDayRender();
+  var r = box.getBoundingClientRect();
+  var w = 260;
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  pop.style.left = left + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+  pop.style.display = 'block';
+}
+function aisMonthDayClose(){
+  var pop = document.getElementById('ais-monthday-popup'); if(pop) pop.style.display = 'none';
+}
+function aisMonthlyTimeOpen(e){
+  if(e) e.stopPropagation();
+  var box = document.getElementById('ais-monthly-time-tbox'); if(!box) return;
+  if(box.classList.contains('is-disabled')) return;
+  if(!window.CCTimePicker) return;
+  var hidden = document.getElementById('ais-monthly-time');
+  var disp = document.getElementById('ais-monthly-time-disp');
+  if(typeof aisStatusClose === 'function') aisStatusClose();
+  if(typeof aisLabelClose === 'function')  aisLabelClose();
+  if(typeof aisMethodClose === 'function') aisMethodClose();
+  if(typeof aisSenderClose === 'function') aisSenderClose();
+  if(typeof aisWeekdayClose === 'function') aisWeekdayClose();
+  if(typeof aisMonthDayClose === 'function') aisMonthDayClose();
+  CCTimePicker.open({
     anchor: box,
-    value: hidden.value,
-    onChange: function(v){ hidden.value = v; disp.textContent = v; }
+    value: _aisTo12h(hidden.value),
+    onChange: function(v){
+      hidden.value = _aisTo24h(v);
+      disp.textContent = _aisFmt12(v);
+    }
   });
 }
 function aisWeeklyTimeOpen(e){
@@ -1636,6 +1793,8 @@ document.addEventListener('mousedown', function(e){
   if(!e.target.closest('#ais-label-field') && !e.target.closest('#ais-label-popup')) aisLabelClose();
   if(!e.target.closest('#ais-method-field')) aisMethodClose();
   if(!e.target.closest('#ais-ai-kebab') && !e.target.closest('#ais-ai-menu')) aisAiMenuClose();
+  if(!e.target.closest('#ais-weekly-date-tbox') && !e.target.closest('#ais-weekday-popup')) aisWeekdayClose();
+  if(!e.target.closest('#ais-monthly-date-tbox') && !e.target.closest('#ais-monthday-popup')) aisMonthDayClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
@@ -1648,6 +1807,8 @@ document.addEventListener('keydown', function(e){
   aisLabelClose();
   aisMethodClose();
   aisAiMenuClose();
+  aisWeekdayClose();
+  aisMonthDayClose();
 });
 
 function toggleMobileDrawer(){
@@ -1693,6 +1854,16 @@ window.addEventListener('resize', function(){ var p=document.getElementById('not
 <script src="../../shared/contact-panel.js"></script>
 <script src="../../shared/time-picker.js"></script>
 <script src="../../shared/date-picker.js"></script>
+
+<div class="assign-popup weekday-popup" id="ais-weekday-popup" style="display:none;">
+  <div class="assign-popup-title">Days of the week</div>
+  <div class="lblp-list" id="ais-weekday-list"></div>
+</div>
+
+<div class="assign-popup monthday-popup" id="ais-monthday-popup" style="display:none;">
+  <div class="assign-popup-title">Days of the month</div>
+  <div class="dompp-grid" id="ais-monthday-grid"></div>
+</div>
 
 <div class="assign-popup label-popup" id="ais-label-popup" style="display:none;">
   <div class="assign-popup-title">Label</div>

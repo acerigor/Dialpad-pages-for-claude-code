@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Reputation · Settings · Rating rules</title>
-<link rel="stylesheet" href="../../../shared/app.css">
-<link rel="stylesheet" href="../../../shared/contact-panel.css">
-<link rel="stylesheet" href="../../../shared/settings.css">
+<title>CoreConnect — Reputation · Source</title>
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<link rel="stylesheet" href="../../shared/settings.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
 
-/* ── Top header (kept from app) ── */
+/* ── Top header ── */
 .top-header{position:fixed;top:0;left:0;right:0;height:64px;background:var(--bg);border-bottom:0.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
 .top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:10px;}
 .top-header .logo-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -123,7 +123,7 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   .notif-tab{min-height:44px;padding:11px 12px;}
 }
 
-/* ── Page head (back link + title) ── */
+/* ── Page head ── */
 .ur-back{display:inline-flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;transition:all .12s;flex-shrink:0;}
 .ur-back:hover{background:var(--sur2);color:var(--tx);}
 .ur-back svg{width:16px;height:16px;}
@@ -134,19 +134,6 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .rep-tbtn{display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--mu);font-family:var(--font);font-size:12.5px;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;}
 .rep-tbtn:hover{border-color:var(--ac);color:var(--ac2);}
 .rep-tbtn svg{width:15px;height:15px;flex:none;}
-.rep-tbtn .rep-tbtn-val{color:var(--tx);font-weight:500;}
-.rep-chev{transition:transform .15s;}
-.rep-dd{position:relative;}
-#rate-period-dd{display:none;}
-.rep-dd.open .rep-tbtn{border-color:var(--ac);color:var(--ac2);background:rgba(79,124,255,.08);}
-.rep-dd.open .rep-chev{transform:rotate(180deg);}
-.rep-menu{display:none;padding:0;}
-.rep-dd.open .rep-menu{display:block;}
-.rep-menu-item{justify-content:space-between;padding:10px 13px;border-radius:0;border-bottom:0.5px solid var(--brd);}
-.rep-menu-item:last-child{border-bottom:none;}
-.rep-mi-check{width:15px;height:15px;color:var(--ac2);opacity:0;flex:none;}
-.rep-menu-item.checked{color:var(--ac2);}
-.rep-menu-item.checked .rep-mi-check{opacity:1;}
 
 /* Mobile search toggle + overlay */
 .rep-tbtn.mobile-search-toggle{display:none;position:relative;}
@@ -165,7 +152,6 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 body.mso-active{overflow:hidden;}
 body.mso-active .top-header{visibility:hidden;}
 body.mso-active .rep-bar{display:none;}
-body.rep-sheet-open .rep-bar{z-index:200;}
 
 /* ── Content placeholder ── */
 .rep-content{padding:24px 20px 60px;}
@@ -177,57 +163,79 @@ body.rep-sheet-open .rep-bar{z-index:200;}
 @media (max-width:640px){
   .rep-bar{padding:10px 14px;}
   .search-pill{width:auto;flex:1 1 160px;}
-  .pt-seg{min-height:44px;}
-  .period-toggle{display:none;}
-  #rate-period-dd{display:inline-block;}
-  #rate-period-btn .rep-tbtn-val,#rate-period-btn .rep-chev{display:none;}
-  #rate-period-btn{padding:0;width:44px;justify-content:center;gap:0;}
-  #rate-srch-desktop{display:none;}
+  #src-srch-desktop{display:none;}
   .rep-bar .mobile-search-toggle{display:flex;padding:0;width:44px;justify-content:center;gap:0;}
-  #rate-add-btn span{display:none;}
-  #rate-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
+  #src-add-btn span{display:none;}
+  #src-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
   .mso-back{width:44px;height:44px;}
   .mso-clear{width:44px;height:44px;}
-  #rate-add-modal.modal-backdrop{padding:0;align-items:stretch;}
-  #rate-add-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
-  #rate-add-modal .modal-body{flex:1;}
-  .lblp-item{min-height:44px;font-size:15px;}
 }
 
-/* Add rule modal — selector shell */
-.rate-sel-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
-.rate-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;}
-.rate-sel-val.rate-sel-mu{color:var(--mu);}
-.rate-sel-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
-.modal-field.open .rate-sel-chev{transform:rotate(180deg);}
-#rate-src-popup,#rate-op-popup,#rate-star-popup{z-index:3100;}
-.rate-star-row{display:inline-flex;gap:2px;}
-.rate-star-row svg{width:14px;height:14px;}
-.rate-star-row .filled{color:#f5a623;}
-.rate-star-row .empty{color:var(--brd2);}
+/* Add source dropdown + Connection submenu */
+.src-add-wrap{position:relative;}
+.src-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:6px;z-index:60;display:flex;flex-direction:column;gap:2px;}
+.src-menu[hidden]{display:none;}
+.src-menu-item{display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--tx);font-family:var(--font);font-size:13px;text-align:left;padding:10px 12px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;}
+.src-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+.src-menu-ic{width:20px;height:20px;flex:none;color:var(--mu);display:inline-flex;align-items:center;justify-content:center;}
+.src-menu-ic svg{width:16px;height:16px;}
+.src-menu-item:hover .src-menu-ic{color:var(--ac2);}
+.src-menu-label{flex:1;min-width:0;}
+.src-menu-caret{width:14px;height:14px;color:var(--mu);flex:none;}
+.src-menu-item:hover .src-menu-caret{color:var(--ac2);}
+.src-menu-empty{padding:16px 12px;color:var(--mu);font-size:12.5px;text-align:center;}
+.src-menu-mhead{display:none;}
+@media (max-width:640px){
+  .src-menu:not([hidden]){display:flex;flex-direction:column;position:fixed;inset:0;top:0;right:0;left:0;bottom:0;width:auto;min-width:0;border-radius:0;border:none;padding:0;z-index:9000;background:var(--bg);}
+  .src-menu-mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .src-menu-mtitle{font-size:15px;font-weight:600;color:var(--tx);}
+  .src-menu-mclose{width:44px;height:44px;background:var(--sur2);border:none;border-radius:8px;color:var(--tx);cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .src-menu-item{min-height:52px;padding:16px 20px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
+}
 
-/* Rules table */
-.rate-rule-tbl thead th{padding:13px 16px;}
-.rate-rule-tbl tbody td{padding:13px 16px;vertical-align:middle;}
-.rate-rule-td-name{color:var(--tx);font-weight:500;cursor:pointer;}
-.rate-rule-td-name:hover{color:var(--ac2);text-decoration:underline;}
-.rate-rule-td-source{color:var(--tx);font-size:13px;}
-.rate-rule-td-created{color:var(--mu);font-size:12.5px;white-space:nowrap;}
-.rate-rule-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
-.rate-modal-del{margin-right:auto;}
-.rate-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+/* Add Credentials modal */
+.src-cred-status{width:fit-content;}
+.src-sel-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
+.src-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.src-sel-val.src-sel-mu{color:var(--mu);}
+.src-sel-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+.modal-field.open .src-sel-chev{transform:rotate(180deg);}
+#src-cred-src-popup{z-index:3100;}
+@media (max-width:640px){ #src-cred-src-popup .lblp-item{min-height:44px;font-size:15px;} }
+
+/* Sources table */
+.src-tbl thead th{padding:13px 16px;}
+.src-tbl tbody td{padding:13px 16px;vertical-align:middle;}
+.src-tbl-td-source{color:var(--tx);font-weight:500;}
+.src-tbl-td-user{color:var(--tx);font-size:13px;}
+.src-tbl-td-loc{color:var(--mu);font-size:13px;}
+.src-tbl-td-created{color:var(--mu);font-size:12.5px;white-space:nowrap;}
+.src-tbl-td-act{text-align:right;white-space:nowrap;}
+.src-tbl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
+.src-tbl-btn svg{width:14px;height:14px;}
+.src-tbl-btn.del:hover{border-color:var(--rd);color:var(--rd);}
+.src-tbl-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
 @media (max-width:640px){
   .table-wrap{border:none;background:transparent;overflow:visible;}
-  .rate-rule-tbl, .rate-rule-tbl tbody{display:block;}
-  .rate-rule-tbl thead{display:none;}
-  .rate-rule-tbl tbody tr{display:flex;flex-direction:column;gap:8px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 16px;margin-bottom:12px;cursor:pointer;}
-  .rate-rule-tbl tbody tr:hover{background:var(--sur);}
-  .rate-rule-tbl tbody td{display:block;padding:0;border:none;white-space:normal;}
-  .rate-rule-td-name{order:1;font-size:15px;font-weight:600;color:var(--tx);}
-  .rate-rule-td-name:hover{text-decoration:none;}
-  .rate-rule-td-source{order:2;font-size:13px;color:var(--mu);}
-  .rate-rule-td-created{order:3;font-size:12px;color:var(--mu);}
+  .src-tbl, .src-tbl tbody{display:block;}
+  .src-tbl thead{display:none;}
+  .src-tbl tbody tr{display:flex;flex-direction:column;gap:8px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+  .src-tbl tbody tr:hover{background:var(--sur);}
+  .src-tbl tbody td{display:block;padding:0;border:none;white-space:normal;}
+  .src-tbl-td-source{order:1;font-size:15px;}
+  .src-tbl-td-user{order:2;font-size:13px;color:var(--mu);}
+  .src-tbl-td-loc{order:3;font-size:12.5px;}
+  .src-tbl-td-created{order:4;font-size:12px;}
+  .src-tbl-td-act{order:5;text-align:left;}
+  .src-tbl-btn{min-height:44px;padding:10px 14px;}
 }
+@media (max-width:640px){
+  #src-cred-modal.modal-backdrop{padding:0;align-items:stretch;}
+  #src-cred-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
+  #src-cred-modal .modal-body{flex:1;}
+  .src-cred-status .pt-seg{min-height:44px;}
+}
+
 </style>
 </head>
 <body>
@@ -243,8 +251,8 @@ body.rep-sheet-open .rep-bar{z-index:200;}
       <span class="logo-text">CoreConnect</span>
       <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       <div class="product-switcher" id="product-switcher">
-        <a class="ps-item" data-pid="coreconnect" href="../../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
-        <a class="ps-item" data-pid="reputation" href="../../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
       </div>
     </div>
   </div>
@@ -261,7 +269,7 @@ body.rep-sheet-open .rep-bar{z-index:200;}
   <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button><button class="notif-close" onclick="closeNotifications()" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
   <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
   <div class="notif-body" id="notif-body"></div>
-  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../../notification/notification.html'">See all notifications</button></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button></div>
 </div>
 
 <!-- REPUTATION SIDEBAR -->
@@ -305,64 +313,83 @@ body.rep-sheet-open .rep-bar{z-index:200;}
 <!-- CONTENT -->
 <div class="rep-main" id="rep-main">
   <div class="set-page-head">
-    <a class="ur-back" href="../settings.html" title="Back to Settings">
+    <a class="ur-back" href="../settings/settings.html" title="Back to Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Rating rules</span>
+    <span class="set-page-title">Source</span>
   </div>
   <div class="rep-bar">
-    <!-- Period segmented (desktop) -->
-    <div class="period-toggle" role="tablist" aria-label="Period">
-      <button class="pt-seg" data-period="daily"   onclick="rateSetPeriod(this,'Daily')"   role="tab">Daily</button>
-      <button class="pt-seg" data-period="weekly"  onclick="rateSetPeriod(this,'Weekly')"  role="tab">Weekly</button>
-      <button class="pt-seg" data-period="monthly" onclick="rateSetPeriod(this,'Monthly')" role="tab">Monthly</button>
-      <button class="pt-seg active" data-period="all" onclick="rateSetPeriod(this,'All')" role="tab">All</button>
-    </div>
-    <!-- Period icon dropdown (mobile) -->
-    <div class="rep-dd" id="rate-period-dd">
-      <button class="rep-tbtn" id="rate-period-btn" onclick="ratePeriodToggle(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="rep-tbtn-val" id="rate-period-label">All</span>
-        <svg class="rep-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="dropdown-menu rep-menu" id="rate-period-menu">
-        <div class="rep-menu-mhead"><span class="rep-menu-mtitle">Period</span><button class="rep-menu-mclose" onclick="ratePeriodClose()" aria-label="Close">&#x2715;</button></div>
-        <div class="dropdown-item rep-menu-item" onclick="ratePeriodPick(this,'Daily')"><span>Daily</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="dropdown-item rep-menu-item" onclick="ratePeriodPick(this,'Weekly')"><span>Weekly</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="dropdown-item rep-menu-item" onclick="ratePeriodPick(this,'Monthly')"><span>Monthly</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="dropdown-item rep-menu-item checked" onclick="ratePeriodPick(this,'All')"><span>All</span><svg class="rep-mi-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      </div>
-    </div>
     <div class="rep-sp"></div>
     <!-- Mobile search toggle -->
-    <button class="rep-tbtn mobile-search-toggle" id="rate-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+    <button class="rep-tbtn mobile-search-toggle" id="src-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
     </button>
     <!-- Search pill (desktop) -->
-    <div class="search-pill rep-srch" id="rate-srch-desktop">
+    <div class="search-pill rep-srch" id="src-srch-desktop">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="rate-search-input" placeholder="Search rules..." oninput="rateSearch(this.value)"/>
+      <input type="text" id="src-search-input" placeholder="Search sources..." oninput="srcSearch(this.value)"/>
     </div>
-    <!-- Add rule -->
-    <button class="btn btn-primary" id="rate-add-btn" onclick="rateAddOpen()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Add rule</span>
-    </button>
+    <!-- Add source -->
+    <div class="src-add-wrap">
+      <button class="btn btn-primary" id="src-add-btn" onclick="srcAddToggle(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add source</span>
+      </button>
+      <div class="src-menu" id="src-add-menu" hidden>
+        <div class="src-menu-mhead"><span class="src-menu-mtitle">Add source</span><button class="src-menu-mclose" onclick="srcAddClose()" aria-label="Close">&#x2715;</button></div>
+        <button class="src-menu-item" type="button" onclick="srcAddPick('credentials')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 8.15-8.15"/><path d="m18 5 1.5 1.5"/><path d="m15.5 7.5 1.5 1.5"/></svg></span>
+          <span class="src-menu-label">Credentials</span>
+        </button>
+        <button class="src-menu-item has-sub" type="button" onclick="srcConnOpen(event)">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+          <span class="src-menu-label">Connection</span>
+          <svg class="src-menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="src-menu" id="src-conn-menu" hidden>
+        <div class="src-menu-mhead"><span class="src-menu-mtitle">Connection</span><button class="src-menu-mclose" onclick="srcConnClose()" aria-label="Close">&#x2715;</button></div>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Google')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a10 10 0 1 1-3.5-7.6"/><path d="M22 4v6h-6"/><path d="M22 12h-10"/></svg></span>
+          <span class="src-menu-label">Google</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Facebook')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12Z"/></svg></span>
+          <span class="src-menu-label">Facebook</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('Instagram')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <span class="src-menu-label">Instagram</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('LinkedIn')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/></svg></span>
+          <span class="src-menu-label">LinkedIn</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('TikTok')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 7.4a5.7 5.7 0 0 1-3.3-1.1 5.7 5.7 0 0 1-2.3-3.7V2h-3.5v13.6a2.6 2.6 0 1 1-2.6-2.6c.3 0 .6.1.9.2V9.5a6.1 6.1 0 1 0 5.3 6v-7a9.2 9.2 0 0 0 5.5 1.8V7.4Z"/></svg></span>
+          <span class="src-menu-label">TikTok</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('X (formerly Twitter)')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg></span>
+          <span class="src-menu-label">X (formerly Twitter)</span>
+        </button>
+        <button class="src-menu-item" type="button" onclick="srcConnPick('YouTube')">
+          <span class="src-menu-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg></span>
+          <span class="src-menu-label">YouTube</span>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="rep-content">
     <div class="table-wrap">
-      <table class="data-table rate-rule-tbl">
+      <table class="data-table src-tbl">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Source</th>
-            <th>Created</th>
-          </tr>
+          <tr><th>Source</th><th>Username</th><th>Location</th><th>Created</th><th></th></tr>
         </thead>
-        <tbody id="rate-rule-body"></tbody>
+        <tbody id="src-tbl-body"></tbody>
       </table>
-      <div class="rate-rule-empty" id="rate-rule-empty" hidden>No rating rules yet — click "Add rule" to create one.</div>
+      <div class="src-tbl-empty" id="src-empty" hidden>No sources yet — click "Add source" to add a review platform.</div>
     </div>
   </div>
 </div>
@@ -374,7 +401,7 @@ body.rep-sheet-open .rep-bar{z-index:200;}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <div class="mso-input-wrap">
-      <input type="text" id="mso-input" placeholder="Search rules..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
+      <input type="text" id="mso-input" placeholder="Search sources..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)" />
       <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -382,58 +409,59 @@ body.rep-sheet-open .rep-bar{z-index:200;}
   </div>
 </div>
 
-<!-- ADD RULE MODAL -->
-<div class="modal-backdrop" id="rate-add-modal" onclick="if(event.target===this)rateAddClose()">
+<!-- ADD CREDENTIALS MODAL -->
+<div class="modal-backdrop" id="src-cred-modal" onclick="if(event.target===this)srcCredClose()">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="rate-modal-title">Add rule</div>
-      <button class="modal-close" onclick="rateAddClose()" aria-label="Close">&#x2715;</button>
+      <div class="modal-title">Add Credentials</div>
+      <button class="modal-close" onclick="srcCredClose()" aria-label="Close">&#x2715;</button>
     </div>
     <div class="modal-body">
       <div>
-        <div class="modal-section-title">Rule name</div>
-        <div class="modal-field"><input type="text" id="rate-f-name" placeholder="e.g. Route 5-star reviews to Google"/></div>
-      </div>
-      <div>
-        <div class="modal-section-title">Stars</div>
-        <div class="modal-field" id="rate-star-field">
-          <button type="button" class="rate-sel-btn" onclick="rateStarToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-star-val">Select stars</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        </div>
-      </div>
-      <div>
-        <div class="modal-section-title">Operator</div>
-        <div class="modal-field" id="rate-op-field">
-          <button type="button" class="rate-sel-btn" onclick="rateOpToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-op-val">Select operator</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        </div>
-      </div>
-      <div>
         <div class="modal-section-title">Source</div>
-        <div class="modal-field" id="rate-src-field">
-          <button type="button" class="rate-sel-btn" onclick="rateSrcToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-src-val">Select source</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="modal-field" id="src-cred-src-field">
+          <button type="button" class="src-sel-btn" onclick="srcSrcToggle(event)">
+            <span class="src-sel-val src-sel-mu" id="src-cred-src-val">Select</span>
+            <svg class="src-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
+        </div>
+        <input type="hidden" id="src-cred-source" value=""/>
+      </div>
+      <div>
+        <div class="modal-section-title">Username</div>
+        <div class="modal-field"><input type="text" id="src-cred-user" autocomplete="username"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Password</div>
+        <div class="modal-field"><input type="password" id="src-cred-pass" autocomplete="new-password"/></div>
+      </div>
+      <div hidden>
+        <div class="modal-section-title">Status</div>
+        <div class="period-toggle src-cred-status" role="tablist" aria-label="Status">
+          <button type="button" class="pt-seg active" data-status="Valid" onclick="srcCredStatusSet(this,'Valid')" role="tab">Valid</button>
+          <button type="button" class="pt-seg" data-status="Invalid" onclick="srcCredStatusSet(this,'Invalid')" role="tab">Invalid</button>
+        </div>
+      </div>
+      <div>
+        <div class="modal-section-title">Location</div>
+        <div class="modal-field">
+          <select id="src-cred-loc">
+            <option value="">Select</option>
+            <option value="USA Direct Auto — Express">USA Direct Auto — Express</option>
+          </select>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="modal-cancel rate-modal-del" id="rate-modal-delete" onclick="rateModalDelete()" hidden>Delete</button>
-      <button class="modal-cancel" onclick="rateAddClose()">Cancel</button>
-      <button class="modal-save" id="rate-modal-save" onclick="rateAddSave()">Add</button>
+      <button class="modal-cancel" onclick="srcCredClose()">Cancel</button>
+      <button class="modal-save" onclick="srcCredSave()">Add</button>
     </div>
   </div>
 </div>
 
-<!-- SELECTOR POPUPS (siblings of the modal so z-index escapes it) -->
-<div class="assign-popup" id="rate-src-popup" style="display:none;"><div class="lblp-list" id="rate-src-list"></div></div>
-<div class="assign-popup" id="rate-op-popup" style="display:none;"><div class="lblp-list" id="rate-op-list"></div></div>
-<div class="assign-popup" id="rate-star-popup" style="display:none;"><div class="lblp-list" id="rate-star-list"></div></div>
+<div class="assign-popup" id="src-cred-src-popup" style="display:none;">
+  <div class="lblp-list" id="src-cred-src-list"></div>
+</div>
 
 <!-- NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
@@ -442,7 +470,6 @@ body.rep-sheet-open .rep-bar{z-index:200;}
   <button class="nav-toast-close" onclick="hideNavToast()" aria-label="Dismiss">&#x2715;</button>
 </div>
 
-<script src="../../../shared/leads-comms.js"></script>
 <script>
 var _navToastTimer = null;
 function showNavToast(title, body){
@@ -461,9 +488,9 @@ function hideNavToast(){
 function repNav(label){
   document.querySelectorAll('.rep-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-rep') === label); });
   if(window.innerWidth <= 900) closeRepDrawer();
-  if(label === 'Settings') return;
-  if(label === 'Dashboards'){ window.location.href = '../../reputation_dashboard/Dashboard.html'; return; }
-  if(label === 'Reviews'){ window.location.href = '../../reviews/reviews.html'; return; }
+  if(label === 'Settings'){ window.location.href = '../settings/settings.html'; return; }
+  if(label === 'Dashboards'){ window.location.href = '../reputation_dashboard/Dashboard.html'; return; }
+  if(label === 'Reviews'){ window.location.href = '../reviews/reviews.html'; return; }
   showNavToast(label + ' is coming soon', 'This section is under construction.');
 }
 function toggleRepDrawer(){
@@ -488,93 +515,113 @@ function repItemToggle(key, ev){
     menu.style.top = r.top + 'px';
     menu.style.left = (r.right + 6) + 'px';
   } else if(menu){
-    menu.style.top = '';
-    menu.style.left = '';
+    menu.style.top = ''; menu.style.left = '';
   }
 }
 function repSubClose(){
   document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ el.classList.remove('open'); });
 }
-var _repHoverTimer = null;
-function _repIsActiveWrap(w){ return !!w && !!w.querySelector('.rep-item.active'); }
-function repHoverOpen(key){
-  if(window.innerWidth <= 900) return;
-  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
-  if(_repHoverTimer){ clearTimeout(_repHoverTimer); _repHoverTimer = null; }
-  if(w.classList.contains('open')) return;
-  document.querySelectorAll('.rep-item-wrap.open').forEach(function(el){ if(el !== w) el.classList.remove('open'); });
-  var item = w.querySelector('.rep-item'), menu = w.querySelector('.rep-submenu');
-  var r = item.getBoundingClientRect();
-  menu.style.top = r.top + 'px';
-  menu.style.left = (r.right + 6) + 'px';
-  w.classList.add('open');
-}
-function repHoverClose(key){
-  if(window.innerWidth <= 900) return;
-  var w = document.getElementById('rep-sub-'+key); if(!w || !_repIsActiveWrap(w)) return;
-  if(_repHoverTimer) clearTimeout(_repHoverTimer);
-  _repHoverTimer = setTimeout(function(){ w.classList.remove('open'); }, 150);
-}
-function _repBindHoverFlyouts(){
-  document.querySelectorAll('.rep-item-wrap').forEach(function(w){
-    var key = (w.id || '').replace('rep-sub-','');
-    w.addEventListener('mouseenter', function(){ repHoverOpen(key); });
-    w.addEventListener('mouseleave', function(){ repHoverClose(key); });
-  });
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _repBindHoverFlyouts);
-else _repBindHoverFlyouts();
 function repSubPick(label){
   repSubClose();
   if(window.innerWidth <= 900) closeRepDrawer();
-  if(label === 'Review request'){ window.location.href = '../../requests/review_request/review_request.html'; return; }
-  if(label === 'Leaderboard'){ window.location.href = '../../requests/leaderboard/leaderboard.html'; return; }
-  if(label === 'Template'){ window.location.href = '../../requests/template/template.html'; return; }
+  if(label === 'Review request'){ window.location.href = '../requests/review_request/review_request.html'; return; }
+  if(label === 'Leaderboard'){ window.location.href = '../requests/leaderboard/leaderboard.html'; return; }
+  if(label === 'Template'){ window.location.href = '../requests/template/template.html'; return; }
   if(typeof showNavToast === 'function') showNavToast(label, label + ' is coming soon.');
 }
 
-/* Period toggle */
-var _ratePeriod = 'All';
-function rateSetPeriod(el, label){
-  _ratePeriod = label;
-  var key = label.toLowerCase();
-  document.querySelectorAll('.period-toggle .pt-seg').forEach(function(s){
-    s.classList.toggle('active', s.getAttribute('data-period') === key);
-  });
-  var lbl = document.getElementById('rate-period-label'); if(lbl) lbl.textContent = label;
-  document.querySelectorAll('#rate-period-menu .rep-menu-item').forEach(function(x){
-    x.classList.toggle('checked', (x.textContent || '').trim() === label);
-  });
-}
-function ratePeriodToggle(e){
-  if(e) e.stopPropagation();
-  var d = document.getElementById('rate-period-dd'); if(d) d.classList.toggle('open');
-  document.body.classList.toggle('rep-sheet-open', !!(d && d.classList.contains('open')));
-}
-function ratePeriodClose(){
-  var d = document.getElementById('rate-period-dd'); if(d) d.classList.remove('open');
-  document.body.classList.remove('rep-sheet-open');
-}
-function ratePeriodPick(el, label){
-  document.querySelectorAll('#rate-period-menu .rep-menu-item').forEach(function(x){ x.classList.remove('checked'); });
-  el.classList.add('checked');
-  document.getElementById('rate-period-label').textContent = label;
-  ratePeriodClose();
-  rateSetPeriod(null, label);
-}
+/* Search state */
+var _srcQuery = '';
+function srcSearch(v){ _srcQuery = v || ''; msoUpdateDot(); srcTblRender(); }
 
-/* Search */
-var _rateQuery = '';
-function rateSearch(v){ _rateQuery = v || ''; msoUpdateDot(); }
+/* Sources store + table */
+var SRC_KEY = 'cc_rep_sources', SRC_VER = 'v1';
+var SRC_ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+var SRC_SEED = [
+  {id:'seed_google',      source:'Google',                 username:'usadirectauto',           location:'USA Direct Auto — Express', daysAgo:12},
+  {id:'seed_facebook',    source:'Facebook',               username:'USADirectAuto',           location:'USA Direct Auto — Express', daysAgo:11},
+  {id:'seed_bing',        source:'Bing',                   username:'usadirectauto-express',   location:'USA Direct Auto — Express', daysAgo:10},
+  {id:'seed_cargurus',    source:'CarGurus',               username:'usadirect',               location:'USA Direct Auto — Express', daysAgo:9},
+  {id:'seed_carfax',      source:'Carfax',                 username:'sales@usadirectauto.com', location:'USA Direct Auto — Express', daysAgo:8},
+  {id:'seed_dealerrater', source:'DealerRater',            username:'usa-da-service',          location:'USA Direct Auto — Express', daysAgo:7},
+  {id:'seed_uda',         source:'USA Direct Auto',        username:'admin@usadirectauto.com', location:'USA Direct Auto — Express', daysAgo:6},
+  {id:'seed_instagram',   source:'Instagram',              username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:5},
+  {id:'seed_linkedin',    source:'LinkedIn',               username:'usa-direct-auto',         location:'USA Direct Auto — Express', daysAgo:4},
+  {id:'seed_snapchat',    source:'Snapchat',               username:'usadirectauto',           location:'USA Direct Auto — Express', daysAgo:3},
+  {id:'seed_tiktok',      source:'TikTok',                 username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:2},
+  {id:'seed_x',           source:'X (formerly Twitter)',   username:'@usadirectauto',          location:'USA Direct Auto — Express', daysAgo:1},
+  {id:'seed_youtube',     source:'YouTube',                username:'USA Direct Auto',         location:'USA Direct Auto — Express', daysAgo:0}
+];
+function srcLoad(){
+  try{
+    var raw = localStorage.getItem(SRC_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    var hasList = p && p.ver === SRC_VER && Array.isArray(p.list) && p.list.length > 0;
+    if(!hasList){
+      var now = Date.now();
+      var seed = SRC_SEED.map(function(s){
+        return {id:s.id, source:s.source, username:s.username, location:s.location,
+                createdAt: now - (s.daysAgo || 0) * 86400000};
+      });
+      try{ localStorage.setItem(SRC_KEY, JSON.stringify({ver:SRC_VER, list:seed})); }catch(e){}
+      return seed;
+    }
+    return p.list;
+  }catch(e){ return []; }
+}
+function srcPersist(){
+  try{ localStorage.setItem(SRC_KEY, JSON.stringify({ver:SRC_VER, list:SRC_LIST})); }catch(e){}
+}
+function srcEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function srcFmtDate(ts){ return new Date(ts||Date.now()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+var SRC_LIST = srcLoad();
+function srcTblFiltered(){
+  var q = (_srcQuery || '').trim().toLowerCase();
+  if(!q) return SRC_LIST;
+  return SRC_LIST.filter(function(r){
+    return (r.source||'').toLowerCase().indexOf(q) >= 0
+        || (r.username||'').toLowerCase().indexOf(q) >= 0
+        || (r.location||'').toLowerCase().indexOf(q) >= 0;
+  });
+}
+function srcTblRender(){
+  var body = document.getElementById('src-tbl-body');
+  var empty = document.getElementById('src-empty');
+  if(!body) return;
+  var rows = srcTblFiltered();
+  body.innerHTML = rows.map(function(r){
+    return '<tr>'
+      + '<td class="src-tbl-td-source">'+srcEsc(r.source)+'</td>'
+      + '<td class="src-tbl-td-user">'+srcEsc(r.username)+'</td>'
+      + '<td class="src-tbl-td-loc">'+srcEsc(r.location || '—')+'</td>'
+      + '<td class="src-tbl-td-created">'+srcFmtDate(r.createdAt)+'</td>'
+      + '<td class="src-tbl-td-act"><button class="src-tbl-btn del" onclick="srcTblDelete(\''+srcEsc(r.id)+'\')">'+SRC_ICON_DEL+'Delete</button></td>'
+      + '</tr>';
+  }).join('');
+  if(empty){
+    empty.hidden = rows.length > 0;
+    empty.textContent = (SRC_LIST.length === 0)
+      ? 'No sources yet — click "Add source" to add a review platform.'
+      : 'No sources match your search.';
+  }
+}
+function srcTblDelete(id){
+  var r = SRC_LIST.find(function(x){return x.id===id;}); if(!r) return;
+  SRC_LIST = SRC_LIST.filter(function(x){return x.id!==id;});
+  srcPersist(); srcTblRender();
+  showNavToast('Source removed', (r.source||'Source') + ' — ' + (r.username||'') + ' was removed.');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', srcTblRender);
+else srcTblRender();
 
 /* Mobile search overlay */
 function _msoEl(){ return document.getElementById('mso'); }
 function _msoInput(){ return document.getElementById('mso-input'); }
 function _msoClearBtn(){ return document.getElementById('mso-clear'); }
-function _msoToggleBtn(){ return document.getElementById('rate-search-toggle'); }
+function _msoToggleBtn(){ return document.getElementById('src-search-toggle'); }
 function msoUpdateDot(){
   var btn = _msoToggleBtn(); if(!btn) return;
-  if(_rateQuery && _rateQuery.length) btn.classList.add('has-query');
+  if(_srcQuery && _srcQuery.length) btn.classList.add('has-query');
   else btn.classList.remove('has-query');
 }
 function msoUpdateClear(){
@@ -582,18 +629,18 @@ function msoUpdateClear(){
   if(inp.value && inp.value.length) clr.classList.add('show'); else clr.classList.remove('show');
 }
 function msoOnInput(v){
-  var desktop = document.getElementById('rate-search-input'); if(desktop) desktop.value = v;
-  rateSearch(v); msoUpdateClear();
+  var desktop = document.getElementById('src-search-input'); if(desktop) desktop.value = v;
+  srcSearch(v); msoUpdateClear();
 }
 function msoClearInput(){
   var inp = _msoInput(); if(!inp) return;
   inp.value = '';
-  var desktop = document.getElementById('rate-search-input'); if(desktop) desktop.value = '';
-  rateSearch(''); msoUpdateClear(); inp.focus();
+  var desktop = document.getElementById('src-search-input'); if(desktop) desktop.value = '';
+  srcSearch(''); msoUpdateClear(); inp.focus();
 }
 function toggleMobileSearch(){
   var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
-  inp.value = _rateQuery || ''; msoUpdateClear();
+  inp.value = _srcQuery || ''; msoUpdateClear();
   document.body.classList.add('mso-active');
   ov.classList.add('open');
   setTimeout(function(){ inp.focus(); }, 60);
@@ -606,242 +653,112 @@ function closeMobileSearch(){
   msoUpdateDot();
 }
 
-/* Add rule modal + selectors */
-var RATE_SRC_KEY = 'cc_rep_sources', RATE_SRC_VER = 'v1';
-var RATE_SRC_FALLBACK = ['Google','Facebook','Bing','CarGurus','Carfax','DealerRater','USA Direct Auto','Instagram','LinkedIn','Snapchat','TikTok','X (formerly Twitter)','YouTube'];
-function rateSourcesNow(){
-  try{
-    var raw = localStorage.getItem(RATE_SRC_KEY);
-    var p = raw ? JSON.parse(raw) : null;
-    if(p && p.ver === RATE_SRC_VER && Array.isArray(p.list) && p.list.length){
-      var seen = {}, out = [];
-      p.list.forEach(function(r){
-        var s = (r && r.source || '').trim(); if(!s || seen[s]) return; seen[s] = 1; out.push(s);
-      });
-      if(out.length) return out;
-    }
-  }catch(e){}
-  return RATE_SRC_FALLBACK.slice();
+function srcAddToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('src-add-menu'); if(!m) return;
+  srcConnClose();
+  m.hidden = !m.hidden;
 }
-var RATE_OPS     = ['Less than','Greater than','Equal to'];
-var RATE_STARS   = [1,2,3,4,5];
-var _rateSrc = null, _rateOp = null, _rateStar = null;
-
-function _rateStarSvg(filled){
-  var cls = filled ? 'filled' : 'empty';
-  return '<svg class="'+cls+'" viewBox="0 0 24 24" fill="'+(filled?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+function srcAddClose(){ var m = document.getElementById('src-add-menu'); if(m) m.hidden = true; }
+function srcAddPick(action){
+  srcAddClose();
+  if(action === 'credentials'){ srcCredOpen(); return; }
 }
-function _rateStarsRow(n){
-  var out = '<span class="rate-star-row">';
-  for(var i=1;i<=5;i++) out += _rateStarSvg(i<=n);
-  return out + '</span>';
-}
-
-function rateSrcRender(){
-  var el = document.getElementById('rate-src-list'); if(!el) return;
-  el.innerHTML = rateSourcesNow().map(function(s){
-    var on = (_rateSrc === s);
-    return '<div class="lblp-item'+(on?' on':'')+'" onclick="rateSrcPick(\''+s.replace(/'/g,"\\'")+'\')"><span class="lblp-name">'+s+'</span></div>';
+var _srcCredStatus = 'Valid';
+var SRC_CRED_SOURCES = ['Google','Facebook','Bing','CarGurus','Carfax','DealerRater','USA Direct Auto','Instagram','LinkedIn','Snapchat','TikTok','X (formerly Twitter)','YouTube'];
+function srcSrcRender(){
+  var list = document.getElementById('src-cred-src-list'); if(!list) return;
+  var current = document.getElementById('src-cred-source').value || '';
+  list.innerHTML = SRC_CRED_SOURCES.map(function(name){
+    var on = (name === current) ? ' on' : '';
+    return '<div class="lblp-item'+on+'" onclick="srcSrcPick(\''+name.replace(/'/g,"\\'")+'\')">'
+      + '<span class="lblp-name">'+name+'</span>'
+      + '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      + '</div>';
   }).join('');
 }
-function rateSrcSync(){
-  var v = document.getElementById('rate-src-val'); if(!v) return;
-  if(_rateSrc){ v.textContent = _rateSrc; v.classList.remove('rate-sel-mu'); }
-  else { v.textContent = 'Select source'; v.classList.add('rate-sel-mu'); }
+function srcSrcPick(name){
+  document.getElementById('src-cred-source').value = name;
+  var v = document.getElementById('src-cred-src-val'); v.textContent = name; v.classList.remove('src-sel-mu');
+  srcSrcClose();
 }
-function rateSrcPick(s){ _rateSrc = s; rateSrcSync(); rateSrcClose(); }
-function rateSrcToggle(e){
+function srcSrcToggle(e){
   if(e) e.stopPropagation();
-  rateOpClose(); rateStarClose();
-  var pop = document.getElementById('rate-src-popup'), field = document.getElementById('rate-src-field');
-  if(pop.style.display === 'block'){ rateSrcClose(); return; }
+  var pop = document.getElementById('src-cred-src-popup'); if(!pop) return;
+  var field = document.getElementById('src-cred-src-field'); if(!field) return;
+  if(pop.style.display === 'block'){ srcSrcClose(); return; }
   var r = field.getBoundingClientRect();
-  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 240 - 8)) + 'px';
-  pop.style.top = (r.bottom + 6) + 'px';
-  pop.style.width = Math.max(r.width, 220) + 'px';
-  rateSrcRender();
+  pop.style.width = r.width + 'px';
+  pop.style.left  = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8)) + 'px';
+  pop.style.top   = (r.bottom + 6) + 'px';
+  srcSrcRender();
   pop.style.display = 'block';
   field.classList.add('open');
 }
-function rateSrcClose(){
-  var pop = document.getElementById('rate-src-popup'); if(pop) pop.style.display = 'none';
-  var field = document.getElementById('rate-src-field'); if(field) field.classList.remove('open');
+function srcSrcClose(){
+  var pop = document.getElementById('src-cred-src-popup'); if(pop) pop.style.display = 'none';
+  var f = document.getElementById('src-cred-src-field'); if(f) f.classList.remove('open');
 }
-
-function rateOpRender(){
-  var el = document.getElementById('rate-op-list'); if(!el) return;
-  el.innerHTML = RATE_OPS.map(function(o){
-    var on = (_rateOp === o);
-    return '<div class="lblp-item'+(on?' on':'')+'" onclick="rateOpPick(\''+o.replace(/'/g,"\\'")+'\')"><span class="lblp-name">'+o+'</span></div>';
-  }).join('');
-}
-function rateOpSync(){
-  var v = document.getElementById('rate-op-val'); if(!v) return;
-  if(_rateOp){ v.textContent = _rateOp; v.classList.remove('rate-sel-mu'); }
-  else { v.textContent = 'Select operator'; v.classList.add('rate-sel-mu'); }
-}
-function rateOpPick(o){ _rateOp = o; rateOpSync(); rateOpClose(); }
-function rateOpToggle(e){
-  if(e) e.stopPropagation();
-  rateSrcClose(); rateStarClose();
-  var pop = document.getElementById('rate-op-popup'), field = document.getElementById('rate-op-field');
-  if(pop.style.display === 'block'){ rateOpClose(); return; }
-  var r = field.getBoundingClientRect();
-  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 240 - 8)) + 'px';
-  pop.style.top = (r.bottom + 6) + 'px';
-  pop.style.width = Math.max(r.width, 220) + 'px';
-  rateOpRender();
-  pop.style.display = 'block';
-  field.classList.add('open');
-}
-function rateOpClose(){
-  var pop = document.getElementById('rate-op-popup'); if(pop) pop.style.display = 'none';
-  var field = document.getElementById('rate-op-field'); if(field) field.classList.remove('open');
-}
-
-function rateStarRender(){
-  var el = document.getElementById('rate-star-list'); if(!el) return;
-  el.innerHTML = RATE_STARS.map(function(n){
-    var on = (_rateStar === n);
-    return '<div class="lblp-item'+(on?' on':'')+'" onclick="rateStarPick('+n+')">'+_rateStarsRow(n)+'<span class="lblp-name" style="margin-left:8px;">'+n+(n===1?' star':' stars')+'</span></div>';
-  }).join('');
-}
-function rateStarSync(){
-  var v = document.getElementById('rate-star-val'); if(!v) return;
-  if(_rateStar){
-    v.innerHTML = _rateStarsRow(_rateStar) + '<span style="margin-left:8px;">'+_rateStar+(_rateStar===1?' star':' stars')+'</span>';
-    v.classList.remove('rate-sel-mu');
-  } else {
-    v.textContent = 'Select stars';
-    v.classList.add('rate-sel-mu');
-  }
-}
-function rateStarPick(n){ _rateStar = n; rateStarSync(); rateStarClose(); }
-function rateStarToggle(e){
-  if(e) e.stopPropagation();
-  rateSrcClose(); rateOpClose();
-  var pop = document.getElementById('rate-star-popup'), field = document.getElementById('rate-star-field');
-  if(pop.style.display === 'block'){ rateStarClose(); return; }
-  var r = field.getBoundingClientRect();
-  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 240 - 8)) + 'px';
-  pop.style.top = (r.bottom + 6) + 'px';
-  pop.style.width = Math.max(r.width, 220) + 'px';
-  rateStarRender();
-  pop.style.display = 'block';
-  field.classList.add('open');
-}
-function rateStarClose(){
-  var pop = document.getElementById('rate-star-popup'); if(pop) pop.style.display = 'none';
-  var field = document.getElementById('rate-star-field'); if(field) field.classList.remove('open');
-}
-
-var _rateEditId = null;
-function rateAddOpen(id){
-  var m = document.getElementById('rate-add-modal'); if(!m) return;
-  _rateEditId = (typeof id === 'string' && id) ? id : null;
-  var r = _rateEditId ? RATE_LIST.find(function(x){return x.id===_rateEditId;}) : null;
-  document.getElementById('rate-f-name').value = r ? (r.name || '') : '';
-  _rateSrc  = r ? (r.source || null)   : null;
-  _rateOp   = r ? (r.operator || null) : null;
-  _rateStar = r ? (r.stars || null)    : null;
-  rateSrcSync(); rateOpSync(); rateStarSync();
-  rateSrcClose(); rateOpClose(); rateStarClose();
-  var title = document.getElementById('rate-modal-title'); if(title) title.textContent = r ? 'Edit rule' : 'Add rule';
-  var saveBtn = document.getElementById('rate-modal-save'); if(saveBtn) saveBtn.textContent = r ? 'Update' : 'Add';
-  var delBtn = document.getElementById('rate-modal-delete'); if(delBtn) delBtn.hidden = !r;
+function srcCredOpen(){
+  var m = document.getElementById('src-cred-modal'); if(!m) return;
+  document.getElementById('src-cred-source').value = '';
+  var v = document.getElementById('src-cred-src-val'); v.textContent = 'Select'; v.classList.add('src-sel-mu');
+  srcSrcClose();
+  document.getElementById('src-cred-user').value = '';
+  document.getElementById('src-cred-pass').value = '';
+  document.getElementById('src-cred-loc').value = '';
+  _srcCredStatus = 'Valid';
+  document.querySelectorAll('.src-cred-status .pt-seg').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-status') === 'Valid');
+  });
   m.classList.add('open');
-  setTimeout(function(){ var n = document.getElementById('rate-f-name'); if(n) n.focus(); }, 20);
+  setTimeout(function(){ var s = document.querySelector('#src-cred-src-field .src-sel-btn'); if(s) s.focus(); }, 20);
 }
-function rateAddClose(){
-  var m = document.getElementById('rate-add-modal'); if(m) m.classList.remove('open');
-  rateSrcClose(); rateOpClose(); rateStarClose();
+function srcCredClose(){
+  var m = document.getElementById('src-cred-modal'); if(m) m.classList.remove('open');
 }
-function rateAddSave(){
-  var name = (document.getElementById('rate-f-name').value || '').trim();
-  if(!name){ document.getElementById('rate-f-name').focus(); return; }
-  if(_rateEditId){
-    var row = RATE_LIST.find(function(x){return x.id===_rateEditId;});
-    if(row){ row.name = name; row.source = _rateSrc; row.operator = _rateOp; row.stars = _rateStar; }
-    ratePersist(); rateRulesRender(); rateAddClose();
-    showNavToast('Rule updated', name + ' was saved.');
-  } else {
-    var id = 'rate_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
-    RATE_LIST.push({ id:id, name:name, source:_rateSrc, operator:_rateOp, stars:_rateStar, createdAt: Date.now() });
-    ratePersist(); rateRulesRender(); rateAddClose();
-    showNavToast('Rule added', name + ' was created.');
-  }
+function srcCredStatusSet(el, val){
+  _srcCredStatus = val;
+  document.querySelectorAll('.src-cred-status .pt-seg').forEach(function(b){
+    b.classList.toggle('active', b === el);
+  });
 }
-
-/* Persistent rules store + table render */
-var RATE_KEY = 'cc_rate_rules', RATE_VER = 'v1';
-var RATE_SEED = [
-  { id:'seed_5_google', name:'Route 5-star reviews to Google', source:'Google',   operator:'Equal to',     stars:5, createdAt: Date.now() - 86400000*7 },
-  { id:'seed_lt3_esc',  name:'Escalate reviews below 3',       source:'Facebook', operator:'Less than',    stars:3, createdAt: Date.now() - 86400000*3 },
-  { id:'seed_gt4_yelp', name:'Post 4+ reviews to Yelp',        source:'Yelp',     operator:'Greater than', stars:4, createdAt: Date.now() - 86400000*1 }
-];
-var RATE_LIST = rateLoad();
-function rateLoad(){
-  try{
-    var raw = localStorage.getItem(RATE_KEY);
-    var p = raw ? JSON.parse(raw) : null;
-    var hasList = p && p.ver === RATE_VER && Array.isArray(p.list) && p.list.length > 0;
-    if(!hasList){
-      var seed = RATE_SEED.map(function(r){ return {id:r.id, name:r.name, source:r.source, operator:r.operator, stars:r.stars, createdAt:r.createdAt}; });
-      try{ localStorage.setItem(RATE_KEY, JSON.stringify({ver:RATE_VER, list:seed})); }catch(e){}
-      return seed;
-    }
-    return p.list;
-  }catch(e){ return []; }
+function srcCredSave(){
+  var src  = document.getElementById('src-cred-source').value;
+  var user = document.getElementById('src-cred-user').value.trim();
+  var loc  = document.getElementById('src-cred-loc').value;
+  if(!src){ var sb = document.querySelector('#src-cred-src-field .src-sel-btn'); if(sb) sb.focus(); return; }
+  if(!user){ document.getElementById('src-cred-user').focus(); return; }
+  var id = 'src_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+  SRC_LIST.push({id:id, source:src, username:user, location:loc, createdAt: Date.now()});
+  srcPersist(); srcTblRender();
+  srcCredClose();
+  showNavToast('Credentials added', src + ' — ' + user);
 }
-function ratePersist(){
-  try{ localStorage.setItem(RATE_KEY, JSON.stringify({ver:RATE_VER, list:RATE_LIST})); }catch(e){}
+function srcConnOpen(e){
+  if(e) e.stopPropagation();
+  srcAddClose();
+  var m = document.getElementById('src-conn-menu'); if(m) m.hidden = false;
 }
-function rateEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function rateFmtDate(ts){
-  var d = new Date(ts || Date.now());
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+function srcConnClose(){ var m = document.getElementById('src-conn-menu'); if(m) m.hidden = true; }
+function srcConnPick(platform){
+  srcConnClose();
+  showNavToast('Connect to ' + platform, 'This section is under construction.');
 }
-function rateRulesRender(){
-  var body = document.getElementById('rate-rule-body');
-  var empty = document.getElementById('rate-rule-empty');
-  if(!body) return;
-  body.innerHTML = RATE_LIST.map(function(r){
-    return '<tr onclick="rateAddOpen(\''+rateEsc(r.id)+'\')" style="cursor:pointer;">'
-      + '<td class="rate-rule-td-name">'+rateEsc(r.name)+'</td>'
-      + '<td class="rate-rule-td-source">'+rateEsc(r.source||'')+'</td>'
-      + '<td class="rate-rule-td-created">'+rateFmtDate(r.createdAt)+'</td>'
-      + '</tr>';
-  }).join('');
-  if(empty) empty.hidden = RATE_LIST.length > 0;
-}
-function rateDelete(id){
-  var t = RATE_LIST.find(function(x){return x.id===id;}); if(!t) return;
-  RATE_LIST = RATE_LIST.filter(function(x){return x.id!==id;});
-  ratePersist(); rateRulesRender();
-  showNavToast('Rule deleted', (t.name || 'Rule') + ' was removed.');
-}
-function rateModalDelete(){
-  if(!_rateEditId) return;
-  var id = _rateEditId;
-  rateAddClose();
-  rateDelete(id);
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', rateRulesRender);
-else rateRulesRender();
+function srcAddOpen(){ srcAddToggle(); }
 
 document.addEventListener('mousedown', function(e){
-  if(!e.target.closest('#rate-period-dd')) ratePeriodClose();
-  if(!e.target.closest('#rate-src-field') && !e.target.closest('#rate-src-popup')) rateSrcClose();
-  if(!e.target.closest('#rate-op-field') && !e.target.closest('#rate-op-popup')) rateOpClose();
-  if(!e.target.closest('#rate-star-field') && !e.target.closest('#rate-star-popup')) rateStarClose();
+  if(!e.target.closest('.src-add-wrap')){ srcAddClose(); srcConnClose(); }
+  if(!e.target.closest('#src-cred-src-field') && !e.target.closest('#src-cred-src-popup')) srcSrcClose();
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
+  var srcPop = document.getElementById('src-cred-src-popup');
+  if(srcPop && srcPop.style.display === 'block'){ srcSrcClose(); return; }
+  var cm = document.getElementById('src-cred-modal');
+  if(cm && cm.classList.contains('open')){ srcCredClose(); return; }
   var ov = _msoEl(); if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
-  var m = document.getElementById('rate-add-modal');
-  if(m && m.classList.contains('open')){ rateAddClose(); return; }
-  ratePeriodClose(); rateSrcClose(); rateOpClose(); rateStarClose();
+  srcAddClose(); srcConnClose();
   if(typeof repSubClose === 'function') repSubClose();
 });
 </script>
@@ -875,8 +792,8 @@ function markAllNotificationsRead(){}
 document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'), b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
 window.addEventListener('resize', function(){ var p=document.getElementById('notif-panel'); if(p && p.classList.contains('open')) positionNotifications(); });
 </script>
-<script src="../../../shared/notifications.js"></script>
-<script src="../../../shared/contact-panel.js"></script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>
 
 </body>
 </html>

@@ -741,19 +741,9 @@ function srcConnOpen(e){
   var m = document.getElementById('src-conn-menu'); if(m) m.hidden = false;
 }
 function srcConnClose(){ var m = document.getElementById('src-conn-menu'); if(m) m.hidden = true; }
-var GOOGLE_OAUTH_URL = 'https://accounts.google.com/v3/signin/accountchooser?access_type=offline&approval_prompt=force&client_id=447093573387-5j7au4vg6s0dh0tat8tqo3a3pombq84s.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fapp.reputation.com%2Fconnections%2Fgoogle_places%2Fcallback&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbusiness.manage+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.business.manage+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fbusinesscommunications+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%7B%22aid%22%3A%221%22%2C%22tid%22%3A%22184319%22%2C%22rid%22%3A%22d9a06660-7a56-11f1-a835-5f840c0def99%22%2C%22pid%22%3A7%2C%22userAuthId%22%3A%223CKJF7Q-W41sKG6ubNU6JQ9HE9nnRTYhsBiME6rFXbkGF7fDXU1mkcDr7lGHHRG1MQGKA27MemRY7fV7A8KdBw%22%7D&dsh=S-1022411535%3A1783464886365259&o2v=1&service=lso&flowName=GeneralOAuthFlow&opparams=%253F&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hAMFYGjNVI-9Dwj4BNYBfVhInL9jx71yIQHMof_IIAAEZvHHqTn_ZAYslVxEYPN-UkpsQGzOv7hftkv4uyx4pH1uYNSp_bzlL6trlNRrxqt71PUVJAYUy8XhVrVnJbyTOTv-2V9a9gU0khRHuKezLYLaEpk-GVWpnYiC4-Gh3X2KPahzBiq0-3-p_yCuZl0uVRBTuLmHvhO94cDrFNuqAcJu2ktkYZg51U40CTrJUgH0nFT_N63ShNywC8pZ-ypcSymiTtH2NpHih3m12_1jEi1bzgPoUa-77S227G8WRhcdxZzIyqx5v7Q2h9ByWdr7jxGfvPt_k6pMdGFU1Pbskecn72zqhkEpmjhRb8HAiycb73nIVKwCGk-k4cgt_OrcgR6s6tz9O3pEvQNCMJgxnXitc6rd9v33yvXiAM2g9LNYdTZeGT19jalsDtoRHOxBXinY5lQNJYnNZvduTNOq1R3Z0wSDPdOwEQhFUC3wfymlasQ70X4%26flowName%3DGeneralOAuthFlow%26as%3DS-1022411535%253A1783464886365259%26client_id%3D447093573387-5j7au4vg6s0dh0tat8tqo3a3pombq84s.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fapp.reputation.com';
 function srcConnPick(platform){
   srcConnClose();
-  if(platform === 'Google'){ gOAuthOpen(); return; }
   showNavToast('Connect to ' + platform, 'This section is under construction.');
-}
-function gOAuthOpen(){
-  var w = 500, h = 650;
-  var left = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
-  var top  = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
-  var feats = 'noopener,noreferrer,width='+w+',height='+h+',left='+left+',top='+top;
-  var win = window.open(GOOGLE_OAUTH_URL, 'google_oauth', feats);
-  if(!win){ window.open(GOOGLE_OAUTH_URL, '_blank', 'noopener,noreferrer'); }
 }
 function srcAddOpen(){ srcAddToggle(); }
 

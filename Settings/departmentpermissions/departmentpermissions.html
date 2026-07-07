@@ -1,0 +1,350 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/settings.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+.root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+@media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
+.notif-panel{display:none;position:fixed;top:64px;right:24px;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.55);z-index:70;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;align-items:center;gap:6px;}
+.notif-markall{background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;}
+.notif-markall:hover{background:rgba(79,124,255,.10);}
+.notif-markall[disabled]{opacity:.4;cursor:not-allowed;}
+.notif-markall[disabled]:hover{background:transparent;}
+.notif-close{display:none;width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:var(--mu);cursor:pointer;align-items:center;justify-content:center;}
+.notif-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:8px 10px;border-bottom:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);background:var(--sur2);padding:2px 6px;border-radius:8px;}
+.notif-tab.active .notif-tab-count{color:var(--ac2);background:rgba(79,124,255,.16);}
+.notif-body{overflow-y:auto;flex:1;min-height:120px;}
+.notif-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:12.5px;}
+.notif-group{padding:0 0 6px;}
+.notif-group-head{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:12px 18px 6px;}
+.notif-item{display:flex;gap:12px;padding:10px 18px;cursor:pointer;position:relative;border-bottom:0.5px solid rgba(255,255,255,.03);}
+.notif-item:hover{background:var(--sur2);}
+.notif-item.unread{background:rgba(79,124,255,.04);}
+.notif-item.unread:hover{background:rgba(79,124,255,.08);}
+.notif-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--sur2);color:var(--mu);}
+.notif-icon svg{width:16px;height:16px;}
+.notif-icon.new_lead{background:rgba(79,124,255,.14);color:var(--ac2);}
+.notif-icon.engagement{background:rgba(34,200,138,.14);color:var(--gr);}
+.notif-icon.reminder{background:rgba(245,166,35,.14);color:var(--am);}
+.notif-icon.status_change{background:rgba(20,184,166,.14);color:#2dd4bf;}
+.notif-icon.assignment{background:rgba(167,139,250,.14);color:#c4b5fd;}
+.notif-text{flex:1;min-width:0;}
+.notif-item-title{font-size:12.5px;font-weight:500;color:var(--tx);line-height:1.35;}
+.notif-item.unread .notif-item-title{font-weight:600;}
+.notif-item-body{font-size:11.5px;color:var(--mu);margin-top:2px;line-height:1.4;}
+.notif-item-time{font-family:var(--mono);font-size:10.5px;color:var(--mu);margin-top:4px;}
+.notif-unread-dot{position:absolute;top:18px;right:18px;width:7px;height:7px;border-radius:50%;background:var(--ac);}
+.notif-footer{padding:8px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+.notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer;}
+.notif-seeall:hover{background:rgba(79,124,255,.08);}
+.ur-head-spacer{flex:1;}
+
+/* Department Permissions list rows */
+.ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:0.5px solid var(--brd);transition:background .15s;}
+.ur-row:hover{background:var(--sur2);}
+.ur-row:last-child{border-bottom:none;}
+.ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.10);color:var(--ac2);}
+.ur-row-ic svg{width:20px;height:20px;}
+.ur-row-txt{min-width:0;flex:1;}
+.ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);}
+.ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;}
+.ur-row-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.dp-row-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dp-row-sub-empty{color:var(--mu);font-style:italic;}
+.dp-edit-btn{width:32px;height:32px;border-radius:6px;background:none;border:none;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+.dp-edit-btn:hover{background:var(--sur2);color:var(--tx);}
+.dp-edit-btn svg{width:16px;height:16px;}
+@media (max-width:640px){
+  .dp-edit-btn{width:44px;height:44px;}
+  .dp-edit-btn svg{width:18px;height:18px;}
+}
+</style>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+      <span class="header-bell-call-dot" id="header-bell-call-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-title">Notifications</span>
+    <div class="notif-header-actions">
+      <button class="notif-markall" id="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button>
+      <button class="notif-close" onclick="closeNotifications()" aria-label="Close notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="notif-tabs">
+    <button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button>
+    <button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button>
+  </div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer">
+    <button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <div class="sb-item" data-nav="home" data-label="Dashboard" onclick="navClick('Home')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg>
+    </div>
+    <div class="sb-item" data-nav="crm" data-label="CRM Customer" onclick="navClick('CRM')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg>
+    </div>
+    <div class="sb-item" data-nav="call" data-label="Call History" onclick="navClick('Call')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.2744 9.08374C10.3436 9.03766 10.4233 9.00959 10.5061 9.00206C10.5889 8.99453 10.6723 9.00778 10.7488 9.04061L13.6963 10.3612C13.7956 10.4037 13.8785 10.4772 13.9326 10.5707C13.9867 10.6642 14.009 10.7727 13.9963 10.88C13.8991 11.6056 13.5418 12.2713 12.9907 12.7533C12.4395 13.2352 11.7321 13.5005 11 13.5C8.74566 13.5 6.58365 12.6045 4.98959 11.0104C3.39553 9.41633 2.5 7.25433 2.5 4.99999C2.49944 4.26786 2.7648 3.56045 3.24673 3.00932C3.72865 2.45818 4.39435 2.10084 5.12 2.00374C5.22727 1.99099 5.33578 2.01333 5.4293 2.06741C5.52281 2.12149 5.5963 2.2044 5.63875 2.30374L6.95938 5.25374C6.99182 5.3295 7.00504 5.41212 6.99784 5.49423C6.99064 5.57634 6.96326 5.65539 6.91813 5.72436L5.5825 7.31249C5.53512 7.38398 5.50711 7.46654 5.50119 7.55209C5.49528 7.63765 5.51166 7.72328 5.54875 7.80061C6.06563 8.85874 7.15938 9.93936 8.22063 10.4512C8.29836 10.4882 8.38439 10.5042 8.47021 10.4977C8.55602 10.4912 8.63867 10.4625 8.71 10.4144L10.2744 9.08374Z"/></svg>
+    </div>
+    <div class="sb-item" data-nav="message" data-label="Message History" onclick="navClick('Message')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.47375 9L2 11V3C2 2.86739 2.05268 2.74021 2.14645 2.64645C2.24021 2.55268 2.36739 2.5 2.5 2.5H10.5C10.6326 2.5 10.7598 2.55268 10.8536 2.64645C10.9473 2.74021 11 2.86739 11 3V8.5C11 8.63261 10.9473 8.75979 10.8536 8.85355C10.7598 8.94732 10.6326 9 10.5 9H4.47375Z"/><path d="M5 9V11.5C5 11.6326 5.05268 11.7598 5.14645 11.8536C5.24021 11.9473 5.36739 12 5.5 12H11.5262L14 14V6C14 5.86739 13.9473 5.74021 13.8536 5.64645C13.7598 5.55268 13.6326 5.5 13.5 5.5H11"/></svg>
+    </div>
+    <div class="sb-item" data-nav="voicemail" data-label="Voice mail History" onclick="navClick('Voice mail')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+    </div>
+    <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="sidebar-nav-spacer"></div>
+    <div class="sb-divider"></div>
+    <div class="sb-item active" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+    </div>
+  </div>
+  <div class="sb-account" onclick="navClick('Account')" title="Account">DP</div>
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="md-nav">
+    <div class="md-item" onclick="navClick('Home');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="md-item" onclick="navClick('CRM');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg>
+      <span>CRM Customer</span>
+    </div>
+    <div class="md-item" onclick="navClick('Call');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Call History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Message');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Message History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Voice mail');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+      <span>Voice mail History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Appointments');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Appointments</span>
+    </div>
+    <div class="md-divider"></div>
+    <div class="md-item active" onclick="navClick('Settings');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+      <span>Settings</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE-LEVEL NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </div>
+  <div class="nav-toast-text">
+    <strong id="nav-toast-title">Coming soon</strong>
+    <span id="nav-toast-body">This feature is under construction.</span>
+  </div>
+  <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
+</div>
+
+<div class="root main-area" id="root">
+  <div class="set-page-head">
+    <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">Department Permissions</span>
+    <span class="ur-head-spacer"></span>
+  </div>
+  <div class="set-scroll">
+    <section class="set-section">
+      <div class="ur-list" id="dp-list"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+function navClick(label){
+  if(label === 'Settings') return;
+  var routes = {
+    'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
+    'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
+    'Call':'../../call_history/coreconnect_call_history_v31.html',
+    'Message':'../../coreconnect_message_history_v41/coreconnect_message_history_v41.html',
+    'Voice mail':'../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
+    'Appointments':'../../coreconnect_appointments/coreconnect_appointments.html'
+  };
+  if(routes[label]){ window.location.href = routes[label]; return; }
+  showNavToast(label + ' is coming soon', 'This feature is under construction.');
+}
+function toggleMobileDrawer(){
+  var d = document.getElementById('mobile-drawer'), b = document.getElementById('mobile-drawer-backdrop');
+  if(!d || !b) return;
+  if(d.classList.contains('open')) closeMobileDrawer();
+  else { d.classList.add('open'); b.classList.add('open'); }
+}
+function closeMobileDrawer(){
+  var d = document.getElementById('mobile-drawer'), b = document.getElementById('mobile-drawer-backdrop');
+  if(d) d.classList.remove('open'); if(b) b.classList.remove('open');
+}
+var navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent  = body;
+  t.classList.add('show');
+  if(navToastTimer) clearTimeout(navToastTimer);
+  navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
+}
+document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications === 'function') renderNotifications(); });
+
+/* Department Permissions — list */
+var DP_KEY = 'cc_dept_perms', DP_VER = 'v1';
+var DP_PERM_LABELS = [
+  {id:'p_overview',      name:'Dialpad Overview Page'},
+  {id:'p_sms_tmpl',      name:'User SMS Template CRUD Page'},
+  {id:'p_email_tmpl',    name:'Email Template CRUD Page'},
+  {id:'p_label_flag',    name:'Label Flag CRUD Page'},
+  {id:'p_library',       name:'Dialpad Library CRUD Page'},
+  {id:'p_bc_loc',        name:'Business Card Display Location'},
+  {id:'p_call_history',  name:'Call History Tab'},
+  {id:'p_msg_history',   name:'Message History Tab'},
+  {id:'p_voicemail',     name:'Voicemail Tab'},
+  {id:'p_crm',           name:'CRM Tab'}
+];
+var DP_ICON_BRIEF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
+var DP_ICON_EDIT  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+
+function dpEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function dpDepartments(){
+  if(!window.CCLeads || !Array.isArray(CCLeads.TEAM)) return [];
+  var seen = {}, out = [];
+  CCLeads.TEAM.forEach(function(m){
+    var d = (m && m.dept || '').trim(); if(!d || seen[d]) return; seen[d] = 1; out.push(d);
+  });
+  return out;
+}
+function dpLoad(){
+  try{
+    var raw = localStorage.getItem(DP_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    if(p && p.ver === DP_VER && p.map && typeof p.map === 'object') return p.map;
+  }catch(e){}
+  var m = {}; dpDepartments().forEach(function(d){ m[d] = []; });
+  try{ localStorage.setItem(DP_KEY, JSON.stringify({ver:DP_VER, map:m})); }catch(e){}
+  return m;
+}
+function dpLabelsFor(ids){
+  var byId = {}; DP_PERM_LABELS.forEach(function(p){ byId[p.id] = p.name; });
+  return (ids || []).map(function(id){ return byId[id]; }).filter(Boolean);
+}
+function dpRender(){
+  var host = document.getElementById('dp-list'); if(!host) return;
+  var depts = dpDepartments();
+  var map = dpLoad();
+  if(!depts.length){
+    host.innerHTML = '<div class="ur-row"><div class="ur-row-txt"><div class="ur-row-sub dp-row-sub-empty">No departments defined yet.</div></div></div>';
+    return;
+  }
+  host.innerHTML = depts.map(function(d){
+    var labels = dpLabelsFor(map[d] || []);
+    var joined = labels.join(', ');
+    var sub = labels.length
+      ? '<div class="ur-row-sub dp-row-sub" title="'+dpEsc(joined)+'">'+dpEsc(joined)+'</div>'
+      : '<div class="ur-row-sub dp-row-sub-empty">No permissions assigned</div>';
+    return '<div class="ur-row">'
+      + '<div class="ur-row-ic">'+DP_ICON_BRIEF+'</div>'
+      + '<div class="ur-row-txt">'
+        + '<div class="ur-row-title">'+dpEsc(d)+'</div>'
+        + sub
+      + '</div>'
+      + '<div class="ur-row-actions">'
+        + '<button class="dp-edit-btn" type="button" aria-label="Edit '+dpEsc(d)+'" onclick="dpEditOpen(\''+dpEsc(d)+'\')">'+DP_ICON_EDIT+'</button>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+function dpEditOpen(dept){
+  showNavToast('Edit department permissions', 'Editor for "' + dept + '" is coming soon.');
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dpRender);
+else dpRender();
+</script>
+
+<!-- PRODUCT SWITCHER -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps = document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(!logo || !ps) return; var r = logo.getBoundingClientRect(); ps.style.left = ((window.innerWidth > 640) ? 66 : r.left) + 'px'; ps.style.top = (r.bottom + 8) + 'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(!logo || !ps) return; portalSwitcher(); var w = !ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'coreconnect'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps = document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps = document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps = document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+<script src="../../shared/leads-comms.js"></script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>

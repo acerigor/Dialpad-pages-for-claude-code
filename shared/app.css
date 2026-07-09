@@ -161,6 +161,20 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
   color:#fff;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;}
 .modal-save:hover{background:var(--ac2);}
 
+/* Full-screen modal on mobile — add `modal-fullscreen-mobile` to `.modal-backdrop` */
+@media (max-width:640px){
+  .modal-backdrop.modal-fullscreen-mobile{padding:0;align-items:stretch;}
+  .modal-backdrop.modal-fullscreen-mobile .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
+  .modal-backdrop.modal-fullscreen-mobile .modal-body{flex:1;}
+}
+
+/* Select-shell: place inside a `.modal-field` to open an `.assign-popup` */
+.form-select-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
+.form-select-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.form-select-val.form-select-mu{color:var(--mu);}
+.form-select-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+.modal-field.open .form-select-chev{transform:rotate(180deg);}
+
 /* ── Toolbar primitives ────────────────────────────────────────────────── */
 .toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;overflow:visible;
   position:relative;z-index:55;background:var(--bg);
@@ -408,6 +422,12 @@ html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif
 .data-table--compact thead th,.data-table--compact tbody td{padding:10px 12px;font-size:12.5px;}
 .data-table--right-actions thead th:last-child,
 .data-table--right-actions tbody td:last-child{text-align:right;}
+
+/* Ghost row-action button used in data-table right-actions column */
+.list-action-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
+.list-action-btn svg{width:14px;height:14px;}
+.list-action-btn.del:hover{border-color:var(--rd);color:var(--rd);}
+@media (max-width:640px){ .list-action-btn{min-height:44px;padding:10px 14px;} }
 
 /* Mobile — comfortable row padding, still allows horizontal scroll */
 @media (max-width:640px){

@@ -191,9 +191,6 @@ body.mso-active .rep-bar{display:none;}
 .tplr-sent-chip .lblp-dot{width:9px;height:9px;}
 .tplr-td-body{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mu);font-size:12.5px;}
 .tplr-td-act{text-align:right;white-space:nowrap;}
-.tplr-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
-.tplr-btn svg{width:14px;height:14px;}
-.tplr-btn.del:hover{border-color:var(--rd);color:var(--rd);}
 .tplr-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
 .tplr-modal-del{margin-right:auto;}
 .tplr-modal-del:hover{border-color:var(--rd);color:var(--rd);}
@@ -238,9 +235,6 @@ body.mso-active .rep-bar{display:none;}
   #tpl-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
   .mso-back{width:44px;height:44px;}
   .mso-clear{width:44px;height:44px;}
-  #tpl-add-modal.modal-backdrop{padding:0;align-items:stretch;}
-  #tpl-add-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
-  #tpl-add-modal .modal-body{flex:1;}
 }
 </style>
 </head>
@@ -397,7 +391,7 @@ body.mso-active .rep-bar{display:none;}
 </div>
 
 <!-- ADD TEMPLATE MODAL -->
-<div class="modal-backdrop" id="tpl-add-modal" onclick="if(event.target===this)tplAddClose()">
+<div class="modal-backdrop modal-fullscreen-mobile" id="tpl-add-modal" onclick="if(event.target===this)tplAddClose()">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="tpl-modal-title">Add new template</div>

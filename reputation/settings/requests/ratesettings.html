@@ -188,18 +188,10 @@ body.rep-sheet-open .rep-bar{z-index:200;}
   #rate-add-btn{padding:0;width:44px;justify-content:center;gap:0;}
   .mso-back{width:44px;height:44px;}
   .mso-clear{width:44px;height:44px;}
-  #rate-add-modal.modal-backdrop{padding:0;align-items:stretch;}
-  #rate-add-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
-  #rate-add-modal .modal-body{flex:1;}
   .lblp-item{min-height:44px;font-size:15px;}
 }
 
-/* Add rule modal — selector shell */
-.rate-sel-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
-.rate-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px;}
-.rate-sel-val.rate-sel-mu{color:var(--mu);}
-.rate-sel-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
-.modal-field.open .rate-sel-chev{transform:rotate(180deg);}
+/* Add rule modal — selector shell (uses shared .form-select-*) */
 #rate-src-popup,#rate-op-popup,#rate-star-popup{z-index:3100;}
 .rate-star-row{display:inline-flex;gap:2px;}
 .rate-star-row svg{width:14px;height:14px;}
@@ -383,7 +375,7 @@ body.rep-sheet-open .rep-bar{z-index:200;}
 </div>
 
 <!-- ADD RULE MODAL -->
-<div class="modal-backdrop" id="rate-add-modal" onclick="if(event.target===this)rateAddClose()">
+<div class="modal-backdrop modal-fullscreen-mobile" id="rate-add-modal" onclick="if(event.target===this)rateAddClose()">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="rate-modal-title">Add rule</div>
@@ -397,27 +389,27 @@ body.rep-sheet-open .rep-bar{z-index:200;}
       <div>
         <div class="modal-section-title">Stars</div>
         <div class="modal-field" id="rate-star-field">
-          <button type="button" class="rate-sel-btn" onclick="rateStarToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-star-val">Select stars</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <button type="button" class="form-select-btn" onclick="rateStarToggle(event)">
+            <span class="form-select-val form-select-mu" id="rate-star-val">Select stars</span>
+            <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
       </div>
       <div>
         <div class="modal-section-title">Operator</div>
         <div class="modal-field" id="rate-op-field">
-          <button type="button" class="rate-sel-btn" onclick="rateOpToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-op-val">Select operator</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <button type="button" class="form-select-btn" onclick="rateOpToggle(event)">
+            <span class="form-select-val form-select-mu" id="rate-op-val">Select operator</span>
+            <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
       </div>
       <div>
         <div class="modal-section-title">Source</div>
         <div class="modal-field" id="rate-src-field">
-          <button type="button" class="rate-sel-btn" onclick="rateSrcToggle(event)">
-            <span class="rate-sel-val rate-sel-mu" id="rate-src-val">Select source</span>
-            <svg class="rate-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <button type="button" class="form-select-btn" onclick="rateSrcToggle(event)">
+            <span class="form-select-val form-select-mu" id="rate-src-val">Select source</span>
+            <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
       </div>
@@ -646,8 +638,8 @@ function rateSrcRender(){
 }
 function rateSrcSync(){
   var v = document.getElementById('rate-src-val'); if(!v) return;
-  if(_rateSrc){ v.textContent = _rateSrc; v.classList.remove('rate-sel-mu'); }
-  else { v.textContent = 'Select source'; v.classList.add('rate-sel-mu'); }
+  if(_rateSrc){ v.textContent = _rateSrc; v.classList.remove('form-select-mu'); }
+  else { v.textContent = 'Select source'; v.classList.add('form-select-mu'); }
 }
 function rateSrcPick(s){ _rateSrc = s; rateSrcSync(); rateSrcClose(); }
 function rateSrcToggle(e){
@@ -677,8 +669,8 @@ function rateOpRender(){
 }
 function rateOpSync(){
   var v = document.getElementById('rate-op-val'); if(!v) return;
-  if(_rateOp){ v.textContent = _rateOp; v.classList.remove('rate-sel-mu'); }
-  else { v.textContent = 'Select operator'; v.classList.add('rate-sel-mu'); }
+  if(_rateOp){ v.textContent = _rateOp; v.classList.remove('form-select-mu'); }
+  else { v.textContent = 'Select operator'; v.classList.add('form-select-mu'); }
 }
 function rateOpPick(o){ _rateOp = o; rateOpSync(); rateOpClose(); }
 function rateOpToggle(e){
@@ -710,10 +702,10 @@ function rateStarSync(){
   var v = document.getElementById('rate-star-val'); if(!v) return;
   if(_rateStar){
     v.innerHTML = _rateStarsRow(_rateStar) + '<span style="margin-left:8px;">'+_rateStar+(_rateStar===1?' star':' stars')+'</span>';
-    v.classList.remove('rate-sel-mu');
+    v.classList.remove('form-select-mu');
   } else {
     v.textContent = 'Select stars';
-    v.classList.add('rate-sel-mu');
+    v.classList.add('form-select-mu');
   }
 }
 function rateStarPick(n){ _rateStar = n; rateStarSync(); rateStarClose(); }

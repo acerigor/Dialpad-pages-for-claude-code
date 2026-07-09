@@ -193,13 +193,8 @@ body.mso-active .rep-bar{display:none;}
   .src-menu-item{min-height:52px;padding:16px 20px;font-size:15px;border-radius:0;border-bottom:0.5px solid var(--brd);}
 }
 
-/* Add Credentials modal */
+/* Add Credentials modal (select-shell uses shared .form-select-*) */
 .src-cred-status{width:fit-content;}
-.src-sel-btn{flex:1;background:none;border:none;padding:0;margin:0;display:flex;align-items:center;gap:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;height:100%;}
-.src-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.src-sel-val.src-sel-mu{color:var(--mu);}
-.src-sel-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
-.modal-field.open .src-sel-chev{transform:rotate(180deg);}
 #src-cred-src-popup{z-index:3100;}
 @media (max-width:640px){ #src-cred-src-popup .lblp-item{min-height:44px;font-size:15px;} }
 
@@ -211,9 +206,6 @@ body.mso-active .rep-bar{display:none;}
 .src-tbl-td-loc{color:var(--mu);font-size:13px;}
 .src-tbl-td-created{color:var(--mu);font-size:12.5px;white-space:nowrap;}
 .src-tbl-td-act{text-align:right;white-space:nowrap;}
-.src-tbl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .12s;}
-.src-tbl-btn svg{width:14px;height:14px;}
-.src-tbl-btn.del:hover{border-color:var(--rd);color:var(--rd);}
 .src-tbl-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
 @media (max-width:640px){
   .table-wrap{border:none;background:transparent;overflow:visible;}
@@ -227,12 +219,8 @@ body.mso-active .rep-bar{display:none;}
   .src-tbl-td-loc{order:3;font-size:12.5px;}
   .src-tbl-td-created{order:4;font-size:12px;}
   .src-tbl-td-act{order:5;text-align:left;}
-  .src-tbl-btn{min-height:44px;padding:10px 14px;}
 }
 @media (max-width:640px){
-  #src-cred-modal.modal-backdrop{padding:0;align-items:stretch;}
-  #src-cred-modal .modal{width:100%;max-width:none;height:100vh;max-height:none;border-radius:0;border:none;}
-  #src-cred-modal .modal-body{flex:1;}
   .src-cred-status .pt-seg{min-height:44px;}
 }
 
@@ -410,7 +398,7 @@ body.mso-active .rep-bar{display:none;}
 </div>
 
 <!-- ADD CREDENTIALS MODAL -->
-<div class="modal-backdrop" id="src-cred-modal" onclick="if(event.target===this)srcCredClose()">
+<div class="modal-backdrop modal-fullscreen-mobile" id="src-cred-modal" onclick="if(event.target===this)srcCredClose()">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title">Add Credentials</div>
@@ -420,9 +408,9 @@ body.mso-active .rep-bar{display:none;}
       <div>
         <div class="modal-section-title">Source</div>
         <div class="modal-field" id="src-cred-src-field">
-          <button type="button" class="src-sel-btn" onclick="srcSrcToggle(event)">
-            <span class="src-sel-val src-sel-mu" id="src-cred-src-val">Select</span>
-            <svg class="src-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <button type="button" class="form-select-btn" onclick="srcSrcToggle(event)">
+            <span class="form-select-val form-select-mu" id="src-cred-src-val">Select</span>
+            <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
         <input type="hidden" id="src-cred-source" value=""/>
@@ -595,7 +583,7 @@ function srcTblRender(){
       + '<td class="src-tbl-td-user">'+srcEsc(r.username)+'</td>'
       + '<td class="src-tbl-td-loc">'+srcEsc(r.location || '—')+'</td>'
       + '<td class="src-tbl-td-created">'+srcFmtDate(r.createdAt)+'</td>'
-      + '<td class="src-tbl-td-act"><button class="src-tbl-btn del" onclick="srcTblDelete(\''+srcEsc(r.id)+'\')">'+SRC_ICON_DEL+'Delete</button></td>'
+      + '<td class="src-tbl-td-act"><button class="list-action-btn del" onclick="srcTblDelete(\''+srcEsc(r.id)+'\')">'+SRC_ICON_DEL+'Delete</button></td>'
       + '</tr>';
   }).join('');
   if(empty){
@@ -679,7 +667,7 @@ function srcSrcRender(){
 }
 function srcSrcPick(name){
   document.getElementById('src-cred-source').value = name;
-  var v = document.getElementById('src-cred-src-val'); v.textContent = name; v.classList.remove('src-sel-mu');
+  var v = document.getElementById('src-cred-src-val'); v.textContent = name; v.classList.remove('form-select-mu');
   srcSrcClose();
 }
 function srcSrcToggle(e){
@@ -702,7 +690,7 @@ function srcSrcClose(){
 function srcCredOpen(){
   var m = document.getElementById('src-cred-modal'); if(!m) return;
   document.getElementById('src-cred-source').value = '';
-  var v = document.getElementById('src-cred-src-val'); v.textContent = 'Select'; v.classList.add('src-sel-mu');
+  var v = document.getElementById('src-cred-src-val'); v.textContent = 'Select'; v.classList.add('form-select-mu');
   srcSrcClose();
   document.getElementById('src-cred-user').value = '';
   document.getElementById('src-cred-pass').value = '';
@@ -712,7 +700,7 @@ function srcCredOpen(){
     b.classList.toggle('active', b.getAttribute('data-status') === 'Valid');
   });
   m.classList.add('open');
-  setTimeout(function(){ var s = document.querySelector('#src-cred-src-field .src-sel-btn'); if(s) s.focus(); }, 20);
+  setTimeout(function(){ var s = document.querySelector('#src-cred-src-field .form-select-btn'); if(s) s.focus(); }, 20);
 }
 function srcCredClose(){
   var m = document.getElementById('src-cred-modal'); if(m) m.classList.remove('open');
@@ -727,7 +715,7 @@ function srcCredSave(){
   var src  = document.getElementById('src-cred-source').value;
   var user = document.getElementById('src-cred-user').value.trim();
   var loc  = document.getElementById('src-cred-loc').value;
-  if(!src){ var sb = document.querySelector('#src-cred-src-field .src-sel-btn'); if(sb) sb.focus(); return; }
+  if(!src){ var sb = document.querySelector('#src-cred-src-field .form-select-btn'); if(sb) sb.focus(); return; }
   if(!user){ document.getElementById('src-cred-user').focus(); return; }
   var id = 'src_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
   SRC_LIST.push({id:id, source:src, username:user, location:loc, createdAt: Date.now()});

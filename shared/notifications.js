@@ -456,6 +456,87 @@
   });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') laClose(); });
   window.addEventListener('resize', function(){ var p = document.getElementById('loanapp-panel'); if(p && p.classList.contains('open')) laPosition(); });
+
+  /* ---- Attention card: floating corner card (no backdrop) announcing the most recent loan application ---- */
+  function laCardCss(){
+    if(document.getElementById('loanapp-card-style')) return;
+    var css = ''
+      + '#loanapp-card{position:fixed;top:76px;right:20px;z-index:58;width:340px;max-width:calc(100vw - 32px);'
+      +   'background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;'
+      +   'box-shadow:0 16px 44px rgba(0,0,0,.5);font-family:var(--font);overflow:hidden;'
+      +   'transform:translateX(calc(100% + 28px));opacity:0;transition:transform .32s cubic-bezier(.22,1,.36,1),opacity .28s;}'
+      + '#loanapp-card.show{transform:translateX(0);opacity:1;}'
+      + '.lac-head{display:flex;align-items:center;gap:10px;padding:13px 12px 10px 14px;}'
+      + '.lac-ic{width:34px;height:34px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.18);color:var(--ac2);}'
+      + '.lac-ic svg{width:18px;height:18px;}'
+      + '.lac-head-title{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--tx);}'
+      + '.lac-x{width:30px;height:30px;border:none;background:transparent;color:var(--mu);border-radius:8px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;}'
+      + '.lac-x:hover{background:rgba(255,255,255,.06);color:var(--tx);}'
+      + '.lac-body{display:flex;align-items:flex-start;gap:10px;padding:2px 14px 12px;}'
+      + '.lac-av{width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;}'
+      + '.lac-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}'
+      + '.lac-name{font-size:13.5px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
+      + '.lac-meta{font-size:12px;color:var(--mu);line-height:1.4;}'
+      + '.lac-foot{padding:0 14px 14px;}'
+      + '.lac-view{width:100%;background:var(--ac);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);}'
+      + '.lac-view:hover{background:var(--ac2);}'
+      + '@media (max-width:640px){#loanapp-card{top:72px;right:12px;left:12px;width:auto;max-width:none;}.lac-x{width:44px;height:44px;}}';
+    var st = document.createElement('style'); st.id = 'loanapp-card-style'; st.textContent = css; document.head.appendChild(st);
+  }
+  function laNewestLoanLead(){
+    var list = laLeads(); if(!list.length) return null;
+    return list.slice().sort(function(a, b){ return (b.no || 0) - (a.no || 0); })[0];
+  }
+  function laHideCard(){
+    var c = document.getElementById('loanapp-card'); if(c) c.classList.remove('show');
+  }
+  window.dismissLoanAppBanner = laHideCard;
+  window.dismissLoanAppCard = laHideCard;
+  function laShowCard(lead){
+    if(!lead) return;
+    laCardCss();
+    var c = document.getElementById('loanapp-card');
+    if(!c){ c = document.createElement('div'); c.id = 'loanapp-card'; document.body.appendChild(c); }
+    var vehicle = lead.vehicle && lead.vehicle !== '—' ? lead.vehicle : 'No vehicle';
+    var meta = [vehicle, lead.status].filter(Boolean).map(laEsc).join(' · ');
+    c.innerHTML =
+        '<div class="lac-head">'
+      +   '<span class="lac-ic">' + LA_CAR + '</span>'
+      +   '<span class="lac-head-title">New loan application</span>'
+      +   '<button class="lac-x" type="button" aria-label="Dismiss">'
+      +     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      +   '</button>'
+      + '</div>'
+      + '<div class="lac-body">'
+      +   '<span class="lac-av" style="background:' + laEsc(lead.ac || '#4f7cff') + '">' + laEsc(laInitials(lead.name)) + '</span>'
+      +   '<span class="lac-txt">'
+      +     '<span class="lac-name">' + laEsc(lead.name || 'Unknown') + '</span>'
+      +     '<span class="lac-meta">' + meta + '</span>'
+      +   '</span>'
+      + '</div>'
+      + '<div class="lac-foot">'
+      +   '<button class="lac-view" type="button">View application</button>'
+      + '</div>';
+    c.querySelector('.lac-view').onclick = function(){
+      laHideCard();
+      if(window.openContactPanel){ try{ window.openContactPanel(Number(lead.no), 'loanapp'); return; }catch(e){} }
+      laOpen();
+    };
+    c.querySelector('.lac-x').onclick = laHideCard;
+    // Slide in on the next frame so the transition runs.
+    var show = function(){ c.classList.add('show'); };
+    if(window.requestAnimationFrame) requestAnimationFrame(function(){ requestAnimationFrame(show); });
+    else setTimeout(show, 20);
+  }
+  function laBannerInit(){
+    laEnsureLeadsData(function(){
+      var lead = laNewestLoanLead(); if(!lead) return;
+      setTimeout(function(){ laShowCard(lead); }, 700);
+    });
+  }
+
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectLoanAppIcon);
   else injectLoanAppIcon();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', laBannerInit);
+  else laBannerInit();
 })();

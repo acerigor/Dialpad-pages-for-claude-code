@@ -52,6 +52,7 @@
   + '      <div class="cp-sidebar-field"><div class="cp-sidebar-label">Lead Assigned to</div><div class="cp-assign-row"><div class="cp-assign-av" id="cp-assign-av" style="background:#4f7cff;">DP</div><div class="cp-assign-name" id="cp-assign-name">David P.</div></div></div>'
   + '      <div class="cp-sidebar-field"><div class="cp-sidebar-label">Phone</div><div class="cp-sidebar-value" id="cp-phone" style="font-size:11.5px;">—</div></div>'
   + '      <div class="cp-sidebar-field"><div class="cp-sidebar-label">Email</div><div class="cp-sidebar-value" id="cp-email-tag" style="font-size:11px;color:#6e9dff;font-family:var(--font);">—</div></div>'
+  + '      <button class="cp-credit-btn" id="cp-credit-btn" onclick="openCreditReport()" style="display:none;"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19H20"/><path d="M12 15H20"/><path d="M20 5H25C25.2652 5 25.5196 5.10536 25.7071 5.29289C25.8946 5.48043 26 5.73478 26 6V27C26 27.2652 25.8946 27.5196 25.7071 27.7071C25.5196 27.8946 25.2652 28 25 28H7C6.73478 28 6.48043 27.8946 6.29289 27.7071C6.10536 27.5196 6 27.2652 6 27V6C6 5.73478 6.10536 5.48043 6.29289 5.29289C6.48043 5.10536 6.73478 5 7 5H12"/><path d="M11 9V8C11 6.67392 11.5268 5.40215 12.4645 4.46447C13.4021 3.52678 14.6739 3 16 3C17.3261 3 18.5979 3.52678 19.5355 4.46447C20.4732 5.40215 21 6.67392 21 8V9H11Z"/></svg>Credit Report</button>'
   + '    </div>'
   + '    <div class="cp-sidebar-collapse" onclick="toggleCPSidebar()" id="cp-collapse-btn" title="Toggle sidebar"><svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 1L2 6l3 5"/></svg></div>'
   + '    <div class="cp-convo">'
@@ -63,6 +64,7 @@
   + '        <div class="cp-tab" data-tab="notes" onclick="setCPTab(this,\'notes\')">Notes</div>'
   + '        <div class="cp-tab" data-tab="calls" onclick="setCPTab(this,\'calls\')">Call Logs</div>'
   + '        <div class="cp-tab" data-tab="activity" onclick="setCPTab(this,\'activity\')">Activity</div>'
+  + '        <div class="cp-tab" id="cp-tab-loanapp" data-tab="loanapp" onclick="setCPTab(this,\'loanapp\')" style="display:none;">Loan App</div>'
   + '      </div>'
   + '      <div class="cp-messages" id="cp-messages"></div>'
   + '      <div class="cp-summary" id="cp-summary">'
@@ -110,6 +112,12 @@
   +     '<div class="lblp-swatches" id="cp-shared-swatches"></div>'
   +     '<button class="lblp-add-btn" onclick="addNewSharedLabel()">Create label</button>'
   +   '</div>'
+  + '</div>'
+  + '<div class="modal-backdrop" id="credit-modal-backdrop" onclick="if(event.target===this)closeCreditReport()">'
+  +   '<div class="modal">'
+  +     '<div class="modal-header"><span class="modal-title">Credit Report</span><button class="modal-close" onclick="closeCreditReport()">&#x2715;</button></div>'
+  +     '<div class="modal-body" id="credit-modal-body" style="padding:14px;"></div>'
+  +   '</div>'
   + '</div>';
 
   /* ── helpers ──────────────────────────────────────────────────────────── */
@@ -117,6 +125,24 @@
   function initialsOf(n){ var p=String(n||'').trim().split(/\s+/); return (((p[0]||'')[0]||'')+((p.length>1&&p[p.length-1][0])||'')).toUpperCase(); }
   function srand(seed){ var s=seed|0; return function(){ s=(s*1664525+1013904223)>>>0; return (s&0xfffffff)/0xfffffff; }; }
   function fmtTime(d){ return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) + ' · ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+
+  /* Lazy-load shared/loan-app-panel.js (Credit Report + Loan App tab) on pages that ship
+     contact-panel.js but not the loan module (Settings / Reputation). Called only at
+     lead-open time, so pages that already include the module never re-fetch it. */
+  var _loanModLoading = false;
+  function ensureLoanModule(cb){
+    if(typeof window.renderCPLoanAppTab === 'function' && typeof window.openCreditReport === 'function'){ cb(); return; }
+    if(_loanModLoading){ return; }
+    var here = null, scripts = document.getElementsByTagName('script');
+    for(var i=0;i<scripts.length;i++){ if(/shared\/contact-panel\.js(\?|$)/.test(scripts[i].src||'')){ here = scripts[i].src; break; } }
+    if(!here){ cb(); return; }
+    _loanModLoading = true;
+    var s = document.createElement('script');
+    s.src = here.replace(/contact-panel\.js(\?.*)?$/, 'loan-app-panel.js');
+    s.onload = function(){ _loanModLoading = false; cb(); };
+    s.onerror = function(){ _loanModLoading = false; cb(); };
+    document.head.appendChild(s);
+  }
 
   function buildPanel(){
     if(document.getElementById('contact-panel-shared')) return;
@@ -340,6 +366,9 @@
       html = '<div style="display:flex;flex-direction:column;gap:8px;">'+(nl.length?nl.map(renderNoteItem).join(''):'<div style="text-align:center;color:var(--mu);padding:30px;">No notes yet.</div>')+'</div>';
     } else if(STATE.tab === 'activity'){
       html = '<div>'+activityList(L).map(renderActivityItem).join('')+'</div>';
+    } else if(STATE.tab === 'loanapp'){
+      if(typeof window.renderCPLoanAppTab === 'function'){ window.cpLead = L; box.innerHTML = ''; window.renderCPLoanAppTab(box); return; }
+      html = '<div style="text-align:center;color:var(--mu);padding:40px;">Loan application view unavailable.</div>';
     }
     box.innerHTML = html || '<div style="text-align:center;color:var(--mu);padding:40px;">Nothing to show.</div>';
     box.scrollTop = box.scrollHeight;
@@ -393,6 +422,20 @@
     var lead = (window.CCLeads && CCLeads.LEADS) ? CCLeads.LEADS.find(function(l){ return l.no === leadNo; }) : null;
     if(!lead) lead = { no:leadNo, name:'Lead #'+leadNo };
     STATE.leadNo = leadNo; STATE.lead = lead;
+    window.cpLead = lead;   // bridge for loan-app-panel.js (Credit Report + Loan App tab)
+    // Loan-App-only affordances: Credit Report button + Loan App tab.
+    // Shown when the lead's source is 'Loan App' and the loan module is available; if the
+    // module isn't loaded on this page yet, lazy-load it then re-apply the gating.
+    function _applyLoanGating(){
+      var has = (typeof window.renderCPLoanAppTab === 'function' && typeof window.openCreditReport === 'function');
+      var on = (has && STATE.lead && STATE.lead.source === 'Loan App');
+      var b = document.getElementById('cp-credit-btn'); if(b) b.style.display = on ? '' : 'none';
+      var t = document.getElementById('cp-tab-loanapp'); if(t) t.style.display = on ? '' : 'none';
+    }
+    _applyLoanGating();
+    if(lead && lead.source === 'Loan App' && typeof window.renderCPLoanAppTab !== 'function'){
+      ensureLoanModule(function(){ if(STATE.lead === lead){ _applyLoanGating(); if(STATE.tab === 'loanapp') renderTab(); } });
+    }
     // Populate top bar + sidebar
     var av = lead.ac || '#4f7cff';
     document.getElementById('cp-name').textContent = lead.name || ('Lead #'+leadNo);
@@ -443,15 +486,20 @@
   };
   window.setCPTab = function(el, tab){
     STATE.tab = tab;
+    window.cpTab = tab;   // bridge for loan-app-panel.js
     document.querySelectorAll('#contact-panel-shared .cp-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === tab); });
     var title = document.getElementById('cp-topbar-title');
-    if(title) title.textContent = ({sms:'Send SMS', email:'Send Email', files:'Files', notes:'Notes', calls:'Call Logs', activity:'Activity', all:'All Conversations'})[tab] || 'Conversation';
+    if(title) title.textContent = ({sms:'Send SMS', email:'Send Email', files:'Files', notes:'Notes', calls:'Call Logs', activity:'Activity', loanapp:'Loan Application', all:'All Conversations'})[tab] || 'Conversation';
     var sel = document.getElementById('cp-type-select');
     if(sel){
       if(tab === 'email') sel.value = 'Email';
       else if(tab === 'notes') sel.value = 'Notes';
       else sel.value = 'SMS';
     }
+    // Loan App tab is read-only — hide the composer + summary card
+    var _ro = (tab === 'loanapp');
+    var _compose = document.querySelector('#contact-panel-shared .cp-compose'); if(_compose) _compose.style.display = _ro ? 'none' : '';
+    var _summary = document.getElementById('cp-summary'); if(_summary) _summary.style.display = _ro ? 'none' : '';
     renderTab();
   };
 

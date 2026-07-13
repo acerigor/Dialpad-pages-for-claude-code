@@ -307,3 +307,155 @@
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
+/* Loan-app quick-link icon in the top header + leads panel (auto-injected) */
+(function(){
+  function laEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function laLeads(){
+    if(!window.CCLeads || !Array.isArray(CCLeads.LEADS)) return [];
+    return CCLeads.LEADS.filter(function(l){ return (l && l.source || '').toLowerCase() === 'loan app'; });
+  }
+  /* Ensure CCLeads (from shared/leads-comms.js) is loaded — some pages (Settings, Reputation)
+     ship the bell/notifications.js but not leads-comms.js, so the panel would be empty. */
+  var _laLeadsLoading = false;
+  function laEnsureLeadsData(cb){
+    if(window.CCLeads && Array.isArray(window.CCLeads.LEADS)){ cb(); return; }
+    if(_laLeadsLoading){ return; }
+    // Derive the leads-comms.js URL from the notifications.js <script> tag (same shared/ folder).
+    var here = null, scripts = document.getElementsByTagName('script');
+    for(var i = 0; i < scripts.length; i++){ if(/shared\/notifications\.js(\?|$)/.test(scripts[i].src || '')){ here = scripts[i].src; break; } }
+    if(!here){ cb(); return; }   // can't resolve — render empty state
+    _laLeadsLoading = true;
+    var s = document.createElement('script');
+    s.src = here.replace(/notifications\.js(\?.*)?$/, 'leads-comms.js');
+    s.onload = function(){ _laLeadsLoading = false; cb(); };
+    s.onerror = function(){ _laLeadsLoading = false; cb(); };
+    document.head.appendChild(s);
+  }
+  function laBuildPanel(){
+    if(document.getElementById('loanapp-panel')) return;
+    var p = document.createElement('div');
+    p.id = 'loanapp-panel';
+    p.className = 'notif-panel';
+    p.innerHTML =
+        '<div class="notif-header">'
+      +   '<span class="notif-title">Loan App leads</span>'
+      +   '<div class="notif-header-actions">'
+      +     '<button class="notif-close" onclick="window.closeLoanAppPanel && window.closeLoanAppPanel()" aria-label="Close">'
+      +       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      +     '</button>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="notif-body" id="loanapp-body"></div>'
+      + '<div class="notif-footer">'
+      +   '<button class="notif-seeall" onclick="window.location.href=\'/coreconnect_leads_v83/coreconnect_leads_v83.html?source=Loan+App\'">See all in CRM</button>'
+      + '</div>';
+    document.body.appendChild(p);
+  }
+  var LA_CAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>';
+  function laInitials(name){
+    var s = String(name || '').trim();
+    if(!s || /unknown/i.test(s)){ return s ? s.charAt(0).toUpperCase() : '?'; }
+    var parts = s.split(/\s+/);
+    return (parts[0].charAt(0) + (parts[1] ? parts[1].charAt(0) : '')).toUpperCase();
+  }
+  /* Ensure the shared .cc-ntf-* row styles exist (bell injects them too; idempotent by id) */
+  function laEnsureCss(){
+    if(document.getElementById('cc-ntf-style')) return;
+    var css = ''
+      + '.cc-ntf-row{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--brd);cursor:pointer;text-align:left;font-family:var(--font);transition:background .12s;position:relative;}'
+      + '.cc-ntf-row:hover{background:rgba(255,255,255,.04);}'
+      + '.cc-ntf-row:last-child{border-bottom:none;}'
+      + '.cc-ntf-ic{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;}'
+      + '.cc-ntf-ic svg{width:15px;height:15px;}'
+      + '.cc-ntf-av{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;letter-spacing:.3px;margin-top:2px;}'
+      + '.cc-ntf-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}'
+      + '.cc-ntf-line{font-size:12.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
+      + '.cc-ntf-line strong{font-weight:600;}'
+      + '.cc-ntf-body{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
+      + '.cc-ntf-time{font-size:11px;color:var(--mu);margin-top:1px;}';
+    var st = document.createElement('style'); st.id = 'cc-ntf-style'; st.textContent = css; document.head.appendChild(st);
+  }
+  function laRender(){
+    laBuildPanel();
+    laEnsureCss();
+    var body = document.getElementById('loanapp-body'); if(!body) return;
+    var list = laLeads();
+    if(!list.length){
+      body.innerHTML = '<div class="notif-empty">No new loan-app leads.</div>';
+      return;
+    }
+    body.innerHTML = list.map(function(l){
+      var vehicle = l.vehicle && l.vehicle !== '—' ? l.vehicle : 'No vehicle';
+      var meta = [vehicle, l.status].filter(Boolean).map(laEsc).join(' · ');
+      return '<button class="cc-ntf-row" onclick="window.closeLoanAppPanel && window.closeLoanAppPanel(); if(window.openContactPanel){ window.openContactPanel(' + Number(l.no) + ', \'all\'); }">'
+        + '<span class="cc-ntf-ic" style="background:rgba(79,124,255,.14);color:var(--ac2)">' + LA_CAR + '</span>'
+        + '<span class="cc-ntf-av" style="background:' + laEsc(l.ac || '#4f7cff') + '">' + laEsc(laInitials(l.name)) + '</span>'
+        + '<span class="cc-ntf-txt">'
+        +   '<span class="cc-ntf-line"><strong>New application</strong> · ' + laEsc(l.name || 'Unknown') + '</span>'
+        +   '<span class="cc-ntf-body">' + meta + '</span>'
+        +   '<span class="cc-ntf-time">' + laEsc(l.lastAttempt || '') + '</span>'
+        + '</span>'
+      + '</button>';
+    }).join('');
+  }
+  function laPosition(){
+    var p = document.getElementById('loanapp-panel'), btn = document.getElementById('header-loanapp');
+    if(!p || !btn) return;
+    var r = btn.getBoundingClientRect(); var w = p.offsetWidth || 380;
+    p.style.top = (r.bottom + 8) + 'px';
+    p.style.left = Math.max(8, r.right - w) + 'px';
+  }
+  function laOpen(){
+    laBuildPanel();
+    laEnsureCss();
+    // Close bell panel if it's open — only one dropdown visible at a time
+    if(typeof window.closeNotifications === 'function'){ try{ window.closeNotifications(); }catch(e){} }
+    var p = document.getElementById('loanapp-panel'); if(!p) return;
+    var btn = document.getElementById('header-loanapp'); if(btn) btn.classList.add('active');
+    // Show immediately (with a loading state if lead data isn't ready yet), then render once data is available.
+    var bodyEl = document.getElementById('loanapp-body');
+    if(bodyEl && !(window.CCLeads && window.CCLeads.LEADS)){ bodyEl.innerHTML = '<div class="notif-empty">Loading…</div>'; }
+    else { laRender(); }
+    p.classList.add('open');
+    laPosition();
+    laEnsureLeadsData(function(){ if(p.classList.contains('open')){ laRender(); laPosition(); } });
+  }
+  function laClose(){
+    var p = document.getElementById('loanapp-panel'); if(p) p.classList.remove('open');
+    var btn = document.getElementById('header-loanapp'); if(btn) btn.classList.remove('active');
+  }
+  function laToggle(){
+    var p = document.getElementById('loanapp-panel');
+    if(p && p.classList.contains('open')) laClose(); else laOpen();
+  }
+  window.toggleLoanAppPanel = laToggle;
+  window.closeLoanAppPanel = laClose;
+  window.openLoanAppPanel = laOpen;
+
+  function injectLoanAppIcon(){
+    var bell = document.getElementById('header-bell'); if(!bell) return;
+    if(document.getElementById('header-loanapp')) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'header-bell';
+    btn.id = 'header-loanapp';
+    btn.setAttribute('data-label','Loan app');
+    btn.setAttribute('aria-label','Loan app');
+    btn.onclick = function(e){ if(e) e.stopPropagation(); laToggle(); };
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>'
+      + '<circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>'
+      + '</svg>';
+    bell.parentNode.insertBefore(btn, bell);
+  }
+  document.addEventListener('mousedown', function(e){
+    var p = document.getElementById('loanapp-panel'); if(!p || !p.classList.contains('open')) return;
+    if(e.target.closest && (e.target.closest('#loanapp-panel') || e.target.closest('#header-loanapp'))) return;
+    laClose();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') laClose(); });
+  window.addEventListener('resize', function(){ var p = document.getElementById('loanapp-panel'); if(p && p.classList.contains('open')) laPosition(); });
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectLoanAppIcon);
+  else injectLoanAppIcon();
+})();

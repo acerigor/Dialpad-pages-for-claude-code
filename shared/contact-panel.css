@@ -1212,3 +1212,153 @@
 
 
   .cp-mobile-back:hover{background:rgba(255,255,255,.05);}
+
+/* ===== Loan-App features ported from CRM leads page (Credit Report + Loan App tab) ===== */
+  /* Sidebar "Credit Report" button (Loan App leads only) */
+  .cp-credit-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:4px;padding:9px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background .15s;}
+  .cp-credit-btn:hover{background:var(--ac2);}
+  .cp-credit-btn svg{width:15px;height:15px;flex:none;}
+  /* Credit Report modal — light "document" (Experian soft-pull) */
+  #credit-modal-backdrop .modal{width:1040px;max-width:96%;height:calc(100vh - 48px);}
+  #credit-modal-body{flex:1;min-height:0;display:block;}
+  .credit-doc{background:#fff;color:#1f2430;border-radius:6px;overflow:hidden;font-family:var(--font);font-size:11px;line-height:1.45;}
+  .credit-doc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #e3e6ee;}
+  .credit-print{background:#3b5bdb;color:#fff;border:none;border-radius:4px;padding:6px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);flex:none;}
+  .credit-print:hover{background:#2f49b0;}
+  .credit-title{text-align:center;flex:1;}
+  .credit-date{color:#3b5bdb;font-weight:700;font-size:14px;}
+  .credit-subtitle{font-weight:700;color:#1f2430;font-size:14px;margin-top:2px;}
+  .credit-bureau{text-align:right;font-size:9.5px;color:#666;line-height:1.5;flex:none;}
+  .credit-sec{border-bottom:1px solid #eef0f5;}
+  .credit-sec-head{display:flex;align-items:center;justify-content:space-between;background:#eef3ff;padding:6px 14px;color:#3b5bdb;font-weight:700;font-size:12px;cursor:pointer;}
+  .credit-sec.collapsed .credit-sec-body{display:none;}
+  .credit-sec-hide{font-size:10px;color:#9aa0ad;font-weight:400;cursor:pointer;}
+  .credit-sec-body{padding:10px 14px;}
+  .credit-kv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:5px 24px;}
+  .credit-kv{display:flex;gap:8px;min-width:0;}
+  .credit-k{color:#7a8194;flex:none;min-width:108px;}
+  .credit-v{color:#1f2430;font-weight:600;min-width:0;word-break:break-word;}
+  .credit-emp{padding:6px 0;border-bottom:1px dashed #e8ebf2;}
+  .credit-emp:last-child{border-bottom:none;}
+  /* CBC Auto Summary table */
+  .credit-auto-wrap{overflow-x:auto;}
+  .credit-auto-table{width:100%;border-collapse:collapse;font-size:10.5px;color:#1f2430;}
+  .credit-auto-table th{text-align:left;vertical-align:top;font-weight:700;color:#3b5bdb;text-decoration:underline;padding:6px 8px;background:#eef3ff;white-space:nowrap;position:static;}
+  .credit-auto-table td{vertical-align:top;padding:6px 8px;white-space:nowrap;}
+  .credit-auto-table tbody tr:nth-child(odd){background:#fff;}
+  .credit-auto-table tbody tr:nth-child(even){background:#eef3ff;}
+  .credit-auto-sub{color:#5a6473;}
+  /* Report Summary — 3-column label/value grid */
+  .credit-rs{display:grid;grid-template-columns:repeat(3,1fr);gap:0 32px;}
+  .credit-rs-col{display:flex;flex-direction:column;}
+  .credit-rs-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:3px 0;font-size:11.5px;}
+  .credit-rs-k{color:#1f2430;font-weight:600;}
+  .credit-rs-v{color:#1f2430;text-align:right;white-space:nowrap;}
+  @media (max-width:640px){ .credit-rs{grid-template-columns:1fr;} }
+  /* Scorecards — label/value block */
+  .credit-sc-row{display:flex;gap:12px;padding:2px 0;font-size:11.5px;}
+  .credit-sc-k{color:#1f2430;font-weight:700;flex:none;min-width:78px;}
+  .credit-sc-v{color:#1f2430;}
+  .credit-sc-score{font-weight:700;}
+  .credit-sc-reasons{display:flex;flex-direction:column;gap:3px;}
+  /* Trade Lines — compact cards */
+  .credit-tl{display:flex;flex-direction:column;gap:10px;}
+  .credit-tl-card{border:0.5px solid #dfe3ec;border-radius:6px;padding:9px 11px;background:#fff;}
+  .credit-tl-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #eef0f5;}
+  .credit-tl-firm{font-weight:700;color:#1f2430;font-size:12px;}
+  .credit-tl-acct{color:#7a8194;font-size:10.5px;font-family:var(--mono);white-space:nowrap;}
+  .credit-tl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:3px 18px;}
+  .credit-tl-f{display:flex;justify-content:space-between;gap:10px;font-size:11px;min-width:0;}
+  .credit-tl-k{color:#7a8194;flex:none;}
+  .credit-tl-v{color:#1f2430;font-weight:500;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .credit-tl-pat{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin-top:6px;}
+  .credit-tl-mono{font-family:var(--mono);color:#1f2430;letter-spacing:1px;}
+  .credit-tl-comment{margin-top:5px;font-size:11px;color:#5a6473;font-style:italic;}
+  /* Inquiries — table (mirrors CBC Auto Summary) */
+  .credit-inq-wrap{overflow-x:auto;}
+  .credit-inq-table{width:100%;border-collapse:collapse;font-size:10.5px;color:#1f2430;}
+  .credit-inq-table th{text-align:left;padding:6px 8px;color:#3b5bdb;background:#eef3ff;white-space:nowrap;position:static;border-bottom:1px solid #d8e0f5;font-weight:600;}
+  .credit-inq-table td{padding:5px 8px;white-space:nowrap;}
+  .credit-inq-table tbody tr:nth-child(odd){background:#fff;}
+  .credit-inq-table tbody tr:nth-child(even){background:#eef3ff;}
+  /* Warning Messages — striped list */
+  .credit-warn{border:1px solid #d8e0f5;border-radius:5px;overflow:hidden;}
+  .credit-warn-row{padding:7px 10px;font-size:11.5px;color:#1f2430;border-bottom:1px solid #e4e9f6;}
+  .credit-warn-row:last-child{border-bottom:none;}
+  .credit-warn-row:nth-child(odd){background:#eef3ff;}
+  .credit-warn-row:nth-child(even){background:#fff;}
+  @media (max-width:640px){ .credit-doc-top{flex-direction:column;align-items:stretch;gap:8px;} .credit-bureau{text-align:left;} .credit-kv-grid{grid-template-columns:1fr;} }
+  /* Loan App tab — read-only application summary */
+  .cp-loan{display:flex;flex-direction:column;gap:18px;width:100%;}
+  .cp-loan-section{display:flex;flex-direction:column;gap:10px;}
+  .cp-loan-sec-title{font-size:10px;font-weight:600;color:#6e9dff;text-transform:uppercase;letter-spacing:.6px;padding-bottom:6px;border-bottom:0.5px solid rgba(255,255,255,.07);}
+  .cp-loan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;}
+  @media (max-width:640px){ .cp-loan-grid{grid-template-columns:1fr;} }
+  /* Loan App tab — header band */
+  .cp-loan-header{display:flex;flex-wrap:wrap;gap:16px 20px;align-items:flex-start;padding:14px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;}
+  .cp-loan-people{display:flex;flex-direction:column;gap:12px;flex:1 1 220px;min-width:200px;}
+  .cp-loan-person-label{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  .cp-loan-person-main{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:13px;font-weight:600;color:var(--tx);}
+  .cp-loan-person-ic{color:var(--mu);display:flex;flex:none;}
+  .cp-loan-person-sub{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;}
+  .cp-loan-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ac2);font-family:var(--mono);white-space:nowrap;}
+  .cp-loan-chip svg{flex:none;opacity:.85;}
+  .cp-loan-timer{background:rgba(245,166,35,.16);color:#f5a623;padding:2px 8px;border-radius:5px;}
+  .cp-loan-gauges{display:flex;gap:14px;flex:0 0 auto;}
+  .cp-loan-gauge{display:flex;flex-direction:column;align-items:center;width:104px;}
+  .cp-loan-gauge-svg{width:104px;height:58px;display:block;}
+  .cp-loan-gauge-scale{display:flex;justify-content:space-between;width:100%;margin-top:2px;font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.2px;}
+  .cp-loan-gauge-val{margin-top:3px;font-size:20px;font-weight:700;font-family:var(--mono);line-height:1;}
+  .cp-band-poor{color:#e85555;} .cp-band-good{color:#f5a623;} .cp-band-exc{color:#22c88a;} .cp-band-none{color:var(--mu);}
+  .cp-loan-metacol{display:flex;flex-direction:column;gap:14px;flex:0 1 auto;min-width:130px;}
+  .cp-loan-meta-label{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+  .cp-loan-meta-age{margin-top:3px;font-size:14px;font-weight:700;color:var(--ac2);font-family:var(--mono);}
+  .cp-loan-meta-store{margin-top:3px;font-size:13px;color:var(--tx);}
+  /* Loan App header — document checklist */
+  /* Loan App tab — Application Summary card */
+  .cp-loan-summary{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .cp-loan-sum-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(110,157,255,.12);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;color:var(--ac2);}
+  .cp-loan-sum-banner svg{flex:none;}
+  .cp-loan-sum-body{display:flex;flex-wrap:wrap;gap:16px 22px;padding:16px 14px;}
+  .cp-loan-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;flex:1 1 320px;min-width:0;}
+  .cp-loan-mcol{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .cp-loan-metric{display:flex;align-items:center;gap:8px;font-size:12px;min-width:0;}
+  .cp-loan-check{flex:none;}
+  .cp-loan-mlabel{flex:1;min-width:0;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cp-loan-mval{flex:none;color:var(--tx);font-family:var(--mono);font-size:11.5px;}
+  .cp-loan-lenders{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 14px;}
+  .cp-loan-lender{display:inline-flex;align-items:center;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;}
+  @media (max-width:640px){ .cp-loan-metrics{grid-template-columns:1fr;} }
+  /* Loan App tab — Finance Form Information card */
+  .cp-loan-form{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .cp-loan-form-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;background:rgba(110,157,255,.12);border-bottom:0.5px solid var(--brd2);}
+  .cp-loan-form-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ac2);}
+  .cp-loan-form-title svg{flex:none;}
+  .cp-loan-form-btns{display:flex;gap:8px;flex:none;}
+  .cp-loan-fbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:6px;border:none;background:var(--ac);color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;}
+  .cp-loan-fbtn:hover{background:var(--ac2);}
+  .cp-loan-fbtn svg{flex:none;}
+  .cp-loan-form-body{display:flex;flex-direction:column;gap:16px;padding:14px;}
+  .cp-loan-pd-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--tx);}
+  .cp-loan-dot{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none;}
+  .cp-loan-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 14px;}
+  .cp-loan-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .cp-loan-flabel{font-size:11px;color:var(--mu);}
+  .cp-loan-fbox{display:flex;align-items:stretch;background:var(--sur);border:0.5px solid var(--brd2);border-radius:7px;overflow:hidden;min-height:38px;}
+  .cp-loan-fbox .cp-loan-fval,.cp-loan-fbox .cp-loan-fph{flex:1;min-width:0;display:flex;align-items:center;padding:0 11px;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cp-loan-fbox .cp-loan-fval{color:var(--tx);}
+  .cp-loan-fbox .cp-loan-fph{color:var(--mu);}
+  .cp-loan-fprefix{display:flex;align-items:center;padding:0 11px;background:var(--sur2);border-right:0.5px solid var(--brd2);font-size:12px;color:var(--tx);flex:none;}
+  .cp-loan-fbox.is-hl{background:#1f7d3d;border-color:#22c88a;}
+  .cp-loan-fbox.is-hl .cp-loan-fval{color:#eafff1;}
+  .cp-loan-subcard{border:0.5px solid var(--brd2);border-radius:8px;overflow:hidden;}
+  .cp-loan-subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--ac2);background:rgba(255,255,255,.02);border-bottom:0.5px solid var(--brd2);width:100%;}
+  .cp-loan-subtab svg{flex:none;}
+  .cp-loan-cells{display:grid;grid-template-columns:repeat(2,1fr);}
+  .cp-loan-cell{padding:10px 12px;border-top:0.5px solid var(--brd);border-right:0.5px solid var(--brd);min-width:0;}
+  .cp-loan-cell:nth-child(2n){border-right:none;}
+  .cp-loan-cell-head{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);margin-bottom:5px;}
+  .cp-loan-cell-head svg{flex:none;}
+  .cp-loan-cell-val{font-size:13px;color:var(--tx);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cp-loan-cell-val.is-empty{min-height:17px;}
+  @media (max-width:640px){ .cp-loan-fields{grid-template-columns:1fr;} .cp-loan-cells{grid-template-columns:1fr;} .cp-loan-cell{border-right:none;} }

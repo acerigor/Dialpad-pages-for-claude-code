@@ -1,0 +1,317 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/settings.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+.root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+@media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
+
+/* Preferences */
+.np-intro{padding:16px 24px;color:var(--mu);font-size:13px;border-bottom:0.5px solid var(--brd);}
+.np-list{padding:16px 24px 24px;display:flex;flex-direction:column;gap:8px;max-width:820px;margin:0 auto;width:100%;}
+.np-row{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;cursor:pointer;transition:background .12s,border-color .12s;}
+.np-row:hover{background:var(--sur2);border-color:rgba(255,255,255,.14);}
+.np-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;}
+.np-ic.info{background:rgba(79,124,255,.14);color:var(--ac2);}
+.np-ic.ok  {background:rgba(34,200,138,.14);color:var(--gr);}
+.np-ic.warn{background:rgba(245,166,35,.15);color:var(--am);}
+.np-ic.err {background:rgba(232,85,85,.16);color:var(--rd);}
+.np-ic svg{width:18px;height:18px;}
+.np-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.np-title{font-size:13.5px;font-weight:600;color:var(--tx);}
+.np-sub{font-size:12.5px;color:var(--mu);line-height:1.45;}
+/* Toggle switch */
+.np-switch{position:relative;width:36px;height:20px;flex:none;}
+.np-switch input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2;}
+.np-switch-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:99px;transition:background .12s,border-color .12s;}
+.np-switch-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--mu);border-radius:50%;transition:transform .15s,background .12s;}
+.np-switch input:checked + .np-switch-track{background:var(--ac);border-color:var(--ac);}
+.np-switch input:checked + .np-switch-track::after{transform:translateX(16px);background:#fff;}
+/* Sticky footer */
+.np-footer{position:sticky;bottom:0;display:flex;justify-content:flex-end;gap:8px;padding:14px 24px;background:var(--bg);border-top:0.5px solid var(--brd);z-index:10;}
+.np-footer button[disabled]{opacity:.4;cursor:not-allowed;}
+.np-empty{padding:60px 20px;text-align:center;color:var(--mu);font-size:13px;background:var(--sur);border:0.5px dashed var(--brd2);border-radius:12px;max-width:520px;margin:24px auto;}
+.np-empty-icon{font-size:36px;opacity:.5;margin-bottom:10px;}
+
+/* Ur head + notif panel */
+.ur-head-spacer{flex:1;}
+.notif-panel{display:none;position:fixed;top:64px;right:24px;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.55);z-index:70;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;align-items:center;gap:6px;}
+.notif-markall{background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;}
+.notif-close{display:none;}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:8px 10px;border-bottom:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);background:var(--sur2);padding:2px 6px;border-radius:8px;}
+.notif-body{overflow-y:auto;flex:1;min-height:120px;}
+.notif-footer{padding:8px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+.notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer;}
+
+@media (max-width:640px){
+  .np-intro{padding:12px 16px;}
+  .np-list{padding:12px 16px 20px;}
+  .np-footer{padding:12px 16px;}
+}
+</style>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+    </button>
+  </div>
+</div>
+
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header"><span class="notif-title">Notifications</span><div class="notif-header-actions"><button class="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button></div></div>
+  <div class="notif-tabs"><button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button><button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button></div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer"><button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button></div>
+</div>
+
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <div class="sb-item" data-nav="home" data-label="Dashboard" onclick="navClick('Home')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg></div>
+    <div class="sb-item" data-nav="crm" data-label="CRM Customer" onclick="navClick('CRM')"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg></div>
+    <div class="sb-item" data-nav="call" data-label="Call History" onclick="navClick('Call')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+    <div class="sb-item" data-nav="message" data-label="Message History" onclick="navClick('Message')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="sb-item" data-nav="voicemail" data-label="Voice mail History" onclick="navClick('Voice mail')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg></div>
+    <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <div class="sidebar-nav-spacer"></div>
+    <div class="sb-divider"></div>
+    <div class="sb-item active" data-nav="settings" data-label="Settings" onclick="navClick('Settings')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></div>
+  </div>
+  <div class="sb-account" onclick="navClick('Account')" title="Account">DP</div>
+</div>
+
+<div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="md-nav">
+    <div class="md-item" onclick="navClick('Home');closeMobileDrawer();"><span>Dashboard</span></div>
+    <div class="md-item" onclick="navClick('CRM');closeMobileDrawer();"><span>CRM Customer</span></div>
+    <div class="md-item" onclick="navClick('Call');closeMobileDrawer();"><span>Call History</span></div>
+    <div class="md-item" onclick="navClick('Message');closeMobileDrawer();"><span>Message History</span></div>
+    <div class="md-item" onclick="navClick('Voice mail');closeMobileDrawer();"><span>Voice mail History</span></div>
+    <div class="md-item" onclick="navClick('Appointments');closeMobileDrawer();"><span>Appointments</span></div>
+    <div class="md-divider"></div>
+    <div class="md-item active" onclick="navClick('Settings');closeMobileDrawer();"><span>Settings</span></div>
+  </div>
+</div>
+
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="nav-toast-text"><strong id="nav-toast-title">Coming soon</strong><span id="nav-toast-body">This feature is under construction.</span></div>
+  <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
+</div>
+
+<div class="root main-area" id="root">
+  <div class="set-page-head">
+    <a class="ur-back" href="application_settings.html" title="Back to Application Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Application Settings</span>
+    </a>
+    <span class="set-page-title" id="np-page-title">Notification Preferences</span>
+    <span class="ur-head-spacer"></span>
+  </div>
+  <div class="set-scroll">
+    <div class="np-intro" id="np-intro">Choose which notifications this recipient will receive.</div>
+    <div class="np-list" id="np-list"></div>
+  </div>
+  <div class="np-footer">
+    <button class="modal-cancel" id="np-cancel" onclick="npCancel()" disabled>Cancel</button>
+    <button class="modal-save"   id="np-save"   onclick="npSave()"   disabled>Save changes</button>
+  </div>
+</div>
+
+<script>
+function navClick(label){
+  if(label === 'Settings'){ window.location.href = '../Settings_main_page/coreconnect_settings.html'; return; }
+  var routes = {
+    'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
+    'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
+    'Call':'../../call_history/coreconnect_call_history_v31.html',
+    'Message':'../../coreconnect_message_history_v41/coreconnect_message_history_v41.html',
+    'Voice mail':'../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
+    'Appointments':'../../coreconnect_appointments/coreconnect_appointments.html'
+  };
+  if(routes[label]){ window.location.href = routes[label]; return; }
+  showNavToast(label + ' is coming soon', 'This feature is under construction.');
+}
+function toggleMobileDrawer(){ var d=document.getElementById('mobile-drawer'),b=document.getElementById('mobile-drawer-backdrop'); if(!d||!b) return; if(d.classList.contains('open')) closeMobileDrawer(); else { d.classList.add('open'); b.classList.add('open'); } }
+function closeMobileDrawer(){ var d=document.getElementById('mobile-drawer'),b=document.getElementById('mobile-drawer-backdrop'); if(d) d.classList.remove('open'); if(b) b.classList.remove('open'); }
+var navToastTimer = null;
+function showNavToast(title, body){ var t=document.getElementById('nav-toast'); if(!t) return; if(title) document.getElementById('nav-toast-title').textContent=title; if(body) document.getElementById('nav-toast-body').textContent=body; t.classList.add('show'); if(navToastTimer) clearTimeout(navToastTimer); navToastTimer=setTimeout(hideNavToast,4000); }
+function hideNavToast(){ var t=document.getElementById('nav-toast'); if(t) t.classList.remove('show'); if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer=null; } }
+document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications === 'function') renderNotifications(); });
+
+/* ── Notification Preferences ─────────────────────────────────────────── */
+var NP_KEY = 'cc_loan_notif_prefs', NP_VER = 'v1';
+var _npUser = '';
+var _npSaved = {};
+var _npDraft = {};
+
+var NP_ICONS = {
+  loan_app:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
+  new_app:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+  credit:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><line x1="2" y1="11" x2="22" y2="11"/><line x1="6" y1="16" x2="10" y2="16"/></svg>',
+  lender_ok:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+  lender_no:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  doc_request:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="14" r="1"/><path d="M12 11v-1a1.5 1.5 0 1 1 3 0"/></svg>',
+  doc_received: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>',
+  status:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 12 13 12"/></svg>',
+  payment_due:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>',
+  repo:         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  aging:        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+};
+
+var NP_CATEGORIES = [
+  { key:'loan_app',     variant:'info', title:'Loan app',               sub:'Fires when a new vehicle loan application is created for a customer.' },
+  { key:'new_app',      variant:'info', title:'New application',        sub:'Fires when a customer submits a new loan application.' },
+  { key:'credit',       variant:'info', title:'Credit pulled',          sub:'Fires when a credit bureau returns a FICO / decision report.' },
+  { key:'lender_ok',    variant:'ok',   title:'Lender approved',        sub:'Fires when any lender returns an approval decision for one of this user\'s applications.' },
+  { key:'lender_no',    variant:'err',  title:'Lender declined',        sub:'Fires when a lender declines an application (with reason).' },
+  { key:'doc_request',  variant:'warn', title:'Document requested',     sub:'Fires when the deal needs a paystub, license, or other missing document from the applicant.' },
+  { key:'doc_received', variant:'ok',   title:'Document received',      sub:'Fires when a customer uploads a requested document.' },
+  { key:'status',       variant:'info', title:'Status change',          sub:'Fires when an application moves between funnel stages (Submitted → Under Review → Approved → Funded).' },
+  { key:'payment_due',  variant:'warn', title:'Payment due',            sub:'Fires 24h before an installment is drafted from the customer\'s account.' },
+  { key:'repo',         variant:'err',  title:'Repossession alert',     sub:'Fires when a delinquent account crosses the repo trigger threshold.' },
+  { key:'aging',        variant:'warn', title:'Application aging',      sub:'Fires when an application has been open more than 3 days without action.' }
+];
+
+function npEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function npAllOn(){ var out = {}; NP_CATEGORIES.forEach(function(c){ out[c.key] = true; }); return out; }
+function npLoad(userKey){
+  try{
+    var raw = localStorage.getItem(NP_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    if(p && p.ver === NP_VER && p.map && p.map[userKey]){
+      var saved = p.map[userKey], out = {};
+      NP_CATEGORIES.forEach(function(c){ out[c.key] = saved[c.key] !== undefined ? !!saved[c.key] : true; });
+      return out;
+    }
+  }catch(e){}
+  return npAllOn();
+}
+function npPersist(userKey, prefs){
+  try{
+    var raw = localStorage.getItem(NP_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    if(!p || p.ver !== NP_VER || !p.map) p = { ver:NP_VER, map:{} };
+    p.map[userKey] = prefs;
+    localStorage.setItem(NP_KEY, JSON.stringify(p));
+  }catch(e){}
+}
+function npResolveUser(userKey){
+  if(!window.CCLeads || !Array.isArray(CCLeads.TEAM)) return null;
+  for(var i=0;i<CCLeads.TEAM.length;i++){ if(CCLeads.TEAM[i].key === userKey) return CCLeads.TEAM[i]; }
+  return null;
+}
+function npReadUserFromUrl(){
+  var m = /[?&]user=([^&#]+)/.exec(window.location.search);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+function npDirty(){ return JSON.stringify(_npDraft) !== JSON.stringify(_npSaved); }
+function npRefreshFooter(){
+  var dirty = npDirty();
+  var save = document.getElementById('np-save'); if(save) save.disabled = !dirty;
+  var cancel = document.getElementById('np-cancel'); if(cancel) cancel.disabled = !dirty;
+}
+function npRender(){
+  var host = document.getElementById('np-list'); if(!host) return;
+  host.innerHTML = NP_CATEGORIES.map(function(c){
+    var on = !!_npDraft[c.key];
+    return '<label class="np-row">'
+      + '<div class="np-ic '+c.variant+'">'+NP_ICONS[c.key]+'</div>'
+      + '<div class="np-txt"><div class="np-title">'+npEsc(c.title)+'</div><div class="np-sub">'+npEsc(c.sub)+'</div></div>'
+      + '<span class="np-switch"><input type="checkbox" data-cat="'+npEsc(c.key)+'"'+(on?' checked':'')+' onchange="npToggle(\''+npEsc(c.key)+'\', this.checked)"/><span class="np-switch-track"></span></span>'
+      + '</label>';
+  }).join('');
+  npRefreshFooter();
+}
+function npToggle(key, on){
+  _npDraft[key] = !!on;
+  npRefreshFooter();
+}
+function npSave(){
+  if(!npDirty()) return;
+  npPersist(_npUser, _npDraft);
+  _npSaved = Object.assign({}, _npDraft);
+  npRefreshFooter();
+  showNavToast('Preferences saved', 'Notification preferences updated.');
+}
+function npCancel(){
+  if(!npDirty()) return;
+  _npDraft = Object.assign({}, _npSaved);
+  npRender();
+}
+(function npInit(){
+  var boot = function(){
+    _npUser = npReadUserFromUrl();
+    var member = npResolveUser(_npUser);
+    var title = document.getElementById('np-page-title');
+    if(!member){
+      if(title) title.textContent = 'Notification Preferences';
+      var intro = document.getElementById('np-intro'); if(intro) intro.style.display = 'none';
+      document.getElementById('np-list').innerHTML = '<div class="np-empty"><div class="np-empty-icon">👤</div><div>Unknown recipient.</div><div style="margin-top:6px;font-size:12px;">This page expects a <code>?user=&lt;KEY&gt;</code> URL param matching a team member.</div></div>';
+      return;
+    }
+    if(title) title.textContent = 'Notification Preferences — ' + member.name;
+    document.title = 'Notification Preferences — ' + member.name;
+    _npSaved = npLoad(_npUser);
+    _npDraft = Object.assign({}, _npSaved);
+    npRender();
+  };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+
+<script>
+(function(){
+  function portalSwitcher(){ var ps=document.getElementById('product-switcher'); if(ps && ps.parentElement!==document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher'); if(!logo||!ps) return; var r=logo.getBoundingClientRect(); ps.style.left=((window.innerWidth>640)?66:r.left)+'px'; ps.style.top=(r.bottom+8)+'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher'); if(!logo||!ps) return; portalSwitcher(); var w=!ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open',w); logo.classList.toggle('ps-open',w); }
+  function closeProductSwitcher(){ var logo=document.querySelector('.logo'),ps=document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'coreconnect'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps=document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+})();
+</script>
+
+<script>
+function toggleNotifications(e){ if(e) e.stopPropagation(); var p=document.getElementById('notif-panel'); if(!p) return; if(p.classList.contains('open')) closeNotifications(); else openNotifications(); }
+function openNotifications(){ var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell'); if(!p||!b) return; if(p.parentElement!==document.body) document.body.appendChild(p); positionNotifications(); p.classList.add('open'); b.classList.add('active'); }
+function closeNotifications(){ var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell'); if(p) p.classList.remove('open'); if(b) b.classList.remove('active'); }
+function positionNotifications(){ var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell'); if(!p||!b) return; var r=b.getBoundingClientRect(); var w=p.offsetWidth||420; p.style.top=(r.bottom+8)+'px'; p.style.left=Math.max(8, r.right-w)+'px'; }
+function setNotifTab(t){ document.querySelectorAll('.notif-tab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===t); }); }
+function markAllNotificationsRead(){}
+document.addEventListener('click', function(e){ var p=document.getElementById('notif-panel'),b=document.getElementById('header-bell'); if(p && p.classList.contains('open') && !(b&&b.contains(e.target)) && !p.contains(e.target)) closeNotifications(); });
+</script>
+
+<script src="../../shared/leads-comms.js"></script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>

@@ -2892,6 +2892,14 @@
 .pf-field-err{display:none;color:var(--rd);font-size:11.5px;margin-top:5px;}
 .pf-field input.pf-readonly{background:var(--sur);color:var(--mu);cursor:default;}
 .pf-field input.pf-readonly:focus{border-color:var(--brd2);}
+.pf-pass-wrap{position:relative;width:100%;}
+.pf-pass-wrap input{padding-right:38px;}
+.pf-eye{position:absolute;top:0;right:4px;height:40px;width:30px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;border-radius:6px;}
+.pf-eye:hover{color:var(--tx);}
+.pf-eye svg{width:16px;height:16px;}
+.pf-eye .pf-eye-hide{display:none;}
+.pf-eye.on .pf-eye-show{display:none;}
+.pf-eye.on .pf-eye-hide{display:block;}
 .pf-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8aec4' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;padding-right:36px;cursor:pointer;}
 .pf-select:hover{border-color:var(--ac);}
 /* While the dropdown is open (focused), flip the chevron to point up */
@@ -3232,8 +3240,8 @@
             </ul>
           </div>
         </div>
-        <div class="pf-field"><label for="pf-pass">Password</label><input type="password" id="pf-pass" autocomplete="new-password" aria-describedby="pf-pass-err" /><span class="pf-field-err" id="pf-pass-err">Password is required.</span></div>
-        <div class="pf-field"><label for="pf-pass2">Confirm Password</label><input type="password" id="pf-pass2" autocomplete="new-password" aria-describedby="pf-pass2-err" /><span class="pf-field-err" id="pf-pass2-err">Passwords do not match.</span></div>
+        <div class="pf-field"><label for="pf-pass">Password</label><div class="pf-pass-wrap"><input type="password" id="pf-pass" autocomplete="new-password" aria-describedby="pf-pass-err" /><button type="button" class="pf-eye" aria-label="Show password" onclick="pfTogglePw(this,'pf-pass')"><svg class="pf-eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg><svg class="pf-eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div><span class="pf-field-err" id="pf-pass-err">Password is required.</span></div>
+        <div class="pf-field"><label for="pf-pass2">Confirm Password</label><div class="pf-pass-wrap"><input type="password" id="pf-pass2" autocomplete="new-password" aria-describedby="pf-pass2-err" /><button type="button" class="pf-eye" aria-label="Show confirm password" onclick="pfTogglePw(this,'pf-pass2')"><svg class="pf-eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg><svg class="pf-eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div><span class="pf-field-err" id="pf-pass2-err">Passwords do not match.</span></div>
         <div class="pf-field"><label for="pf-mobile">Mobile</label><input type="tel" id="pf-mobile" autocomplete="off" /></div>
         <div class="pf-field"><label for="pf-ext">Extension</label><input type="text" id="pf-ext" autocomplete="off" /></div>
         <div class="pf-field"><label for="pf-phone">Phone Number</label><input type="text" id="pf-phone" class="pf-readonly" readonly tabindex="-1" aria-readonly="true" placeholder="—" /></div>
@@ -4039,6 +4047,13 @@ function _pfEmailTaken(email, exceptKey){
 function pfShowEmailErr(show){ pfShowFieldErr('pf-email','pf-email-err', show); }
 // Password fields: real on the form, but no plaintext is stored (no backend) — only a hasPassword flag.
 function pfClearPwErr(){ pfShowFieldErr('pf-pass','pf-pass-err',false); pfShowFieldErr('pf-pass2','pf-pass2-err',false); }
+function pfTogglePw(btn, id){
+  var inp = document.getElementById(id); if(!inp) return;
+  var reveal = inp.type === 'password';
+  inp.type = reveal ? 'text' : 'password';
+  btn.classList.toggle('on', reveal);
+  btn.setAttribute('aria-label', (reveal ? 'Hide ' : 'Show ') + (id === 'pf-pass2' ? 'confirm password' : 'password'));
+}
 // Returns {ok, changed}. Create requires a password + match; Edit keeps the existing
 // password when both fields are left as the ******** placeholder.
 function pfCheckPassword(){

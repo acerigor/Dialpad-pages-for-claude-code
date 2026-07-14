@@ -231,6 +231,15 @@ function npReadUserFromUrl(){
   var m = /[?&]user=([^&#]+)/.exec(window.location.search);
   return m ? decodeURIComponent(m[1]) : '';
 }
+function npReadDeptFromUrl(){
+  var m = /[?&]dept=([^&#]+)/.exec(window.location.search);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+function npResolveDept(name){
+  if(!name || !window.CCLeads || !Array.isArray(CCLeads.TEAM)) return null;
+  for(var i=0;i<CCLeads.TEAM.length;i++){ if((CCLeads.TEAM[i].dept || '') === name) return name; }
+  return null;
+}
 function npDirty(){ return JSON.stringify(_npDraft) !== JSON.stringify(_npSaved); }
 function npRefreshFooter(){
   var dirty = npDirty();
@@ -267,9 +276,27 @@ function npCancel(){
 }
 (function npInit(){
   var boot = function(){
+    var title = document.getElementById('np-page-title');
+    // Department preferences page: notifications.html?dept=<Name>
+    var deptName = npReadDeptFromUrl();
+    if(deptName){
+      var d = npResolveDept(deptName);
+      if(!d){
+        if(title) title.textContent = 'Notification Preferences';
+        var dintro = document.getElementById('np-intro'); if(dintro) dintro.style.display = 'none';
+        document.getElementById('np-list').innerHTML = '<div class="np-empty"><div class="np-empty-icon">🏢</div><div>Unknown department.</div><div style="margin-top:6px;font-size:12px;">This page expects a <code>?dept=&lt;Name&gt;</code> URL param matching a team department.</div></div>';
+        return;
+      }
+      _npUser = 'dept:' + d;
+      if(title) title.textContent = 'Notification Preferences — ' + d + ' (Department)';
+      document.title = 'Notification Preferences — ' + d;
+      _npSaved = npLoad(_npUser);
+      _npDraft = Object.assign({}, _npSaved);
+      npRender();
+      return;
+    }
     _npUser = npReadUserFromUrl();
     var member = npResolveUser(_npUser);
-    var title = document.getElementById('np-page-title');
     if(!member){
       if(title) title.textContent = 'Notification Preferences';
       var intro = document.getElementById('np-intro'); if(intro) intro.style.display = 'none';

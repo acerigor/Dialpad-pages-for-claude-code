@@ -3464,6 +3464,8 @@
   .gs-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
   .gs-field-input:focus{border-color:var(--ac);}
   .gs-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .gs-btn-del{margin-right:auto;}
+  .gs-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .gs-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .gs-btn-cancel:hover{border-color:var(--mu);}
   .gs-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3651,7 +3653,6 @@
           <th class="gs-th-no">No.</th>
           <th>Name</th>
           <th>Google Sheet ID</th>
-          <th class="gs-th-act">Action</th>
         </tr></thead>
         <tbody id="gs-tbody"></tbody>
       </table>
@@ -3682,6 +3683,7 @@
       </div>
     </div>
     <div class="gs-modal-foot">
+      <button class="gs-btn-cancel gs-btn-del" id="gs-delete-btn" onclick="gsModalDelete()" hidden>Delete</button>
       <button class="gs-btn-cancel" onclick="gsCloseModal()">Cancel</button>
       <button class="gs-btn-save" onclick="gsSaveModal()">Save</button>
     </div>
@@ -4258,18 +4260,16 @@ function gsRender(){
   if(gsPage>tp) gsPage=tp;
   var start=(gsPage-1)*GS_PER, rows=list.slice(start, start+GS_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_gsQuery?'No sheets match your search.':'No Google Sheets yet — click Add Sheet.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_gsQuery?'No sheets match your search.':'No Google Sheets yet — click Add Sheet.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.gs-actions\'))gsEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.gs-actions\')){event.preventDefault();gsEdit(\''+it.id+'\');}">'+
         '<td class="gs-no">'+no+'</td>'+
         '<td>'+gsEsc(it.name)+'</td>'+
         '<td class="gs-id">'+gsEsc(it.sheetId)+'</td>'+
-        '<td><div class="gs-actions">'+
-          '<button class="gs-icon edit" onclick="gsEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="gs-icon del" onclick="gsDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4302,8 +4302,8 @@ function gsPageList(cur,tp){
 function gsGo(p){ var tp=Math.max(1,Math.ceil(gsFiltered().length/GS_PER)); if(p<1||p>tp) return; gsPage=p; gsRender(); }
 function gsOpenModal(){ document.getElementById('gs-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('gs-input-name'); if(i) i.focus(); }, 40); }
 function gsCloseModal(){ document.getElementById('gs-modal').classList.remove('open'); }
-function gsAdd(){ _gsEditId=null; document.getElementById('gs-modal-title').textContent='Add Sheet'; document.getElementById('gs-input-name').value=''; document.getElementById('gs-input-id').value=''; gsOpenModal(); }
-function gsEdit(id){ var it=gsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gsEditId=id; document.getElementById('gs-modal-title').textContent='Edit Sheet'; document.getElementById('gs-input-name').value=it.name; document.getElementById('gs-input-id').value=it.sheetId; gsOpenModal(); }
+function gsAdd(){ _gsEditId=null; document.getElementById('gs-modal-title').textContent='Add Sheet'; document.getElementById('gs-input-name').value=''; document.getElementById('gs-input-id').value=''; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=true; gsOpenModal(); }
+function gsEdit(id){ var it=gsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gsEditId=id; document.getElementById('gs-modal-title').textContent='Edit Sheet'; document.getElementById('gs-input-name').value=it.name; document.getElementById('gs-input-id').value=it.sheetId; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=false; gsOpenModal(); }
 function gsSaveModal(){
   var name=document.getElementById('gs-input-name').value.trim();
   var sheetId=document.getElementById('gs-input-id').value.trim();
@@ -4321,6 +4321,7 @@ function gsDelete(id){
   gsPersist(); gsRender();
   if(typeof showNavToast==='function') showNavToast('Sheet deleted', it.name+' was removed.');
 }
+function gsModalDelete(){ if(!_gsEditId) return; gsDelete(_gsEditId); gsCloseModal(); }
 function gsExport(){
   if(!gsItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no Google Sheets to export.'); return; }
   var rows=[['No.','Name','Google Sheet ID']].concat(gsItems.map(function(it,i){ return [String(i+1), it.name, String(it.sheetId||'')]; }));

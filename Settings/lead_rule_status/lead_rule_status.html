@@ -3458,6 +3458,8 @@
   .lrs-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
   .lrs-field-input:focus{border-color:var(--ac);}
   .lrs-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .lrs-btn-del{margin-right:auto;}
+  .lrs-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .lrs-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .lrs-btn-cancel:hover{border-color:var(--mu);}
   .lrs-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3660,7 +3662,6 @@
           <th>Status</th>
           <th>Hour</th>
           <th>Minutes</th>
-          <th class="lrs-th-act">Action</th>
         </tr></thead>
         <tbody id="lrs-tbody"></tbody>
       </table>
@@ -3695,6 +3696,7 @@
       </div>
     </div>
     <div class="lrs-modal-foot">
+      <button class="lrs-btn-cancel lrs-btn-del" id="lrs-delete-btn" onclick="lrsModalDelete()" hidden>Delete</button>
       <button class="lrs-btn-cancel" onclick="lrsCloseModal()">Cancel</button>
       <button class="lrs-btn-save" onclick="lrsSaveModal()">Save</button>
     </div>
@@ -4288,19 +4290,17 @@ function lrsRender(){
   if(lrsPage>tp) lrsPage=tp;
   var start=(lrsPage-1)*LRS_PER, rows=list.slice(start, start+LRS_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:30px;">'+(_lrsQuery?'No rules match your search.':'No lead rules yet — click Add Rule.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_lrsQuery?'No rules match your search.':'No lead rules yet — click Add Rule.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.lrs-actions\'))lrsEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.lrs-actions\')){event.preventDefault();lrsEdit(\''+it.id+'\');}">'+
         '<td class="lrs-no">'+no+'</td>'+
         '<td>'+(it.status?'<span class="lrs-status">'+lrsEsc(it.status)+'</span>':'<span style="color:var(--mu);">—</span>')+'</td>'+
         '<td class="lrs-num">'+(parseInt(it.hour,10)||0)+'</td>'+
         '<td class="lrs-num">'+(parseInt(it.minutes,10)||0)+'</td>'+
-        '<td><div class="lrs-actions">'+
-          '<button class="lrs-icon edit" onclick="lrsEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="lrs-icon del" onclick="lrsDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4333,8 +4333,8 @@ function lrsPageList(cur,tp){
 function lrsGo(p){ var tp=Math.max(1,Math.ceil(lrsFiltered().length/LRS_PER)); if(p<1||p>tp) return; lrsPage=p; lrsRender(); }
 function lrsOpenModal(){ document.getElementById('lrs-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('lrs-input-hour'); if(i) i.focus(); }, 40); }
 function lrsCloseModal(){ document.getElementById('lrs-modal').classList.remove('open'); }
-function lrsAdd(){ _lrsEditId=null; document.getElementById('lrs-modal-title').textContent='Add Rule'; lrsFillStatusSelect(''); document.getElementById('lrs-input-hour').value=''; document.getElementById('lrs-input-min').value=''; lrsOpenModal(); }
-function lrsEdit(id){ var it=lrsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _lrsEditId=id; document.getElementById('lrs-modal-title').textContent='Edit Rule'; lrsFillStatusSelect(it.status||''); document.getElementById('lrs-input-hour').value=it.hour; document.getElementById('lrs-input-min').value=it.minutes; lrsOpenModal(); }
+function lrsAdd(){ _lrsEditId=null; document.getElementById('lrs-modal-title').textContent='Add Rule'; lrsFillStatusSelect(''); document.getElementById('lrs-input-hour').value=''; document.getElementById('lrs-input-min').value=''; var d=document.getElementById('lrs-delete-btn'); if(d) d.hidden=true; lrsOpenModal(); }
+function lrsEdit(id){ var it=lrsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _lrsEditId=id; document.getElementById('lrs-modal-title').textContent='Edit Rule'; lrsFillStatusSelect(it.status||''); document.getElementById('lrs-input-hour').value=it.hour; document.getElementById('lrs-input-min').value=it.minutes; var d=document.getElementById('lrs-delete-btn'); if(d) d.hidden=false; lrsOpenModal(); }
 function lrsSaveModal(){
   var status=document.getElementById('lrs-input-status').value;
   var hourRaw=document.getElementById('lrs-input-hour').value.trim();
@@ -4355,6 +4355,7 @@ function lrsDelete(id){
   lrsPersist(); lrsRender();
   if(typeof showNavToast==='function') showNavToast('Rule deleted', it.hour+'h '+it.minutes+'m was removed.');
 }
+function lrsModalDelete(){ if(!_lrsEditId) return; lrsDelete(_lrsEditId); lrsCloseModal(); }
 function lrsExport(){
   if(!lrsItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no lead rules to export.'); return; }
   var rows=[['No.','Status','Hour','Minutes']].concat(lrsItems.map(function(it,i){ return [String(i+1), String(it.status||''), String(it.hour||0), String(it.minutes||0)]; }));

@@ -2964,6 +2964,8 @@
 .pf-cbx input:indeterminate ~ .pf-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
 .pf-cbx:hover .pf-cbx-box{border-color:var(--ac);}
 .pf-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:26px;}
+.pf-del-btn{margin-right:auto;}
+.pf-del-btn:hover{border-color:var(--rd);color:var(--rd);}
 /* Unsaved-changes confirm modal */
 .pf-confirm-backdrop{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:20px;}
 .pf-confirm-backdrop.open{display:flex;}
@@ -3258,6 +3260,7 @@
 
     <!-- Footer -->
     <div class="pf-foot">
+      <button class="modal-cancel pf-del-btn" id="pf-delete-btn" onclick="pfDelete()" hidden>Delete</button>
       <button class="modal-cancel" onclick="pfCancel()">Cancel</button>
       <button class="modal-save" id="pf-save-btn" onclick="pfUpdate()">Update</button>
     </div>
@@ -4000,6 +4003,7 @@ function pfShowNotFound(){
   var sc=document.getElementById('pf-sendcalls'); if(sc) sc.checked = !!(u && u.sendCalls);
   var pt=document.querySelector('.set-page-title'); if(pt) pt.textContent = PF_NEW ? 'New User' : (u ? u.name : 'User Profile');
   var saveBtn=document.getElementById('pf-save-btn'); if(saveBtn) saveBtn.textContent = PF_NEW ? 'Create user' : 'Update';
+  var delBtn=document.getElementById('pf-delete-btn'); if(delBtn) delBtn.hidden = PF_NEW;   // delete only in edit mode
   pfBuildPermMatrix(PF_PERM_SECTIONS, 'pf-perm-root', u && u.perms ? u.perms : null);
   pfBuildPermMatrix(PF_LEAD_SECTIONS, 'pf-lead-root', u && u.leadPerms ? u.leadPerms : null);
   pfBuildAccessMatrix(PF_TAB_SECTIONS, 'pf-tab-root', u && u.tabPerms ? u.tabPerms : null);
@@ -4103,6 +4107,13 @@ function pfUpdate(){
   setTimeout(function(){ window.location.href='../Users/coreconnect_user.html'; }, 550);
 }
 function pfCancel(){ pfGuardedNav('../Users/coreconnect_user.html'); }
+function pfDelete(){
+  if(PF_NEW) return;
+  var u=_pfUser();
+  if(window.CCLeads && CCLeads.removeTeamMember) CCLeads.removeTeamMember(PF_KEY);
+  showNavToast('User removed', (u?u.name:'User')+' was removed.');
+  setTimeout(function(){ window.location.href='../Users/coreconnect_user.html'; }, 550);
+}
 </script><!-- PRODUCT-SWITCHER:JS START -->
 <script>
 (function(){

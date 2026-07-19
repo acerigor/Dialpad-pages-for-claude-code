@@ -60,6 +60,57 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   .dl-head-spacer{display:none;}
   .dl-srch{width:auto;flex:1 1 160px;}
 }
+
+/* List rows */
+.ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:0.5px solid var(--brd);transition:background .15s;cursor:pointer;}
+.ur-row:hover{background:var(--sur2);}
+.ur-row:last-child{border-bottom:none;}
+.ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.10);color:var(--ac2);}
+.ur-row-ic svg{width:20px;height:20px;}
+.ur-row-txt{min-width:0;flex:1;}
+.ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);}
+.ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;}
+.dl-row-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dl-row-sub-empty{color:var(--mu);font-style:italic;}
+
+/* Permissions modal — chrome comes from shared/app.css */
+/* Desktop-only so the shared `modal-fullscreen-mobile` rules win on phones. */
+@media (min-width:641px){ #dlp-modal .modal{width:880px;max-width:calc(100vw - 40px);} }
+.dlp-btn-del{margin-right:auto;}
+.dlp-btn-del:hover{border-color:var(--rd);color:var(--rd);}
+.dlp-name-field{flex:none;}
+#dlp-perm-root{display:flex;flex-direction:column;gap:18px;flex:none;}
+
+/* Permission matrix */
+.dlp-perm-sec{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);flex:none;}
+.dlp-perm-sec-head{padding:11px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;letter-spacing:.2px;color:var(--tx);text-align:center;}
+.dlp-perm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.dlp-perm-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.dlp-perm-tbl th,.dlp-perm-tbl td{padding:9px 12px;border-bottom:0.5px solid var(--brd2);}
+.dlp-perm-tbl tr:last-child td{border-bottom:0;}
+.dlp-perm-tbl thead th{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:rgba(255,255,255,.02);}
+.dlp-perm-tbl thead th:first-child{text-align:left;}
+.dlp-perm-tbl thead th.dlp-perm-colh{text-align:center;width:110px;cursor:pointer;user-select:none;transition:color .12s;}
+.dlp-perm-tbl thead th.dlp-perm-colh:hover{color:var(--tx);}
+.dlp-perm-tbl thead th.dlp-perm-colh .dlp-perm-colh-in{display:inline-flex;flex-direction:column-reverse;align-items:center;gap:5px;line-height:1;}
+.dlp-perm-tbl tbody td:first-child{color:var(--tx);min-width:260px;}
+.dlp-perm-tbl tbody td.dlp-perm-cell{text-align:center;cursor:pointer;width:110px;}
+.dlp-perm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
+.dlp-cbx{position:relative;display:inline-block;width:17px;height:17px;vertical-align:middle;cursor:pointer;}
+.dlp-cbx input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.dlp-cbx .dlp-cbx-box{position:absolute;inset:0;border:1.5px solid var(--brd);border-radius:4px;background:var(--sur2);transition:background .12s,border-color .12s;}
+.dlp-cbx .dlp-cbx-box::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .12s;}
+.dlp-cbx input:checked ~ .dlp-cbx-box{background:var(--ac);border-color:var(--ac);}
+.dlp-cbx input:checked ~ .dlp-cbx-box::after{transform:rotate(45deg) scale(1);}
+.dlp-cbx input:indeterminate ~ .dlp-cbx-box{background:var(--ac);border-color:var(--ac);}
+.dlp-cbx input:indeterminate ~ .dlp-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
+.dlp-cbx:hover .dlp-cbx-box{border-color:var(--ac);}
+@media (max-width:640px){
+  .dlp-perm-tbl th,.dlp-perm-tbl td{padding:9px 8px;}
+  .dlp-perm-tbl thead th.dlp-perm-colh,.dlp-perm-tbl tbody td.dlp-perm-cell{width:58px;}
+  .dlp-perm-tbl tbody td:first-child{min-width:200px;}
+}
 </style>
 
 <!-- TOP HEADER -->
@@ -210,9 +261,31 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   </div>
   <div class="set-scroll">
     <section class="set-section">
-      <!-- Shell only — the department lead permission list goes here in a follow-up turn. -->
-      <div class="dl-empty" id="dl-empty">No department lead permissions yet — click "Add" to create one.</div>
+      <div class="ur-list" id="dl-list"></div>
+      <div class="dl-empty" id="dl-empty" hidden>No department lead permissions yet — click "Add" to create one.</div>
     </section>
+  </div>
+</div>
+
+<!-- LEAD PERMISSIONS MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="dlp-modal" onclick="if(event.target===this)dlpClose()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlp-modal-title">
+    <div class="modal-header">
+      <div class="modal-title" id="dlp-modal-title">Add lead permission</div>
+      <button class="modal-close" onclick="dlpClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="dlp-name-field">
+        <div class="modal-section-title">Name</div>
+        <div class="modal-field"><input type="text" id="dlp-name" placeholder="e.g. sales" autocomplete="off"/></div>
+      </div>
+      <div id="dlp-perm-root"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel dlp-btn-del" id="dlp-delete-btn" onclick="dlpDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="dlpClose()">Cancel</button>
+      <button class="modal-save" onclick="dlpSave()">Save</button>
+    </div>
   </div>
 </div>
 
@@ -297,15 +370,258 @@ window.addEventListener('resize', function(){
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNotifications(); });
 
-/* ===== Department Lead Permission — shell state (list lands in a follow-up) ===== */
+/* ===== Department Lead Permission ===== */
+var DLP_KEY = 'cc_dept_lead_perms', DLP_VER = 'v1';
+var DLP_PERMS = ['view','create','edit','delete'];
+// Mirrors PF_LEAD_SECTIONS in Settings/User_profile/User_profile.html — one "CRM" section,
+// default ON except the 6 rows marked false.
+var DLP_SECTIONS = [
+  {key:'crm', title:'CRM', on:true, rows:[
+    ['send_mass_sms','Allow To Send Mass SMS CRM Lead'],['send_mass_email','Allow To Send Mass Email CRM Lead'],
+    ['active_inactive','Allow To Active Inactive CRM Lead'],['see_date_col','Allow To See Date Column'],
+    ['see_assign_col','Allow To See Assign Column'],['assign_label','Allow To Assign Label To CRM Lead'],
+    ['see_name_col','Allow To See Name Column'],['see_stock_col','Allow To See Stock Number Column'],
+    ['see_vehicle_col','Allow To See Vehicle Column'],['see_number_email_col','Allow To See Number/Email Column'],
+    ['show_sms_overview','Allow To Show SMS Overview'],['show_talktime_overview','Allow To Show Talktime Overview'],
+    ['show_email_overview','Allow To Show Email Overview'],['make_call','Allow To Make a Call'],
+    ['send_message','Allow To Send Message'],['add_comments','Allow To Add Comments'],
+    ['favorite_lead','Allow To Favorite Lead'],['edit_lead','Allow To Edit Lead'],
+    ['bookmark_lead','Allow To Bookmark Lead'],['change_status','Allow To Change Status'],
+    ['view_assigned','Allow To View All Assigned Leads'],['view_unassigned','Allow To View All Unassigned Leads'],
+    ['see_last_attempt_col','Allow To See Last Attempt Column'],['see_last_engaged_col','Allow To See Last Engaged Column'],
+    ['upload_lead_data','Allow To Upload Lead Data',false],['delete_messages','Allow To Delete Messages',false],
+    ['push_deal','Allow To Push Deal',false],['see_last_attempt_hours','Allow To See Last Attempt Hours Column'],
+    ['see_last_engaged_hours','Allow To See Last Engaged Hours Column'],['update_source','Allow To Update Source',false],
+    ['merge_duplicate','Allow To Merge Duplicate Leads',false],['see_created_time','Allow To See Created Time'],
+    ['see_first_name','Allow To See First Name'],['see_last_name','Allow To See Last Name'],
+    ['see_dob','Allow To See DOB'],['see_check_ssn','Allow To See Check SSN'],
+    ['see_check_itin','Allow To See Check ITIN'],['see_check_no_ssn','Allow To See Check No SSN'],
+    ['see_country','Allow To See Country'],['see_ssn','Allow To See SSN',false],
+    ['see_gross_income','Allow To See Gross Anual Income'],['see_gross_income_time','Allow To See Gross Anual Income Time'],
+    ['see_sec_income','Allow To See Senondary Anual Income'],['see_income_type','Allow To See Income Type'],
+    ['see_sec_income_time','Allow To See Senondary Anual Income Time'],['see_sec_income_source','Allow To See Senondary Income Source'],
+    ['see_license_number','Allow To See License Number'],['see_license_state','Allow To See License State'],
+    ['see_cur_address','Allow To See Current Address'],['see_cur_city','Allow To See Current City'],
+    ['see_cur_region','Allow To See Current Region Code/State'],['see_cur_postal','Allow To See Current Postal Code'],
+    ['see_cur_res_type','Allow To See Current Recidence Type'],['see_cur_res_rent','Allow To See Current Recidence Rent Mortgage'],
+    ['see_cur_res_year','Allow To See Current Recidence Year'],['see_cur_res_month','Allow To See Current Recidence Month'],
+    ['see_cur_landlord_name','Allow To See Current Landlord Name'],['see_cur_landlord_phone','Allow To See Current Landloard Phone'],
+    ['see_prev_address','Allow To See Previous Address'],['see_prev_city','Allow To See Previous City'],
+    ['see_prev_region','Allow To See Previous Region Code/State'],['see_prev_postal','Allow To See Previous Postal Code'],
+    ['see_prev_res_year','Allow To See Previous Recidence Year'],['see_prev_res_month','Allow To See Previous Recidence Month'],
+    ['see_cur_emp_name','Allow To See Current Employer Name'],['see_cur_emp_phone','Allow To See Current Employer Phone'],
+    ['see_cur_emp_address','Allow To See Current Employer Address'],['see_cur_emp_city','Allow To See Current Employer City'],
+    ['see_cur_emp_state','Allow To See Current Employer State'],['see_cur_emp_zip','Allow To See Current Employer Zip'],
+    ['see_cur_emp_status','Allow To See Current Employment Status'],['see_cur_job_title','Allow To See Current Job Title'],
+    ['see_cur_job_type','Allow To See Current Job Type'],['see_cur_emp_year','Allow To See Current Employment Year'],
+    ['see_cur_emp_month','Allow To See Current Employment Month'],['see_prev_emp_name','Allow To See Previous Employer Name'],
+    ['see_prev_emp_phone','Allow To See Previous Employer Phone'],['see_prev_emp_address','Allow To See Previous Employer Address'],
+    ['see_prev_emp_city','Allow To See Previous Employer City'],['see_prev_emp_state','Allow To See Previous Employer State'],
+    ['see_prev_emp_zip','Allow To See Previous Employer Zip'],['see_prev_emp_status','Allow To See Previous Employment Status'],
+    ['see_prev_job_title','Allow To See Previous Job Title'],['see_prev_emp_year','Allow To See Previous Employment Year'],
+    ['see_prev_emp_month','Allow To See Previous Employment Month'],['see_trim','Allow To See Trim'],
+    ['see_vin','Allow To See VIN'],['see_is_trade','Allow To See Is Trade'],
+    ['see_trade_info','Allow To See Trade Info'],['see_price','Allow To See Price'],
+    ['see_mileage','Allow To See Mileage'],['see_down_payment','Allow To See Down Payment'],
+    ['see_terms','Allow To See Terms'],['see_fico_score','Allow To See Fico Score']
+  ]}
+];
+var DL_ICON_BRIEF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
+
 var _dlQuery = '';
-function dlSearch(v){
-  _dlQuery = String(v || '');
-  /* No list yet — dlRender() will consume _dlQuery once the list lands. */
+var _dlpEditId = null;
+var DL_LIST = [];
+
+function dlEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+// Every row granted at its catalog default — used to seed the first entry.
+function dlpDefaultPerms(){
+  var out = {};
+  DLP_SECTIONS.forEach(function(sec){
+    sec.rows.forEach(function(r){
+      var on = (r.length > 2 ? !!r[2] : sec.on), rec = {};
+      DLP_PERMS.forEach(function(p){ rec[p] = on; });
+      out[sec.key + '.' + r[0]] = rec;
+    });
+  });
+  return out;
 }
-function dlAddOpen(){
-  showNavToast('Add department lead permission', 'This section is under construction.');
+function dlpSeed(){
+  return [
+    {id:'dl_sales',      name:'sales',      perms:dlpDefaultPerms()},
+    {id:'dl_marketing',  name:'marketing',  perms:{}},
+    {id:'dl_management', name:'Management', perms:{}},
+    {id:'dl_operations', name:'operations', perms:{}},
+    {id:'dl_finance',    name:'finance',    perms:{}}
+  ];
 }
+function dlpLoad(){
+  try{
+    var raw = localStorage.getItem(DLP_KEY);
+    var p = raw ? JSON.parse(raw) : null;
+    if(p && p.ver === DLP_VER && Array.isArray(p.list)) return p.list;
+  }catch(e){}
+  var seed = dlpSeed();
+  try{ localStorage.setItem(DLP_KEY, JSON.stringify({ver:DLP_VER, list:seed})); }catch(e){}
+  return seed;
+}
+function dlpPersist(){
+  try{ localStorage.setItem(DLP_KEY, JSON.stringify({ver:DLP_VER, list:DL_LIST})); }catch(e){}
+}
+// Row labels that have at least one permission granted, in config order.
+function dlpLabelsFor(perms){
+  perms = perms || {};
+  var out = [];
+  DLP_SECTIONS.forEach(function(sec){
+    sec.rows.forEach(function(r){
+      var rec = perms[sec.key + '.' + r[0]];
+      if(rec && DLP_PERMS.some(function(p){ return !!rec[p]; })) out.push(r[1]);
+    });
+  });
+  return out;
+}
+
+/* ── List ─────────────────────────────────────────────────── */
+function dlFiltered(){
+  var q = _dlQuery.trim().toLowerCase();
+  if(!q) return DL_LIST;
+  return DL_LIST.filter(function(it){
+    if((it.name || '').toLowerCase().indexOf(q) >= 0) return true;
+    return dlpLabelsFor(it.perms).some(function(l){ return l.toLowerCase().indexOf(q) >= 0; });
+  });
+}
+function dlRender(){
+  var host = document.getElementById('dl-list'), empty = document.getElementById('dl-empty');
+  if(!host) return;
+  var rows = dlFiltered();
+  host.innerHTML = rows.map(function(it){
+    var labels = dlpLabelsFor(it.perms), joined = labels.join(', ');
+    var sub = labels.length
+      ? '<div class="ur-row-sub dl-row-sub" title="'+dlEsc(joined)+'">'+dlEsc(joined)+'</div>'
+      : '<div class="ur-row-sub dl-row-sub-empty">No permissions assigned</div>';
+    return '<div class="ur-row" role="button" tabindex="0"'
+      + ' onclick="dlpOpen(\''+dlEsc(it.id)+'\')"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();dlpOpen(\''+dlEsc(it.id)+'\');}">'
+      + '<div class="ur-row-ic">'+DL_ICON_BRIEF+'</div>'
+      + '<div class="ur-row-txt"><div class="ur-row-title">'+dlEsc(it.name)+'</div>'+sub+'</div>'
+    + '</div>';
+  }).join('');
+  host.hidden = !rows.length;
+  if(empty){
+    empty.hidden = rows.length > 0;
+    empty.textContent = _dlQuery.trim()
+      ? 'No entries match your search.'
+      : 'No department lead permissions yet — click "Add" to create one.';
+  }
+}
+function dlSearch(v){ _dlQuery = String(v || ''); dlRender(); }
+
+/* ── Permission matrix ────────────────────────────────────── */
+function _dlpCbx(inner){ return '<label class="dlp-cbx">'+inner+'<span class="dlp-cbx-box"></span></label>'; }
+// Build the matrix into #dlp-perm-root; `saved` is a { "sec.row": {view,create,edit,delete} } map.
+function dlpBuildMatrix(saved){
+  saved = saved || {};
+  var html = '';
+  DLP_SECTIONS.forEach(function(sec){
+    html += '<div class="dlp-perm-sec" data-sec="'+sec.key+'">'
+      + '<div class="dlp-perm-sec-head">'+dlEsc(sec.title)+'</div>'
+      + '<div class="dlp-perm-scroll"><table class="dlp-perm-tbl"><thead><tr><th>Permission</th>';
+    DLP_PERMS.forEach(function(p){
+      html += '<th class="dlp-perm-colh" data-col="'+p+'" onclick="dlpToggleCol(\''+sec.key+'\',\''+p+'\')">'
+        + '<span class="dlp-perm-colh-in">'
+        + _dlpCbx('<input type="checkbox" class="dlp-col-master" data-col="'+p+'" tabindex="-1" />')
+        + p.charAt(0).toUpperCase()+p.slice(1)
+        + '</span></th>';
+    });
+    html += '</tr></thead><tbody>';
+    sec.rows.forEach(function(r){
+      var rowKey = r[0], rowDef = (r.length > 2 ? !!r[2] : sec.on), rec = saved[sec.key+'.'+rowKey];
+      html += '<tr data-row="'+rowKey+'"><td>'+dlEsc(r[1])+'</td>';
+      DLP_PERMS.forEach(function(p){
+        var on = rec ? !!rec[p] : rowDef;
+        html += '<td class="dlp-perm-cell">'
+          + _dlpCbx('<input type="checkbox" class="dlp-perm-cbx" data-sec="'+sec.key+'" data-row="'+rowKey+'" data-perm="'+p+'"'+(on?' checked':'')+' onchange="dlpRefreshColMaster(\''+sec.key+'\',\''+p+'\')" />')
+          + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  });
+  var root = document.getElementById('dlp-perm-root'); if(root) root.innerHTML = html;
+  DLP_SECTIONS.forEach(function(sec){ DLP_PERMS.forEach(function(p){ dlpRefreshColMaster(sec.key, p); }); });
+}
+function _dlpColBoxes(sec, p){
+  return Array.prototype.slice.call(document.querySelectorAll('.dlp-perm-cbx[data-sec="'+sec+'"][data-perm="'+p+'"]'));
+}
+// Toggle a whole column within a section (all-on if any are off, else all-off).
+function dlpToggleCol(sec, p){
+  var boxes = _dlpColBoxes(sec, p); if(!boxes.length) return;
+  var anyOff = boxes.some(function(b){ return !b.checked; });
+  boxes.forEach(function(b){ b.checked = anyOff; });
+  dlpRefreshColMaster(sec, p);
+}
+// Update the column-header master checkbox (checked / unchecked / indeterminate).
+function dlpRefreshColMaster(sec, p){
+  var boxes = _dlpColBoxes(sec, p);
+  var master = document.querySelector('.dlp-perm-sec[data-sec="'+sec+'"] .dlp-perm-colh[data-col="'+p+'"] .dlp-col-master');
+  if(!master) return;
+  var n = boxes.filter(function(b){ return b.checked; }).length;
+  master.checked = n === boxes.length && boxes.length > 0;
+  master.indeterminate = n > 0 && n < boxes.length;
+}
+function dlpCollectMatrix(){
+  var map = {}, root = document.getElementById('dlp-perm-root'); if(!root) return map;
+  Array.prototype.forEach.call(root.querySelectorAll('.dlp-perm-cbx'), function(b){
+    var key = b.getAttribute('data-sec') + '.' + b.getAttribute('data-row');
+    (map[key] || (map[key] = {}))[b.getAttribute('data-perm')] = !!b.checked;
+  });
+  return map;
+}
+
+/* ── Modal ────────────────────────────────────────────────── */
+function dlpOpen(id){
+  var it = id ? DL_LIST.filter(function(x){ return x.id === id; })[0] : null;
+  _dlpEditId = it ? it.id : null;
+  document.getElementById('dlp-modal-title').textContent = it ? 'Edit lead permission' : 'Add lead permission';
+  document.getElementById('dlp-name').value = it ? (it.name || '') : '';
+  var del = document.getElementById('dlp-delete-btn'); if(del) del.hidden = !it;
+  dlpBuildMatrix(it ? it.perms : null);
+  var m = document.getElementById('dlp-modal');
+  m.classList.add('open');
+  m.querySelector('.modal-body').scrollTop = 0;
+  if(!it) setTimeout(function(){ var n = document.getElementById('dlp-name'); if(n) n.focus(); }, 30);
+}
+function dlAddOpen(){ dlpOpen(null); }
+function dlpClose(){
+  document.getElementById('dlp-modal').classList.remove('open');
+  _dlpEditId = null;
+}
+function dlpSave(){
+  var nameEl = document.getElementById('dlp-name');
+  var name = (nameEl.value || '').trim();
+  if(!name){ nameEl.focus(); return; }
+  var perms = dlpCollectMatrix();
+  if(_dlpEditId){
+    var it = DL_LIST.filter(function(x){ return x.id === _dlpEditId; })[0];
+    if(it){ it.name = name; it.perms = perms; }
+  } else {
+    DL_LIST.push({id:'dl_'+Date.now(), name:name, perms:perms});
+  }
+  var editing = !!_dlpEditId;
+  dlpPersist(); dlpClose(); dlRender();
+  if(typeof showNavToast === 'function') showNavToast(editing ? 'Permissions saved' : 'Entry added', name + (editing ? ' was updated.' : ' was created.'));
+}
+function dlpDelete(){
+  if(!_dlpEditId) return;
+  var it = DL_LIST.filter(function(x){ return x.id === _dlpEditId; })[0];
+  DL_LIST = DL_LIST.filter(function(x){ return x.id !== _dlpEditId; });
+  dlpPersist(); dlpClose(); dlRender();
+  if(typeof showNavToast === 'function') showNavToast('Entry deleted', (it ? it.name : 'Entry') + ' was removed.');
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') dlpClose(); });
+
+function dlInit(){ DL_LIST = dlpLoad(); dlRender(); }
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dlInit);
+else dlInit();
 </script>
 
 <!-- PRODUCT SWITCHER -->

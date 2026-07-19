@@ -52,7 +52,7 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 
 /* Department Permissions list rows */
 .ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
-.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:0.5px solid var(--brd);transition:background .15s;}
+.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:0.5px solid var(--brd);transition:background .15s;cursor:pointer;}
 .ur-row:hover{background:var(--sur2);}
 .ur-row:last-child{border-bottom:none;}
 .ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.10);color:var(--ac2);}
@@ -60,15 +60,44 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .ur-row-txt{min-width:0;flex:1;}
 .ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);}
 .ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;}
-.ur-row-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;}
 .dp-row-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .dp-row-sub-empty{color:var(--mu);font-style:italic;}
-.dp-edit-btn{width:32px;height:32px;border-radius:6px;background:none;border:none;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
-.dp-edit-btn:hover{background:var(--sur2);color:var(--tx);}
-.dp-edit-btn svg{width:16px;height:16px;}
+
+/* Permissions modal — chrome comes from shared/app.css */
+/* Desktop-only so the shared `modal-fullscreen-mobile` rules win on phones. */
+@media (min-width:641px){ #dp-modal .modal{width:880px;max-width:calc(100vw - 40px);} }
+.modal-sub{font-size:12px;color:var(--mu);margin-top:2px;}
+.dp-btn-clear{margin-right:auto;}
+.dp-btn-clear:hover{border-color:var(--rd);color:var(--rd);}
+
+/* Permission matrix */
+.dp-perm-sec{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);flex:none;}
+.dp-perm-sec-head{padding:11px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;letter-spacing:.2px;color:var(--tx);text-align:center;}
+.dp-perm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.dp-perm-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.dp-perm-tbl th,.dp-perm-tbl td{padding:9px 12px;border-bottom:0.5px solid var(--brd2);}
+.dp-perm-tbl tr:last-child td{border-bottom:0;}
+.dp-perm-tbl thead th{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:rgba(255,255,255,.02);}
+.dp-perm-tbl thead th:first-child{text-align:left;}
+.dp-perm-tbl thead th.dp-perm-colh{text-align:center;width:110px;cursor:pointer;user-select:none;transition:color .12s;}
+.dp-perm-tbl thead th.dp-perm-colh:hover{color:var(--tx);}
+.dp-perm-tbl thead th.dp-perm-colh .dp-perm-colh-in{display:inline-flex;flex-direction:column-reverse;align-items:center;gap:5px;line-height:1;}
+.dp-perm-tbl tbody td:first-child{color:var(--tx);min-width:200px;}
+.dp-perm-tbl tbody td.dp-perm-cell{text-align:center;cursor:pointer;width:110px;}
+.dp-perm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
+.dp-cbx{position:relative;display:inline-block;width:17px;height:17px;vertical-align:middle;cursor:pointer;}
+.dp-cbx input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.dp-cbx .dp-cbx-box{position:absolute;inset:0;border:1.5px solid var(--brd);border-radius:4px;background:var(--sur2);transition:background .12s,border-color .12s;}
+.dp-cbx .dp-cbx-box::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .12s;}
+.dp-cbx input:checked ~ .dp-cbx-box{background:var(--ac);border-color:var(--ac);}
+.dp-cbx input:checked ~ .dp-cbx-box::after{transform:rotate(45deg) scale(1);}
+.dp-cbx input:indeterminate ~ .dp-cbx-box{background:var(--ac);border-color:var(--ac);}
+.dp-cbx input:indeterminate ~ .dp-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
+.dp-cbx:hover .dp-cbx-box{border-color:var(--ac);}
 @media (max-width:640px){
-  .dp-edit-btn{width:44px;height:44px;}
-  .dp-edit-btn svg{width:18px;height:18px;}
+  .dp-perm-tbl th,.dp-perm-tbl td{padding:9px 8px;}
+  .dp-perm-tbl thead th.dp-perm-colh,.dp-perm-tbl tbody td.dp-perm-cell{width:58px;}
+  .dp-perm-tbl tbody td:first-child{min-width:170px;}
 }
 </style>
 
@@ -200,6 +229,25 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
+<!-- DEPARTMENT PERMISSIONS MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="dp-modal" onclick="if(event.target===this)dpModalClose()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dp-modal-title">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="dp-modal-title">Department Permissions</div>
+        <div class="modal-sub" id="dp-modal-sub">Sales</div>
+      </div>
+      <button class="modal-close" onclick="dpModalClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="dp-perm-root"></div>
+    <div class="modal-footer">
+      <button class="modal-cancel dp-btn-clear" onclick="dpClearAll()">Clear all</button>
+      <button class="modal-cancel" onclick="dpModalClose()">Cancel</button>
+      <button class="modal-save" onclick="dpModalSave()">Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="root main-area" id="root">
   <div class="set-page-head">
     <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
@@ -256,21 +304,74 @@ function hideNavToast(){
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications === 'function') renderNotifications(); });
 
 /* Department Permissions — list */
-var DP_KEY = 'cc_dept_perms', DP_VER = 'v1';
-var DP_PERM_LABELS = [
-  {id:'p_overview',      name:'Dialpad Overview Page'},
-  {id:'p_sms_tmpl',      name:'User SMS Template CRUD Page'},
-  {id:'p_email_tmpl',    name:'Email Template CRUD Page'},
-  {id:'p_label_flag',    name:'Label Flag CRUD Page'},
-  {id:'p_library',       name:'Dialpad Library CRUD Page'},
-  {id:'p_bc_loc',        name:'Business Card Display Location'},
-  {id:'p_call_history',  name:'Call History Tab'},
-  {id:'p_msg_history',   name:'Message History Tab'},
-  {id:'p_voicemail',     name:'Voicemail Tab'},
-  {id:'p_crm',           name:'CRM Tab'}
+var DP_KEY = 'cc_dept_perms', DP_VER = 'v2';
+var DP_PERMS = ['view','create','edit','delete'];
+// Mirrors PF_PERM_SECTIONS in Settings/User_profile/User_profile.html.
+// Section `on` is the default for every column of every row; a row tuple may carry
+// a 3rd element to override that default for itself.
+var DP_PERM_SECTIONS = [
+  {key:'dialpad', title:'Dialpad', on:true, rows:[
+    ['biz_card_loc','Business Card Display Location'],['call_history','Call History Tab'],
+    ['msg_history','Message History Tab'],['voicemail','Voicemail Tab'],['crm','CRM Tab'],
+    ['send_biz_card','Send Businessage card Tab'],['dialpad_stat','Dialpad Stat Tab'],['appointment','Appointment Tab']
+  ]},
+  {key:'default', title:'Default', on:true, rows:[
+    ['sms_template','User SMS Template CRUD Page'],['view_report','View Report Page',false],
+    ['dialpad_overview','Dialpad Overview Page'],['email_template','Email Template CRUD Page'],
+    ['label_flag','Label Flag CRUD Page'],['dialpad_library','Dialpad Library CRUD Page'],
+    ['video_gallery','View All Video Gallery',false]
+  ]},
+  {key:'contact', title:'Contact', on:true, rows:[
+    ['manage_label_flag','Manage Label Flag'],['contact_page','Contact Page']
+  ]},
+  {key:'dialpad_stats', title:'Dialpad Stats', on:true, rows:[
+    ['personal_missed','Personal Missed Call Chart'],['talk_time','Talk Time Chart'],
+    ['outgoing_calls','Outgoing Calls Chart'],['incoming_calls','Incoming Calls Chart'],
+    ['outgoing_text','Outgoing Text Chart'],['incoming_text','Incoming Text Chart'],
+    ['dept_missed','Department Missed Call Chart']
+  ]},
+  {key:'widgets', title:'Widgets', on:false, rows:[
+    ['w_out_call','Allow to View outgoing call'],['w_out_text','Allow to View outgoing text'],
+    ['w_in_call','Allow to View incoming call'],['w_in_talktime','Allow to View incoming talktime'],
+    ['w_total_talktime','Allow to View total talktime'],['w_no_attempt','Allow to View no attempt lead'],
+    ['w_unseen_missed','Allow to View Unseen Missed call'],['w_sold_inv','Allow to View Sold inventory Chart'],
+    ['w_calls_chart','Allow to View Calls Chart Chart'],['w_sales_missed','Allow to View Sales Missed calls'],
+    ['w_sales_in_msg','Allow to View Sales Incoming messages'],['w_sales_out_msg','Allow to View Sales Outgoing messages'],
+    ['w_call_volume','Allow to View Call Volume Chart'],['w_lead_vendor','Allow to View Lead Chart Based On Vendor Cost'],
+    ['w_ai_out_sms','Allow to View AI Outgoing SMS'],['w_admin_widget','Allow to View Admin\'s Widget'],
+    ['w_leads_cars_sold','Allow to View Leads Based on Cars Sold'],['w_all_widget_count','Allow to View All User\'s Widget Count'],
+    ['w_out_talktime','Allow to View outgoing talktime'],['w_in_text','Allow to View incoming text'],
+    ['w_assign_leads','Allow to View Assign leads'],['w_unseen_msg','Allow to View Unseen messages'],
+    ['w_idle_time','Allow to View Idle Time Chart'],['w_texts_chart','Allow to View Texts Chart Chart'],
+    ['w_talktimes_chart','Allow to View TalkTimes Chart'],['w_sales_passed','Allow to View Sales Passed Missed calls'],
+    ['w_sales_accepted','Allow to View Sales Accepted calls'],['w_all_stats','Allow to View All User\'s Statistics'],
+    ['w_sales_out_email','Allow to View Sales Outgoing Email'],['w_sales_in_email','Allow to View Sales Incoming Email'],
+    ['w_wallboard','Allow to View Wallboard'],['w_leads_chart','Allow to View Leads Chart']
+  ]},
+  {key:'settings', title:'Settings', on:false, rows:[
+    ['alert_setting','Alert Setting Page'],['clear_call_queue','Clear Call Queue'],
+    ['crm_alert_mgmt','CRM Alert Management Page'],['notif_mgmt','Notification Management'],
+    ['inactive_reason','Inactive Reason Page'],['locations','Locations Page'],
+    ['crm_status','CRM Status Page'],['greeting_message','Greeting Message Page'],
+    ['dept_perms','Department Permissions Page'],['dept_lead_perms','Department Lead Permissions Page'],
+    ['dept_voicemail','Department Voice Mail File'],['idle_time_setting','Idle Time Chart Minute Setting'],
+    ['my_notif_settings','My Notification Settings'],['desking_module','Desking Module Page'],
+    ['ai_setting','AI Setting Page'],['users','Users Page'],['user_roles','UserRoles Page'],
+    ['sold_inventory','Sold Inventory Page'],['google_analytics','Google Analytics'],
+    ['desking_setting','Desking Module Setting'],['transcript_alert','Transcript Alert Management'],
+    ['vendors_cost','CRM Vendors Cost Page'],['google_sheet','CRM Google Sheet Page'],
+    ['dept_sms_tmpl','Department SMS Template Page'],['email_campaign','Email Campaign Page'],
+    ['automated_task','Automated Task list Page'],['pagination','Pagination Setting'],
+    ['personal_voicemail','Personal Voice Mail File'],['talktime_required','TalkTime Required'],
+    ['lead_assignment','Lead Assignment Rules'],['notif_format','Notification Format'],
+    ['tagged_chat_sms','Tagged Chat SMS Format'],['wait_while','Wait While Setting'],
+    ['ai_qa_store','AI Q&A & Store Description'],['loan_app_alert','Loan App Alert']
+  ]},
+  {key:'calendar_setting', title:'Calendar Setting', on:false, rows:[
+    ['send_appt_alerts','Send All Appointment Alerts']
+  ]}
 ];
 var DP_ICON_BRIEF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
-var DP_ICON_EDIT  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
 
 function dpEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function dpDepartments(){
@@ -287,13 +388,24 @@ function dpLoad(){
     var p = raw ? JSON.parse(raw) : null;
     if(p && p.ver === DP_VER && p.map && typeof p.map === 'object') return p.map;
   }catch(e){}
-  var m = {}; dpDepartments().forEach(function(d){ m[d] = []; });
-  try{ localStorage.setItem(DP_KEY, JSON.stringify({ver:DP_VER, map:m})); }catch(e){}
+  var m = {}; dpDepartments().forEach(function(d){ m[d] = {}; });
+  dpPersist(m);
   return m;
 }
-function dpLabelsFor(ids){
-  var byId = {}; DP_PERM_LABELS.forEach(function(p){ byId[p.id] = p.name; });
-  return (ids || []).map(function(id){ return byId[id]; }).filter(Boolean);
+// Row labels that have at least one permission granted, in config order.
+function dpLabelsFor(perms){
+  perms = perms || {};
+  var out = [];
+  DP_PERM_SECTIONS.forEach(function(sec){
+    sec.rows.forEach(function(r){
+      var rec = perms[sec.key + '.' + r[0]];
+      if(rec && DP_PERMS.some(function(p){ return !!rec[p]; })) out.push(r[1]);
+    });
+  });
+  return out;
+}
+function dpPersist(map){
+  try{ localStorage.setItem(DP_KEY, JSON.stringify({ver:DP_VER, map:map})); }catch(e){}
 }
 function dpRender(){
   var host = document.getElementById('dp-list'); if(!host) return;
@@ -309,21 +421,108 @@ function dpRender(){
     var sub = labels.length
       ? '<div class="ur-row-sub dp-row-sub" title="'+dpEsc(joined)+'">'+dpEsc(joined)+'</div>'
       : '<div class="ur-row-sub dp-row-sub-empty">No permissions assigned</div>';
-    return '<div class="ur-row">'
+    return '<div class="ur-row" role="button" tabindex="0"'
+      + ' onclick="if(!event.target.closest(\'.ur-row-actions\'))dpEditOpen(\''+dpEsc(d)+'\')"'
+      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.ur-row-actions\')){event.preventDefault();dpEditOpen(\''+dpEsc(d)+'\');}">'
       + '<div class="ur-row-ic">'+DP_ICON_BRIEF+'</div>'
       + '<div class="ur-row-txt">'
         + '<div class="ur-row-title">'+dpEsc(d)+'</div>'
         + sub
       + '</div>'
-      + '<div class="ur-row-actions">'
-        + '<button class="dp-edit-btn" type="button" aria-label="Edit '+dpEsc(d)+'" onclick="dpEditOpen(\''+dpEsc(d)+'\')">'+DP_ICON_EDIT+'</button>'
-      + '</div>'
     + '</div>';
   }).join('');
 }
-function dpEditOpen(dept){
-  showNavToast('Edit department permissions', 'Editor for "' + dept + '" is coming soon.');
+/* ── Permissions modal ────────────────────────────────────── */
+var _dpDept = null;
+function _dpCbx(inner){ return '<label class="dp-cbx">'+inner+'<span class="dp-cbx-box"></span></label>'; }
+// Build the matrix into #dp-perm-root; `saved` is a { "sec.row": {view,create,edit,delete} } map.
+function dpBuildMatrix(saved){
+  saved = saved || {};
+  var html = '';
+  DP_PERM_SECTIONS.forEach(function(sec){
+    html += '<div class="dp-perm-sec" data-sec="'+sec.key+'">'
+      + '<div class="dp-perm-sec-head">'+dpEsc(sec.title)+'</div>'
+      + '<div class="dp-perm-scroll"><table class="dp-perm-tbl"><thead><tr><th>Permission</th>';
+    DP_PERMS.forEach(function(p){
+      html += '<th class="dp-perm-colh" data-col="'+p+'" onclick="dpToggleCol(\''+sec.key+'\',\''+p+'\')">'
+        + '<span class="dp-perm-colh-in">'
+        + _dpCbx('<input type="checkbox" class="dp-col-master" data-col="'+p+'" tabindex="-1" />')
+        + p.charAt(0).toUpperCase()+p.slice(1)
+        + '</span></th>';
+    });
+    html += '</tr></thead><tbody>';
+    sec.rows.forEach(function(r){
+      var rowKey = r[0], rowDef = (r.length > 2 ? !!r[2] : sec.on), rec = saved[sec.key+'.'+rowKey];
+      html += '<tr data-row="'+rowKey+'"><td>'+dpEsc(r[1])+'</td>';
+      DP_PERMS.forEach(function(p){
+        var on = rec ? !!rec[p] : rowDef;
+        html += '<td class="dp-perm-cell">'
+          + _dpCbx('<input type="checkbox" class="dp-perm-cbx" data-sec="'+sec.key+'" data-row="'+rowKey+'" data-perm="'+p+'"'+(on?' checked':'')+' onchange="dpRefreshColMaster(\''+sec.key+'\',\''+p+'\')" />')
+          + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  });
+  var root = document.getElementById('dp-perm-root'); if(root) root.innerHTML = html;
+  DP_PERM_SECTIONS.forEach(function(sec){ DP_PERMS.forEach(function(p){ dpRefreshColMaster(sec.key, p); }); });
 }
+function _dpColBoxes(sec, p){
+  return Array.prototype.slice.call(document.querySelectorAll('.dp-perm-cbx[data-sec="'+sec+'"][data-perm="'+p+'"]'));
+}
+// Toggle a whole column within a section (all-on if any are off, else all-off).
+function dpToggleCol(sec, p){
+  var boxes = _dpColBoxes(sec, p); if(!boxes.length) return;
+  var anyOff = boxes.some(function(b){ return !b.checked; });
+  boxes.forEach(function(b){ b.checked = anyOff; });
+  dpRefreshColMaster(sec, p);
+}
+// Update the column-header master checkbox (checked / unchecked / indeterminate).
+function dpRefreshColMaster(sec, p){
+  var boxes = _dpColBoxes(sec, p);
+  var master = document.querySelector('.dp-perm-sec[data-sec="'+sec+'"] .dp-perm-colh[data-col="'+p+'"] .dp-col-master');
+  if(!master) return;
+  var n = boxes.filter(function(b){ return b.checked; }).length;
+  master.checked = n === boxes.length && boxes.length > 0;
+  master.indeterminate = n > 0 && n < boxes.length;
+}
+function dpCollectMatrix(){
+  var map = {}, root = document.getElementById('dp-perm-root'); if(!root) return map;
+  Array.prototype.forEach.call(root.querySelectorAll('.dp-perm-cbx'), function(b){
+    var key = b.getAttribute('data-sec') + '.' + b.getAttribute('data-row');
+    (map[key] || (map[key] = {}))[b.getAttribute('data-perm')] = !!b.checked;
+  });
+  return map;
+}
+function dpEditOpen(dept){
+  _dpDept = dept;
+  document.getElementById('dp-modal-sub').textContent = dept;
+  dpBuildMatrix((dpLoad() || {})[dept]);
+  var m = document.getElementById('dp-modal');
+  m.classList.add('open');
+  m.querySelector('.modal-body').scrollTop = 0;
+}
+function dpModalClose(){
+  document.getElementById('dp-modal').classList.remove('open');
+  _dpDept = null;
+}
+function dpClearAll(){
+  document.querySelectorAll('#dp-perm-root .dp-perm-cbx').forEach(function(b){ b.checked = false; });
+  DP_PERM_SECTIONS.forEach(function(sec){ DP_PERMS.forEach(function(p){ dpRefreshColMaster(sec.key, p); }); });
+}
+function dpModalSave(){
+  if(!_dpDept) return;
+  var dept = _dpDept;
+  var map = dpLoad() || {};
+  map[dept] = dpCollectMatrix();
+  dpPersist(map);
+  dpModalClose();
+  dpRender();
+  if(typeof showNavToast === 'function') showNavToast('Permissions saved', dept + ' permissions were updated.');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') dpModalClose();
+});
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dpRender);
 else dpRender();
 </script>

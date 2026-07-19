@@ -3462,6 +3462,8 @@
   .loc-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
   .loc-field-input:focus{border-color:var(--ac);}
   .loc-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .loc-btn-del{margin-right:auto;}
+  .loc-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .loc-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .loc-btn-cancel:hover{border-color:var(--mu);}
   .loc-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3646,7 +3648,6 @@
         <thead><tr>
           <th class="loc-th-no">No.</th>
           <th>Location</th>
-          <th class="loc-th-act">Action</th>
         </tr></thead>
         <tbody id="loc-tbody"></tbody>
       </table>
@@ -3671,6 +3672,7 @@
       <input class="loc-field-input" id="loc-input" placeholder="Enter location name" onkeydown="if(event.key==='Enter')locSaveModal()">
     </div>
     <div class="loc-modal-foot">
+      <button class="loc-btn-cancel loc-btn-del" id="loc-delete-btn" onclick="locModalDelete()" hidden>Delete</button>
       <button class="loc-btn-cancel" onclick="locCloseModal()">Cancel</button>
       <button class="loc-btn-save" onclick="locSaveModal()">Save</button>
     </div>
@@ -4247,17 +4249,15 @@ function locRender(){
   if(locPage>tp) locPage=tp;
   var start=(locPage-1)*LOC_PER, rows=list.slice(start, start+LOC_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_locQuery?'No locations match your search.':'No locations yet — click Add Location.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="2" style="text-align:center;color:var(--mu);padding:30px;">'+(_locQuery?'No locations match your search.':'No locations yet — click Add Location.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.loc-actions\'))locEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.loc-actions\')){event.preventDefault();locEdit(\''+it.id+'\');}">'+
         '<td class="loc-no">'+no+'</td>'+
         '<td>'+locEsc(it.name)+'</td>'+
-        '<td><div class="loc-actions">'+
-          '<button class="loc-icon edit" onclick="locEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="loc-icon del" onclick="locDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4297,6 +4297,7 @@ function locAdd(){
   _locEditId=null;
   document.getElementById('loc-modal-title').textContent='Add Location';
   document.getElementById('loc-input').value='';
+  var d=document.getElementById('loc-delete-btn'); if(d) d.hidden=true;
   locOpenModal();
 }
 function locEdit(id){
@@ -4304,6 +4305,7 @@ function locEdit(id){
   _locEditId=id;
   document.getElementById('loc-modal-title').textContent='Edit Location';
   document.getElementById('loc-input').value=it.name;
+  var d=document.getElementById('loc-delete-btn'); if(d) d.hidden=false;
   locOpenModal();
 }
 function locSaveModal(){
@@ -4321,6 +4323,7 @@ function locDelete(id){
   locPersist(); locRender();
   if(typeof showNavToast==='function') showNavToast('Location deleted', it.name+' was removed.');
 }
+function locModalDelete(){ if(!_locEditId) return; locDelete(_locEditId); locCloseModal(); }
 window.addEventListener('keydown', function(e){
   if(e.key==='Escape'){ var m=document.getElementById('loc-modal'); if(m && m.classList.contains('open')) locCloseModal(); }
 });

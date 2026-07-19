@@ -3466,6 +3466,8 @@
   .ir-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
   .ir-field-input:focus{border-color:var(--ac);}
   .ir-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .ir-btn-del{margin-right:auto;}
+  .ir-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .ir-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .ir-btn-cancel:hover{border-color:var(--mu);}
   .ir-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3650,7 +3652,6 @@
         <thead><tr>
           <th class="ir-th-no">No.</th>
           <th>Reason</th>
-          <th class="ir-th-act">Action</th>
         </tr></thead>
         <tbody id="ir-tbody"></tbody>
       </table>
@@ -3675,6 +3676,7 @@
       <input class="ir-field-input" id="ir-input" placeholder="Enter inactive reason" onkeydown="if(event.key==='Enter')irSaveModal()">
     </div>
     <div class="ir-modal-foot">
+      <button class="ir-btn-cancel ir-btn-del" id="ir-delete-btn" onclick="irModalDelete()" hidden>Delete</button>
       <button class="ir-btn-cancel" onclick="irCloseModal()">Cancel</button>
       <button class="ir-btn-save" onclick="irSaveModal()">Save</button>
     </div>
@@ -4251,17 +4253,15 @@ function irRender(){
   if(irPage>tp) irPage=tp;
   var start=(irPage-1)*IR_PER, rows=list.slice(start, start+IR_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_irQuery?'No reasons match your search.':'No inactive reasons yet — click Add Reason.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="2" style="text-align:center;color:var(--mu);padding:30px;">'+(_irQuery?'No reasons match your search.':'No inactive reasons yet — click Add Reason.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.ir-actions\'))irEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.ir-actions\')){event.preventDefault();irEdit(\''+it.id+'\');}">'+
         '<td class="ir-no">'+no+'</td>'+
         '<td>'+irEsc(it.name)+'</td>'+
-        '<td><div class="ir-actions">'+
-          '<button class="ir-icon edit" onclick="irEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="ir-icon del" onclick="irDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4294,8 +4294,8 @@ function irPageList(cur,tp){
 function irGo(p){ var tp=Math.max(1,Math.ceil(irFiltered().length/IR_PER)); if(p<1||p>tp) return; irPage=p; irRender(); }
 function irOpenModal(){ document.getElementById('ir-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('ir-input'); if(i) i.focus(); }, 40); }
 function irCloseModal(){ document.getElementById('ir-modal').classList.remove('open'); }
-function irAdd(){ _irEditId=null; document.getElementById('ir-modal-title').textContent='Add Reason'; document.getElementById('ir-input').value=''; irOpenModal(); }
-function irEdit(id){ var it=irItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _irEditId=id; document.getElementById('ir-modal-title').textContent='Edit Reason'; document.getElementById('ir-input').value=it.name; irOpenModal(); }
+function irAdd(){ _irEditId=null; document.getElementById('ir-modal-title').textContent='Add Reason'; document.getElementById('ir-input').value=''; var d=document.getElementById('ir-delete-btn'); if(d) d.hidden=true; irOpenModal(); }
+function irEdit(id){ var it=irItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _irEditId=id; document.getElementById('ir-modal-title').textContent='Edit Reason'; document.getElementById('ir-input').value=it.name; var d=document.getElementById('ir-delete-btn'); if(d) d.hidden=false; irOpenModal(); }
 function irSaveModal(){
   var name=document.getElementById('ir-input').value.trim();
   if(!name){ if(typeof showNavToast==='function') showNavToast('Reason required','Enter a reason name.'); return; }
@@ -4311,6 +4311,7 @@ function irDelete(id){
   irPersist(); irRender();
   if(typeof showNavToast==='function') showNavToast('Reason deleted', it.name+' was removed.');
 }
+function irModalDelete(){ if(!_irEditId) return; irDelete(_irEditId); irCloseModal(); }
 function irExport(){
   if(!irItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no inactive reasons to export.'); return; }
   var rows=[['No.','Reason']].concat(irItems.map(function(it,i){ return [String(i+1), it.name]; }));

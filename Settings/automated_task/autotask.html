@@ -1,4 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Automated Task</title>
 <link rel="stylesheet" href="../../shared/app.css">
 <link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
@@ -48,56 +49,54 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .notif-footer{padding:8px;border-top:0.5px solid var(--brd);flex-shrink:0;}
 .notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer;}
 .notif-seeall:hover{background:rgba(79,124,255,.08);}
-.ur-head-spacer{flex:1;}
 
-/* Department Permissions list rows */
-.ur-list{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
-.ur-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:0.5px solid var(--brd);transition:background .15s;cursor:pointer;}
-.ur-row:hover{background:var(--sur2);}
-.ur-row:last-child{border-bottom:none;}
-.ur-row-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(79,124,255,.10);color:var(--ac2);}
-.ur-row-ic svg{width:20px;height:20px;}
-.ur-row-txt{min-width:0;flex:1;}
-.ur-row-title{font-size:13.5px;font-weight:600;color:var(--tx);}
-.ur-row-sub{font-size:12px;color:var(--mu);margin-top:3px;}
-.dp-row-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dp-row-sub-empty{color:var(--mu);font-style:italic;}
-
-/* Permissions modal — chrome comes from shared/app.css */
-/* Desktop-only so the shared `modal-fullscreen-mobile` rules win on phones. */
-@media (min-width:641px){ #dp-modal .modal{width:880px;max-width:calc(100vw - 40px);} }
-.modal-sub{font-size:12px;color:var(--mu);margin-top:2px;}
-.dp-btn-clear{margin-right:auto;}
-.dp-btn-clear:hover{border-color:var(--rd);color:var(--rd);}
-
-/* Permission matrix */
-.dp-perm-sec{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);flex:none;}
-.dp-perm-sec-head{padding:11px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;letter-spacing:.2px;color:var(--tx);text-align:center;}
-.dp-perm-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.dp-perm-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
-.dp-perm-tbl th,.dp-perm-tbl td{padding:9px 12px;border-bottom:0.5px solid var(--brd2);}
-.dp-perm-tbl tr:last-child td{border-bottom:0;}
-.dp-perm-tbl thead th{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:rgba(255,255,255,.02);}
-.dp-perm-tbl thead th:first-child{text-align:left;}
-.dp-perm-tbl thead th.dp-perm-colh{text-align:center;width:110px;cursor:pointer;user-select:none;transition:color .12s;}
-.dp-perm-tbl thead th.dp-perm-colh:hover{color:var(--tx);}
-.dp-perm-tbl thead th.dp-perm-colh .dp-perm-colh-in{display:inline-flex;flex-direction:column-reverse;align-items:center;gap:5px;line-height:1;}
-.dp-perm-tbl tbody td:first-child{color:var(--tx);min-width:200px;}
-.dp-perm-tbl tbody td.dp-perm-cell{text-align:center;cursor:pointer;width:110px;}
-.dp-perm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
-.dp-cbx{position:relative;display:inline-block;width:17px;height:17px;vertical-align:middle;cursor:pointer;}
-.dp-cbx input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
-.dp-cbx .dp-cbx-box{position:absolute;inset:0;border:1.5px solid var(--brd);border-radius:4px;background:var(--sur2);transition:background .12s,border-color .12s;}
-.dp-cbx .dp-cbx-box::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .12s;}
-.dp-cbx input:checked ~ .dp-cbx-box{background:var(--ac);border-color:var(--ac);}
-.dp-cbx input:checked ~ .dp-cbx-box::after{transform:rotate(45deg) scale(1);}
-.dp-cbx input:indeterminate ~ .dp-cbx-box{background:var(--ac);border-color:var(--ac);}
-.dp-cbx input:indeterminate ~ .dp-cbx-box::after{transform:rotate(0) scale(1);left:3px;top:6.5px;width:9px;height:0;border-width:0 0 2px 0;}
-.dp-cbx:hover .dp-cbx-box{border-color:var(--ac);}
+/* ===== AUTOMATED TASK PAGE ===== */
+.at-head-spacer{flex:1;}
+.at-srch{width:240px;}
+/* Table — base/thead/tbody come from shared `.data-table` (shared/app.css) */
+.at-tbl .c-no{color:var(--mu);font-family:var(--mono);}
+.at-tbl .c-type{color:var(--ac2);font-weight:500;cursor:pointer;}
+.at-tbl .c-type:hover{text-decoration:underline;}
+.at-tbl .c-desc{color:var(--mu);}
+.at-tbl .c-time{font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
+.at-tbl .c-user{color:var(--tx);}
+/* Add/Edit modal — 2-column form grid (shared .modal is 420px; widen for two columns) */
+#at-modal .modal{width:660px;max-width:calc(100vw - 40px);}
+.at-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 16px;}
+.at-form-grid .modal-section-title{margin-bottom:7px;}
+.at-form-grid input[type="time"]{color-scheme:dark;}
+.at-tbl .c-act{white-space:nowrap;}
+.at-tbl .c-act button{background:transparent;border:none;color:var(--mu);cursor:pointer;
+  padding:6px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;}
+.at-tbl .c-act button svg{width:16px;height:16px;}
+.at-tbl .c-act .a-edit:hover{color:var(--ac2);background:rgba(79,124,255,.10);}
+.at-tbl .c-act .a-del:hover{color:var(--rd);background:rgba(232,85,85,.10);}
+.at-empty-row{padding:32px 14px;text-align:center;color:var(--mu);font-size:13px;}
 @media (max-width:640px){
-  .dp-perm-tbl th,.dp-perm-tbl td{padding:9px 8px;}
-  .dp-perm-tbl thead th.dp-perm-colh,.dp-perm-tbl tbody td.dp-perm-cell{width:58px;}
-  .dp-perm-tbl tbody td:first-child{min-width:170px;}
+  .set-page-head{flex-wrap:wrap;}
+  .at-head-spacer{display:none;}
+  .at-srch{width:auto;flex:1 1 160px;}
+  .at-tbl .c-act button{min-width:44px;min-height:44px;padding:10px;}
+  /* Table → card stack */
+  .table-wrap{border:none;background:transparent;overflow:visible;}
+  .at-tbl, .at-tbl tbody{display:block;}
+  .at-tbl thead{display:none;}
+  .at-tbl tbody tr{display:flex;flex-direction:column;gap:8px;background:var(--sur);
+    border:0.5px solid var(--brd2);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+  .at-tbl tbody tr:hover{background:var(--sur);}
+  .at-tbl tbody td{display:block;padding:0;border:none;white-space:normal;}
+  .at-tbl .c-no{order:1;font-size:11px;}
+  .at-tbl .c-type{order:2;font-size:15px;}
+  .at-tbl .c-desc{order:3;font-size:13px;}
+  .at-tbl .c-exec{order:4;font-size:12.5px;}
+  .at-tbl .c-time{order:5;}
+  .at-tbl .c-user{order:6;font-size:12.5px;}
+  .at-tbl .c-status{order:7;}
+  .at-tbl .c-act{order:8;text-align:left;}
+  .at-tbl tbody td.at-empty-row{padding:32px 14px;text-align:center;}
+  .at-form-grid{grid-template-columns:1fr;}
+  .at-sel-popup .lblp-item{min-height:44px;}
+  .at-sel-popup .lblp-name{font-size:15px;}
 }
 </style>
 
@@ -217,6 +216,78 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   </div>
 </div>
 
+<!-- ADD / EDIT AUTOMATED TASK MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="at-modal" onclick="if(event.target===this)atModalClose()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="at-modal-title">Add Automated Tasks</div>
+      <button class="modal-close" onclick="atModalClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="at-form-grid">
+        <div>
+          <div class="modal-section-title">Description</div>
+          <div class="modal-field"><input type="text" id="at-f-desc" placeholder="Description" autocomplete="off"/></div>
+        </div>
+        <div>
+          <div class="modal-section-title">Record Type</div>
+          <div class="modal-field" id="at-fld-type">
+            <button type="button" class="form-select-btn" onclick="atSelToggle(event,'type')">
+              <span class="form-select-val form-select-mu" id="at-val-type">Select Record Type</span>
+              <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <input type="hidden" id="at-f-type" value=""/>
+        </div>
+        <div>
+          <div class="modal-section-title">Frequency</div>
+          <div class="modal-field" id="at-fld-freq">
+            <button type="button" class="form-select-btn" onclick="atSelToggle(event,'freq')">
+              <span class="form-select-val form-select-mu" id="at-val-freq">Select Frequency</span>
+              <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <input type="hidden" id="at-f-freq" value=""/>
+        </div>
+        <div>
+          <div class="modal-section-title">Status</div>
+          <div class="modal-field" id="at-fld-status">
+            <button type="button" class="form-select-btn" onclick="atSelToggle(event,'status')">
+              <span class="form-select-val form-select-mu" id="at-val-status">Select Status</span>
+              <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <input type="hidden" id="at-f-status" value=""/>
+        </div>
+        <div>
+          <div class="modal-section-title">Select User</div>
+          <div class="modal-field" id="at-fld-user">
+            <button type="button" class="form-select-btn" onclick="atSelToggle(event,'user')">
+              <span class="form-select-val form-select-mu" id="at-val-user">Select User</span>
+              <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <input type="hidden" id="at-f-user" value=""/>
+        </div>
+        <div>
+          <div class="modal-section-title">Hour / Minute / Time</div>
+          <div class="modal-field"><input type="time" id="at-f-time" step="1"/></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="atModalClose()">Cancel</button>
+      <button class="modal-save" onclick="atModalSubmit()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SELECT POPUPS (outside the modal so .assign-popup z-index clears the backdrop) -->
+<div class="assign-popup at-sel-popup" id="at-pop-type" style="display:none;"><div class="lblp-list" id="at-pop-type-list"></div></div>
+<div class="assign-popup at-sel-popup" id="at-pop-freq" style="display:none;"><div class="lblp-list" id="at-pop-freq-list"></div></div>
+<div class="assign-popup at-sel-popup" id="at-pop-status" style="display:none;"><div class="lblp-list" id="at-pop-status-list"></div></div>
+<div class="assign-popup at-sel-popup" id="at-pop-user" style="display:none;"><div class="lblp-list" id="at-pop-user-list"></div></div>
+
 <!-- PAGE-LEVEL NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
@@ -229,44 +300,51 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
-<!-- DEPARTMENT PERMISSIONS MODAL -->
-<div class="modal-backdrop modal-fullscreen-mobile" id="dp-modal" onclick="if(event.target===this)dpModalClose()">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dp-modal-title">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="dp-modal-title">Department Permissions</div>
-        <div class="modal-sub" id="dp-modal-sub">Sales</div>
-      </div>
-      <button class="modal-close" onclick="dpModalClose()" aria-label="Close">&#x2715;</button>
-    </div>
-    <div class="modal-body" id="dp-perm-root"></div>
-    <div class="modal-footer">
-      <button class="modal-cancel dp-btn-clear" onclick="dpClearAll()">Clear all</button>
-      <button class="modal-cancel" onclick="dpModalClose()">Cancel</button>
-      <button class="modal-save" onclick="dpModalSave()">Save</button>
-    </div>
-  </div>
-</div>
-
 <div class="root main-area" id="root">
+  <!-- TOP TOOLBAR: back link + title + search + add -->
   <div class="set-page-head">
     <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Department Permissions</span>
-    <span class="ur-head-spacer"></span>
+    <span class="set-page-title">Automated Task</span>
+    <div class="at-head-spacer"></div>
+    <div class="search-pill at-srch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="at-search-input" placeholder="Search tasks..." oninput="atSearch(this.value)"/>
+    </div>
+    <button class="btn btn-primary" id="at-add-btn" onclick="atAddOpen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add
+    </button>
   </div>
   <div class="set-scroll">
     <section class="set-section">
-      <div class="ur-list" id="dp-list"></div>
+      <div class="table-wrap">
+        <table class="data-table data-table--right-actions at-tbl">
+          <thead>
+            <tr>
+              <th class="c-no">No.</th>
+              <th>Record Type</th>
+              <th>Description</th>
+              <th>Executing</th>
+              <th>Hour / Minute / Time</th>
+              <th>User</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="at-body"></tbody>
+        </table>
+      </div>
     </section>
   </div>
 </div>
 
 <script>
 function navClick(label){
-  if(label === 'Settings') return;
+  if(label === 'Settings') return; // already here (kept active)
+  /* This page lives two folders deep (Settings/automated_task/), so links use ../../ */
   var routes = {
     'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
     'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
@@ -301,230 +379,257 @@ function hideNavToast(){
   var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
-document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications === 'function') renderNotifications(); });
+/* Notifications bell — shared/notifications.js wraps openNotifications + drives setNotifTab/markAll. */
+function toggleNotifications(e){
+  if(e) e.stopPropagation();
+  var panel = document.getElementById('notif-panel'); if(!panel) return;
+  if(panel.classList.contains('open')) closeNotifications(); else openNotifications();
+}
+function openNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !bell) return;
+  if(panel.parentElement !== document.body) document.body.appendChild(panel);
+  positionNotifications();
+  panel.classList.add('open'); bell.classList.add('active');
+}
+function closeNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(panel) panel.classList.remove('open'); if(bell) bell.classList.remove('active');
+}
+function positionNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !bell) return;
+  var r = bell.getBoundingClientRect(), gap = 8;
+  var wasOpen = panel.classList.contains('open');
+  if(!wasOpen){ panel.style.visibility = 'hidden'; panel.style.display = 'flex'; }
+  var panelH = panel.offsetHeight || 480, panelW = panel.offsetWidth || 380;
+  if(!wasOpen){ panel.style.display = ''; panel.style.visibility = ''; }
+  var spaceBelow = window.innerHeight - r.bottom;
+  var openAbove = spaceBelow < panelH + gap + 8 && r.top > panelH + gap + 8;
+  panel.style.top = openAbove ? Math.max(8, r.top - panelH - gap) + 'px' : (r.bottom + gap) + 'px';
+  panel.style.left = Math.max(8, r.right - panelW) + 'px';
+}
+document.addEventListener('click', function(e){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !panel.classList.contains('open')) return;
+  if(bell && bell.contains(e.target)) return;
+  if(panel.contains(e.target)) return;
+  closeNotifications();
+});
+window.addEventListener('resize', function(){
+  var panel = document.getElementById('notif-panel');
+  if(panel && panel.classList.contains('open')) positionNotifications();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNotifications(); });
 
-/* Department Permissions — list */
-var DP_KEY = 'cc_dept_perms', DP_VER = 'v2';
-var DP_PERMS = ['view','create','edit','delete'];
-// Mirrors PF_PERM_SECTIONS in Settings/User_profile/User_profile.html.
-// Section `on` is the default for every column of every row; a row tuple may carry
-// a 3rd element to override that default for itself.
-var DP_PERM_SECTIONS = [
-  {key:'dialpad', title:'Dialpad', on:true, rows:[
-    ['biz_card_loc','Business Card Display Location'],['call_history','Call History Tab'],
-    ['msg_history','Message History Tab'],['voicemail','Voicemail Tab'],['crm','CRM Tab'],
-    ['send_biz_card','Send Businessage card Tab'],['dialpad_stat','Dialpad Stat Tab'],['appointment','Appointment Tab']
-  ]},
-  {key:'default', title:'Default', on:true, rows:[
-    ['sms_template','User SMS Template CRUD Page'],['view_report','View Report Page',false],
-    ['dialpad_overview','Dialpad Overview Page'],['email_template','Email Template CRUD Page'],
-    ['label_flag','Label Flag CRUD Page'],['dialpad_library','Dialpad Library CRUD Page'],
-    ['video_gallery','View All Video Gallery',false]
-  ]},
-  {key:'contact', title:'Contact', on:true, rows:[
-    ['manage_label_flag','Manage Label Flag'],['contact_page','Contact Page']
-  ]},
-  {key:'dialpad_stats', title:'Dialpad Stats', on:true, rows:[
-    ['personal_missed','Personal Missed Call Chart'],['talk_time','Talk Time Chart'],
-    ['outgoing_calls','Outgoing Calls Chart'],['incoming_calls','Incoming Calls Chart'],
-    ['outgoing_text','Outgoing Text Chart'],['incoming_text','Incoming Text Chart'],
-    ['dept_missed','Department Missed Call Chart']
-  ]},
-  {key:'widgets', title:'Widgets', on:false, rows:[
-    ['w_out_call','Allow to View outgoing call'],['w_out_text','Allow to View outgoing text'],
-    ['w_in_call','Allow to View incoming call'],['w_in_talktime','Allow to View incoming talktime'],
-    ['w_total_talktime','Allow to View total talktime'],['w_no_attempt','Allow to View no attempt lead'],
-    ['w_unseen_missed','Allow to View Unseen Missed call'],['w_sold_inv','Allow to View Sold inventory Chart'],
-    ['w_calls_chart','Allow to View Calls Chart Chart'],['w_sales_missed','Allow to View Sales Missed calls'],
-    ['w_sales_in_msg','Allow to View Sales Incoming messages'],['w_sales_out_msg','Allow to View Sales Outgoing messages'],
-    ['w_call_volume','Allow to View Call Volume Chart'],['w_lead_vendor','Allow to View Lead Chart Based On Vendor Cost'],
-    ['w_ai_out_sms','Allow to View AI Outgoing SMS'],['w_admin_widget','Allow to View Admin\'s Widget'],
-    ['w_leads_cars_sold','Allow to View Leads Based on Cars Sold'],['w_all_widget_count','Allow to View All User\'s Widget Count'],
-    ['w_out_talktime','Allow to View outgoing talktime'],['w_in_text','Allow to View incoming text'],
-    ['w_assign_leads','Allow to View Assign leads'],['w_unseen_msg','Allow to View Unseen messages'],
-    ['w_idle_time','Allow to View Idle Time Chart'],['w_texts_chart','Allow to View Texts Chart Chart'],
-    ['w_talktimes_chart','Allow to View TalkTimes Chart'],['w_sales_passed','Allow to View Sales Passed Missed calls'],
-    ['w_sales_accepted','Allow to View Sales Accepted calls'],['w_all_stats','Allow to View All User\'s Statistics'],
-    ['w_sales_out_email','Allow to View Sales Outgoing Email'],['w_sales_in_email','Allow to View Sales Incoming Email'],
-    ['w_wallboard','Allow to View Wallboard'],['w_leads_chart','Allow to View Leads Chart']
-  ]},
-  {key:'settings', title:'Settings', on:false, rows:[
-    ['alert_setting','Alert Setting Page'],['clear_call_queue','Clear Call Queue'],
-    ['crm_alert_mgmt','CRM Alert Management Page'],['notif_mgmt','Notification Management'],
-    ['inactive_reason','Inactive Reason Page'],['locations','Locations Page'],
-    ['crm_status','CRM Status Page'],['greeting_message','Greeting Message Page'],
-    ['dept_perms','Department Permissions Page'],['dept_lead_perms','Department Lead Permissions Page'],
-    ['dept_voicemail','Department Voice Mail File'],['idle_time_setting','Idle Time Chart Minute Setting'],
-    ['my_notif_settings','My Notification Settings'],['desking_module','Desking Module Page'],
-    ['ai_setting','AI Setting Page'],['users','Users Page'],['user_roles','UserRoles Page'],
-    ['sold_inventory','Sold Inventory Page'],['google_analytics','Google Analytics'],
-    ['desking_setting','Desking Module Setting'],['transcript_alert','Transcript Alert Management'],
-    ['vendors_cost','CRM Vendors Cost Page'],['google_sheet','CRM Google Sheet Page'],
-    ['dept_sms_tmpl','Department SMS Template Page'],['email_campaign','Email Campaign Page'],
-    ['automated_task','Automated Task list Page'],['pagination','Pagination Setting'],
-    ['personal_voicemail','Personal Voice Mail File'],['talktime_required','TalkTime Required'],
-    ['lead_assignment','Lead Assignment Rules'],['notif_format','Notification Format'],
-    ['tagged_chat_sms','Tagged Chat SMS Format'],['wait_while','Wait While Setting'],
-    ['ai_qa_store','AI Q&A & Store Description'],['loan_app_alert','Loan App Alert']
-  ]},
-  {key:'calendar_setting', title:'Calendar Setting', on:false, rows:[
-    ['send_appt_alerts','Send All Appointment Alerts']
-  ]}
+/* ===== Automated Task — store + table ===== */
+var AT_KEY = 'cc_auto_tasks', AT_VER = 'v2';
+var _atQuery = '';
+var _atEditId = null;   // null = add mode
+var AT_TYPES = ['Incoming Call','Outgoing Call','Missed Call','New Lead','Appointment','Voicemail'];
+var AT_FREQS = ['Hourly','Daily','Weekly','Monthly'];
+var AT_STATUSES = ['Active','Inactive'];
+var AT_ICONS = {
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>',
+  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>'
+};
+var AT_SEED = [
+  {id:'at_incoming', recordType:'Incoming Call', description:'Test',                     executing:'Daily',   time:'08:00:00', user:'DP', status:'Active'},
+  {id:'at_missed',   recordType:'Missed Call',   description:'Send follow-up reminder',  executing:'Daily',   time:'09:30:00', user:'MR', status:'Active'},
+  {id:'at_newlead',  recordType:'New Lead',      description:'Assign to BDC queue',      executing:'Hourly',  time:'00:15:00', user:'TK', status:'Active'},
+  {id:'at_appt',     recordType:'Appointment',   description:'No-show follow-up sweep',  executing:'Weekly',  time:'14:00:00', user:'JD', status:'Inactive'}
 ];
-var DP_ICON_BRIEF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>';
-
-function dpEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function dpDepartments(){
-  if(!window.CCLeads || !Array.isArray(CCLeads.TEAM)) return [];
-  var seen = {}, out = [];
-  CCLeads.TEAM.forEach(function(m){
-    var d = (m && m.dept || '').trim(); if(!d || seen[d]) return; seen[d] = 1; out.push(d);
-  });
-  return out;
-}
-function dpLoad(){
+function atLoad(){
   try{
-    var raw = localStorage.getItem(DP_KEY);
+    var raw = localStorage.getItem(AT_KEY);
     var p = raw ? JSON.parse(raw) : null;
-    if(p && p.ver === DP_VER && p.map && typeof p.map === 'object') return p.map;
-  }catch(e){}
-  var m = {}; dpDepartments().forEach(function(d){ m[d] = {}; });
-  dpPersist(m);
-  return m;
+    var hasList = p && p.ver === AT_VER && Array.isArray(p.list) && p.list.length > 0;
+    if(!hasList){
+      var seed = AT_SEED.map(function(t){ return {id:t.id, recordType:t.recordType, description:t.description, executing:t.executing, time:t.time, user:t.user, status:t.status}; });
+      try{ localStorage.setItem(AT_KEY, JSON.stringify({ver:AT_VER, list:seed})); }catch(e){}
+      return seed;
+    }
+    return p.list;
+  }catch(e){ return []; }
 }
-// Row labels that have at least one permission granted, in config order.
-function dpLabelsFor(perms){
-  perms = perms || {};
-  var out = [];
-  DP_PERM_SECTIONS.forEach(function(sec){
-    sec.rows.forEach(function(r){
-      var rec = perms[sec.key + '.' + r[0]];
-      if(rec && DP_PERMS.some(function(p){ return !!rec[p]; })) out.push(r[1]);
-    });
+/* Team roster (shared/leads-comms.js) → user select + table column */
+function atRoster(){ return (window.CCLeads && Array.isArray(CCLeads.TEAM)) ? CCLeads.TEAM : []; }
+function atUserName(key){
+  var r = atRoster();
+  for(var i=0;i<r.length;i++){ if(r[i].key === key) return r[i].name; }
+  return '';
+}
+function atPersist(){
+  try{ localStorage.setItem(AT_KEY, JSON.stringify({ver:AT_VER, list:AT_LIST})); }catch(e){}
+}
+function atEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+var AT_LIST = atLoad();
+function atFiltered(){
+  var q = (_atQuery || '').trim().toLowerCase();
+  if(!q) return AT_LIST;
+  return AT_LIST.filter(function(t){
+    return (t.recordType||'').toLowerCase().indexOf(q) >= 0
+        || (t.description||'').toLowerCase().indexOf(q) >= 0
+        || (t.executing||'').toLowerCase().indexOf(q) >= 0
+        || (t.status||'').toLowerCase().indexOf(q) >= 0
+        || atUserName(t.user).toLowerCase().indexOf(q) >= 0;
   });
-  return out;
 }
-function dpPersist(map){
-  try{ localStorage.setItem(DP_KEY, JSON.stringify({ver:DP_VER, map:map})); }catch(e){}
+function atStatusBadge(status){
+  var s = String(status || '');
+  return (s.toLowerCase() === 'active')
+    ? '<span class="badge badge--success">' + atEsc(s) + '</span>'
+    : '<span class="badge">' + atEsc(s || 'Inactive') + '</span>';
 }
-function dpRender(){
-  var host = document.getElementById('dp-list'); if(!host) return;
-  var depts = dpDepartments();
-  var map = dpLoad();
-  if(!depts.length){
-    host.innerHTML = '<div class="ur-row"><div class="ur-row-txt"><div class="ur-row-sub dp-row-sub-empty">No departments defined yet.</div></div></div>';
+function atRender(){
+  var body = document.getElementById('at-body'); if(!body) return;
+  var rows = atFiltered();
+  if(!rows.length){
+    body.innerHTML = '<tr><td colspan="8" class="at-empty-row">'
+      + (AT_LIST.length === 0 ? 'No automated tasks yet — click "Add" to create one.' : 'No tasks match your search.')
+      + '</td></tr>';
     return;
   }
-  host.innerHTML = depts.map(function(d){
-    var labels = dpLabelsFor(map[d] || []);
-    var joined = labels.join(', ');
-    var sub = labels.length
-      ? '<div class="ur-row-sub dp-row-sub" title="'+dpEsc(joined)+'">'+dpEsc(joined)+'</div>'
-      : '<div class="ur-row-sub dp-row-sub-empty">No permissions assigned</div>';
-    return '<div class="ur-row" role="button" tabindex="0"'
-      + ' onclick="if(!event.target.closest(\'.ur-row-actions\'))dpEditOpen(\''+dpEsc(d)+'\')"'
-      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.ur-row-actions\')){event.preventDefault();dpEditOpen(\''+dpEsc(d)+'\');}">'
-      + '<div class="ur-row-ic">'+DP_ICON_BRIEF+'</div>'
-      + '<div class="ur-row-txt">'
-        + '<div class="ur-row-title">'+dpEsc(d)+'</div>'
-        + sub
-      + '</div>'
-    + '</div>';
+  body.innerHTML = rows.map(function(t, i){
+    return '<tr>'
+      + '<td class="c-no">' + (i + 1) + '</td>'
+      + '<td class="c-type" onclick="atEditRow(\'' + atEsc(t.id) + '\')">' + atEsc(t.recordType) + '</td>'
+      + '<td class="c-desc">' + atEsc(t.description || '—') + '</td>'
+      + '<td class="c-exec">' + atEsc(t.executing || '—') + '</td>'
+      + '<td class="c-time">' + atEsc(t.time || '—') + '</td>'
+      + '<td class="c-user">' + atEsc(atUserName(t.user) || '—') + '</td>'
+      + '<td class="c-status">' + atStatusBadge(t.status) + '</td>'
+      + '<td class="c-act">'
+        + '<button class="a-edit" title="Edit task" onclick="atEditRow(\'' + atEsc(t.id) + '\')">' + AT_ICONS.edit + '</button>'
+        + '<button class="a-del" title="Delete task" onclick="atDelete(\'' + atEsc(t.id) + '\')">' + AT_ICONS.del + '</button>'
+      + '</td>'
+      + '</tr>';
   }).join('');
 }
-/* ── Permissions modal ────────────────────────────────────── */
-var _dpDept = null;
-function _dpCbx(inner){ return '<label class="dp-cbx">'+inner+'<span class="dp-cbx-box"></span></label>'; }
-// Build the matrix into #dp-perm-root; `saved` is a { "sec.row": {view,create,edit,delete} } map.
-function dpBuildMatrix(saved){
-  saved = saved || {};
-  var html = '';
-  DP_PERM_SECTIONS.forEach(function(sec){
-    html += '<div class="dp-perm-sec" data-sec="'+sec.key+'">'
-      + '<div class="dp-perm-sec-head">'+dpEsc(sec.title)+'</div>'
-      + '<div class="dp-perm-scroll"><table class="dp-perm-tbl"><thead><tr><th>Permission</th>';
-    DP_PERMS.forEach(function(p){
-      html += '<th class="dp-perm-colh" data-col="'+p+'" onclick="dpToggleCol(\''+sec.key+'\',\''+p+'\')">'
-        + '<span class="dp-perm-colh-in">'
-        + _dpCbx('<input type="checkbox" class="dp-col-master" data-col="'+p+'" tabindex="-1" />')
-        + p.charAt(0).toUpperCase()+p.slice(1)
-        + '</span></th>';
-    });
-    html += '</tr></thead><tbody>';
-    sec.rows.forEach(function(r){
-      var rowKey = r[0], rowDef = (r.length > 2 ? !!r[2] : sec.on), rec = saved[sec.key+'.'+rowKey];
-      html += '<tr data-row="'+rowKey+'"><td>'+dpEsc(r[1])+'</td>';
-      DP_PERMS.forEach(function(p){
-        var on = rec ? !!rec[p] : rowDef;
-        html += '<td class="dp-perm-cell">'
-          + _dpCbx('<input type="checkbox" class="dp-perm-cbx" data-sec="'+sec.key+'" data-row="'+rowKey+'" data-perm="'+p+'"'+(on?' checked':'')+' onchange="dpRefreshColMaster(\''+sec.key+'\',\''+p+'\')" />')
-          + '</td>';
-      });
-      html += '</tr>';
-    });
-    html += '</tbody></table></div></div>';
+function atSearch(v){ _atQuery = String(v || ''); atRender(); }
+function atDelete(id){
+  var t = AT_LIST.find(function(x){ return x.id === id; }); if(!t) return;
+  AT_LIST = AT_LIST.filter(function(x){ return x.id !== id; });
+  atPersist(); atRender();
+  showNavToast('Task removed', (t.recordType || 'Task') + ' was removed.');
+}
+/* ── Add / Edit modal ─────────────────────────────────────────────────────── */
+/* Popup-dropdown pickers (shared .form-select-btn trigger + .assign-popup rows) */
+function atSelStr(s){ return {value:s, label:s}; }
+var AT_SEL = {
+  type:   {placeholder:'Select Record Type', items:function(){ return AT_TYPES.map(atSelStr); }},
+  freq:   {placeholder:'Select Frequency',   items:function(){ return AT_FREQS.map(atSelStr); }},
+  status: {placeholder:'Select Status',      items:function(){ return AT_STATUSES.map(atSelStr); }},
+  user:   {placeholder:'Select User',        items:function(){ return atRoster().map(function(u){ return {value:u.key, label:u.name}; }); }}
+};
+var AT_SEL_KEYS = ['type','freq','status','user'];
+function atSelSet(key, value){
+  var cfg = AT_SEL[key]; if(!cfg) return;
+  var hid = document.getElementById('at-f-' + key); if(hid) hid.value = value || '';
+  var val = document.getElementById('at-val-' + key); if(!val) return;
+  var label = '';
+  cfg.items().forEach(function(it){ if(it.value === value) label = it.label; });
+  if(label){ val.textContent = label; val.classList.remove('form-select-mu'); }
+  else { val.textContent = cfg.placeholder; val.classList.add('form-select-mu'); }
+}
+function atSelRender(key){
+  var list = document.getElementById('at-pop-' + key + '-list'); if(!list) return;
+  var hid = document.getElementById('at-f-' + key);
+  var cur = hid ? hid.value : '';
+  list.innerHTML = AT_SEL[key].items().map(function(it){
+    return '<div class="lblp-item' + (it.value === cur ? ' on' : '') + '" onclick="atSelPick(\'' + key + '\',\'' + atEsc(it.value) + '\')">'
+      + '<span class="lblp-name">' + atEsc(it.label) + '</span>'
+      + '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      + '</div>';
+  }).join('');
+}
+function atSelClose(){
+  AT_SEL_KEYS.forEach(function(k){
+    var p = document.getElementById('at-pop-' + k); if(p) p.style.display = 'none';
+    var f = document.getElementById('at-fld-' + k); if(f) f.classList.remove('open');
   });
-  var root = document.getElementById('dp-perm-root'); if(root) root.innerHTML = html;
-  DP_PERM_SECTIONS.forEach(function(sec){ DP_PERMS.forEach(function(p){ dpRefreshColMaster(sec.key, p); }); });
 }
-function _dpColBoxes(sec, p){
-  return Array.prototype.slice.call(document.querySelectorAll('.dp-perm-cbx[data-sec="'+sec+'"][data-perm="'+p+'"]'));
-}
-// Toggle a whole column within a section (all-on if any are off, else all-off).
-function dpToggleCol(sec, p){
-  var boxes = _dpColBoxes(sec, p); if(!boxes.length) return;
-  var anyOff = boxes.some(function(b){ return !b.checked; });
-  boxes.forEach(function(b){ b.checked = anyOff; });
-  dpRefreshColMaster(sec, p);
-}
-// Update the column-header master checkbox (checked / unchecked / indeterminate).
-function dpRefreshColMaster(sec, p){
-  var boxes = _dpColBoxes(sec, p);
-  var master = document.querySelector('.dp-perm-sec[data-sec="'+sec+'"] .dp-perm-colh[data-col="'+p+'"] .dp-col-master');
-  if(!master) return;
-  var n = boxes.filter(function(b){ return b.checked; }).length;
-  master.checked = n === boxes.length && boxes.length > 0;
-  master.indeterminate = n > 0 && n < boxes.length;
-}
-function dpCollectMatrix(){
-  var map = {}, root = document.getElementById('dp-perm-root'); if(!root) return map;
-  Array.prototype.forEach.call(root.querySelectorAll('.dp-perm-cbx'), function(b){
-    var key = b.getAttribute('data-sec') + '.' + b.getAttribute('data-row');
-    (map[key] || (map[key] = {}))[b.getAttribute('data-perm')] = !!b.checked;
+function atSelAnyOpen(){
+  return AT_SEL_KEYS.some(function(k){
+    var p = document.getElementById('at-pop-' + k); return p && p.style.display === 'block';
   });
-  return map;
 }
-function dpEditOpen(dept){
-  _dpDept = dept;
-  document.getElementById('dp-modal-sub').textContent = dept;
-  dpBuildMatrix((dpLoad() || {})[dept]);
-  var m = document.getElementById('dp-modal');
-  m.classList.add('open');
-  m.querySelector('.modal-body').scrollTop = 0;
+function atSelToggle(e, key){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('at-pop-' + key), fld = document.getElementById('at-fld-' + key);
+  if(!pop || !fld) return;
+  var wasOpen = pop.style.display === 'block';
+  atSelClose();
+  if(wasOpen) return;
+  var r = fld.getBoundingClientRect();
+  pop.style.width = r.width + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8)) + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+  atSelRender(key);
+  pop.style.display = 'block';
+  fld.classList.add('open');
 }
-function dpModalClose(){
-  document.getElementById('dp-modal').classList.remove('open');
-  _dpDept = null;
-}
-function dpClearAll(){
-  document.querySelectorAll('#dp-perm-root .dp-perm-cbx').forEach(function(b){ b.checked = false; });
-  DP_PERM_SECTIONS.forEach(function(sec){ DP_PERMS.forEach(function(p){ dpRefreshColMaster(sec.key, p); }); });
-}
-function dpModalSave(){
-  if(!_dpDept) return;
-  var dept = _dpDept;
-  var map = dpLoad() || {};
-  map[dept] = dpCollectMatrix();
-  dpPersist(map);
-  dpModalClose();
-  dpRender();
-  if(typeof showNavToast === 'function') showNavToast('Permissions saved', dept + ' permissions were updated.');
-}
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape') dpModalClose();
+function atSelPick(key, value){ atSelSet(key, value); atSelClose(); }
+document.addEventListener('mousedown', function(e){
+  if(!atSelAnyOpen()) return;
+  if(e.target.closest && (e.target.closest('.at-sel-popup') || e.target.closest('.modal-field'))) return;
+  atSelClose();
 });
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dpRender);
-else dpRender();
+function atModalOpen(task){
+  var m = document.getElementById('at-modal'); if(!m) return;
+  _atEditId = task ? task.id : null;
+  document.getElementById('at-modal-title').textContent = task ? 'Edit Automated Task' : 'Add Automated Tasks';
+  document.getElementById('at-f-desc').value = task ? (task.description || '') : '';
+  document.getElementById('at-f-time').value = task ? (task.time || '') : '';
+  atSelSet('type',   task ? (task.recordType || '') : '');
+  atSelSet('freq',   task ? (task.executing  || '') : '');
+  atSelSet('status', task ? (task.status     || '') : '');
+  atSelSet('user',   task ? (task.user       || '') : '');
+  atSelClose();
+  m.classList.add('open');
+  setTimeout(function(){ var d = document.getElementById('at-f-desc'); if(d) d.focus(); }, 20);
+}
+function atModalClose(){
+  atSelClose();
+  var m = document.getElementById('at-modal'); if(m) m.classList.remove('open');
+  _atEditId = null;
+}
+function atModalSubmit(){
+  var type = document.getElementById('at-f-type').value;
+  if(!type){ atSelToggle(null, 'type'); return; }   // Record Type is the row's label — required
+  var data = {
+    recordType: type,
+    description: (document.getElementById('at-f-desc').value || '').trim(),
+    executing: document.getElementById('at-f-freq').value,
+    time: document.getElementById('at-f-time').value,
+    user: document.getElementById('at-f-user').value,
+    status: document.getElementById('at-f-status').value || 'Active'
+  };
+  if(_atEditId){
+    var row = AT_LIST.find(function(x){ return x.id === _atEditId; });
+    if(row){ row.recordType = data.recordType; row.description = data.description; row.executing = data.executing; row.time = data.time; row.user = data.user; row.status = data.status; }
+    atPersist(); atRender(); atModalClose();
+    showNavToast('Task updated', data.recordType + ' was saved.');
+  } else {
+    data.id = 'at_' + Date.now() + '_' + Math.floor(Math.random() * 1e4);
+    AT_LIST.push(data);
+    atPersist(); atRender(); atModalClose();
+    showNavToast('Task added', data.recordType + ' was created.');
+  }
+}
+function atEditRow(id){
+  var t = AT_LIST.find(function(x){ return x.id === id; }); if(!t) return;
+  atModalOpen(t);
+}
+function atAddOpen(){ atModalOpen(null); }
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  if(atSelAnyOpen()){ atSelClose(); return; }   // close an open picker first
+  var m = document.getElementById('at-modal');
+  if(m && m.classList.contains('open')) atModalClose();
+});
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', atRender);
+else atRender();
 </script>
 
 <!-- PRODUCT SWITCHER -->

@@ -3454,6 +3454,8 @@
   .dr-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
   .dr-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .dr-btn-cancel:hover{border-color:var(--mu);}
+  .dr-btn-del{margin-right:auto;}
+  .dr-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .dr-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
   .dr-btn-save:hover{background:var(--ac2);}
   @media (max-width:640px){
@@ -3652,7 +3654,6 @@
           <th class="dr-th-no">No.</th>
           <th>Disable Rule time</th>
           <th>Total Phone Calls</th>
-          <th class="dr-th-act">Action</th>
         </tr></thead>
         <tbody id="dr-tbody"></tbody>
       </table>
@@ -3683,6 +3684,7 @@
       </div>
     </div>
     <div class="dr-modal-foot">
+      <button class="dr-btn-cancel dr-btn-del" id="dr-delete-btn" onclick="drModalDelete()" hidden>Delete</button>
       <button class="dr-btn-cancel" onclick="drCloseModal()">Cancel</button>
       <button class="dr-btn-save" onclick="drSaveModal()">Save</button>
     </div>
@@ -4268,18 +4270,16 @@ function drRender(){
   if(drPage>tp) drPage=tp;
   var start=(drPage-1)*DR_PER, rows=list.slice(start, start+DR_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_drQuery?'No rules match your search.':'No disable rules yet — click Add Rule.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_drQuery?'No rules match your search.':'No disable rules yet — click Add Rule.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.dr-actions\'))drEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.dr-actions\')){event.preventDefault();drEdit(\''+it.id+'\');}">'+
         '<td class="dr-no">'+no+'</td>'+
         '<td class="dr-num">'+drEsc(drFmtTime(it.time)||'—')+'</td>'+
         '<td class="dr-num">'+(parseInt(it.calls,10)||0)+'</td>'+
-        '<td><div class="dr-actions">'+
-          '<button class="dr-icon edit" onclick="drEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="dr-icon del" onclick="drDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4312,8 +4312,8 @@ function drPageList(cur,tp){
 function drGo(p){ var tp=Math.max(1,Math.ceil(drFiltered().length/DR_PER)); if(p<1||p>tp) return; drPage=p; drRender(); }
 function drOpenModal(){ document.getElementById('dr-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('dr-input-time'); if(i) i.focus(); }, 40); }
 function drCloseModal(){ document.getElementById('dr-modal').classList.remove('open'); }
-function drAdd(){ _drEditId=null; document.getElementById('dr-modal-title').textContent='Add Rule'; document.getElementById('dr-input-time').value=''; document.getElementById('dr-input-calls').value=''; drOpenModal(); }
-function drEdit(id){ var it=drItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _drEditId=id; document.getElementById('dr-modal-title').textContent='Edit Rule'; document.getElementById('dr-input-time').value=it.time||''; document.getElementById('dr-input-calls').value=it.calls; drOpenModal(); }
+function drAdd(){ _drEditId=null; document.getElementById('dr-modal-title').textContent='Add Rule'; document.getElementById('dr-input-time').value=''; document.getElementById('dr-input-calls').value=''; var d=document.getElementById('dr-delete-btn'); if(d) d.hidden=true; drOpenModal(); }
+function drEdit(id){ var it=drItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _drEditId=id; document.getElementById('dr-modal-title').textContent='Edit Rule'; document.getElementById('dr-input-time').value=it.time||''; document.getElementById('dr-input-calls').value=it.calls; var d=document.getElementById('dr-delete-btn'); if(d) d.hidden=false; drOpenModal(); }
 function drSaveModal(){
   var time=document.getElementById('dr-input-time').value;
   var calls=Math.max(0, parseInt(document.getElementById('dr-input-calls').value,10)||0);
@@ -4330,6 +4330,7 @@ function drDelete(id){
   drPersist(); drRender();
   if(typeof showNavToast==='function') showNavToast('Rule deleted', drFmtTime(it.time)+' was removed.');
 }
+function drModalDelete(){ if(!_drEditId) return; drDelete(_drEditId); drCloseModal(); }
 function drExport(){
   if(!drItems.length){ if(typeof showNavToast==='function') showNavToast('Nothing to export','There are no disable rules to export.'); return; }
   var rows=[['No.','Disable Rule Time','Total Phone Calls']].concat(drItems.map(function(it,i){ return [String(i+1), drFmtTime(it.time)||'', String(it.calls||0)]; }));

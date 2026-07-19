@@ -2808,8 +2808,8 @@
   letter-spacing:.7px;margin:0 0 14px;}
 .set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
 .set-card{display:flex;align-items:center;gap:14px;background:var(--sur);
-  border:0.5px solid var(--brd2);border-radius:12px;padding:16px 18px;
-  transition:border-color .15s,background .15s;min-height:74px;}
+  border:0.5px solid var(--brd2);border-radius:12px;padding:16px 38px 16px 18px;
+  transition:border-color .15s,background .15s;min-height:74px;position:relative;}
 .set-card:hover{border-color:var(--ac);background:var(--sur2);}
 .set-card-ic{width:40px;height:40px;border-radius:50%;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
@@ -2819,12 +2819,28 @@
 .set-card-title{font-size:13.5px;font-weight:600;color:var(--tx);
   letter-spacing:-.2px;line-height:1.3;}
 .set-card-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4;}
+/* Info affordance — click opens a popover holding this card's help text. */
+.set-card-info{position:absolute;top:8px;right:10px;width:22px;height:22px;border-radius:50%;
+  border:1px solid var(--brd2);background:transparent;color:var(--mu);cursor:pointer;z-index:2;
+  display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:12.5px;font-weight:600;
+  transition:border-color .12s,color .12s,background .12s;}
+.set-card-info:hover,.set-card-info[aria-expanded="true"]{border-color:var(--ac);color:var(--ac2);
+  background:rgba(79,124,255,.10);}
+.set-card-info-pop{position:absolute;top:calc(100% + 6px);right:0;display:none;
+  background:var(--sur2);color:var(--ac2);border:0.5px solid var(--ac);border-radius:8px;
+  padding:9px 12px;font-size:12px;font-weight:500;line-height:1.45;white-space:normal;
+  width:max-content;max-width:260px;text-align:left;z-index:200;
+  box-shadow:0 8px 24px rgba(0,0,0,.45);}
+.set-card-info-pop.open{display:block;}
 
 @media (max-width:640px){
   .set-page-head{padding:14px 16px;}
   .set-page-title{font-size:16px;}
   .set-scroll{padding:18px 16px 60px;}
   .set-grid{grid-template-columns:1fr;}
+  .set-card-info{width:30px;height:30px;font-size:14px;top:7px;right:8px;}
+  .set-card{padding-right:46px;}
 }
 
 </style>
@@ -2987,51 +3003,65 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../User_roles/coreconnect_user_roles.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6 1.2 0 2.3.3 3.2.9"/><circle cx="18" cy="16" r="2.2"/><path d="M18 12.5v1.3M18 18.2v1.3M21.2 16h-1.3M16.1 16h-1.3M20.3 13.7l-.9.9M16.6 17.4l-.9.9M20.3 18.3l-.9-.9M16.6 14.6l-.9-.9"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">User Roles</div>
+            <div class="set-card-title">Role Management</div>
             <div class="set-card-sub">Manage User Roles</div>
           </div>
+          <button class="set-card-info" data-info="Create and manage user roles with customized permissions. Control what each team member can view, access, and manage based on their responsibilities." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../Users/coreconnect_user.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5M18 20c0-2.3-1-4.3-2.6-5.3"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Users</div>
+            <div class="set-card-title">User Management</div>
             <div class="set-card-sub">Manage users and their info</div>
           </div>
+          <button class="set-card-info" data-info="Add, edit, and manage system users. Control user access, profiles, and account settings." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../contacts/coreconnect_contact.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.2"/><path d="M5.5 16c.6-1.7 2-2.7 3.5-2.7s2.9 1 3.5 2.7"/><path d="M15 9h4M15 12.5h4"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Contact</div>
+            <div class="set-card-title">Contact Management</div>
             <div class="set-card-sub">Go To Contact</div>
           </div>
+          <button class="set-card-info" data-info="Manage customer and prospect contact records. View communication history, notes, activities, and customer details in one place." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../reports/coreconnect_report.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Report</div>
+            <div class="set-card-title">Reporting & Analytics</div>
             <div class="set-card-sub">Go To Report</div>
           </div>
+          <button class="set-card-info" data-info="Generate reports and analyze business activity, sales performance, user activity, and CRM performance." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/><path d="M12 12l6 6"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Google Analytics</div>
+            <div class="set-card-title">Website Analytics Integration</div>
             <div class="set-card-sub">Manage Google Analytics Charts</div>
           </div>
+          <button class="set-card-info" data-info="Connect website analytics tools to track visitor activity, marketing performance, and lead sources." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.open('../desking_module/desking_module.html','_blank')">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Desking Module</div>
+            <div class="set-card-title">Deal Desk</div>
             <div class="set-card-sub">Manage Desking Module</div>
           </div>
+          <button class="set-card-info" data-info="Create and manage deals with pricing calculations, taxes, fees, payments, and registration details." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="openDeskingSettings()">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Desking Module Setting</div>
+            <div class="set-card-title">Deal Configuration Settings</div>
             <div class="set-card-sub">Change Desking Module Setting</div>
           </div>
+          <button class="set-card-info" data-info="Configure default deal settings including taxes, fees, pricing rules, and transaction options." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3041,23 +3071,74 @@
         <div class="set-card" onclick="window.location.href='../crm_alert_management/crm_alert_management.html'" style="cursor:pointer;">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="10" rx="4"/><path d="M12 8V6M9 9 7 7M15 9l2-2M8 12H4M20 12h-4M8 15l-3 2M16 15l3 2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">CRM Alert Management</div>
+            <div class="set-card-title">CRM Alerts & Automation</div>
             <div class="set-card-sub">Change CRM Alert Management</div>
           </div>
+          <button class="set-card-info" data-info="Create automated alerts based on lead activity, status changes, follow-ups, and important customer events." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="openTranscriptAlert()">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Transcript Alert Management</div>
+            <div class="set-card-title">Conversation Keyword Alerts</div>
             <div class="set-card-sub">Change Transcript Alert Management</div>
           </div>
+          <button class="set-card-info" data-info="Monitor conversations for specific keywords and automatically trigger notifications when important topics are identified." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../notification_management/notification_management.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Notification Management</div>
+            <div class="set-card-title">Notification Settings</div>
             <div class="set-card-sub">Change Notification Management</div>
           </div>
+          <button class="set-card-info" data-info="Manage email, SMS, and in-app notifications for activities such as missed calls, follow-ups, assignments, and updates." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">Notification Format</div>
+            <div class="set-card-sub">Change Notification Format</div>
+          </div>
+          <button class="set-card-info" data-info="" aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M9 7h6M9 10h4"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">Tagged Message Format</div>
+            <div class="set-card-sub">Change Tagged Chat SMS Format</div>
+          </div>
+          <button class="set-card-info" data-info="Customize the format of SMS notifications triggered by tagged conversations or mentions." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M14.5 13.5c0-.83-.67-1.5-1.5-1.5h-2c-.83 0-1.5.67-1.5 1.5S10.17 15 11 15h2c.83 0 1.5.67 1.5 1.5S13.83 18 13 18h-2c-.83 0-1.5-.67-1.5-1.5"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">Loan Application Notifications</div>
+            <div class="set-card-sub">Change Loan App Alert</div>
+          </div>
+          <button class="set-card-info" data-info="Configure SMS notifications sent to assigned users when a new loan application is received." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">Personal Notification Preferences</div>
+            <div class="set-card-sub">Manage Notification Setting</div>
+          </div>
+          <button class="set-card-info" data-info="Customize how and when you receive alerts through SMS, email, or in-app notifications." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10"/><path d="M7 3c0 4 5 5 5 9 0-4 5-5 5-9M7 21c0-4 5-5 5-9 0 4 5 5 5 9"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">Appointment Reminder Settings</div>
+            <div class="set-card-sub">Change Wait While Setting</div>
+          </div>
+          <button class="set-card-info" data-info="Manage customer appointment reminders and scheduled notifications." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3067,23 +3148,29 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../locations/locations.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Locations</div>
+            <div class="set-card-title">Location Management</div>
             <div class="set-card-sub">Manage Locations</div>
           </div>
+          <button class="set-card-info" data-info="Create and manage multiple business locations, teams, and location-specific settings." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../inactive_reason/inactive_reason.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/><path d="m4 4 16 16"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Inactive Reason</div>
+            <div class="set-card-title">Lead Status Reasons</div>
             <div class="set-card-sub">Manage Inactive Reason</div>
           </div>
+          <button class="set-card-info" data-info="Create custom reasons for inactive leads to help track outcomes and improve follow-up strategies." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../sold_inventory/sold_inventory.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2 12.5h11l2-9H6.5"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Sold Inventory</div>
+            <div class="set-card-title">Inventory Integration</div>
             <div class="set-card-sub">Manage Sold Inventory</div>
           </div>
+          <button class="set-card-info" data-info="Connect and import sold vehicle information from your inventory or DMS system." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3093,23 +3180,29 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../crm_vendors_cost/crm_vendors_cost.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="M17 12v8M19.2 14h-3.1a1.6 1.6 0 0 0 0 3.2h2a1.6 1.6 0 0 1 0 3.2H15"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">CRM Vendors Cost</div>
+            <div class="set-card-title">Lead Source Cost Management</div>
             <div class="set-card-sub">Manage CRM Vendors Cost</div>
           </div>
+          <button class="set-card-info" data-info="Track and manage marketing vendor costs to measure lead acquisition expenses and ROI." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../crm_google_sheet/crm_google_sheet.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6" r="2.4"/><circle cx="7" cy="15" r="2.4"/><circle cx="17" cy="15" r="2.4"/><path d="M12 8.4v3M10.4 13.6 8.6 13M13.6 13.6l1.8-.6"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">CRM Google Sheet</div>
+            <div class="set-card-title">Google Sheets Integration</div>
             <div class="set-card-sub">Manage CRM Google Sheet</div>
           </div>
+          <button class="set-card-info" data-info="Connect Google Sheets to import, export, and manage lead information." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../crm_status/crm_status.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V7"/><circle cx="8" cy="8" r="1.5"/><path d="m3 14 4-3 5 4"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">CRM Status</div>
+            <div class="set-card-title">Lead Status Management</div>
             <div class="set-card-sub">Manage CRM Status</div>
           </div>
+          <button class="set-card-info" data-info="Customize lead stages and statuses to match your sales process and workflow." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../lead_rule_status/lead_rule_status.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7.5 9 1.5 1.5 2.5-2.5M7.5 15l1.5 1.5 2.5-2.5M14 9h3M14 15h3"/></svg></div>
@@ -3117,6 +3210,8 @@
             <div class="set-card-title">Lead Rule Status</div>
             <div class="set-card-sub">Manage Lead Rule Status</div>
           </div>
+          <button class="set-card-info" data-info="" aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../disable_rule/disable_rule.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6"/><path d="m15 14 5 5M20 14l-5 5"/></svg></div>
@@ -3124,6 +3219,8 @@
             <div class="set-card-title">Disable Rules</div>
             <div class="set-card-sub">Manage Disable Rules</div>
           </div>
+          <button class="set-card-info" data-info="" aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3133,49 +3230,61 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../greeting_message/greeting_message.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M12 7v4M10 9.5l2 2 2-2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Greeting Message</div>
+            <div class="set-card-title">Initial Greeting Message</div>
             <div class="set-card-sub">Manage Greeting Message</div>
           </div>
+          <button class="set-card-info" data-info="Create automated welcome messages for customers when they first contact your business." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../user_sms_template/user_sms_template.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="12" cy="8.5" r="1.8"/><path d="M9 12.5c.5-1.2 1.6-2 3-2s2.5.8 3 2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">User SMS Template</div>
+            <div class="set-card-title">Personal SMS Templates</div>
             <div class="set-card-sub">Go To User SMS Template</div>
           </div>
+          <button class="set-card-info" data-info="Create reusable text message templates for individual customer communication." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../department_sms_template/department_sms_template.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h14v9H7l-4 3z"/><circle cx="8" cy="8" r="1.5"/><circle cx="12" cy="8" r="1.5"/><path d="M21 8v9l-3-2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Department SMS Template</div>
+            <div class="set-card-title">Department Message Templates</div>
             <div class="set-card-sub">Go To Department SMS Template</div>
           </div>
+          <button class="set-card-info" data-info="Create SMS templates for specific departments such as sales, service, or support teams." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../email_template/email_template.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Email Template</div>
+            <div class="set-card-title">Email Templates</div>
             <div class="set-card-sub">Go To Email Template</div>
           </div>
+          <button class="set-card-info" data-info="Create and manage reusable email templates for customer communication and follow-up campaigns." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../email_campaign/email_campaign.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="12" rx="2"/><path d="m3 7 7 5 7-5"/><path d="M16 14h6M19 11l3 3-3 3"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Email Campaign</div>
+            <div class="set-card-title">Email Marketing Campaigns</div>
             <div class="set-card-sub">Go To Email Campaign</div>
           </div>
+          <button class="set-card-info" data-info="Build, schedule, and manage automated email campaigns to engage leads and customers." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
     <section class="set-section">
       <h3 class="set-grp">Task & Workflow Automation</h3>
       <div class="set-grid">
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../automated_task/autotask.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Automated Task</div>
+            <div class="set-card-title">Workflow Automation</div>
             <div class="set-card-sub">Go To Automated Task</div>
           </div>
+          <button class="set-card-info" data-info="Create automated tasks and reminders to ensure important follow-ups are completed on time." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3185,35 +3294,43 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../departmentpermissions/departmentpermissions.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Department Permission</div>
+            <div class="set-card-title">Department Access Control</div>
             <div class="set-card-sub">Go To Department Permission</div>
           </div>
+          <button class="set-card-info" data-info="Manage permissions and access levels for each department within your organization." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../dep_lead/dep_lead.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v17"/><path d="M7 7h.01M10 7h.01M7 10h.01M10 10h.01M7 13h.01M10 13h.01"/><circle cx="18" cy="12" r="2"/><path d="M15 21c0-2 1.3-3.5 3-3.5s3 1.5 3 3.5"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Department Lead Permission</div>
+            <div class="set-card-title">Department Lead Access Rules</div>
             <div class="set-card-sub">Go To Department Lead Permission</div>
           </div>
+          <button class="set-card-info" data-info="Control which departments can view, manage, and receive assigned leads." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
     <section class="set-section">
       <h3 class="set-grp">Miscellaneous</h3>
       <div class="set-grid">
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../labelflag/labelflag.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 3 2 3H5"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Label Flag</div>
+            <div class="set-card-title">Lead Tags & Labels</div>
             <div class="set-card-sub">Go To Label Flag</div>
           </div>
+          <button class="set-card-info" data-info="Create custom tags to organize, categorize, and quickly identify leads and customers." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Video Gallery</div>
+            <div class="set-card-title">Video Library</div>
             <div class="set-card-sub">Go To Video Gallery</div>
           </div>
+          <button class="set-card-info" data-info="Upload and manage videos used for customer communication, training, and marketing." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3223,23 +3340,29 @@
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Pagination Setting</div>
+            <div class="set-card-title">Display Settings</div>
             <div class="set-card-sub">Change page size</div>
           </div>
+          <button class="set-card-info" data-info="Control how many records appear per page throughout the CRM." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Personal Voice Mail File</div>
+            <div class="set-card-title">Personal Voicemail Settings</div>
             <div class="set-card-sub">Change Personal Voice Mail File</div>
           </div>
+          <button class="set-card-info" data-info="Upload and manage personalized voicemail recordings used during customer outreach." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Department Voice Mail File</div>
+            <div class="set-card-title">Department Voicemail Settings</div>
             <div class="set-card-sub">Change Department Voice Mail File</div>
           </div>
+          <button class="set-card-info" data-info="Manage voicemail recordings used by specific departments or teams." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3249,37 +3372,20 @@
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2L15 12a14 14 0 0 0 5 5l.8-1.1a2 2 0 0 1 2-.5c.8.3 1.6.5 2.5.6"/><circle cx="6" cy="6" r="3.2"/><path d="M6 4.5V6l1 .8"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">TalkTime Required</div>
+            <div class="set-card-title">Engagement Requirements</div>
             <div class="set-card-sub">Change TalkTime Required in seconds</div>
           </div>
+          <button class="set-card-info" data-info="Set minimum communication requirements needed for leads to be considered actively contacted." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Lead Assignment Rules</div>
+            <div class="set-card-title">Lead Distribution Rules</div>
             <div class="set-card-sub">Change Lead Assignment Rules</div>
           </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS Sent Hour</div>
-            <div class="set-card-sub">Change Mass SMS Sent Hour</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M11 18h2"/><path d="M9 8h6M12 6v4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Mass SMS X Value</div>
-            <div class="set-card-sub">Change Mass SMS X Value</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Auto SMS Send</div>
-            <div class="set-card-sub">Change Auto SMS Send functionality</div>
-          </div>
+          <button class="set-card-info" data-info="Automatically assign leads to the correct salespeople or departments based on custom rules." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3289,37 +3395,11 @@
         <div class="set-card">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">Idle Time Chart Minute Setting</div>
-            <div class="set-card-sub">Change Idle Time Chart Minute Setting</div>
+            <div class="set-card-title">Idle Time Chart Minute</div>
+            <div class="set-card-sub">Change Idle Time Chart Minute</div>
           </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Format</div>
-            <div class="set-card-sub">Change Notification Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M9 7h6M9 10h4"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Tagged Chat SMS Format</div>
-            <div class="set-card-sub">Change Tagged Chat SMS Format</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Notification Settings</div>
-            <div class="set-card-sub">Change Notification Settings</div>
-          </div>
-        </div>
-        <div class="set-card">
-          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10"/><path d="M7 3c0 4 5 5 5 9 0-4 5-5 5-9M7 21c0-4 5-5 5-9 0 4 5 5 5 9"/></svg></div>
-          <div class="set-card-txt">
-            <div class="set-card-title">Wait While Setting</div>
-            <div class="set-card-sub">Change Wait While Setting</div>
-          </div>
+          <button class="set-card-info" data-info="" aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3329,9 +3409,20 @@
         <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../aisettings/aisettings.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><path d="M12 3v3M9 18v2M15 18v2"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">AI Settings</div>
+            <div class="set-card-title">AI Configuration</div>
             <div class="set-card-sub">Manage AI Settings</div>
           </div>
+          <button class="set-card-info" data-info="Configure AI features, automation preferences, and intelligent assistance settings." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
+        </div>
+        <div class="set-card">
+          <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.45V12"/><path d="M12.5 14.5h.01"/></svg></div>
+          <div class="set-card-txt">
+            <div class="set-card-title">AI Knowledge Base & Business Profile</div>
+            <div class="set-card-sub">Manage AI Q&A & Store Description</div>
+          </div>
+          <button class="set-card-info" data-info="Manage AI responses by providing business information, FAQs, and company details used by AI assistants." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
+          <span class="set-card-info-pop"></span>
         </div>
       </div>
     </section>
@@ -3981,6 +4072,27 @@ document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifi
   document.addEventListener('DOMContentLoaded', function(){ restore(); bind(); });
   window.addEventListener('load', restore); // fallback after late layout (fonts, etc.)
 })();
+
+/* ===== Card info popovers =====
+   Content lives in each button's data-info attribute; empty falls back to a placeholder. */
+function setCardInfoCloseAll(){
+  document.querySelectorAll('.set-card-info-pop.open').forEach(function(p){ p.classList.remove('open'); });
+  document.querySelectorAll('.set-card-info[aria-expanded="true"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); });
+}
+function setCardInfo(btn){
+  var pop = btn.nextElementSibling;
+  if(!pop || !pop.classList.contains('set-card-info-pop')) return;
+  var wasOpen = pop.classList.contains('open');
+  setCardInfoCloseAll();
+  if(wasOpen) return;
+  pop.textContent = btn.getAttribute('data-info') || 'No description yet.';
+  pop.classList.add('open');
+  btn.setAttribute('aria-expanded','true');
+}
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest('.set-card-info') && !e.target.closest('.set-card-info-pop')) setCardInfoCloseAll();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setCardInfoCloseAll(); });
 </script><!-- PRODUCT-SWITCHER:JS START -->
 <script>
 (function(){

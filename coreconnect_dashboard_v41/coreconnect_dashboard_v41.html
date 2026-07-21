@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CoreConnect — Dashboard</title>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cc_theme')==='light'?'light':'dark')}catch(e){}</script>
 <link rel="stylesheet" href="../shared/app.css">
 <link rel="stylesheet" href="../shared/contact-panel.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{background:#0f1117;margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+  html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
 
   /* ════════════════════════════════════════════════════════════════════════════
      DESIGN TOKENS — lifted verbatim from coreconnect_leads_v78.html
@@ -22,7 +23,7 @@
     background:var(--bg);border-bottom:0.5px solid var(--brd);
     display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:60;}
   .top-header .logo{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.3px;
-    color:#fff;display:flex;align-items:center;gap:10px;}
+    color:var(--tx);display:flex;align-items:center;gap:10px;}
   .top-header .logo-mark{width:32px;height:32px;display:flex;
     align-items:center;justify-content:center;flex-shrink:0;}
   .top-header .logo-mark img{width:32px;height:32px;border-radius:8px;object-fit:cover;}
@@ -34,14 +35,14 @@
   .hamburger-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;
     border-radius:10px;background:transparent;border:none;color:var(--tx);cursor:pointer;
     flex-shrink:0;transition:background .12s;}
-  .hamburger-btn:hover{background:rgba(255,255,255,.05);}
+  .hamburger-btn:hover{background:var(--hover);}
 
   /* Right-side actions (notifications bell) */
   .top-header-right{display:flex;align-items:center;gap:10px;}
   .header-bell{position:relative;width:44px;height:44px;display:flex;align-items:center;
     justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);
     transition:all .12s;background:transparent;border:none;}
-  .header-bell:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .header-bell:hover{background:var(--hover);color:var(--tx);}
   .header-bell.active{background:rgba(79,124,255,.10);color:var(--ac2);}
   .header-bell-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;
     border-radius:50%;background:var(--rd);border:2px solid var(--bg);
@@ -75,7 +76,7 @@
   .notif-close{display:none;width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;}
-  .notif-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .notif-close:hover{background:var(--hover);color:var(--tx);}
   .notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
   .notif-tab{background:transparent;border:none;color:var(--mu);
     font-size:12.5px;font-weight:500;font-family:var(--font);cursor:pointer;
@@ -112,7 +113,7 @@
   .sb-item{position:relative;width:44px;height:44px;display:flex;align-items:center;
     justify-content:center;border-radius:10px;cursor:pointer;color:var(--mu);
     transition:all .12s;flex-shrink:0;}
-  .sb-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .sb-item:hover{background:var(--hover);color:var(--tx);}
   .sb-item.active{background:var(--ac);color:#fff;}
   .sb-item.active:hover{background:var(--ac);}
   .sb-divider{width:36px;height:0.5px;background:var(--brd);margin:6px 0;flex-shrink:0;}
@@ -258,7 +259,7 @@
   .md-item{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:10px;
     color:var(--mu);cursor:pointer;font-size:14px;font-weight:500;font-family:var(--font);
     transition:all .12s;}
-  .md-item:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .md-item:hover{background:var(--hover);color:var(--tx);}
   .md-item.active{background:var(--ac);color:#fff;}
   .md-item.active:hover{background:var(--ac);}
   .md-item svg{flex-shrink:0;}
@@ -280,14 +281,14 @@
   .dialer-tab-label{font-size:9px;font-weight:600;letter-spacing:.6px;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
 
   .dialer-panel{position:fixed;right:-320px;top:0;bottom:0;width:300px;
-    background:#181c27;border-left:0.5px solid rgba(255,255,255,0.13);
+    background:var(--sur);border-left:0.5px solid var(--brd2);
     z-index:1500;display:flex;flex-direction:column;
     transition:right .25s cubic-bezier(.4,0,.2,1);
     box-shadow:-8px 0 32px rgba(0,0,0,.5);}
   .dialer-panel.open{right:0;}
 
   .dialer-header{display:flex;align-items:center;justify-content:space-between;
-    padding:14px 16px;border-bottom:0.5px solid rgba(255,255,255,0.07);flex-shrink:0;background:#181c27;}
+    padding:14px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;background:var(--sur);}
   .dialer-header-left{display:flex;align-items:center;gap:8px;}
   .dialer-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gr);}
   .dialer-title{font-size:14px;font-weight:600;color:var(--tx);}
@@ -314,7 +315,7 @@
 
   .dialer-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 20px;flex-shrink:0;}
   .dk{display:flex;flex-direction:column;align-items:center;justify-content:center;
-    height:52px;border-radius:10px;background:#1e2333;border:0.5px solid rgba(255,255,255,0.07);
+    height:52px;border-radius:10px;background:var(--sur2);border:0.5px solid var(--brd);
     cursor:pointer;transition:all .1s;user-select:none;}
   .dk:hover{background:rgba(79,124,255,.12);border-color:var(--ac);}
   .dk:active{transform:scale(.95);}
@@ -466,7 +467,7 @@
   .pm-mobile-close{width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     display:flex;align-items:center;justify-content:center;transition:all .12s;}
-  .pm-mobile-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .pm-mobile-close:hover{background:var(--hover);color:var(--tx);}
 
   /* Menu items */
   .pm-item{display:flex;align-items:center;justify-content:space-between;
@@ -475,8 +476,8 @@
     background:transparent;border-left:none;border-right:none;border-top:none;
     width:100%;font-family:var(--font);text-align:left;}
   .pm-item:last-child{border-bottom:none;}
-  .pm-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
-  .pm-item:focus{outline:none;background:rgba(255,255,255,.04);color:var(--ac2);}
+  .pm-item:hover{background:var(--hover);color:var(--ac2);}
+  .pm-item:focus{outline:none;background:var(--hover);color:var(--ac2);}
   .pm-label{font-weight:500;}
   .pm-check{color:var(--ac2);opacity:0;transition:opacity .15s;flex-shrink:0;}
   .pm-item[aria-checked="true"]{color:var(--ac2);}
@@ -503,7 +504,7 @@
   .cal-mobile-close{width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     display:flex;align-items:center;justify-content:center;transition:all .12s;}
-  .cal-mobile-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .cal-mobile-close:hover{background:var(--hover);color:var(--tx);}
 
   /* Month-nav header (prev / month-year label / next) — buttons now 40 for touch */
   .cal-nav{display:flex;align-items:center;justify-content:space-between;
@@ -588,14 +589,14 @@
     color:var(--mu);cursor:grab;border-radius:8px;flex-shrink:0;
     opacity:.45;transition:opacity .12s,color .12s,background .12s;}
   .widget:hover .w-drag{opacity:1;}
-  .w-drag:hover{color:var(--ac2);background:rgba(255,255,255,.05);opacity:1;}
+  .w-drag:hover{color:var(--ac2);background:var(--hover);opacity:1;}
   .w-drag:active{cursor:grabbing;}
   .w-title{flex:1;font-size:11px;font-weight:500;color:var(--mu);
     text-transform:uppercase;letter-spacing:.7px;}
   .w-kebab{width:40px;height:40px;display:flex;align-items:center;justify-content:center;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     border-radius:8px;transition:color .12s,background .12s;flex-shrink:0;}
-  .w-kebab:hover{color:var(--ac2);background:rgba(255,255,255,.05);}
+  .w-kebab:hover{color:var(--ac2);background:var(--hover);}
 
   /* Body — each widget's render function fills this */
   .w-body{flex:1;padding:18px 18px 20px;}
@@ -612,7 +613,7 @@
     background:transparent;border-left:none;border-right:none;border-top:none;
     width:100%;font-family:var(--font);text-align:left;}
   .w-menu-item:last-child{border-bottom:none;}
-  .w-menu-item:hover{background:rgba(255,255,255,.04);color:var(--ac2);}
+  .w-menu-item:hover{background:var(--hover);color:var(--ac2);}
   .w-menu-item svg{width:14px;height:14px;color:var(--mu);flex-shrink:0;}
   .w-menu-item:hover svg{color:var(--ac2);}
 
@@ -710,7 +711,7 @@
     padding:8px 12px;min-height:36px;border-radius:7px;
     background:transparent;
     transition:opacity .12s, background .12s, color .12s;}
-  .chart-leg:hover{background:rgba(255,255,255,.04);color:var(--tx);}
+  .chart-leg:hover{background:var(--hover);color:var(--tx);}
   .chart-leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
   .chart-leg.calls .chart-leg-dot{background:var(--ac);}
   .chart-leg.sms   .chart-leg-dot{background:var(--teal);}
@@ -896,7 +897,7 @@
   .df-search input::placeholder{color:var(--mu);}
   .df-opts{flex:1;overflow-y:auto;padding:6px;min-height:0;max-height:440px;}
   .df-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:7px;cursor:pointer;border:none;background:transparent;text-align:left;transition:background .12s;}
-  .df-opt:hover{background:rgba(255,255,255,.04);}
+  .df-opt:hover{background:var(--hover);}
   .df-radio{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--brd2);flex:none;display:flex;align-items:center;justify-content:center;transition:all .12s;}
   .df-opt.chosen .df-radio{background:var(--ac);border-color:var(--ac);}
   .df-opt.chosen .df-radio::after{content:'';width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-1px;}
@@ -937,7 +938,7 @@
   .wm-mobile-close{width:36px;height:36px;border-radius:8px;
     background:transparent;border:none;color:var(--mu);cursor:pointer;
     display:flex;align-items:center;justify-content:center;transition:all .12s;}
-  .wm-mobile-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+  .wm-mobile-close:hover{background:var(--hover);color:var(--tx);}
 
   .wm-section-head{font-size:10.5px;font-weight:500;color:var(--mu);
     text-transform:uppercase;letter-spacing:.7px;padding:12px 14px 6px;
@@ -950,7 +951,7 @@
     background:transparent;border-left:none;border-right:none;border-top:none;
     width:100%;font-family:var(--font);text-align:left;}
   .wm-item:last-child{border-bottom:none;}
-  .wm-item:hover{background:rgba(255,255,255,.04);}
+  .wm-item:hover{background:var(--hover);}
   .wm-checkbox{width:16px;height:16px;border-radius:4px;flex-shrink:0;
     border:0.5px solid var(--brd2);background:transparent;
     display:flex;align-items:center;justify-content:center;

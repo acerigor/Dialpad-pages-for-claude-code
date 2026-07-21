@@ -1,4 +1,46 @@
 /* ============================================================================
+   CoreConnect — theme toggle (light / dark)
+   Applies the saved theme immediately, and injects a one-click toggle button
+   into the top-header, left of the loan-app button. Storage: cc_theme.
+   ========================================================================== */
+(function(){
+  var KEY = 'cc_theme';
+  function get(){ try{ return localStorage.getItem(KEY) === 'light' ? 'light' : 'dark'; }catch(e){ return 'dark'; } }
+  function apply(t){ document.documentElement.setAttribute('data-theme', t); }
+  apply(get());  // run ASAP to minimise flash
+
+  var SUN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg>';
+  var MOON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>';
+  function paint(btn, t){
+    btn.innerHTML = t === 'light' ? SUN : MOON;                 // show current mode
+    var next = t === 'light' ? 'Dark mode' : 'Light mode';       // label = the action
+    btn.setAttribute('data-label', next);
+    btn.setAttribute('aria-label', next);
+  }
+  function inject(){
+    var bell = document.getElementById('header-bell'); if(!bell) return;
+    if(document.getElementById('header-theme')) return;
+    var anchor = document.getElementById('header-loanapp') || bell;  // sit left of the loan-app button
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'header-bell';
+    btn.id = 'header-theme';
+    paint(btn, get());
+    btn.onclick = function(e){
+      if(e) e.stopPropagation();
+      var t = get() === 'light' ? 'dark' : 'light';
+      try{ localStorage.setItem(KEY, t); }catch(err){}
+      apply(t); paint(btn, t);
+    };
+    anchor.parentNode.insertBefore(btn, anchor);
+  }
+  function boot(){ inject(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.injectThemeToggle = inject;
+})();
+
+/* ============================================================================
    CoreConnect — shared notifications system
    ----------------------------------------------------------------------------
    Data: localStorage['cc_notifications'] = array of

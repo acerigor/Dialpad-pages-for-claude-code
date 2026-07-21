@@ -1,5 +1,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CoreConnect — Figure A Deal</title>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cc_theme')==='light'?'light':'dark')}catch(e){}</script>
 <link rel="stylesheet" href="../../shared/app.css">
 <link rel="stylesheet" href="../../shared/settings.css">
 <style>
@@ -51,7 +52,7 @@
   .dk-dd-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:60;max-height:248px;overflow-y:auto;white-space:nowrap;}
   .dk-dd.open .dk-dd-menu{display:block;}
   .dk-dd-opt{padding:8px 12px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
-  .dk-dd-opt:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+  .dk-dd-opt:hover{background:var(--hover);color:var(--ac2);}
   .dk-dd-opt.sel{background:rgba(79,124,255,.12);color:var(--ac2);}
 
   /* Custom date field + shared calendar popup */
@@ -66,12 +67,12 @@
   .dk-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .dk-cal-title{font-size:13px;font-weight:600;color:var(--tx);}
   .dk-cal-nav{width:30px;height:30px;border:none;background:transparent;color:var(--mu);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
-  .dk-cal-nav:hover{background:rgba(255,255,255,.06);color:var(--tx);}
+  .dk-cal-nav:hover{background:var(--hover);color:var(--tx);}
   .dk-cal-nav svg{width:15px;height:15px;}
   .dk-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
   .dk-cal-dow{font-size:10px;font-weight:600;color:var(--mu);text-align:center;padding:4px 0;text-transform:uppercase;}
   .dk-cal-day{height:32px;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--tx);border-radius:7px;cursor:pointer;transition:background .12s;}
-  .dk-cal-day:hover{background:rgba(255,255,255,.06);}
+  .dk-cal-day:hover{background:var(--hover);}
   .dk-cal-day.empty{visibility:hidden;cursor:default;}
   .dk-cal-day.today{box-shadow:inset 0 0 0 1px var(--brd2);}
   .dk-cal-day.sel{background:var(--ac);color:#fff;font-weight:600;}
@@ -89,7 +90,7 @@
   .dk-prod-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:248px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:9px;padding:5px;box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:60;max-height:320px;overflow-y:auto;}
   .dk-prod.open .dk-prod-menu{display:block;}
   .dk-prod-opt{padding:9px 12px;border-radius:6px;font-size:13px;color:var(--tx);cursor:pointer;transition:background .12s,color .12s;}
-  .dk-prod-opt:hover{background:rgba(255,255,255,.05);color:var(--ac2);}
+  .dk-prod-opt:hover{background:var(--hover);color:var(--ac2);}
 
   .dk-addbtn{width:100%;margin-top:14px;height:40px;background:rgba(79,124,255,.1);border:0.5px dashed rgba(79,124,255,.4);border-radius:8px;color:var(--ac2);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s;}
   .dk-addbtn:hover{background:rgba(79,124,255,.18);}

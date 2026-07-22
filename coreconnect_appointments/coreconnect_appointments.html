@@ -162,7 +162,7 @@
   .nav-toast-icon{width:32px;height:32px;border-radius:8px;background:rgba(79,124,255,.15);
     color:var(--ac2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .nav-toast-text{flex:1;font-size:13px;color:var(--tx);line-height:1.4;}
-  .nav-toast-text strong{font-weight:600;color:#fff;display:block;font-size:13.5px;margin-bottom:2px;}
+  .nav-toast-text strong{font-weight:600;color:var(--tx);display:block;font-size:13.5px;margin-bottom:2px;}
   .nav-toast-text span{color:var(--mu);font-size:12px;}
   .nav-toast-close{background:transparent;border:none;color:var(--mu);font-size:14px;
     cursor:pointer;padding:2px 6px;opacity:.7;transition:opacity .12s;flex-shrink:0;}
@@ -2985,6 +2985,9 @@
   .cmdl-empty{padding:22px 4px;color:var(--mu);font-size:13px;text-align:center;}
   .cal-more{font-size:10.5px;color:var(--mu);font-weight:500;padding:1px 7px;cursor:pointer;}
   .cal-more:hover{color:var(--ac2);}
+  .cal-more-pop{position:fixed;display:none;z-index:1600;width:250px;max-height:340px;overflow-y:auto;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;}
+  .cal-more-pop.open{display:block;}
 
   /* ── WEEK VIEW ── */
   .cal-week{display:none;}
@@ -3009,7 +3012,8 @@
     font-size:10px;font-family:var(--mono);color:var(--mu);padding:3px 6px;text-align:right;}
   .week-col{display:flex;flex-direction:column;position:relative;border-right:0.5px solid var(--brd);}
   .week-col:last-child{border-right:none;}
-  .week-slot{flex:1;min-height:40px;border-bottom:0.5px solid var(--brd);}
+  .week-slot{flex:1;min-height:40px;border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .1s;}
+.week-slot:hover{background:var(--hover);}
   .week-event{position:absolute;left:4px;right:4px;border-radius:6px;padding:5px 7px;
     font-size:11px;font-weight:500;overflow:hidden;cursor:pointer;border-left:2px solid currentColor;}
   .week-event .we-time{font-family:var(--mono);font-size:9.5px;opacity:.85;}
@@ -3034,7 +3038,8 @@
   .day-hour{flex:1;min-height:40px;border-bottom:0.5px solid var(--brd);border-right:0.5px solid var(--brd);
     font-size:10px;font-family:var(--mono);color:var(--mu);padding:3px 6px;text-align:right;}
   .day-col{position:relative;display:flex;flex-direction:column;}
-  .day-slot{flex:1;min-height:40px;border-bottom:0.5px solid var(--brd);}
+  .day-slot{flex:1;min-height:40px;border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .1s;}
+.day-slot:hover{background:var(--hover);}
   .day-event{position:absolute;left:8px;right:8px;border-radius:6px;padding:7px 11px;
     font-size:12px;font-weight:500;overflow:hidden;cursor:pointer;border-left:2px solid currentColor;}
   .day-event .de-time{font-family:var(--mono);font-size:10.5px;opacity:.85;}
@@ -3232,6 +3237,7 @@
 </div>
 
 <!-- NOTIFICATIONS PANEL (dropdown anchored to bell, detached to body on open) -->
+<div class="cal-more-pop" id="cal-more-pop"></div>
 <div class="notif-panel" id="notif-panel">
   <div class="notif-header">
     <span class="notif-title">Notifications</span>
@@ -3728,7 +3734,7 @@ document.addEventListener('click',function(e){
   var p=document.getElementById('notif-panel'),bell=document.getElementById('header-bell');
   if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!bell.contains(e.target))closeNotifications();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var asb=document.getElementById('act-settings-backdrop');if(asb&&asb.classList.contains('open')){aeCloseSettings();return;}var addb=document.getElementById('appt-add-backdrop');if(addb&&addb.classList.contains('open')){closeAddChooser();return;}closeNotifications();closeMobileDrawer();closeApptPicker();closeViewDD();closeApptDetail();closeApptEdit();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var asb=document.getElementById('act-settings-backdrop');if(asb&&asb.classList.contains('open')){aeCloseSettings();return;}var addb=document.getElementById('appt-add-backdrop');if(addb&&addb.classList.contains('open')){closeAddChooser();return;}closeDayMore();closeNotifications();closeMobileDrawer();closeApptPicker();closeViewDD();closeApptDetail();closeApptEdit();}});
 
 /* ---- Appointments view toggle ---- */
 function showOnly(viewId){
@@ -3869,6 +3875,7 @@ function toggleApptFilter(type){
 }
 
 function renderMonth(y, m){
+  closeDayMore();
   var first = new Date(y, m-1, 1);
   var startDow = first.getDay();                 // 0=Sun
   var daysInMonth = new Date(y, m, 0).getDate();
@@ -3932,7 +3939,7 @@ var _weekSelDay = null;      // {y,m,d} selected day within the focused week (mo
 // Inner HTML for a day-col: hour slots + time-positioned event blocks (+ optional now-line)
 function _dayColHTML(y, m, d, showNow){
   var slots='';
-  for(var i=0;i<11;i++) slots+='<div class="day-slot"></div>';
+  for(var i=0;i<11;i++) slots+='<div class="day-slot" onclick="daySlotAdd('+y+','+m+','+d+','+(8+i)+')"></div>';
   var list=(APPT_DATA[y+'-'+m+'-'+d]||[]).filter(function(o){ return isVisible(o.type); });
   var events=list.map(function(o){
     var hm=String(o.time).split(':'), h=parseInt(hm[0],10), mi=parseInt(hm[1],10);
@@ -3992,7 +3999,7 @@ function renderDay(y, m, d){
 
   // 11 hour slots (8am–6pm)
   var slots='';
-  for(var i=0;i<11;i++) slots+='<div class="day-slot"></div>';
+  for(var i=0;i<11;i++) slots+='<div class="day-slot" onclick="daySlotAdd('+y+','+m+','+d+','+(8+i)+')"></div>';
   var list=(APPT_DATA[y+'-'+m+'-'+d]||[]).filter(function(o){ return isVisible(o.type); });
   var events=list.map(function(o){
     var hm=o.time.split(':'), h=parseInt(hm[0],10), mi=parseInt(hm[1],10);
@@ -4039,7 +4046,7 @@ function renderWeek(anchor){
   var cols='';
   days.forEach(function(dt){
     var slots='';
-    for(var s=0;s<11;s++) slots+='<div class="week-slot"></div>';
+    for(var s=0;s<11;s++) slots+='<div class="week-slot" data-hour="'+(8+s)+'" onclick="weekSlotAdd(event)"></div>';
     var key=dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate();
     var list=(APPT_DATA[key]||[]).filter(function(o){ return isVisible(o.type); });
     var events=list.map(function(o){
@@ -4051,7 +4058,7 @@ function renderWeek(anchor){
         '<span class="we-time">'+esc(o.time)+'</span>'+
         '<span class="we-name">'+esc(o.title)+'</span></div>';
     }).join('');
-    cols+='<div class="week-col">'+slots+events+'</div>';
+    cols+='<div class="week-col" data-date="'+key+'">'+slots+events+'</div>';
   });
   body.innerHTML=axis+cols;
 
@@ -4266,6 +4273,7 @@ var _aeMode = 'edit';      // 'edit' | 'create'
 var _aeCreateType = null;  // 'appointment' | 'reminder' | 'task' (create mode)
 var _aeLeadNo = null;      // optional lead linked in create mode
 var _addDate = null;       // {y,m,d} target date for the add chooser
+var _addHour = null;       // optional hour (week-slot click) to prefill the create form's time
 function _aeTeam(){ return (window.CCLeads && CCLeads.TEAM) || []; }
 function _aeChips(){
   var box=document.getElementById('ae-users-chips'); if(!box) return;
@@ -4428,7 +4436,42 @@ function deleteApptEdit(){
   buildApptData(); renderActive();
   if(typeof showNavToast==='function') showNavToast('Deleted', 'The item was removed.');
 }
-function apptMoreClick(e){e.stopPropagation();showNavToast('More','Expanded day view is not wired yet.');}
+function apptMoreClick(e){
+  e.stopPropagation();                          // don't fire the cell's apptDayClick
+  var cell=e.target.closest('.cal-cell'); if(!cell) return;
+  var d=+cell.getAttribute('data-day'), y=apptFocus.getFullYear(), m=apptFocus.getMonth()+1;
+  var key=y+'-'+m+'-'+d;
+  var list=(APPT_DATA[key]||[]).filter(function(o){return isVisible(o.type);}).slice()
+    .sort(function(a,b){return _calTimeMin(a.time)-_calTimeMin(b.time);});
+  var pop=document.getElementById('cal-more-pop'); if(!pop) return;
+  var dow=DOW_FULL[new Date(y,m-1,d).getDay()];
+  var head='<div class="cmdl-head"><span>'+dow+', '+MONTH_ABBR[m-1]+' '+d+'</span>'+
+    '<button class="cmdl-add" onclick="closeDayMore();openAddChooser('+y+','+m+','+d+',{allowView:false})" aria-label="Add">+</button></div>';
+  pop.innerHTML=head+(list.length?list.map(function(o){
+    return '<div class="cmdl-item" data-aid="'+o.id+'" onclick="apptMoreRow(event)">'+
+      '<span class="cmdl-dot t-'+o.type+'"></span>'+
+      '<div class="cmdl-main"><div class="cmdl-title">'+esc(apptLabel(o))+'</div>'+
+      '<div class="cmdl-time">'+esc(o.time||'All day')+'</div></div></div>';
+  }).join(''):'<div class="cmdl-empty">No events this day</div>');
+  var r=e.target.getBoundingClientRect();
+  pop.style.visibility='hidden'; pop.classList.add('open');
+  var pw=pop.offsetWidth, ph=pop.offsetHeight;
+  var left=Math.max(8,Math.min(r.left, window.innerWidth-pw-8));
+  var top=(r.bottom+6+ph > window.innerHeight-8) ? Math.max(8, r.top-ph-6) : r.bottom+6;
+  pop.style.left=left+'px'; pop.style.top=top+'px'; pop.style.visibility='visible';
+}
+function closeDayMore(){ var p=document.getElementById('cal-more-pop'); if(p) p.classList.remove('open'); }
+function weekSlotAdd(e){
+  var slot=e.currentTarget, col=slot.closest('.week-col'); if(!col) return;
+  var p=(col.getAttribute('data-date')||'').split('-'); if(p.length!==3) return;
+  openAddChooser(+p[0], +p[1], +p[2], {allowView:true, hour:+slot.getAttribute('data-hour')});
+}
+function daySlotAdd(y,m,d,hour){ openAddChooser(y,m,d,{allowView:true, hour:hour}); }
+function apptMoreRow(e){ closeDayMore(); apptChipClick(e); }
+document.addEventListener('click',function(e){
+  var p=document.getElementById('cal-more-pop');
+  if(p&&p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('.cal-more')) closeDayMore();
+});
 
 /* ── Add chooser (click a date → pick what to create) ── */
 function _addDateLabel(){
@@ -4438,6 +4481,7 @@ function _addDateLabel(){
 }
 function openAddChooser(y,m,d,opts){
   _addDate={y:y,m:m,d:d};
+  _addHour=(opts&&opts.hour!=null)?opts.hour:null;
   document.getElementById('appt-add-title').textContent='Add to '+_addDateLabel();
   document.getElementById('appt-add-view').style.display=(opts&&opts.allowView)?'':'none';
   document.getElementById('appt-add-backdrop').classList.add('open');
@@ -4459,7 +4503,7 @@ function openApptCreate(type){
   if(isAppt){ document.getElementById('ae-type').selectedIndex=0; }
   else { document.getElementById('ae-title-input').value=''; }
   document.getElementById('ae-date').value = _addDate ? _aePadKey(_addDate.y+'-'+_addDate.m+'-'+_addDate.d) : '';
-  _aeSetTime('');
+  _aeSetTime(_addHour!=null ? _addHour+':0' : '');
   document.getElementById('ae-notes').value='';
   _aeUsers=[]; var ui=document.getElementById('ae-users-input'); if(ui) ui.value='';
   var ud=document.getElementById('ae-users-dd'); if(ud){ ud.classList.remove('show'); ud.innerHTML=''; }

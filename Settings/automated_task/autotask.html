@@ -54,6 +54,7 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .at-head-spacer{flex:1;}
 .at-srch{width:240px;}
 /* Table — base/thead/tbody come from shared `.data-table` (shared/app.css) */
+.at-tbl tbody tr{cursor:pointer;}
 .at-tbl .c-no{color:var(--mu);font-family:var(--mono);}
 .at-tbl .c-type{color:var(--ac2);font-weight:500;cursor:pointer;}
 .at-tbl .c-type:hover{text-decoration:underline;}
@@ -62,6 +63,8 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .at-tbl .c-user{color:var(--tx);}
 /* Add/Edit modal — 2-column form grid (shared .modal is 420px; widen for two columns) */
 #at-modal .modal{width:660px;max-width:calc(100vw - 40px);}
+.at-btn-del{margin-right:auto;}
+.at-btn-del:hover{border-color:var(--rd);color:var(--rd);}
 .at-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 16px;}
 .at-form-grid .modal-section-title{margin-bottom:7px;}
 .at-form-grid input[type="time"]{color-scheme:dark;}
@@ -276,6 +279,7 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
       </div>
     </div>
     <div class="modal-footer">
+      <button class="modal-cancel at-btn-del" id="at-delete-btn" onclick="atModalDelete()" hidden>Delete</button>
       <button class="modal-cancel" onclick="atModalClose()">Cancel</button>
       <button class="modal-save" onclick="atModalSubmit()">Submit</button>
     </div>
@@ -331,7 +335,6 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
               <th>Hour / Minute / Time</th>
               <th>User</th>
               <th>Status</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody id="at-body"></tbody>
@@ -485,24 +488,22 @@ function atRender(){
   var body = document.getElementById('at-body'); if(!body) return;
   var rows = atFiltered();
   if(!rows.length){
-    body.innerHTML = '<tr><td colspan="8" class="at-empty-row">'
+    body.innerHTML = '<tr><td colspan="7" class="at-empty-row">'
       + (AT_LIST.length === 0 ? 'No automated tasks yet — click "Add" to create one.' : 'No tasks match your search.')
       + '</td></tr>';
     return;
   }
   body.innerHTML = rows.map(function(t, i){
-    return '<tr>'
+    return '<tr role="button" tabindex="0"'
+      + ' onclick="if(!event.target.closest(\'.c-act\'))atEditRow(\'' + atEsc(t.id) + '\')"'
+      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.c-act\')){event.preventDefault();atEditRow(\'' + atEsc(t.id) + '\');}">'
       + '<td class="c-no">' + (i + 1) + '</td>'
-      + '<td class="c-type" onclick="atEditRow(\'' + atEsc(t.id) + '\')">' + atEsc(t.recordType) + '</td>'
+      + '<td class="c-type">' + atEsc(t.recordType) + '</td>'
       + '<td class="c-desc">' + atEsc(t.description || '—') + '</td>'
       + '<td class="c-exec">' + atEsc(t.executing || '—') + '</td>'
       + '<td class="c-time">' + atEsc(t.time || '—') + '</td>'
       + '<td class="c-user">' + atEsc(atUserName(t.user) || '—') + '</td>'
       + '<td class="c-status">' + atStatusBadge(t.status) + '</td>'
-      + '<td class="c-act">'
-        + '<button class="a-edit" title="Edit task" onclick="atEditRow(\'' + atEsc(t.id) + '\')">' + AT_ICONS.edit + '</button>'
-        + '<button class="a-del" title="Delete task" onclick="atDelete(\'' + atEsc(t.id) + '\')">' + AT_ICONS.del + '</button>'
-      + '</td>'
       + '</tr>';
   }).join('');
 }
@@ -579,6 +580,7 @@ function atModalOpen(task){
   var m = document.getElementById('at-modal'); if(!m) return;
   _atEditId = task ? task.id : null;
   document.getElementById('at-modal-title').textContent = task ? 'Edit Automated Task' : 'Add Automated Tasks';
+  var d = document.getElementById('at-delete-btn'); if(d) d.hidden = !task;
   document.getElementById('at-f-desc').value = task ? (task.description || '') : '';
   document.getElementById('at-f-time').value = task ? (task.time || '') : '';
   atSelSet('type',   task ? (task.recordType || '') : '');
@@ -594,6 +596,7 @@ function atModalClose(){
   var m = document.getElementById('at-modal'); if(m) m.classList.remove('open');
   _atEditId = null;
 }
+function atModalDelete(){ if(!_atEditId) return; atDelete(_atEditId); atModalClose(); }
 function atModalSubmit(){
   var type = document.getElementById('at-f-type').value;
   if(!type){ atSelToggle(null, 'type'); return; }   // Record Type is the row's label — required

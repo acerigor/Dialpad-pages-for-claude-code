@@ -679,6 +679,19 @@
     box-shadow:-8px 0 32px rgba(0,0,0,.5);}
   .dialer-panel.open{right:0;}
 
+  /* Desktop (>1080px): opening the dialer PUSHES the top header, toolbar, and content left by its
+     width (300px) instead of overlaying. The panel is already position:fixed full-height. Tablet
+     (≤1080) keeps the overlay; the header/toolbar are NOT pushed there. */
+  @media(min-width:1081px){
+    .top-header{transition:right .25s cubic-bezier(.4,0,.2,1);}
+    .main-area{transition:margin-right .25s cubic-bezier(.4,0,.2,1);}
+    body:has(#dialer-panel.open) .top-header{right:300px;}
+    body:has(#dialer-panel.open) .main-area{margin-right:300px;}
+    #dialer-panel.open{box-shadow:none;}
+    /* Keep the transient loan-app card above the docked dialer (z 1500). */
+    body #loanapp-card{z-index:1700;}
+  }
+
   .dialer-header{display:flex;align-items:center;justify-content:space-between;
     padding:14px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;background:var(--sur);}
   .dialer-header-left{display:flex;align-items:center;gap:8px;}
@@ -2314,6 +2327,7 @@
     /* View dropdown — full-screen sheet on phone (matches Filter mobile takeover spirit) */
     .view-btn{padding:0 12px;}
     .view-btn span{display:none;}  /* icon-only label on phone */
+    #filter-btn .filter-btn-label{display:none;}  /* icon-only on phone, badge stays */
     .view-btn .view-btn-chev{display:none;}  /* chevron redundant when sheet opens */
     /* Backdrop — fades in behind the sheet */
     .view-backdrop{display:block;position:fixed;top:0;left:0;right:0;bottom:0;
@@ -3263,7 +3277,7 @@
       </div>
     </div>
     <button class="tbtn" id="filter-btn" onclick="toggleFilterDropdown(event)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2.13125 3.83625C2.06619 3.76465 2.0233 3.67571 2.00777 3.58022C1.99225 3.48473 2.00477 3.38678 2.0438 3.29826C2.08284 3.20974 2.14671 3.13445 2.22769 3.0815C2.30866 3.02856 2.40326 3.00025 2.5 3H13.5C13.5969 3.00001 13.6916 3.02815 13.7728 3.08099C13.8539 3.13384 13.918 3.20912 13.9572 3.29769C13.9964 3.38626 14.009 3.48431 13.9935 3.57991C13.978 3.67552 13.9351 3.76457 13.87 3.83625L9.5 8.5V12.1656C9.50005 12.248 9.47977 12.329 9.44096 12.4017C9.40214 12.4743 9.34599 12.5362 9.2775 12.5819L7.2775 13.915C7.20227 13.9652 7.11484 13.994 7.02451 13.9985C6.93418 14.0029 6.84434 13.9828 6.76456 13.9402C6.68478 13.8976 6.61804 13.8342 6.57145 13.7566C6.52486 13.6791 6.50017 13.5904 6.5 13.5V8.5L2.13125 3.83625Z" fill="currentColor"/></svg>Filter
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2.13125 3.83625C2.06619 3.76465 2.0233 3.67571 2.00777 3.58022C1.99225 3.48473 2.00477 3.38678 2.0438 3.29826C2.08284 3.20974 2.14671 3.13445 2.22769 3.0815C2.30866 3.02856 2.40326 3.00025 2.5 3H13.5C13.5969 3.00001 13.6916 3.02815 13.7728 3.08099C13.8539 3.13384 13.918 3.20912 13.9572 3.29769C13.9964 3.38626 14.009 3.48431 13.9935 3.57991C13.978 3.67552 13.9351 3.76457 13.87 3.83625L9.5 8.5V12.1656C9.50005 12.248 9.47977 12.329 9.44096 12.4017C9.40214 12.4743 9.34599 12.5362 9.2775 12.5819L7.2775 13.915C7.20227 13.9652 7.11484 13.994 7.02451 13.9985C6.93418 14.0029 6.84434 13.9828 6.76456 13.9402C6.68478 13.8976 6.61804 13.8342 6.57145 13.7566C6.52486 13.6791 6.50017 13.5904 6.5 13.5V8.5L2.13125 3.83625Z" fill="currentColor"/></svg><span class="filter-btn-label">Filter</span>
       <span class="tbtn-badge" id="filter-badge" style="display:none;">0</span>
     </button>
     <div class="filter-chips" id="chips-row"></div>

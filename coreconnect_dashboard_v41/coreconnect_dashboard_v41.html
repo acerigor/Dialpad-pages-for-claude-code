@@ -933,6 +933,17 @@
   .widgets-menu.open{transform:translateX(0);visibility:visible;
     transition:transform .25s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s;}
 
+  /* Desktop (>640px): opening the panel PUSHES the top header, toolbar, and content left by its
+     width (360px) instead of overlaying them. On phone (≤640px) the panel is full-width, so nothing
+     to push — omitted. Driven by the reliable `#widgets-menu.open` class. */
+  @media(min-width:641px){
+    .top-header{transition:right .25s cubic-bezier(.4,0,.2,1);}
+    .main-area{transition:margin-right .25s cubic-bezier(.4,0,.2,1);}
+    body:has(#widgets-menu.open) .top-header{right:360px;}
+    body:has(#widgets-menu.open) .main-area{margin-right:360px;}
+  }
+
+
   /* Panel header (title + close) */
   .wm-mobile-header{display:flex;align-items:center;justify-content:space-between;
     padding:14px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}

@@ -320,7 +320,7 @@ body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
 
   /* ===== SPLIT BODY ===== */
   .split-body{display:flex;flex:1;min-height:0;}
-  .list-pane{width:45%;display:flex;flex-direction:column;border-right:0.5px solid var(--brd);
+  .list-pane{width:25%;display:flex;flex-direction:column;border-right:0.5px solid var(--brd);
     background:var(--bg);min-width:0;}
   .detail-pane{flex:1;background:var(--bg);display:flex;flex-direction:column;min-width:0;}
 
@@ -346,7 +346,7 @@ body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
 
   .cr-check{width:14px;height:14px;border-radius:3px;border:0.5px solid var(--brd2);
     display:none;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
-  .call-row:hover .cr-check,.call-row.checked .cr-check,.list-pane.bulk-mode .cr-check{display:flex;}
+  .call-row.checked .cr-check,.list-pane.bulk-mode .cr-check{display:flex;}
   .cr-check.on{background:var(--ac);border-color:var(--ac);}
   .cr-check.on::after{content:'';width:5px;height:3.5px;border-left:1.5px solid #fff;
     border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px);}
@@ -1086,6 +1086,14 @@ body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
   .dialer-tab-label{font-size:9px;font-weight:600;letter-spacing:.6px;
     writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);}
   .dialer-tab.hidden{right:-60px;pointer-events:none;}
+  /* The DIALER tab follows the panel's open state on every breakpoint. Relying on the .hidden
+     class left the tab stuck off-screen after close, because the active closeDialerPanel
+     (shared/dialer.js) removes #dialer-panel.open but never clears .hidden. */
+  body:has(#dialer-panel.open) #dialer-tab{right:-60px;pointer-events:none;}
+  body:not(:has(#dialer-panel.open)) #dialer-tab{right:0;pointer-events:auto;}
+  /* Tablet backdrop: force-hide it whenever the dialer is closed (the shared close path can
+     leave .show on, dimming the screen after close). */
+  body:not(:has(#dialer-panel.open)) #dialer-backdrop{display:none;opacity:0;pointer-events:none;}
 
   /* Backdrop — only used on tablet (641–1080px) overlay mode; hidden on desktop (push) and phone (full-screen) */
   .dialer-backdrop{display:none;position:fixed;inset:0;z-index:1499;
@@ -1307,7 +1315,7 @@ body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
 
   /* responsive */
   @media(max-width:1080px){
-    .list-pane{width:42%;}
+    .list-pane{width:25%;}
     .stats-strip{flex-wrap:wrap;}
     .stat{flex:1 1 50%;border-right:none;border-bottom:0.5px solid var(--brd);}
     .stat:nth-child(odd){border-right:0.5px solid var(--brd);}
@@ -1316,6 +1324,25 @@ body{color:var(--tx);line-height:1.5;-webkit-font-smoothing:antialiased;}
       margin-right:0;z-index:1500;box-shadow:-8px 0 32px rgba(0,0,0,.5);
       transition:right .25s cubic-bezier(.4,0,.2,1);}
     .dialer-panel.open{right:0;}
+  }
+
+  /* Desktop (>1080px): the dialer is a full-height column pinned to the right; opening it
+     PUSHES the top header, toolbar, and content left by its width (no overlap). #id
+     specificity overrides shared/dialer.css's position:fixed base. Below 1081px it stays a
+     fixed overlay (above) and the header/toolbar are NOT pushed. */
+  @media(min-width:1081px){
+    #dialer-panel{position:fixed;top:0;right:-300px;bottom:0;width:300px;height:auto;
+      margin-right:0;box-shadow:none;border-left:0.5px solid var(--brd);
+      transition:right .25s cubic-bezier(.4,0,.2,1);}
+    #dialer-panel.open{right:0;}
+    .top-header{transition:right .25s cubic-bezier(.4,0,.2,1);}
+    .main-area{transition:margin-right .25s cubic-bezier(.4,0,.2,1);}
+    body:has(#dialer-panel.open) .top-header{right:300px;}
+    body:has(#dialer-panel.open) .main-area{margin-right:300px;}
+    /* Keep the transient loan-app card above the docked dialer (z 1500/1600). */
+    body #loanapp-card{z-index:1700;}
+    /* Widen the list pane while the dialer is docked (compensates for the pushed-in content). */
+    body:has(#dialer-panel.open) .list-pane{width:32%;}
   }
 
   /* MASTER-DETAIL DRILL-DOWN — phone/small-tablet (≤820px)
@@ -4429,6 +4456,13 @@ function closeDialerPanel(){
   if(tab)   tab.classList.remove('hidden');
   if(bd)    bd.classList.remove('show');
 }
+
+// Open Quick Dial by default on load (desktop only; below 1080px it's an overlay, opened on demand)
+(function(){
+  function _autoOpenDialer(){ if(window.innerWidth > 1080 && typeof openDialerPanel === 'function') openDialerPanel(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _autoOpenDialer);
+  else _autoOpenDialer();
+})();
 
 function toggleMute(){
   dialerState.isMuted = !dialerState.isMuted;

@@ -159,7 +159,7 @@
 
   /* ===== SPLIT BODY — cloned from call history v29 ===== */
   .split-body{display:flex;flex:1;min-height:0;}
-  .list-pane{width:45%;display:flex;flex-direction:column;border-right:0.5px solid var(--brd);
+  .list-pane{width:25%;display:flex;flex-direction:column;border-right:0.5px solid var(--brd);
     background:var(--bg);min-width:0;}
   .detail-pane{flex:1;background:var(--bg);display:flex;flex-direction:column;min-width:0;}
 
@@ -799,6 +799,20 @@
     transition:right .25s cubic-bezier(.4,0,.2,1);
     box-shadow:-8px 0 32px rgba(0,0,0,.5);}
   .dialer-panel.open{right:0;}
+
+  /* Desktop (>1080px): opening the dialer PUSHES the top header, toolbar, and content left by its
+     width (300px) instead of overlaying. The panel is already position:fixed full-height. Tablet
+     (≤1080) keeps the overlay; the header/toolbar are NOT pushed there. */
+  @media(min-width:1081px){
+    .top-header{transition:right .25s cubic-bezier(.4,0,.2,1);}
+    .main-area{transition:margin-right .25s cubic-bezier(.4,0,.2,1);}
+    body:has(#dialer-panel.open) .top-header{right:300px;}
+    body:has(#dialer-panel.open) .main-area{margin-right:300px;}
+    #dialer-panel.open{box-shadow:none;}
+    body #loanapp-card{z-index:1700;}
+    /* Widen the list pane while the dialer is docked (compensates for the pushed-in content). */
+    body:has(#dialer-panel.open) .list-pane{width:32%;}
+  }
 
   .dialer-header{display:flex;align-items:center;justify-content:space-between;
     padding:14px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;background:var(--sur);}
@@ -2908,6 +2922,13 @@ function toggleDialer(){
   document.getElementById('dialer-panel').classList.toggle('open', dialerOpen);
   document.getElementById('dialer-tab').style.display = dialerOpen ? 'none' : 'flex';
 }
+
+// Open Quick Dial by default on load (desktop only; below 1081px it's an overlay, opened on demand)
+(function(){
+  function _autoOpenDialer(){ if(window.innerWidth > 1080 && typeof toggleDialer === 'function' && !dialerOpen) toggleDialer(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _autoOpenDialer);
+  else _autoOpenDialer();
+})();
 
 function dialerKey(k){
   if(isCalling) return;

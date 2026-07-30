@@ -3436,8 +3436,23 @@
   .gm-no{color:var(--mu);font-family:var(--mono);font-size:12.5px;}
   .gm-dept{color:var(--tx);}
   .gm-audio{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
-  .gm-player{width:320px;max-width:100%;height:40px;color-scheme:dark;}
+  .gm-player{display:none;}
   .gm-play{font-size:12px;font-weight:600;color:var(--ac2);cursor:pointer;user-select:none;}
+
+  /* Custom pill player (desktop) — green circular play/pause + waveform + time */
+  .gm-wp{display:flex;align-items:center;gap:10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;padding:4px 14px 4px 4px;width:320px;max-width:100%;height:40px;}
+  .gm-wp-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--gr);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:filter .12s, background .12s;}
+  .gm-wp-btn:hover{filter:brightness(1.1);}
+  .gm-wp-btn:disabled{background:var(--sur);color:var(--mu);cursor:default;filter:none;}
+  .gm-wp-btn svg{width:14px;height:14px;}
+  .gm-wp-btn svg[hidden]{display:none;}
+  .gm-wp-btn .gm-wp-play{margin-left:2px;}
+  .gm-wp-wave{flex:1;min-width:0;height:28px;cursor:pointer;}
+  .gm-wp-wave rect{fill:var(--mu);opacity:.5;transition:opacity .1s, fill .1s;}
+  .gm-wp-wave rect.on{fill:var(--gr);opacity:1;}
+  .gm-wp-wave:hover rect{opacity:.75;}
+  .gm-wp-wave:hover rect.on{opacity:1;}
+  .gm-wp-time{font-family:var(--mono);font-size:11px;color:var(--mu);white-space:nowrap;letter-spacing:.2px;}
   .gm-play:hover{text-decoration:underline;}
   .gm-play.disabled{color:var(--mu);cursor:default;text-decoration:none;}
   /* mobile-only compact play button (hidden on desktop) */
@@ -3505,6 +3520,8 @@
   .gm-field-file::file-selector-button:hover{border-color:var(--ac);color:var(--ac2);}
   .gm-file-hint{font-size:11.5px;color:var(--mu);}
   .gm-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .gm-btn-del{margin-right:auto;}
+  .gm-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .gm-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .gm-btn-cancel:hover{border-color:var(--mu);}
   .gm-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3512,7 +3529,7 @@
   @media (max-width:640px){
     .gm-icon{width:40px;height:40px;}
     .gm-icon svg{width:17px;height:17px;}
-    .gm-player,.gm-play{display:none;}
+    .gm-player,.gm-play,.gm-wp{display:none;}
     .gm-play-btn{display:inline-flex;}
     .gm-modal-bk{padding:0;}
     .gm-modal{width:100%;height:100%;max-width:100%;border-radius:0;border:none;}
@@ -3545,7 +3562,7 @@
   .nm-dd-empty{padding:14px;text-align:center;color:var(--mu);font-size:12.5px;}
   .nm-save{height:42px;padding:0 24px;background:var(--ac);border:none;border-radius:9px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;flex:none;}
   .nm-save:hover{background:var(--ac2);}
-  .nm-table-wrap{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);}
+  .nm-table-wrap{border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--sur);flex-shrink:0;}
   .nm-table-scroll{overflow-x:auto;}
   .nm-table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px;}
   .nm-table th{text-align:left;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;padding:13px 16px;background:var(--sur2);border-bottom:0.5px solid var(--brd2);white-space:nowrap;}
@@ -3710,7 +3727,6 @@
           <th class="gm-th-no">No.</th>
           <th>Department</th>
           <th class="gm-th-msg">Greeting Message</th>
-          <th class="gm-th-act">Action</th>
         </tr></thead>
         <tbody id="gm-tbody"></tbody>
       </table>
@@ -3754,6 +3770,7 @@
       </div>
     </div>
     <div class="gm-modal-foot">
+      <button class="gm-btn-cancel gm-btn-del" id="gm-delete-btn" onclick="gmModalDelete()" hidden>Delete</button>
       <button class="gm-btn-cancel" onclick="gmCloseModal()">Cancel</button>
       <button class="gm-btn-save" onclick="gmSaveModal()">Submit</button>
     </div>
@@ -4357,11 +4374,10 @@ function gmDefaults(){
     {id:'g6', dept:'buyers-department',dur:6},
     {id:'g7', dept:'photography',      dur:0},
     {id:'g8', dept:'C&G Mercedes',     dur:8},
-    {id:'g9', dept:'bdc-department',   dur:7},
-    {id:'g10',dept:'',                 dur:6}
+    {id:'g9', dept:'bdc-department',   dur:7}
   ];
 }
-function gmLoad(){ try{ var s=JSON.parse(localStorage.getItem(GM_KEY)||'null'); if(Array.isArray(s)) return s; }catch(e){} return gmDefaults(); }
+function gmLoad(){ try{ var s=JSON.parse(localStorage.getItem(GM_KEY)||'null'); if(Array.isArray(s)) return s.filter(function(x){ return x && x.dept && String(x.dept).trim(); }); }catch(e){} return gmDefaults(); }
 function gmPersist(){ try{ localStorage.setItem(GM_KEY, JSON.stringify(gmItems)); }catch(e){} }
 function gmInit(){ if(!document.getElementById('gm-tbody')) return; gmItems=gmLoad(); gmRender(); }
 function gmSearch(q){ _gmQuery=(q||'').toLowerCase().trim(); gmPage=1; gmRender(); }
@@ -4373,29 +4389,94 @@ function gmRender(){
   if(gmPage>tp) gmPage=tp;
   var start=(gmPage-1)*GM_PER, rows=list.slice(start, start+GM_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_gmQuery?'No greetings match your search.':'No greeting messages yet — click Add Greeting.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_gmQuery?'No greetings match your search.':'No greeting messages yet — click Add Greeting.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
       var src=gmSrc(it);
-      var player=src
-        ? '<audio class="gm-player" id="gm-audio-'+it.id+'" controls preload="metadata" src="'+src+'"></audio><span class="gm-play" onclick="gmPlay(\''+it.id+'\')">Play Audio</span>'
-        : '<audio class="gm-player" controls></audio><span class="gm-play disabled">Play Audio</span>';
+      var audioEl=src
+        ? '<audio class="gm-player" id="gm-audio-'+it.id+'" preload="metadata" src="'+src+'"></audio>'
+        : '<audio class="gm-player" id="gm-audio-'+it.id+'"></audio>';
+      var wp='<div class="gm-wp" data-audio-id="'+it.id+'">'+
+          '<button class="gm-wp-btn" onclick="gmWpToggle(\''+it.id+'\')" aria-label="Play"'+(src?'':' disabled')+'>'+
+            '<svg class="gm-wp-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'+
+            '<svg class="gm-wp-pause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'+
+          '</button>'+
+          '<svg class="gm-wp-wave" viewBox="0 0 300 32" preserveAspectRatio="none" onclick="gmWpSeek(\''+it.id+'\', event)">'+gmBuildWaveSvg(it.id, 44)+'</svg>'+
+          '<span class="gm-wp-time" id="gm-wp-time-'+it.id+'">0:00 / 0:00</span>'+
+        '</div>';
+      var player=wp+audioEl;
       var playBtn='<button class="gm-play-btn" onclick="gmOpenSheet(\''+it.id+'\')"'+(src?'':' disabled')+' aria-label="Play greeting"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg></button>';
-      return '<tr>'+
+      return '<tr tabindex="0"'+
+          ' onclick="if(!event.target.closest(\'.gm-audio\'))gmEdit(\''+it.id+'\')"'+
+          ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.gm-audio\')){event.preventDefault();gmEdit(\''+it.id+'\');}">'+
         '<td class="gm-no">'+no+'</td>'+
         '<td class="gm-dept">'+(it.dept?gmEsc(it.dept):'<span style="color:var(--mu);">—</span>')+'</td>'+
         '<td><div class="gm-audio">'+player+playBtn+'</div></td>'+
-        '<td><div class="gm-actions">'+
-          '<button class="gm-icon edit" onclick="gmEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="gm-icon del" onclick="gmDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
+    // Wire the custom pill player for each row now that its DOM exists.
+    rows.forEach(function(it){ gmWpInit(it.id); });
   }
   gmRenderPager(list.length, tp);
 }
 function gmPlay(id){ var a=document.getElementById('gm-audio-'+id); if(a){ try{ a.play(); }catch(e){} } }
+
+/* ── Custom pill audio player (waveform + play/pause + time) ─────────────── */
+function gmWaveBars(seed, count){
+  var s=0; for(var i=0;i<seed.length;i++) s=((s*31 + seed.charCodeAt(i)) & 0x7fffffff);
+  var out=[];
+  for(var i=0;i<count;i++){ s=(s*1103515245 + 12345) & 0x7fffffff; out.push(4 + (s % 22)); }  // heights 4..25 of 32
+  return out;
+}
+function gmBuildWaveSvg(id, count){
+  var W=300, H=32, barW=2, gap=(W - count*barW) / (count-1);
+  var heights=gmWaveBars(id, count);
+  var out='';
+  for(var i=0;i<count;i++){
+    var x=(i*(barW+gap)).toFixed(2);
+    var h=heights[i], y=((H-h)/2).toFixed(1);
+    out+='<rect data-i="'+i+'" x="'+x+'" y="'+y+'" width="'+barW+'" height="'+h+'" rx="1"/>';
+  }
+  return out;
+}
+function gmFmtTime(t){ if(!isFinite(t)||t<0) t=0; var m=Math.floor(t/60), s=Math.floor(t-m*60); return m+':'+(s<10?'0':'')+s; }
+function gmWpInit(id){
+  var audio=document.getElementById('gm-audio-'+id); if(!audio) return;
+  var wp=document.querySelector('.gm-wp[data-audio-id="'+id+'"]'); if(!wp) return;
+  var btn=wp.querySelector('.gm-wp-btn'), timeEl=wp.querySelector('.gm-wp-time');
+  if(!audio.getAttribute('src')){ if(btn) btn.disabled=true; if(timeEl) timeEl.textContent='0:00 / 0:00'; return; }
+  function update(){
+    var cur=audio.currentTime||0, dur=isFinite(audio.duration)?audio.duration:0;
+    if(timeEl) timeEl.textContent=gmFmtTime(cur)+' / '+gmFmtTime(dur);
+    var pct=dur ? cur/dur : 0;
+    var rects=wp.querySelectorAll('.gm-wp-wave rect'); var n=rects.length;
+    for(var i=0;i<n;i++){ rects[i].classList.toggle('on', (i/n) < pct); }
+  }
+  function icon(playing){
+    var p=wp.querySelector('.gm-wp-play'), pa=wp.querySelector('.gm-wp-pause');
+    if(p) p.hidden=playing; if(pa) pa.hidden=!playing;
+    if(btn) btn.setAttribute('aria-label', playing?'Pause':'Play');
+  }
+  audio.addEventListener('loadedmetadata', update);
+  audio.addEventListener('timeupdate', update);
+  audio.addEventListener('play', function(){ icon(true); });
+  audio.addEventListener('pause', function(){ icon(false); });
+  audio.addEventListener('ended', function(){ icon(false); update(); });
+  update();
+}
+function gmWpToggle(id){
+  var audio=document.getElementById('gm-audio-'+id); if(!audio) return;
+  // Only one greeting playing at a time.
+  document.querySelectorAll('audio.gm-player').forEach(function(a){ if(a!==audio && !a.paused) a.pause(); });
+  if(audio.paused){ try{ audio.play(); }catch(e){} } else { audio.pause(); }
+}
+function gmWpSeek(id, e){
+  var audio=document.getElementById('gm-audio-'+id); if(!audio || !isFinite(audio.duration) || !audio.duration) return;
+  var svg=e.currentTarget, r=svg.getBoundingClientRect();
+  var pct=Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  audio.currentTime = pct * audio.duration;
+}
 /* ----- mobile slide-in greeting player ----- */
 function gmFmtClock(s){ s=Math.max(0, Math.floor(s||0)); var m=Math.floor(s/60), ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
 function gmSheetIcon(playing){
@@ -4517,8 +4598,9 @@ function gmRecToggle(){
     _gmRec.start(); btn.classList.add('recording'); lbl.textContent='Stop'; st.textContent='Recording… tap stop when done.';
   }).catch(function(){ st.textContent='Mic access denied or unavailable.'; });
 }
-function gmAdd(){ _gmEditId=null; document.getElementById('gm-modal-title').textContent='Add Greeting Message'; gmFillDeptSelect(''); gmResetModes(); gmOpenModal(); }
-function gmEdit(id){ var it=gmItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gmEditId=id; document.getElementById('gm-modal-title').textContent='Edit Greeting Message'; gmFillDeptSelect(it.dept||''); gmResetModes(); gmOpenModal(); }
+function gmAdd(){ _gmEditId=null; document.getElementById('gm-modal-title').textContent='Add Greeting Message'; gmFillDeptSelect(''); gmResetModes(); var d=document.getElementById('gm-delete-btn'); if(d) d.hidden=true; gmOpenModal(); }
+function gmEdit(id){ var it=gmItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gmEditId=id; document.getElementById('gm-modal-title').textContent='Edit Greeting Message'; gmFillDeptSelect(it.dept||''); gmResetModes(); var d=document.getElementById('gm-delete-btn'); if(d) d.hidden=false; gmOpenModal(); }
+function gmModalDelete(){ if(!_gmEditId) return; var id=_gmEditId; gmDelete(id); gmCloseModal(); }
 function gmSaveModal(){
   var dept=document.getElementById('gm-input-dept').value.trim();
   if(!dept){ if(typeof showNavToast==='function') showNavToast('Department required','Enter a department name.'); return; }

@@ -507,6 +507,82 @@
   .tam-textarea{height:auto;min-height:96px;padding:10px 11px;resize:vertical;line-height:1.5;}
   .tam-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .tam-toggle-row span{font-size:13.5px;font-weight:500;color:var(--tx);}
+  /* Transcript Alert users multi-select */
+  .tam-user-field{min-height:44px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 34px 0 12px;display:flex;align-items:center;cursor:pointer;position:relative;transition:border-color .12s;}
+  .tam-user-field:hover{border-color:rgba(255,255,255,.16);}
+  .tam-user-empty{color:var(--mu);font-size:13px;}
+  .tam-user-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .tam-user-chips:empty{display:none;}
+  /* Per-user notification table */
+  .tam-notif-wrap{margin-top:12px;border:0.5px solid var(--brd2);border-radius:8px;overflow:hidden;background:var(--sur2);}
+  .tam-notif-table{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--tx);}
+  .tam-notif-table th{text-align:left;padding:8px 10px;background:var(--sur);color:var(--mu);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;}
+  .tam-notif-table td{padding:8px 10px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .tam-notif-table tr:last-child td{border-bottom:none;}
+  .tam-notif-name{display:flex;align-items:center;gap:8px;font-weight:500;}
+  .tam-notif-name .tam-user-av{width:22px;height:22px;font-size:10px;}
+  .tam-notif-dept,.tam-notif-role{color:var(--mu);font-size:12px;}
+  .tam-notif-th{width:180px;}
+  .tam-notif-cells{display:flex;gap:14px;justify-content:flex-start;}
+  .tam-notif-cb{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--tx);cursor:pointer;user-select:none;}
+  .tam-notif-cb input{margin:0;accent-color:var(--ac);width:14px;height:14px;cursor:pointer;}
+  @media (max-width:640px){
+    .tam-notif-wrap{overflow-x:auto;}
+    .tam-notif-table{min-width:420px;}
+  }
+  /* Keyword tag/chip input */
+  .tam-kw-field{min-height:96px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:8px 10px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;cursor:text;transition:border-color .12s;}
+  .tam-kw-field:focus-within{border-color:var(--ac);}
+  .tam-kw-chips{display:contents;}
+  .tam-kw-chip{display:inline-flex;align-items:center;gap:4px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:3px 4px 3px 10px;color:var(--tx);font-size:12px;line-height:1;height:26px;}
+  .tam-kw-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;}
+  .tam-kw-chip-x:hover{background:var(--rd);color:#fff;}
+  .tam-kw-input{flex:1;min-width:120px;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;height:26px;padding:0 4px;}
+  .tam-kw-input::placeholder{color:var(--mu);}
+  /* Transcript Alert Logs button — pushed to the far left of the footer */
+  .tam-logs-btn{margin-right:auto;display:inline-flex;align-items:center;gap:6px;}
+  .tam-logs-btn svg{width:14px;height:14px;color:var(--mu);}
+  .tam-logs-btn:hover svg{color:var(--ac2);}
+  /* Transcript Alert Logs popup — table */
+  .tam-logs-wrap{max-height:60vh;overflow:auto;border-top:0.5px solid var(--brd);}
+  .tam-logs-table{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--tx);}
+  .tam-logs-table thead th{position:sticky;top:0;background:var(--sur);padding:10px 12px;text-align:left;color:var(--mu);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;z-index:2;}
+  .tam-logs-table td{padding:10px 12px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .tam-logs-table tr:last-child td{border-bottom:none;}
+  .tam-logs-from,.tam-logs-to{display:flex;align-items:center;gap:8px;font-weight:500;white-space:nowrap;}
+  .tam-logs-from .tam-user-av,.tam-logs-to .tam-user-av{width:22px;height:22px;font-size:10px;}
+  .tam-logs-transcript{color:var(--mu);font-size:12px;line-height:1.45;max-width:340px;}
+  .tam-logs-transcript mark{background:rgba(245,166,35,.25);color:var(--tx);padding:0 3px;border-radius:3px;font-weight:500;}
+  .tam-logs-keyword{color:var(--tx);font-weight:500;}
+  .tam-logs-date{color:var(--mu);font-size:12px;white-space:nowrap;}
+  .tam-logs-th-act{width:44px;}
+  .tam-logs-act-btn{width:30px;height:30px;border-radius:8px;border:0.5px solid var(--brd2);background:var(--sur2);color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;}
+  .tam-logs-act-btn:hover{border-color:var(--ac);color:var(--ac2);}
+  .tam-logs-act-btn svg{width:14px;height:14px;}
+  .tam-logs-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  @media (max-width:640px){
+    #tam-logs-backdrop.modal-backdrop{padding:0;}
+    #tam-logs-backdrop .modal{width:100%!important;max-width:100%;height:100%;max-height:100%;border-radius:0;border:none;}
+    #tam-logs-backdrop .modal-body{flex:1;padding:0;}
+    .tam-logs-wrap{max-height:none;height:100%;}
+  }
+  .tam-user-chev{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--mu);transition:transform .12s;}
+  .tam-user-field.open .tam-user-chev{transform:translateY(-50%) rotate(180deg);}
+  .tam-user-chip{display:inline-flex;align-items:center;gap:6px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:3px 4px 3px 3px;color:var(--tx);font-size:12px;}
+  .tam-user-av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;flex:none;}
+  .tam-user-chip-name{padding:0 2px 0 0;}
+  .tam-user-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;}
+  .tam-user-chip-x:hover{background:var(--rd);color:#fff;}
+  #tam-user-popup{width:300px;max-height:380px;display:flex;flex-direction:column;padding:6px;}
+  .tam-user-search{padding:6px 8px;}
+  .tam-user-search input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;padding:8px 10px;outline:none;}
+  .tam-user-search input:focus{border-color:var(--ac);}
+  #tam-user-list{overflow-y:auto;flex:1;min-height:0;max-height:280px;}
+  #tam-user-list .lblp-item{padding:8px 10px;gap:10px;}
+  #tam-user-list .lblp-item-txt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+  #tam-user-list .lblp-item-name{font-size:13px;color:var(--tx);font-weight:500;}
+  #tam-user-list .lblp-item-sub{font-size:11.5px;color:var(--mu);}
+  .tam-user-empty-search{padding:20px 12px;text-align:center;color:var(--mu);font-size:12.5px;}
   @media (max-width:640px){
     .dks-grid{grid-template-columns:1fr;}
     .dks-input{height:44px;}
@@ -2807,7 +2883,7 @@
 /* ===== SETTINGS HUB (page content) ===== */
 .set-grp{font-size:10.5px;font-weight:500;color:var(--mu);text-transform:uppercase;
   letter-spacing:.7px;margin:0 0 14px;}
-.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(max(280px, calc(25% - 10.5px)),1fr));gap:14px;}
 .set-card{display:flex;align-items:center;gap:14px;background:var(--sur);
   border:0.5px solid var(--brd2);border-radius:12px;padding:16px 38px 16px 18px;
   transition:border-color .15s,background .15s;min-height:74px;position:relative;}
@@ -3096,7 +3172,7 @@
           <button class="set-card-info" data-info="Manage email, SMS, and in-app notifications for activities such as missed calls, follow-ups, assignments, and updates." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../notififormat/notififormat.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Notification Format</div>
@@ -3105,7 +3181,7 @@
           <button class="set-card-info" data-info="" aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../tagsmsformat/tagmessage.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v11H8l-4 3z"/><path d="M9 7h6M9 10h4"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Tagged Message Format</div>
@@ -3114,7 +3190,7 @@
           <button class="set-card-info" data-info="Customize the format of SMS notifications triggered by tagged conversations or mentions." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../loanappnotifi/loanappnotifi.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M14.5 13.5c0-.83-.67-1.5-1.5-1.5h-2c-.83 0-1.5.67-1.5 1.5S10.17 15 11 15h2c.83 0 1.5.67 1.5 1.5S13.83 18 13 18h-2c-.83 0-1.5-.67-1.5-1.5"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Loan Application Notifications</div>
@@ -3571,7 +3647,7 @@
 
   <!-- Transcript Alert Management modal -->
   <div class="modal-backdrop" id="tam-modal-backdrop" onclick="if(event.target===this)closeTranscriptAlert()">
-    <div class="modal" style="width:480px;">
+    <div class="modal" style="width:640px;">
       <div class="modal-header">
         <span class="modal-title">Transcript Alert Management</span>
         <button class="modal-close" onclick="closeTranscriptAlert()" aria-label="Close">&#x2715;</button>
@@ -3581,15 +3657,75 @@
           <span>Allow To Send Transcript Alert</span>
           <label class="dks-switch"><input type="checkbox" id="tam-allow"><span class="dks-track"><span class="dks-thumb"></span></span></label>
         </div>
-        <div class="dks-field"><label class="dks-label">Phone Number</label><input class="dks-input" id="tam-phone" inputmode="tel" placeholder="Phone Number"></div>
-        <div class="dks-field"><label class="dks-label">Email</label><input class="dks-input" id="tam-email" placeholder="Email (comma-separated)"></div>
-        <div class="dks-field"><label class="dks-label">Keyword</label><textarea class="dks-input tam-textarea" id="tam-keyword" placeholder="Keyword" rows="4"></textarea></div>
+        <div class="dks-field">
+          <label class="dks-label">Users</label>
+          <div class="tam-user-field" id="tam-user-field" role="button" tabindex="0"
+               onclick="tamUserOpen(event)"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();tamUserOpen(event);}">
+            <span class="tam-user-empty" id="tam-user-empty">Click to select users</span>
+            <svg class="tam-user-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="tam-user-chips" id="tam-user-chips"></div>
+          <div class="tam-notif-wrap" id="tam-notif-wrap" hidden>
+            <table class="tam-notif-table">
+              <thead>
+                <tr>
+                  <th>Name</th><th>Department</th><th>Role</th><th class="tam-notif-th">Notification</th>
+                </tr>
+              </thead>
+              <tbody id="tam-notif-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="dks-field">
+          <label class="dks-label">Keyword</label>
+          <div class="tam-kw-field" id="tam-kw-field" onclick="tamKwFocus()">
+            <span class="tam-kw-chips" id="tam-kw-chips"></span>
+            <input type="text" class="tam-kw-input" id="tam-kw-input" placeholder="Type a keyword and press Enter" onkeydown="tamKwKey(event)" onblur="tamKwCommit()">
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
+        <button class="modal-cancel tam-logs-btn" onclick="tamOpenLogs()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          Transcript Alert Logs
+        </button>
         <button class="modal-cancel" onclick="closeTranscriptAlert()">Cancel</button>
         <button class="modal-save" onclick="saveTranscriptAlert()">Save changes</button>
       </div>
     </div>
+  </div>
+
+  <!-- Transcript Alert Logs popup (stacked ABOVE the parent Transcript Alert modal) -->
+  <div class="modal-backdrop" id="tam-logs-backdrop" style="z-index:3400;" onclick="if(event.target===this)closeTamLogs()">
+    <div class="modal" style="width:900px;">
+      <div class="modal-header">
+        <span class="modal-title">Transcript Alert Logs</span>
+        <button class="modal-close" onclick="closeTamLogs()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body" style="padding:0;">
+        <div class="tam-logs-wrap">
+          <table class="tam-logs-table">
+            <thead>
+              <tr>
+                <th>From</th><th>To</th><th>Transcript</th><th>Keyword</th><th>Date</th><th class="tam-logs-th-act"></th>
+              </tr>
+            </thead>
+            <tbody id="tam-logs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" onclick="closeTamLogs()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcript Alert users picker (sibling of the modal so z-index isn't trapped) -->
+  <div class="assign-popup" id="tam-user-popup" style="display:none;z-index:3300;">
+    <div class="assign-popup-title">Select users</div>
+    <div class="tam-user-search"><input type="text" id="tam-user-search-input" placeholder="Search users…" oninput="tamUserSearch(this.value)"/></div>
+    <div class="lblp-list" id="tam-user-list"></div>
   </div>
 
   <!-- Add Tax form (nested) -->
@@ -4023,26 +4159,286 @@ document.addEventListener('keydown', function(e){
 
 // ── Transcript Alert Management ──
 var TAM_KEY='cc_transcript_alert';
+var TAM_SEED = {
+  allow: true,
+  users: ['DP','MR','TK','SL'],
+  notify: { DP:{sms:true,email:true}, MR:{sms:true,email:true}, TK:{sms:true,email:true}, SL:{sms:true,email:true} },
+  keywords: ['cancel','attorney','refund','financing']
+};
+var tamUserSel = [];
+var tamUserQuery = '';
+var tamUserNotify = {};   // { userKey: {sms:true, email:true} }
+var tamKwList = [];       // keyword chips
+function tamKwFocus(){ var i=document.getElementById('tam-kw-input'); if(i) i.focus(); }
+function tamKwRender(){
+  var wrap=document.getElementById('tam-kw-chips'); if(!wrap) return;
+  wrap.innerHTML = tamKwList.map(function(t,i){
+    return '<span class="tam-kw-chip">'+tamEsc(t)+
+      '<button type="button" class="tam-kw-chip-x" aria-label="Remove '+tamEsc(t)+'" onclick="tamKwRemove('+i+', event)">&times;</button>'+
+    '</span>';
+  }).join('');
+}
+function tamKwAdd(raw){
+  var v = String(raw||'').trim(); if(!v) return false;
+  var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var added=false;
+  parts.forEach(function(p){ if(tamKwList.indexOf(p) < 0){ tamKwList.push(p); added=true; } });
+  if(added) tamKwRender();
+  return added;
+}
+function tamKwCommit(){
+  var i=document.getElementById('tam-kw-input'); if(!i) return;
+  if(tamKwAdd(i.value)) i.value='';
+}
+function tamKwRemove(idx, ev){
+  if(ev) ev.stopPropagation();
+  tamKwList.splice(idx, 1);
+  tamKwRender();
+}
+function tamKwKey(e){
+  if(e.key==='Enter' || e.key===','){
+    e.preventDefault();
+    if(tamKwAdd(e.target.value)) e.target.value='';
+  } else if(e.key==='Backspace' && !e.target.value && tamKwList.length){
+    tamKwList.pop(); tamKwRender();
+  }
+}
+function tamEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function tamRoster(){ return (window.CCLeads && Array.isArray(CCLeads.TEAM)) ? CCLeads.TEAM : []; }
+function tamRosterByKey(key){ return tamRoster().filter(function(m){return m.key===key;})[0] || null; }
+function tamInitials(name){ return String(name||'').trim().split(/\s+/).slice(0,2).map(function(s){return s.charAt(0).toUpperCase();}).join(''); }
+function tamUserRenderChips(){
+  var wrap=document.getElementById('tam-user-chips'); if(!wrap) return;
+  var roster=tamRoster();
+  var byKey={}; roster.forEach(function(m){ byKey[m.key]=m; });
+  var keys=tamUserSel.filter(function(k){ return !!byKey[k]; });
+  wrap.innerHTML=keys.map(function(k){
+    var m=byKey[k];
+    return '<span class="tam-user-chip">'+
+      '<span class="tam-user-av" style="background:'+tamEsc(m.color||'#4f7cff')+';">'+tamEsc(tamInitials(m.name))+'</span>'+
+      '<span class="tam-user-chip-name">'+tamEsc(m.name)+'</span>'+
+      '<button class="tam-user-chip-x" type="button" aria-label="Remove '+tamEsc(m.name)+'" onclick="tamUserRemove(\''+tamEsc(k)+'\', event)">&times;</button>'+
+    '</span>';
+  }).join('');
+  tamNotifRender();
+}
+function tamNotifRender(){
+  var wrap=document.getElementById('tam-notif-wrap'); if(!wrap) return;
+  var tbody=document.getElementById('tam-notif-tbody'); if(!tbody) return;
+  var roster=tamRoster();
+  var byKey={}; roster.forEach(function(m){ byKey[m.key]=m; });
+  var keys=tamUserSel.filter(function(k){ return !!byKey[k]; });
+  if(!keys.length){ wrap.hidden=true; tbody.innerHTML=''; return; }
+  wrap.hidden=false;
+  tbody.innerHTML=keys.map(function(k){
+    var m=byKey[k];
+    var n=tamUserNotify[k] || {sms:true, email:true};
+    return '<tr>'+
+      '<td><div class="tam-notif-name"><span class="tam-user-av" style="background:'+tamEsc(m.color||'#4f7cff')+';">'+tamEsc(tamInitials(m.name))+'</span>'+tamEsc(m.name)+'</div></td>'+
+      '<td class="tam-notif-dept">'+tamEsc(m.dept||'—')+'</td>'+
+      '<td class="tam-notif-role">'+tamEsc(m.role||'—')+'</td>'+
+      '<td class="tam-notif-th"><div class="tam-notif-cells">'+
+        '<label class="tam-notif-cb"><input type="checkbox" data-user="'+tamEsc(k)+'" data-ch="sms"'+(n.sms?' checked':'')+' onchange="tamNotifSet(\''+tamEsc(k)+'\',\'sms\',this.checked)">SMS</label>'+
+        '<label class="tam-notif-cb"><input type="checkbox" data-user="'+tamEsc(k)+'" data-ch="email"'+(n.email?' checked':'')+' onchange="tamNotifSet(\''+tamEsc(k)+'\',\'email\',this.checked)">Email</label>'+
+      '</div></td>'+
+    '</tr>';
+  }).join('');
+}
+function tamNotifSet(key, ch, val){
+  if(!tamUserNotify[key]) tamUserNotify[key] = {sms:true, email:true};
+  tamUserNotify[key][ch] = !!val;
+}
+function tamUserRenderList(){
+  var list=document.getElementById('tam-user-list'); if(!list) return;
+  var q=(tamUserQuery||'').trim().toLowerCase();
+  var rows=tamRoster().filter(function(m){
+    if(!q) return true;
+    return (m.name||'').toLowerCase().indexOf(q)>=0
+        || (m.role||'').toLowerCase().indexOf(q)>=0
+        || (m.dept||'').toLowerCase().indexOf(q)>=0;
+  });
+  if(!rows.length){ list.innerHTML='<div class="tam-user-empty-search">No users match your search.</div>'; return; }
+  var sel={}; tamUserSel.forEach(function(k){ sel[k]=1; });
+  list.innerHTML=rows.map(function(m){
+    var on = sel[m.key] ? ' on' : '';
+    var sub=[m.role, m.dept].filter(Boolean).join(' · ');
+    return '<div class="lblp-item'+on+'" onclick="tamUserToggle(\''+tamEsc(m.key)+'\')">'+
+      '<span class="tam-user-av" style="background:'+tamEsc(m.color||'#4f7cff')+';">'+tamEsc(tamInitials(m.name))+'</span>'+
+      '<span class="lblp-item-txt"><span class="lblp-item-name">'+tamEsc(m.name)+'</span>'+(sub?'<span class="lblp-item-sub">'+tamEsc(sub)+'</span>':'')+'</span>'+
+      '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'+
+    '</div>';
+  }).join('');
+}
+function tamUserToggle(key){
+  var i=tamUserSel.indexOf(key);
+  if(i<0){ tamUserSel.push(key); if(!tamUserNotify[key]) tamUserNotify[key]={sms:true, email:true}; }
+  else   { tamUserSel.splice(i,1); delete tamUserNotify[key]; }
+  tamUserRenderChips(); tamUserRenderList();
+}
+function tamUserRemove(key, ev){
+  if(ev) ev.stopPropagation();
+  var i=tamUserSel.indexOf(key); if(i<0) return;
+  tamUserSel.splice(i,1);
+  delete tamUserNotify[key];
+  tamUserRenderChips();
+  if(document.getElementById('tam-user-popup').style.display==='block') tamUserRenderList();
+}
+function tamUserSearch(v){ tamUserQuery=v||''; tamUserRenderList(); }
+function tamUserOpen(e){
+  if(e) e.stopPropagation();
+  var pop=document.getElementById('tam-user-popup'); if(!pop) return;
+  if(pop.style.display==='block'){ tamUserClose(); return; }
+  var anchor=document.getElementById('tam-user-field');
+  var r=anchor.getBoundingClientRect();
+  var w=300;
+  // If the field is narrow, size the popup to match; else use 300px.
+  var popW = Math.max(w, Math.round(r.width));
+  pop.style.width = popW + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - popW - 8)) + 'px';
+  pop.style.top  = (r.bottom + 6) + 'px';
+  var s=document.getElementById('tam-user-search-input'); if(s) s.value='';
+  tamUserQuery='';
+  tamUserRenderList();
+  pop.style.display='block';
+  anchor.classList.add('open');
+  setTimeout(function(){ if(s) s.focus(); }, 30);
+}
+function tamUserClose(){
+  var pop=document.getElementById('tam-user-popup'); if(pop) pop.style.display='none';
+  var f=document.getElementById('tam-user-field'); if(f) f.classList.remove('open');
+}
 function openTranscriptAlert(){
-  var s={}; try{ s=JSON.parse(localStorage.getItem(TAM_KEY)||'{}')||{}; }catch(e){ s={}; }
+  var raw=null; try{ raw=localStorage.getItem(TAM_KEY); }catch(e){}
+  var s;
+  if(raw===null){ s = TAM_SEED; }
+  else { try{ s = JSON.parse(raw)||{}; }catch(e){ s = {}; } }
   document.getElementById('tam-allow').checked = s.allow!==false;
-  document.getElementById('tam-phone').value = s.phone||'';
-  document.getElementById('tam-email').value = s.email||'';
-  document.getElementById('tam-keyword').value = s.keyword||'';
+  tamUserSel = Array.isArray(s.users) ? s.users.slice() : [];
+  // Seed per-user notify map from storage; default all-on for any selected user missing an entry.
+  tamUserNotify = {};
+  var stored = (s.notify && typeof s.notify==='object') ? s.notify : {};
+  tamUserSel.forEach(function(k){
+    var e = stored[k] || {};
+    tamUserNotify[k] = { sms: e.sms!==false, email: e.email!==false };
+  });
+  if(Array.isArray(s.keywords)) tamKwList = s.keywords.slice();
+  else if(typeof s.keyword==='string' && s.keyword.trim()) tamKwList = s.keyword.split(/[,\n]/).map(function(x){return x.trim();}).filter(Boolean);
+  else tamKwList = [];
+  var kwIn = document.getElementById('tam-kw-input'); if(kwIn) kwIn.value='';
+  tamKwRender();
+  tamUserRenderChips();
+  tamUserClose();
   var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.add('open');
 }
-function closeTranscriptAlert(){ var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); }
+function closeTranscriptAlert(){ tamUserClose(); var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); }
+// ── Transcript Alert Logs popup ──
+var TAM_LOG_SEED = [
+  { leadKey:'ethan-wright',   userKey:'DP', keyword:'cancel',    transcript:'…and honestly I might have to cancel the deal if we can\'t get the rate lower.', at: Date.now() - 1000*60*30 },
+  { leadKey:'kristina-stull', userKey:'JD', keyword:'attorney',  transcript:'my attorney said we should get everything in writing before we sign anything.',   at: Date.now() - 1000*60*60*2 },
+  { leadKey:'taylor-dang',    userKey:'MR', keyword:'refund',    transcript:'so about that deposit refund — how long does it usually take to hit the card?',    at: Date.now() - 1000*60*60*5 },
+  { leadKey:'daniel-park',    userKey:'TK', keyword:'financing', transcript:'the financing options you sent look good, but the APR is a bit higher than expected.', at: Date.now() - 1000*60*60*24 },
+  { leadKey:'sophia-reyes',   userKey:'SL', keyword:'manager',   transcript:'can I speak to a manager? I don\'t think we\'re getting anywhere on the trade-in value.', at: Date.now() - 1000*60*60*26 },
+  { leadKey:'ac-thakur',      userKey:'AB', keyword:'complaint', transcript:'I want to file a formal complaint — this is the third time I\'ve had to call about the same issue.', at: Date.now() - 1000*60*60*30 },
+  { leadKey:'caleb-knox',     userKey:'DP', keyword:'cancel',    transcript:'I\'ll need to cancel my appointment for tomorrow — something came up.',            at: Date.now() - 1000*60*60*48 }
+];
+var _tamLogsInit = false;
+function _tamLogsSeed(){
+  if(_tamLogsInit) return;
+  _tamLogsInit = true;
+  var leads = (window.CCLeads && CCLeads.LEADS) || [];
+  var teamByKey = {}; ((window.CCLeads && CCLeads.TEAM) || []).forEach(function(m){ teamByKey[m.key] = m; });
+  TAM_LOG_SEED.forEach(function(row){
+    var lead = leads.filter(function(l){
+      return (String(l.name||'').toLowerCase().replace(/\s+/g,'-')) === row.leadKey;
+    })[0];
+    row._lead = lead || null;
+    row._user = teamByKey[row.userKey] || null;
+  });
+}
+function _tamLogsFmtDate(ts){
+  var d = new Date(ts);
+  return d.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+}
+function _tamLogsHighlight(text, kw){
+  if(!kw) return tamEsc(text);
+  var re = new RegExp('('+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')', 'ig');
+  return tamEsc(text).replace(re, '<mark>$1</mark>');
+}
+function _tamLogsRender(){
+  var tbody = document.getElementById('tam-logs-tbody'); if(!tbody) return;
+  // Filter to only rows whose keyword is currently in the user's keyword chips.
+  var active = {};
+  (tamKwList || []).forEach(function(k){ if(k) active[String(k).toLowerCase()] = 1; });
+  var rows = TAM_LOG_SEED.filter(function(r){ return active[String(r.keyword||'').toLowerCase()]; });
+  if(!rows.length){
+    var msg = (tamKwList && tamKwList.length)
+      ? 'No transcript alerts for your current keywords yet.'
+      : 'Add a keyword above to start capturing transcript alerts.';
+    tbody.innerHTML = '<tr><td colspan="6" class="tam-logs-empty">'+msg+'</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(row){
+    var leadName = (row._lead && row._lead.name) || row.leadKey;
+    var leadNo   = row._lead ? row._lead.no : null;
+    var leadColor= (row._lead && row._lead.color) || '#4f7cff';
+    var user     = row._user || {name:row.userKey, color:'#4f7cff'};
+    var iconBtn  = leadNo!=null
+      ? '<button class="tam-logs-act-btn" onclick="tamLogsOpenContact('+leadNo+')" title="Open contact panel" aria-label="Open contact panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>'
+      : '';
+    return '<tr>'+
+      '<td><div class="tam-logs-from"><span class="tam-user-av" style="background:'+tamEsc(leadColor)+';">'+tamEsc(tamInitials(leadName))+'</span>'+tamEsc(leadName)+'</div></td>'+
+      '<td><div class="tam-logs-to"><span class="tam-user-av" style="background:'+tamEsc(user.color||'#4f7cff')+';">'+tamEsc(tamInitials(user.name))+'</span>'+tamEsc(user.name)+'</div></td>'+
+      '<td class="tam-logs-transcript">'+_tamLogsHighlight(row.transcript, row.keyword)+'</td>'+
+      '<td class="tam-logs-keyword">'+tamEsc(row.keyword)+'</td>'+
+      '<td class="tam-logs-date">'+tamEsc(_tamLogsFmtDate(row.at))+'</td>'+
+      '<td class="tam-logs-th-act">'+iconBtn+'</td>'+
+    '</tr>';
+  }).join('');
+}
+function tamOpenLogs(){
+  _tamLogsSeed();
+  _tamLogsRender();
+  var bd = document.getElementById('tam-logs-backdrop'); if(bd) bd.classList.add('open');
+}
+function closeTamLogs(){ var bd = document.getElementById('tam-logs-backdrop'); if(bd) bd.classList.remove('open'); }
+function tamLogsOpenContact(leadNo){
+  closeTamLogs();
+  if(typeof closeTranscriptAlert === 'function') closeTranscriptAlert();
+  if(typeof openContactPanel === 'function') openContactPanel(leadNo, 'all');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var bd = document.getElementById('tam-logs-backdrop');
+  if(bd && bd.classList.contains('open')) closeTamLogs();
+});
 function saveTranscriptAlert(){
+  // Prune any notify entries whose user is no longer selected.
+  var notify={};
+  tamUserSel.forEach(function(k){
+    var e = tamUserNotify[k] || {sms:true, email:true};
+    notify[k] = { sms: !!e.sms, email: !!e.email };
+  });
+  tamKwCommit();   // pick up any typed-but-not-committed keyword
   var data={
     allow: document.getElementById('tam-allow').checked,
-    phone: document.getElementById('tam-phone').value.trim(),
-    email: document.getElementById('tam-email').value.trim(),
-    keyword: document.getElementById('tam-keyword').value.trim()
+    users: tamUserSel.slice(),
+    notify: notify,
+    keywords: tamKwList.slice()
   };
   try{ localStorage.setItem(TAM_KEY, JSON.stringify(data)); }catch(e){}
   closeTranscriptAlert();
   if(typeof showNavToast==='function') showNavToast('Transcript Alert saved','Your transcript alert settings were updated.');
 }
+// Outside-click + Esc close for the users popup
+document.addEventListener('mousedown', function(e){
+  var pop=document.getElementById('tam-user-popup'); if(!pop||pop.style.display!=='block') return;
+  if(e.target.closest('#tam-user-popup') || e.target.closest('#tam-user-field')) return;
+  tamUserClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key!=='Escape') return;
+  var pop=document.getElementById('tam-user-popup'); if(pop && pop.style.display==='block') tamUserClose();
+});
 
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });
 
@@ -4143,6 +4539,7 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setCard
   window.addEventListener('scroll', function(){ var ps=document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
 })();
 </script>
+<script src="../../shared/leads-comms.js"></script>
 <script src="../../shared/notifications.js"></script>
 <script src="../../shared/contact-panel.js"></script>
 

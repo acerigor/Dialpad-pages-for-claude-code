@@ -383,10 +383,15 @@
         '<div class="notif-header">'
       +   '<span class="notif-title">Loan App leads</span>'
       +   '<div class="notif-header-actions">'
+      +     '<button class="notif-markall" id="loanapp-markall" onclick="window.laMarkAllLoanApp && window.laMarkAllLoanApp()">Mark all as read</button>'
       +     '<button class="notif-close" onclick="window.closeLoanAppPanel && window.closeLoanAppPanel()" aria-label="Close">'
       +       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
       +     '</button>'
       +   '</div>'
+      + '</div>'
+      + '<div class="notif-tabs" id="loanapp-tabs">'
+      +   '<button class="notif-tab" data-tab="all" onclick="window.laSetLoanAppTab && window.laSetLoanAppTab(\'all\')">All <span class="notif-tab-count" id="loanapp-count-all">0</span></button>'
+      +   '<button class="notif-tab" data-tab="unread" onclick="window.laSetLoanAppTab && window.laSetLoanAppTab(\'unread\')">Unread <span class="notif-tab-count" id="loanapp-count-unread">0</span></button>'
       + '</div>'
       + '<div class="notif-body" id="loanapp-body"></div>'
       + '<div class="notif-footer">'
@@ -395,6 +400,202 @@
     document.body.appendChild(p);
   }
   var LA_CAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M14.5 13.5c0-.83-.67-1.5-1.5-1.5h-2c-.83 0-1.5.67-1.5 1.5S10.17 15 11 15h2c.83 0 1.5.67 1.5 1.5S13.83 18 13 18h-2c-.83 0-1.5-.67-1.5-1.5"/></svg>';
+  /* Notification-type registry — each entry: {titlePrefix, icon (SVG), iconBg, iconFg, tab}.
+     Phase 1 only ships new_app + a credit_pulled placeholder; later phases extend this. */
+  var LA_TYPES = {
+    new_app: {
+      titlePrefix: 'New application',
+      icon: LA_CAR,
+      iconBg: 'rgba(79,124,255,.14)',
+      iconFg: 'var(--ac2)',
+      tab: 'all'
+    },
+    credit_pulled: {
+      titlePrefix: 'Credit pulled',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>',
+      iconBg: 'rgba(79,124,255,.14)',
+      iconFg: 'var(--ac2)',
+      tab: 'loanapp'
+    },
+    lender_approved: {
+      titlePrefix: 'Lender approved',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>',
+      iconBg: 'rgba(34,200,138,.14)',
+      iconFg: 'var(--gr)',
+      tab: 'loanapp'
+    },
+    lender_declined: {
+      titlePrefix: 'Lender declined',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      iconBg: 'rgba(232,85,85,.16)',
+      iconFg: 'var(--rd)',
+      tab: 'loanapp'
+    },
+    doc_requested: {
+      titlePrefix: 'Document requested',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
+      iconBg: 'rgba(245,166,35,.15)',
+      iconFg: 'var(--am)',
+      tab: 'loanapp'
+    },
+    doc_received: {
+      titlePrefix: 'Document received',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 14 11 16 15 12"/></svg>',
+      iconBg: 'rgba(34,200,138,.14)',
+      iconFg: 'var(--gr)',
+      tab: 'loanapp'
+    },
+    customer_replied: {
+      titlePrefix: 'Customer replied',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+      iconBg: 'rgba(79,124,255,.14)',
+      iconFg: 'var(--ac2)',
+      tab: 'sms'
+    },
+    assignment_change: {
+      titlePrefix: 'Assigned to you',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      iconBg: 'rgba(79,124,255,.14)',
+      iconFg: 'var(--ac2)',
+      tab: 'all'
+    },
+    app_aging: {
+      titlePrefix: 'Application aging',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>',
+      iconBg: 'rgba(245,166,35,.15)',
+      iconFg: 'var(--am)',
+      tab: 'loanapp'
+    }
+  };
+  /* Stored notifications (localStorage) — Phase 1: read state is deferred to Phase 3.
+     Shape: [{id, type, leadName, title?, body, ts, read?}]. `title` optional (falls back
+     to LA_TYPES[type].titlePrefix). `leadName` resolves against CCLeads.LEADS at render. */
+  var LA_STORE_KEY = 'cc_loanapp_notifications';
+  var LA_STORE_VER_KEY = 'cc_loanapp_notifications_ver';
+  var LA_STORE_VER = 3;   // bump when adding/removing seed rows
+  function laDefaultSeed(){
+    var now = Date.now();
+    return [
+      { id:'la_seed_credit_ethan',     type:'credit_pulled',   leadName:'Ethan Wright',
+        body:'FICO 612 · TransUnion',                          ts: now - 1000*60*45 },
+      { id:'la_seed_lapproved_mason',  type:'lender_approved', leadName:'Mason Reid',
+        body:'Capital One · 6.9% APR · 72 mo',                 ts: now - 1000*60*90 },
+      { id:'la_seed_ldeclined_james',  type:'lender_declined', leadName:'James Okoye',
+        body:'Ally · DTI exceeds guideline',                   ts: now - 1000*60*60*3 },
+      { id:'la_seed_docreq_harper',    type:'doc_requested',   leadName:'Harper Reeves',
+        body:'Paystub · 2 most recent',                        ts: now - 1000*60*60*5 },
+      { id:'la_seed_docrec_ryan',      type:'doc_received',    leadName:'Ryan Tate',
+        body:"Driver's license uploaded",                      ts: now - 1000*60*60*8 },
+      { id:'la_seed_lapproved_theo',   type:'lender_approved', leadName:'Theo Mendoza',
+        body:'Exeter · 8.4% APR · 60 mo',                      ts: now - 1000*60*60*11 },
+      { id:'la_seed_docreq_ethan',     type:'doc_requested',   leadName:'Ethan Wright',
+        body:'Proof of residence',                             ts: now - 1000*60*60*20 },
+      { id:'la_seed_ldeclined_harper', type:'lender_declined', leadName:'Harper Reeves',
+        body:'Consumer Portfolio · Insufficient tenure',       ts: now - 1000*60*60*30 },
+      { id:'la_seed_reply_mason',      type:'customer_replied', leadName:'Mason Reid',
+        body:'"Yes, that rate works — let me review the terms."', ts: now - 1000*60*25 },
+      { id:'la_seed_reply_harper',     type:'customer_replied', leadName:'Harper Reeves',
+        body:'"Uploading the paystubs now."',                  ts: now - 1000*60*60*4 },
+      { id:'la_seed_assign_ethan',     type:'assignment_change', leadName:'Ethan Wright',
+        body:'Reassigned from Sophia Ramos',                   ts: now - 1000*60*60*2 },
+      { id:'la_seed_assign_ryan',      type:'assignment_change', leadName:'Ryan Tate',
+        body:'New application routed to your queue',           ts: now - 1000*60*60*7 },
+      { id:'la_seed_aging_james',      type:'app_aging',       leadName:'James Okoye',
+        body:'3 days without action',                          ts: now - 1000*60*60*24 },
+      { id:'la_seed_aging_theo',       type:'app_aging',       leadName:'Theo Mendoza',
+        body:'5 days without action',                          ts: now - 1000*60*60*36 }
+    ];
+  }
+  function laStoreLoad(){
+    var storedVer = null;
+    try{ storedVer = parseInt(localStorage.getItem(LA_STORE_VER_KEY), 10) || null; }catch(e){}
+    if(storedVer === LA_STORE_VER){
+      try{ var raw = localStorage.getItem(LA_STORE_KEY); if(raw){ var p = JSON.parse(raw); if(Array.isArray(p)) return p; } }catch(e){}
+    }
+    var seed = laDefaultSeed();
+    try{
+      localStorage.setItem(LA_STORE_KEY, JSON.stringify(seed));
+      localStorage.setItem(LA_STORE_VER_KEY, String(LA_STORE_VER));
+      // Fresh seed = fresh unread state; clear any prior read map.
+      localStorage.removeItem(LA_READ_KEY);
+    }catch(e){}
+    return seed;
+  }
+  /* Read-state map: {rowId: true} for rows the user has seen. Row ids are stable per
+     row: `stored:<id>` for stored notifications, `lead:<no>` for leads-derived rows. */
+  var LA_READ_KEY = 'cc_loanapp_read';
+  function laReadLoad(){
+    try{ var raw = localStorage.getItem(LA_READ_KEY); if(raw){ var p = JSON.parse(raw); if(p && typeof p === 'object') return p; } }catch(e){}
+    return {};
+  }
+  function laReadPersist(map){ try{ localStorage.setItem(LA_READ_KEY, JSON.stringify(map||{})); }catch(e){} }
+  function laRowIdFor(kind, key){ return kind + ':' + key; }
+  function laHasUnread(){
+    var list = laUnified();
+    for(var i = 0; i < list.length; i++){ if(!list[i].read) return true; }
+    return false;
+  }
+  function laMarkRead(rowId){
+    if(!rowId) return;
+    var map = laReadLoad();
+    if(map[rowId]) return;
+    map[rowId] = true;
+    laReadPersist(map);
+    laUpdateDot();
+    laUpdateMarkAllState();
+    // Re-render if panel is open so the row's unread styling clears.
+    var p = document.getElementById('loanapp-panel');
+    if(p && p.classList.contains('open')) laRender();
+  }
+  function laMarkAllRead(){
+    var list = laUnified();
+    if(!list.length) return;
+    var map = laReadLoad();
+    list.forEach(function(n){ if(n.rowId) map[n.rowId] = true; });
+    laReadPersist(map);
+    laUpdateDot();
+    laUpdateMarkAllState();
+    var p = document.getElementById('loanapp-panel');
+    if(p && p.classList.contains('open')) laRender();
+  }
+  function laUpdateDot(){
+    var btn = document.getElementById('header-loanapp'); if(!btn) return;
+    btn.classList.toggle('has-unread', laHasUnread());
+  }
+  function laUpdateMarkAllState(){
+    var b = document.getElementById('loanapp-markall'); if(!b) return;
+    b.disabled = !laHasUnread();
+  }
+  window.laMarkRead = laMarkRead;
+  window.laMarkAllLoanApp = laMarkAllRead;
+  /* Filter tab — 'all' | 'unread'. Session-only (not persisted). */
+  var _laTab = 'all';
+  function laSetTab(tab){
+    tab = (tab === 'unread') ? 'unread' : 'all';
+    if(tab === _laTab) return;
+    _laTab = tab;
+    var p = document.getElementById('loanapp-panel');
+    if(p && p.classList.contains('open')) laRender();
+  }
+  window.laSetLoanAppTab = laSetTab;
+  function laLeadByName(name){
+    if(!name || !window.CCLeads || !Array.isArray(CCLeads.LEADS)) return null;
+    var key = String(name).toLowerCase().trim();
+    for(var i = 0; i < CCLeads.LEADS.length; i++){
+      var l = CCLeads.LEADS[i];
+      if(l && String(l.name || '').toLowerCase().trim() === key) return l;
+    }
+    return null;
+  }
+  function laRelTime(ts){
+    if(!ts) return '';
+    var d = Date.now() - ts, m = Math.floor(d/60000);
+    if(m < 1) return 'just now';
+    if(m < 60) return m + 'm ago';
+    var h = Math.floor(m/60); if(h < 24) return h + 'h ago';
+    var days = Math.floor(h/24); if(days < 7) return days + 'd ago';
+    try{ return new Date(ts).toLocaleDateString(undefined, {month:'short', day:'numeric'}); }catch(e){ return ''; }
+  }
   function laInitials(name){
     var s = String(name || '').trim();
     if(!s || /unknown/i.test(s)){ return s ? s.charAt(0).toUpperCase() : '?'; }
@@ -415,31 +616,114 @@
       + '.cc-ntf-line{font-size:12.5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
       + '.cc-ntf-line strong{font-weight:600;}'
       + '.cc-ntf-body{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
-      + '.cc-ntf-time{font-size:11px;color:var(--mu);margin-top:1px;}';
+      + '.cc-ntf-time{font-size:11px;color:var(--mu);margin-top:1px;}'
+      + '.cc-ntf-dot{position:absolute;top:14px;right:14px;width:7px;height:7px;border-radius:50%;background:var(--ac);opacity:0;}'
+      + '.cc-ntf-row.is-unread .cc-ntf-dot{opacity:1;}'
+      + '.cc-ntf-row.is-unread{background:rgba(79,124,255,.04);}'
+      + '.cc-ntf-row.is-unread .cc-ntf-line strong{font-weight:700;}';
     var st = document.createElement('style'); st.id = 'cc-ntf-style'; st.textContent = css; document.head.appendChild(st);
+    // Loan-app-specific header additions (markall button + header-dot). Injected separately
+    // so a page that only ships the bell doesn't get these unused rules.
+    if(!document.getElementById('loanapp-hdr-style')){
+      var laCss = ''
+        + '#loanapp-markall{background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;}'
+        + '#loanapp-markall:hover{background:rgba(79,124,255,.10);}'
+        + '#loanapp-markall[disabled]{opacity:.4;cursor:not-allowed;}'
+        + '#loanapp-markall[disabled]:hover{background:transparent;}'
+        + '#header-loanapp{position:relative;}'
+        + '#header-loanapp-dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--rd);border:1.5px solid var(--bg);display:none;pointer-events:none;}'
+        + '#header-loanapp.has-unread #header-loanapp-dot{display:block;}'
+        + '#loanapp-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
+        + '#loanapp-tabs .notif-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:8px 10px;border-bottom:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}'
+        + '#loanapp-tabs .notif-tab:hover{color:var(--tx);}'
+        + '#loanapp-tabs .notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}'
+        + '#loanapp-tabs .notif-tab-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);background:var(--sur2);padding:2px 6px;border-radius:8px;}'
+        + '#loanapp-tabs .notif-tab.active .notif-tab-count{color:var(--ac2);background:rgba(79,124,255,.16);}';
+      var lst = document.createElement('style'); lst.id = 'loanapp-hdr-style'; lst.textContent = laCss; document.head.appendChild(lst);
+    }
+  }
+  /* Build a unified list of {type, leadNo, leadName, leadColor, title, body, time, ts, tab}
+     from (a) live Loan-App leads → 'new_app' rows and (b) stored notifications resolved
+     against the roster. Sorted newest-first when both carry timestamps. */
+  function laUnified(){
+    var out = [];
+    var readMap = laReadLoad();
+    laLeads().forEach(function(l){
+      var vehicle = l.vehicle && l.vehicle !== '—' ? l.vehicle : 'No vehicle';
+      var rowId = laRowIdFor('lead', l.no);
+      out.push({
+        type:'new_app',
+        rowId: rowId,
+        read: !!readMap[rowId],
+        leadNo: l.no,
+        leadName: l.name || 'Unknown',
+        leadColor: l.ac || '#4f7cff',
+        body: [vehicle, l.status].filter(Boolean).join(' · '),
+        time: l.lastAttempt || '',
+        ts: 0
+      });
+    });
+    laStoreLoad().forEach(function(n){
+      var t = LA_TYPES[n.type] || LA_TYPES.new_app;
+      var l = laLeadByName(n.leadName);
+      var rowId = laRowIdFor('stored', n.id);
+      out.push({
+        type: n.type,
+        rowId: rowId,
+        read: !!readMap[rowId],
+        leadNo: l ? l.no : null,
+        leadName: n.leadName || (l && l.name) || 'Unknown',
+        leadColor: (l && l.ac) || '#4f7cff',
+        title: n.title || t.titlePrefix,
+        body: n.body || '',
+        time: laRelTime(n.ts),
+        ts: n.ts || 0
+      });
+    });
+    // Newest first: stored rows carry ts; leads have ts=0 and fall to the end.
+    out.sort(function(a, b){ return (b.ts || 0) - (a.ts || 0); });
+    return out;
   }
   function laRender(){
     laBuildPanel();
     laEnsureCss();
     var body = document.getElementById('loanapp-body'); if(!body) return;
-    var list = laLeads();
+    var all = laUnified();
+    var unread = all.filter(function(n){ return !n.read; });
+    // Tab counts + active state
+    var elAll = document.getElementById('loanapp-count-all'); if(elAll) elAll.textContent = all.length;
+    var elUn  = document.getElementById('loanapp-count-unread'); if(elUn) elUn.textContent = unread.length;
+    var tabs = document.querySelectorAll('#loanapp-tabs .notif-tab');
+    for(var i = 0; i < tabs.length; i++){ tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === _laTab); }
+    var list = (_laTab === 'unread') ? unread : all;
     if(!list.length){
-      body.innerHTML = '<div class="notif-empty">No new loan-app leads.</div>';
+      var msg = (_laTab === 'unread') ? "You're all caught up." : 'No loan-app notifications.';
+      body.innerHTML = '<div class="notif-empty">' + msg + '</div>';
+      laUpdateMarkAllState();
       return;
     }
-    body.innerHTML = list.map(function(l){
-      var vehicle = l.vehicle && l.vehicle !== '—' ? l.vehicle : 'No vehicle';
-      var meta = [vehicle, l.status].filter(Boolean).map(laEsc).join(' · ');
-      return '<button class="cc-ntf-row" onclick="window.closeLoanAppPanel && window.closeLoanAppPanel(); if(window.openContactPanel){ window.openContactPanel(' + Number(l.no) + ', \'all\'); }">'
-        + '<span class="cc-ntf-ic" style="background:rgba(79,124,255,.14);color:var(--ac2)">' + LA_CAR + '</span>'
-        + '<span class="cc-ntf-av" style="background:' + laEsc(l.ac || '#4f7cff') + '">' + laEsc(laInitials(l.name)) + '</span>'
+    body.innerHTML = list.map(function(n){
+      var t = LA_TYPES[n.type] || LA_TYPES.new_app;
+      var title = n.title || t.titlePrefix;
+      var tab = t.tab || 'all';
+      var rowId = laEsc(n.rowId);
+      var markCall = 'window.laMarkRead && window.laMarkRead(\'' + rowId + '\');';
+      var click = n.leadNo != null
+        ? markCall + ' window.closeLoanAppPanel && window.closeLoanAppPanel(); if(window.openContactPanel){ window.openContactPanel(' + Number(n.leadNo) + ', \'' + laEsc(tab) + '\'); }'
+        : markCall + ' window.closeLoanAppPanel && window.closeLoanAppPanel();';
+      var cls = 'cc-ntf-row' + (n.read ? '' : ' is-unread');
+      return '<button class="' + cls + '" data-row-id="' + rowId + '" onclick="' + click + '">'
+        + '<span class="cc-ntf-ic" style="background:' + t.iconBg + ';color:' + t.iconFg + '">' + t.icon + '</span>'
+        + '<span class="cc-ntf-av" style="background:' + laEsc(n.leadColor) + '">' + laEsc(laInitials(n.leadName)) + '</span>'
         + '<span class="cc-ntf-txt">'
-        +   '<span class="cc-ntf-line"><strong>New application</strong> · ' + laEsc(l.name || 'Unknown') + '</span>'
-        +   '<span class="cc-ntf-body">' + meta + '</span>'
-        +   '<span class="cc-ntf-time">' + laEsc(l.lastAttempt || '') + '</span>'
+        +   '<span class="cc-ntf-line"><strong>' + laEsc(title) + '</strong> · ' + laEsc(n.leadName) + '</span>'
+        +   '<span class="cc-ntf-body">' + laEsc(n.body) + '</span>'
+        +   '<span class="cc-ntf-time">' + laEsc(n.time) + '</span>'
         + '</span>'
+        + '<span class="cc-ntf-dot" aria-hidden="true"></span>'
       + '</button>';
     }).join('');
+    laUpdateMarkAllState();
   }
   function laPosition(){
     var p = document.getElementById('loanapp-panel'), btn = document.getElementById('header-loanapp');
@@ -489,8 +773,11 @@
       + '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>'
       + '<polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/>'
       + '<path d="M14.5 13.5c0-.83-.67-1.5-1.5-1.5h-2c-.83 0-1.5.67-1.5 1.5S10.17 15 11 15h2c.83 0 1.5.67 1.5 1.5S13.83 18 13 18h-2c-.83 0-1.5-.67-1.5-1.5"/>'
-      + '</svg>';
+      + '</svg>'
+      + '<span id="header-loanapp-dot" aria-hidden="true"></span>';
     bell.parentNode.insertBefore(btn, bell);
+    laEnsureCss();  // ensures #header-loanapp-dot styles are present even before the panel first opens
+    laEnsureLeadsData(function(){ laUpdateDot(); });
   }
   document.addEventListener('mousedown', function(e){
     var p = document.getElementById('loanapp-panel'); if(!p || !p.classList.contains('open')) return;

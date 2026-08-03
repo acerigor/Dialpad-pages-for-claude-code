@@ -579,6 +579,66 @@
   .tam-user-search{padding:6px 8px;}
   .tam-user-search input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;padding:8px 10px;outline:none;}
   .tam-user-search input:focus{border-color:var(--ac);}
+  /* AI Q&A & Store Description modal */
+  .aiqa-tabs{display:flex;gap:4px;padding:8px 20px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;background:var(--sur);}
+  .aiqa-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:13px;padding:10px 12px;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-0.5px;}
+  .aiqa-tab:hover{color:var(--tx);}
+  .aiqa-tab.active{color:var(--ac2);border-bottom-color:var(--ac);font-weight:500;}
+  #aiqa-body{display:flex;flex-direction:column;gap:0;}
+  .aiqa-toolbar{display:flex;align-items:center;gap:10px;padding:0 0 14px;}
+  .aiqa-tools{margin-left:auto;display:flex;gap:8px;}
+  .aiqa-list{display:flex;flex-direction:column;gap:6px;}
+  .aiqa-row{background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;transition:border-color .12s;}
+  .aiqa-row:hover{border-color:rgba(255,255,255,.16);}
+  .aiqa-row-head{display:flex;align-items:center;gap:10px;padding:12px 14px;}
+  .aiqa-row-q{flex:1;min-width:0;color:var(--tx);font-size:13px;font-weight:500;cursor:pointer;line-height:1.4;}
+  .aiqa-chev{width:16px;height:16px;color:var(--mu);flex:none;cursor:pointer;transition:transform .15s;}
+  .aiqa-row.open .aiqa-chev{transform:rotate(180deg);color:var(--ac2);}
+  .aiqa-row-del{width:32px;height:32px;border:none;background:transparent;color:var(--mu);border-radius:6px;cursor:pointer;flex:none;display:inline-flex;align-items:center;justify-content:center;}
+  .aiqa-row-del:hover{color:var(--rd);background:rgba(232,85,85,.10);}
+  .aiqa-row-del svg{width:15px;height:15px;}
+  .aiqa-row-body{display:none;padding:0 14px 14px;color:var(--mu);font-size:12.5px;line-height:1.55;white-space:pre-wrap;}
+  .aiqa-row.open .aiqa-row-body{display:block;}
+  .aiqa-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:14px;margin-top:6px;border-top:0.5px solid var(--brd);}
+  .aiqa-pager-info{color:var(--mu);font-size:12px;}
+  .aiqa-pager-btns{display:flex;gap:4px;}
+  .aiqa-pg{min-width:32px;height:30px;padding:0 8px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12px;border-radius:6px;cursor:pointer;}
+  .aiqa-pg:hover:not([disabled]){border-color:var(--ac);color:var(--ac2);}
+  .aiqa-pg.active{background:var(--ac);border-color:var(--ac);color:#fff;}
+  .aiqa-pg[disabled]{opacity:.4;cursor:not-allowed;}
+  .aiqa-empty{padding:32px 20px;text-align:center;color:var(--mu);font-size:13px;}
+  .aiqa-desc{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:12px 14px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:220px;outline:none;box-sizing:border-box;}
+  .aiqa-desc:focus{border-color:var(--ac);}
+  .aiqa-desc-foot{display:flex;justify-content:flex-end;padding-top:12px;}
+  #aiqa-desc-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+  #aiqa-desc-save[disabled]:hover{background:var(--ac);}
+  .aiqa-add-a{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:120px;outline:none;box-sizing:border-box;}
+  .aiqa-add-a:focus{border-color:var(--ac);}
+  .aiqa-modal-del{margin-right:auto;}
+  .aiqa-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+  #aiqa-add-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+  #aiqa-add-modal .modal-save[disabled]:hover{background:var(--ac);}
+  .aiqa-inp{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:9px 12px;color:var(--tx);font-family:var(--font);font-size:13px;box-sizing:border-box;outline:none;}
+  .aiqa-inp:focus{border-color:var(--ac);}
+  .aiqa-inp-a{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:100px;outline:none;box-sizing:border-box;}
+  .aiqa-inp-a:focus{border-color:var(--ac);}
+  .aiqa-inp-label{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;font-weight:500;margin:12px 0 6px;}
+  .aiqa-inp-foot{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;}
+  .aiqa-btn-update[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+  .aiqa-btn-update[disabled]:hover{background:var(--ac);}
+  .aiqa-btn-del{margin-right:auto;}
+  .aiqa-btn-del:hover{border-color:var(--rd);color:var(--rd);}
+  .aiqa-row.open .aiqa-row-body{padding:6px 14px 14px;display:block;}
+  .aiqa-row.open .aiqa-row-del{color:var(--rd);}
+  .aiqa-kw-field{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:44px;display:flex;align-items:center;transition:border-color .12s;}
+  .aiqa-kw-field:focus-within{border-color:var(--ac);}
+  .aiqa-kw-input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;height:100%;padding:0;}
+  .aiqa-kw-input::placeholder{color:var(--mu);}
+  .aiqa-kw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .aiqa-kw-chips:empty{display:none;margin-top:0;}
+  .aiqa-kw-chip{display:inline-flex;align-items:center;gap:4px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:3px 4px 3px 10px;color:var(--tx);font-size:12px;line-height:1;height:26px;}
+  .aiqa-kw-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;}
+  .aiqa-kw-chip-x:hover{background:var(--rd);color:#fff;}
   #tam-user-list{overflow-y:auto;flex:1;min-height:0;max-height:280px;}
   #tam-user-list .lblp-item{padding:8px 10px;gap:10px;}
   #tam-user-list .lblp-item-txt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
@@ -3494,10 +3554,10 @@
           <button class="set-card-info" data-info="Configure AI features, automation preferences, and intelligent assistance settings." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="aiqaOpen()">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.45V12"/><path d="M12.5 14.5h.01"/></svg></div>
           <div class="set-card-txt">
-            <div class="set-card-title">AI Knowledge Base & Business Profile</div>
+            <div class="set-card-title">AI Q&A & Store Description</div>
             <div class="set-card-sub">Manage AI Q&A & Store Description</div>
           </div>
           <button class="set-card-info" data-info="Manage AI responses by providing business information, FAQs, and company details used by AI assistants." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
@@ -3719,6 +3779,85 @@
       </div>
       <div class="modal-footer">
         <button class="modal-cancel" onclick="closeTamLogs()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Q&A & Store Description modal -->
+  <div class="modal-backdrop modal-fullscreen-mobile" id="aiqa-modal" onclick="if(event.target===this)aiqaClose()">
+    <div class="modal" style="width:640px;max-width:calc(100vw - 32px);">
+      <div class="modal-header">
+        <div class="modal-title">AI Q&amp;A &amp; Store Description</div>
+        <button class="modal-close" onclick="aiqaClose()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="aiqa-tabs">
+        <button class="aiqa-tab active" data-tab="qa" onclick="aiqaSetTab('qa')">AI Q&amp;A Setting</button>
+        <button class="aiqa-tab" data-tab="desc" onclick="aiqaSetTab('desc')">Store Description</button>
+      </div>
+      <div class="modal-body" id="aiqa-body">
+        <div id="aiqa-pane-qa">
+          <div class="aiqa-toolbar">
+            <button class="btn btn-primary" id="aiqa-add-btn" onclick="aiqaAddOpen(null)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Q&amp;A</span>
+            </button>
+            <div class="aiqa-tools">
+              <button class="list-action-btn" onclick="aiqaDownload()" title="Download" aria-label="Download">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="list-action-btn" onclick="aiqaUpload()" title="Upload" aria-label="Upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="aiqa-list" id="aiqa-list"></div>
+          <div class="aiqa-pager">
+            <div class="aiqa-pager-info" id="aiqa-pager-info"></div>
+            <div class="aiqa-pager-btns" id="aiqa-pager-btns"></div>
+          </div>
+        </div>
+        <div id="aiqa-pane-desc" hidden>
+          <textarea id="aiqa-desc" class="aiqa-desc" rows="14" placeholder="Describe the dealership…" oninput="aiqaDescSync()"></textarea>
+          <div class="aiqa-desc-foot">
+            <button class="modal-save" id="aiqa-desc-save" onclick="aiqaDescSave()">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nested Add/Edit Q&A modal -->
+  <div class="modal-backdrop modal-fullscreen-mobile" id="aiqa-add-modal" style="z-index:3100;" onclick="if(event.target===this)aiqaAddClose()">
+    <div class="modal" style="width:520px;max-width:calc(100vw - 32px);">
+      <div class="modal-header">
+        <div class="modal-title" id="aiqa-add-title">Add Q&amp;A</div>
+        <button class="modal-close" onclick="aiqaAddClose()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="modal-section-title">Question</div>
+          <div class="modal-field"><input type="text" id="aiqa-add-q" placeholder="e.g. Do you accept trade-ins?" oninput="aiqaAddSync()"/></div>
+        </div>
+        <div>
+          <div class="modal-section-title">Answer</div>
+          <textarea id="aiqa-add-a" class="aiqa-add-a" rows="6" placeholder="How the AI should respond…" oninput="aiqaAddSync()"></textarea>
+        </div>
+        <div>
+          <div class="modal-section-title">Keywords</div>
+          <div class="aiqa-kw-field" onclick="_aiqaAddKwFocus()">
+            <input type="text" class="aiqa-kw-input" id="aiqa-add-kw-input" placeholder="Type a keyword and press Enter" onkeydown="_aiqaAddKwKey(event)" onblur="_aiqaAddKwCommit()"/>
+          </div>
+          <div class="aiqa-kw-chips" id="aiqa-add-kw-chips"></div>
+        </div>
+        <div>
+          <div class="modal-section-title">Category</div>
+          <div class="modal-field"><input type="text" id="aiqa-add-c" placeholder="e.g. trade" oninput="aiqaAddSync()"/></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel aiqa-modal-del" id="aiqa-add-delete" onclick="aiqaAddDelete()" hidden>Delete</button>
+        <button class="modal-cancel" onclick="aiqaAddClose()">Cancel</button>
+        <button class="modal-save" id="aiqa-add-save" onclick="aiqaAddSave()">Save</button>
       </div>
     </div>
   </div>
@@ -4458,6 +4597,484 @@ document.addEventListener('keydown', function(e){
 });
 
 document.addEventListener('DOMContentLoaded', function(){ if(typeof renderNotifications==='function') renderNotifications(); });
+
+/* ===== AI Q&A & Store Description ===== */
+var AIQA_KEY = 'cc_ai_qa';
+var AIQA_DESC_KEY = 'cc_ai_store_desc';
+var AIQA_VER = 'v1';
+var AIQA_PER = 10;
+var _aiqaItems = [];
+var _aiqaPage = 1;
+var _aiqaTab = 'qa';
+var _aiqaAddEditId = null;
+var _aiqaAddSaved = null;
+var _aiqaDescSaved = '';
+var _aiqaRowSnaps = {};   // per-row snapshot for inline edit: {id: {question, answer, keywords, category}}
+var _aiqaRowKw = {};      // per-row working keywords state (mutated by chip add/remove)
+var _aiqaAddKw = [];      // working keywords state for the nested Add modal
+function _aqEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function aiqaDefaults(){
+  return [
+    { id:'aq_trade_in',       question:'Do you accept trade-ins? How do you determine trade-in value? What\'s the trade-in process?',
+      answer:'Yes, we accept trade-ins. Bring the vehicle in for an appraisal — we use KBB + local market data to arrive at a fair number. The whole process takes about 20 minutes and the trade value can go straight toward your new purchase.',
+      keywords:['trade-in','trade in','trade','value','market data','appraisal','trade value','accept trades','trade my car','trade process'], category:'trade' },
+    { id:'aq_price_negot',    question:'Is the price negotiable? Can you work with me on the monthly payment?',
+      answer:'Our prices are competitive and market-based, but we always try to make a deal work. Come in with your target monthly payment and we\'ll structure the financing (down payment, term, rate) to hit it.',
+      keywords:['negotiate','negotiable','price','monthly payment','deal','discount','lower price','best price'], category:'pricing' },
+    { id:'aq_hours',          question:'What are your hours? Can I come look at cars this weekend?',
+      answer:'We\'re open Monday–Saturday 9 AM – 8 PM. Closed Sunday. Saturdays are our busiest day so an appointment guarantees a salesperson is ready for you.',
+      keywords:['hours','open','weekend','saturday','sunday','closed','when open','store hours'], category:'hours' },
+    { id:'aq_appt',           question:'Do I need to schedule an appointment or can I just stop by?',
+      answer:'Walk-ins are always welcome. Appointments are recommended for weekends and after 5 PM so we can have the vehicle pulled up front and paperwork ready.',
+      keywords:['appointment','schedule','walk in','stop by','booking','reserve time','visit'], category:'appointment' },
+    { id:'aq_buying_time',    question:'How long does the buying process take? I need a car by this Friday.',
+      answer:'A typical purchase — test drive, appraisal, financing, paperwork — takes 2–3 hours if you\'re prepared. With all documents ready and pre-approval, we can often complete same-day.',
+      keywords:['how long','buying process','time','same day','deadline','friday','quick','fast'], category:'timing' },
+    { id:'aq_hold',           question:'Can you hold a car for me? I\'ll be there tomorrow with financing.',
+      answer:'We can hold a vehicle for 24 hours with a refundable $500 deposit. This locks the vehicle and prevents anyone else from purchasing it while you finalize your plans.',
+      keywords:['hold','reserve','deposit','put on hold','save the car'], category:'hold' },
+    { id:'aq_warranty',       question:'What kind of warranty do you offer on used cars? Does it come with warranty?',
+      answer:'All vehicles include a 30-day / 1,000-mile powertrain warranty at no cost. Extended warranties (up to 4 years / 100,000 miles) are available at time of purchase — ask your salesperson for pricing.',
+      keywords:['warranty','coverage','powertrain','extended warranty','guarantee'], category:'warranty' },
+    { id:'aq_sales_mgr',      question:'Who is your sales manager? I\'d like to speak with someone about a deal.',
+      answer:'Our Sales Manager is Marcus Alvarez. You can reach him directly at (713) 555-0142 or ask for him at the front desk any weekday between 10 AM and 7 PM.',
+      keywords:['sales manager','manager','speak to manager','who is manager','marcus'], category:'contacts' },
+    { id:'aq_ins_mgr',        question:'Who is the Insurance Manager? I need to reach the insurance department.',
+      answer:'Our Insurance & Finance Manager is Lisa Chen. She handles GAP, extended warranties, and loan insurance products. Contact her at (713) 555-0148 or lchen@usadirectauto.com.',
+      keywords:['insurance manager','insurance','finance manager','gap','lisa','insurance department'], category:'contacts' },
+    { id:'aq_followup',       question:'Thanks for the information yesterday. I\'m ready to move forward. What\'s next?',
+      answer:'Welcome back! Please bring your driver\'s license, proof of insurance, and — if financing — recent pay stubs or bank statements. We\'ll have the paperwork prepared when you arrive.',
+      keywords:['follow up','ready to buy','next steps','what to bring','documents','moving forward'], category:'appointment' },
+    { id:'aq_credit_score',   question:'What credit score do I need to get approved?',
+      answer:'We work with buyers across every credit profile — from 500 to 800+. We partner with 12+ lenders including Capital One, Ally, Exeter, and Consumer Portfolio to find a program that fits your situation.',
+      keywords:['credit score','approval','fico','credit needed','minimum score'], category:'financing' },
+    { id:'aq_subprime',       question:'I have bad credit / no credit — can you still finance me?',
+      answer:'Absolutely. We have dedicated subprime lenders and in-house options for buyers with challenged or no credit history. A larger down payment (typically $2,000+) helps secure the best terms.',
+      keywords:['bad credit','no credit','subprime','challenged credit','poor credit','in-house financing'], category:'financing' },
+    { id:'aq_cash_vs_fin',    question:'Do you offer discounts for paying cash?',
+      answer:'Our prices are the same for cash or financing — we don\'t inflate the sticker for financed buyers. If you\'re paying cash, bring a cashier\'s check or arrange a wire transfer in advance.',
+      keywords:['cash','cash discount','pay cash','wire transfer','cashiers check'], category:'financing' },
+    { id:'aq_extended_warr',  question:'How much does an extended warranty cost?',
+      answer:'Extended warranty pricing depends on the vehicle\'s age, mileage, and coverage tier. Typical plans run $1,500–$3,500 and can be rolled into your financing. Ask about our tiered coverage options.',
+      keywords:['extended warranty','warranty cost','warranty price','coverage tier'], category:'warranty' },
+    { id:'aq_min_down',       question:'What\'s the minimum down payment?',
+      answer:'Minimum down payment varies by lender and credit profile — as low as $0 for prime credit, typically $1,500–$2,500 for standard programs, and $2,500+ for subprime. A larger down payment always helps.',
+      keywords:['down payment','minimum down','zero down','down','no money down'], category:'financing' },
+    { id:'aq_carfax',         question:'Do you provide a Carfax report? Can I see the vehicle history?',
+      answer:'Yes, a free Carfax report is available for every vehicle on our lot. Ask any salesperson or request it via email — we\'re fully transparent about vehicle history, accidents, and prior ownership.',
+      keywords:['carfax','vehicle history','history report','accidents','prior owners'], category:'inventory' },
+    { id:'aq_sight_unseen',   question:'Can I buy a car sight-unseen? I\'m out of state.',
+      answer:'Yes. We do out-of-state deliveries via nationwide auto transport (typically $500–$1,200). We\'ll send detailed video walkarounds, condition reports, and can arrange a third-party inspection at your cost.',
+      keywords:['out of state','sight unseen','ship','transport','remote purchase','buy remotely'], category:'inventory' },
+    { id:'aq_test_drive',     question:'Can I take the vehicle for an extended test drive?',
+      answer:'Standard test drives are 15–30 minutes. For extended drives (up to a few hours or overnight), we require a $500 refundable deposit and a copy of your driver\'s license and insurance.',
+      keywords:['test drive','extended test drive','overnight','try the car','drive the car'], category:'inventory' },
+    { id:'aq_service_hours',  question:'When is your service department open? Do you service the cars you sell?',
+      answer:'Our service department is open Monday–Friday 8 AM – 6 PM and Saturday 9 AM – 3 PM. We service all makes and models, and our customers get discounted service rates for the life of ownership.',
+      keywords:['service hours','service department','service open','repair','maintenance hours'], category:'service' },
+    { id:'aq_loaner',         question:'Do you provide loaner cars during service?',
+      answer:'Loaner vehicles are available for service appointments expected to take more than 4 hours. Please request one when scheduling — availability is first-come, first-served.',
+      keywords:['loaner','loaner car','courtesy car','rental','while serviced'], category:'service' },
+    { id:'aq_gm',              question:'Who is the General Manager? I have a complaint / compliment.',
+      answer:'Our General Manager is David Park. You can reach him directly at dpark@usadirectauto.com or (713) 555-0100. He personally reads every customer message.',
+      keywords:['general manager','gm','david park','complaint','owner','who runs'], category:'contacts' },
+    { id:'aq_service_mgr',    question:'Who is the Service Manager?',
+      answer:'Our Service Manager is Ryan Tate. He oversees all vehicle inspections, warranty work, and service scheduling. Contact him at (713) 555-0155 or through the service department.',
+      keywords:['service manager','ryan','who runs service','service head'], category:'contacts' },
+    { id:'aq_parts',           question:'Do you have a parts department? Can I order OEM parts?',
+      answer:'Yes, we stock common parts on-site and can order OEM parts for any make within 1–3 business days. Contact parts at (713) 555-0160 for pricing and availability.',
+      keywords:['parts','oem','parts department','order parts','replacement parts'], category:'service' },
+    { id:'aq_address',         question:'Where are you located? What\'s your address?',
+      answer:'We\'re at 421 Little York Rd, Houston, TX 77076 — right off I-45 and 610 North Loop. Free customer parking is available on-site.',
+      keywords:['address','location','where','find you','little york','houston'], category:'store-info' },
+    { id:'aq_phone',           question:'What\'s your phone number? Best way to reach you?',
+      answer:'Main line: (713) 555-0100. Sales: (713) 555-0110. Service: (713) 555-0140. For quickest response, text us at (713) 555-0100 or use the chat on our website.',
+      keywords:['phone','phone number','contact number','call','text','how to reach'], category:'store-info' },
+    { id:'aq_best_time',       question:'When\'s the best time to visit? When is it least busy?',
+      answer:'Tuesday and Wednesday mornings (9 AM – noon) are typically our quietest times — a salesperson can give you full attention and there\'s no wait for test drives.',
+      keywords:['best time','least busy','quiet','when to come','no wait','avoid crowds'], category:'store-info' },
+    { id:'aq_espanol',         question:'Do you have anyone who speaks Spanish?',
+      answer:'Sí, tenemos varios miembros del equipo que hablan español, incluyendo Maria Rodriguez y Sofia Ramos. Pide hablar con ellas cuando llegues o llames.',
+      keywords:['spanish','español','habla espanol','bilingual','multilingual','se habla'], category:'store-info' },
+    { id:'aq_plates',          question:'Do you handle license plate transfers and registration?',
+      answer:'Yes, we handle all title, registration, and license plate work as part of every sale. Bring your current registration if you\'re transferring plates from another vehicle.',
+      keywords:['plates','license plate','registration','title','transfer plates','dmv'], category:'store-info' },
+    { id:'aq_delivery',        question:'Do you deliver the vehicle to my home?',
+      answer:'Local delivery (within 50 miles of Houston) is complimentary for financed purchases. Deliveries beyond 50 miles are quoted case-by-case based on distance and transport method.',
+      keywords:['delivery','deliver','ship','bring the car','home delivery'], category:'inventory' },
+    { id:'aq_pre_approval',    question:'Can I get pre-approved before I come in?',
+      answer:'Yes — our online pre-approval takes about 5 minutes and gives you a soft credit pull with no impact to your score. Complete it at usadirectauto.com/finance and bring the approval when you visit.',
+      keywords:['pre-approval','preapproval','apply online','soft credit pull','get approved before'], category:'financing' }
+  ];
+}
+function aiqaLoad(){
+  var list = null;
+  try{
+    var raw = localStorage.getItem(AIQA_KEY); if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.ver === AIQA_VER && Array.isArray(p.list)) list = p.list;
+    }
+  }catch(e){}
+  if(!list){
+    list = aiqaDefaults();
+    try{ localStorage.setItem(AIQA_KEY, JSON.stringify({ver:AIQA_VER, list:list})); }catch(e){}
+  }
+  // Defensive fill for the Keywords + Category fields added in the row-edit-form turn.
+  list.forEach(function(it){
+    if(!Array.isArray(it.keywords)) it.keywords = [];
+    if(typeof it.category !== 'string') it.category = '';
+  });
+  return list;
+}
+function aiqaPersist(){ try{ localStorage.setItem(AIQA_KEY, JSON.stringify({ver:AIQA_VER, list:_aiqaItems})); }catch(e){} }
+function aiqaDescLoad(){
+  try{
+    var raw = localStorage.getItem(AIQA_DESC_KEY); if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.ver === AIQA_VER && typeof p.text === 'string') return p.text;
+    }
+  }catch(e){}
+  var seed = 'USA Direct Auto is a family-owned used-car dealership in Houston, TX, serving customers since 1998. We specialize in pre-owned vehicles across every price point, with in-house financing for buyers of all credit profiles.\n\nOpen Monday–Saturday 9 AM – 8 PM; closed Sunday. Located at 421 Little York Rd, Houston, TX 77076.\n\nWe pride ourselves on transparent pricing, free Carfax on every vehicle, and a customer-first approach that has earned us thousands of five-star reviews.';
+  try{ localStorage.setItem(AIQA_DESC_KEY, JSON.stringify({ver:AIQA_VER, text:seed})); }catch(e){}
+  return seed;
+}
+function aiqaDescPersist(text){ try{ localStorage.setItem(AIQA_DESC_KEY, JSON.stringify({ver:AIQA_VER, text:text||''})); }catch(e){} }
+function aiqaOpen(){
+  _aiqaItems = aiqaLoad();
+  _aiqaPage = 1;
+  _aiqaTab = 'qa';
+  _aiqaSetTabUI('qa');
+  aiqaRender();
+  // preload description tab state for dirty tracking
+  var t = aiqaDescLoad();
+  document.getElementById('aiqa-desc').value = t;
+  _aiqaDescSaved = t;
+  aiqaDescSync();
+  document.getElementById('aiqa-modal').classList.add('open');
+}
+function aiqaClose(){
+  document.getElementById('aiqa-modal').classList.remove('open');
+  aiqaAddClose();
+}
+function _aiqaSetTabUI(tab){
+  document.querySelectorAll('.aiqa-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === tab); });
+  document.getElementById('aiqa-pane-qa').hidden = (tab !== 'qa');
+  document.getElementById('aiqa-pane-desc').hidden = (tab !== 'desc');
+}
+function aiqaSetTab(tab){
+  _aiqaTab = (tab === 'desc') ? 'desc' : 'qa';
+  _aiqaSetTabUI(_aiqaTab);
+  if(_aiqaTab === 'desc') aiqaDescSync();
+}
+function aiqaRender(){
+  var list = document.getElementById('aiqa-list'); if(!list) return;
+  var total = _aiqaItems.length;
+  var pages = Math.max(1, Math.ceil(total / AIQA_PER));
+  if(_aiqaPage > pages) _aiqaPage = pages;
+  var start = (_aiqaPage - 1) * AIQA_PER;
+  var rows = _aiqaItems.slice(start, start + AIQA_PER);
+  if(!rows.length){
+    list.innerHTML = '<div class="aiqa-empty">No Q&amp;A entries yet — click "Add Q&amp;A" to create one.</div>';
+  } else {
+    list.innerHTML = rows.map(function(it){
+      var id = _aqEsc(it.id);
+      var kwCsv = (it.keywords || []).join(', ');
+      return '<div class="aiqa-row" data-id="'+id+'">'
+        + '<div class="aiqa-row-head">'
+          + '<div class="aiqa-row-q" onclick="aiqaRowToggle(\''+id+'\')">'+_aqEsc(it.question)+'</div>'
+          + '<svg class="aiqa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="aiqaRowToggle(\''+id+'\')"><polyline points="6 9 12 15 18 9"/></svg>'
+        + '</div>'
+        + '<div class="aiqa-row-body">'
+          + '<input type="text" class="aiqa-inp" data-f="question" value="'+_aqEsc(it.question)+'" oninput="aiqaRowDirty(\''+id+'\')"/>'
+          + '<div class="aiqa-inp-label">Answer</div>'
+          + '<textarea class="aiqa-inp-a" data-f="answer" rows="4" oninput="aiqaRowDirty(\''+id+'\')">'+_aqEsc(it.answer)+'</textarea>'
+          + '<div class="aiqa-inp-label">Keywords</div>'
+          + '<div class="aiqa-kw-field" data-f="keywords" onclick="_aiqaKwFocus(\''+id+'\')">'
+            + '<input type="text" class="aiqa-kw-input" id="aiqa-kw-input-'+id+'" placeholder="Type a keyword and press Enter" onkeydown="_aiqaKwKey(\''+id+'\', event)" onblur="_aiqaKwCommit(\''+id+'\')"/>'
+          + '</div>'
+          + '<div class="aiqa-kw-chips" id="aiqa-kw-chips-'+id+'"></div>'
+          + '<div class="aiqa-inp-label">Category</div>'
+          + '<input type="text" class="aiqa-inp" data-f="category" value="'+_aqEsc(it.category||'')+'" placeholder="e.g. trade" oninput="aiqaRowDirty(\''+id+'\')"/>'
+          + '<div class="aiqa-inp-foot">'
+            + '<button class="modal-cancel aiqa-btn-del" onclick="aiqaRowFooterDelete(\''+id+'\')">Delete</button>'
+            + '<button class="modal-cancel aiqa-btn-cancel" onclick="aiqaRowCancel(\''+id+'\')">Cancel</button>'
+            + '<button class="modal-save aiqa-btn-update" id="aiqa-update-'+id+'" onclick="aiqaRowUpdate(\''+id+'\')" disabled>Update</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  }
+  // Pager
+  var info = document.getElementById('aiqa-pager-info');
+  var btns = document.getElementById('aiqa-pager-btns');
+  var startNum = total ? start + 1 : 0;
+  var endNum = Math.min(_aiqaPage * AIQA_PER, total);
+  if(info) info.textContent = 'Showing ' + startNum + ' to ' + endNum + ' of ' + total + ' Results';
+  var b = ['<button class="aiqa-pg" '+(_aiqaPage<=1?'disabled':'')+' onclick="aiqaGo('+(_aiqaPage-1)+')">Prev</button>'];
+  for(var i = 1; i <= pages; i++){
+    b.push('<button class="aiqa-pg'+(i===_aiqaPage?' active':'')+'" onclick="aiqaGo('+i+')">'+i+'</button>');
+  }
+  b.push('<button class="aiqa-pg" '+(_aiqaPage>=pages?'disabled':'')+' onclick="aiqaGo('+(_aiqaPage+1)+')">Next</button>');
+  if(btns) btns.innerHTML = b.join('');
+}
+function aiqaGo(p){
+  var pages = Math.max(1, Math.ceil(_aiqaItems.length / AIQA_PER));
+  if(p < 1 || p > pages) return;
+  _aiqaPage = p; aiqaRender();
+}
+function aiqaRowToggle(id){
+  var row = document.querySelector('.aiqa-row[data-id="'+id+'"]'); if(!row) return;
+  var opening = !row.classList.contains('open');
+  row.classList.toggle('open');
+  if(opening){
+    var it = _aiqaItems.filter(function(x){return x.id===id;})[0];
+    if(it){
+      _aiqaRowSnaps[id] = {
+        question: it.question || '',
+        answer: it.answer || '',
+        keywords: (it.keywords || []).slice(),
+        category: it.category || ''
+      };
+      _aiqaRowKw[id] = (it.keywords || []).slice();
+      _aiqaKwRender(id);
+    }
+    aiqaRowDirty(id);
+  } else {
+    delete _aiqaRowSnaps[id];
+    delete _aiqaRowKw[id];
+  }
+}
+function _aiqaRowInputs(id){
+  var row = document.querySelector('.aiqa-row[data-id="'+id+'"]'); if(!row) return null;
+  var q = row.querySelector('[data-f="question"]');
+  var a = row.querySelector('[data-f="answer"]');
+  var k = row.querySelector('[data-f="keywords"]');
+  var c = row.querySelector('[data-f="category"]');
+  return { row:row, q:q, a:a, k:k, c:c };
+}
+function _aiqaRowPayload(id){
+  var r = _aiqaRowInputs(id); if(!r) return null;
+  var kw = Array.isArray(_aiqaRowKw[id]) ? _aiqaRowKw[id].slice() : [];
+  return {
+    question: (r.q.value || '').trim(),
+    answer:   (r.a.value || '').trim(),
+    keywords: kw,
+    category: (r.c.value || '').trim()
+  };
+}
+function aiqaRowDirty(id){
+  var btn = document.getElementById('aiqa-update-'+id); if(!btn) return;
+  var snap = _aiqaRowSnaps[id]; if(!snap){ btn.disabled = true; return; }
+  var cur = _aiqaRowPayload(id); if(!cur){ btn.disabled = true; return; }
+  var same = cur.question === snap.question
+          && cur.answer === snap.answer
+          && cur.category === snap.category
+          && cur.keywords.join('||') === snap.keywords.join('||');
+  btn.disabled = same || !cur.question;
+}
+function aiqaRowCancel(id){
+  var snap = _aiqaRowSnaps[id];
+  var r = _aiqaRowInputs(id); if(!r) return;
+  if(snap){
+    r.q.value = snap.question;
+    r.a.value = snap.answer;
+    r.c.value = snap.category;
+    _aiqaRowKw[id] = (snap.keywords || []).slice();
+    _aiqaKwRender(id);
+  }
+  r.row.classList.remove('open');
+  delete _aiqaRowSnaps[id];
+  delete _aiqaRowKw[id];
+}
+function aiqaRowUpdate(id){
+  var cur = _aiqaRowPayload(id); if(!cur) return;
+  if(!cur.question){ var r = _aiqaRowInputs(id); if(r && r.q) r.q.focus(); return; }
+  var it = _aiqaItems.filter(function(x){return x.id===id;})[0]; if(!it) return;
+  it.question = cur.question; it.answer = cur.answer;
+  it.keywords = cur.keywords; it.category = cur.category;
+  aiqaPersist();
+  // Update the row-head question preview text in-place (avoid full re-render so the row stays open).
+  var rr = _aiqaRowInputs(id);
+  if(rr && rr.row){
+    var qEl = rr.row.querySelector('.aiqa-row-q');
+    if(qEl) qEl.textContent = cur.question;
+  }
+  _aiqaRowSnaps[id] = {
+    question: cur.question, answer: cur.answer,
+    keywords: cur.keywords.slice(), category: cur.category
+  };
+  aiqaRowDirty(id);
+  if(typeof showNavToast === 'function') showNavToast('Q&A updated', cur.question);
+}
+/* ---- Per-row Keywords chip handlers ---- */
+function _aiqaKwRender(id){
+  var wrap = document.getElementById('aiqa-kw-chips-'+id); if(!wrap) return;
+  var arr = _aiqaRowKw[id] || [];
+  wrap.innerHTML = arr.map(function(t, i){
+    return '<span class="aiqa-kw-chip">' + _aqEsc(t)
+      + '<button type="button" class="aiqa-kw-chip-x" aria-label="Remove '+_aqEsc(t)+'" onclick="_aiqaKwRemove(\''+id+'\', '+i+', event)">&times;</button>'
+      + '</span>';
+  }).join('');
+}
+function _aiqaKwFocus(id){ var i = document.getElementById('aiqa-kw-input-'+id); if(i) i.focus(); }
+function _aiqaKwAdd(id, raw){
+  var v = String(raw||'').trim(); if(!v) return false;
+  if(!Array.isArray(_aiqaRowKw[id])) _aiqaRowKw[id] = [];
+  var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var added = false;
+  parts.forEach(function(p){ if(_aiqaRowKw[id].indexOf(p) < 0){ _aiqaRowKw[id].push(p); added = true; } });
+  if(added){ _aiqaKwRender(id); aiqaRowDirty(id); }
+  return added;
+}
+function _aiqaKwCommit(id){ var i = document.getElementById('aiqa-kw-input-'+id); if(!i) return; if(_aiqaKwAdd(id, i.value)) i.value = ''; }
+function _aiqaKwRemove(id, idx, ev){
+  if(ev) ev.stopPropagation();
+  if(!Array.isArray(_aiqaRowKw[id])) return;
+  _aiqaRowKw[id].splice(idx, 1);
+  _aiqaKwRender(id); aiqaRowDirty(id);
+}
+function _aiqaKwKey(id, e){
+  if(e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    if(_aiqaKwAdd(id, e.target.value)) e.target.value = '';
+  } else if(e.key === 'Backspace' && !e.target.value && Array.isArray(_aiqaRowKw[id]) && _aiqaRowKw[id].length){
+    _aiqaRowKw[id].pop(); _aiqaKwRender(id); aiqaRowDirty(id);
+  }
+}
+/* ---- Add-modal Keywords chip handlers ---- */
+function _aiqaAddKwRender(){
+  var wrap = document.getElementById('aiqa-add-kw-chips'); if(!wrap) return;
+  wrap.innerHTML = _aiqaAddKw.map(function(t, i){
+    return '<span class="aiqa-kw-chip">' + _aqEsc(t)
+      + '<button type="button" class="aiqa-kw-chip-x" aria-label="Remove '+_aqEsc(t)+'" onclick="_aiqaAddKwRemove('+i+', event)">&times;</button>'
+      + '</span>';
+  }).join('');
+}
+function _aiqaAddKwFocus(){ var i = document.getElementById('aiqa-add-kw-input'); if(i) i.focus(); }
+function _aiqaAddKwAdd(raw){
+  var v = String(raw||'').trim(); if(!v) return false;
+  var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var added = false;
+  parts.forEach(function(p){ if(_aiqaAddKw.indexOf(p) < 0){ _aiqaAddKw.push(p); added = true; } });
+  if(added){ _aiqaAddKwRender(); aiqaAddSync(); }
+  return added;
+}
+function _aiqaAddKwCommit(){ var i = document.getElementById('aiqa-add-kw-input'); if(!i) return; if(_aiqaAddKwAdd(i.value)) i.value = ''; }
+function _aiqaAddKwRemove(idx, ev){
+  if(ev) ev.stopPropagation();
+  _aiqaAddKw.splice(idx, 1);
+  _aiqaAddKwRender(); aiqaAddSync();
+}
+function _aiqaAddKwKey(e){
+  if(e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    if(_aiqaAddKwAdd(e.target.value)) e.target.value = '';
+  } else if(e.key === 'Backspace' && !e.target.value && _aiqaAddKw.length){
+    _aiqaAddKw.pop(); _aiqaAddKwRender(); aiqaAddSync();
+  }
+}
+function aiqaRowFooterDelete(id){ aiqaDelete(id); }
+function aiqaDelete(id, ev){
+  if(ev) ev.stopPropagation();
+  var it = _aiqaItems.filter(function(x){return x.id===id;})[0];
+  _aiqaItems = _aiqaItems.filter(function(x){return x.id!==id;});
+  delete _aiqaRowSnaps[id]; delete _aiqaRowKw[id];
+  aiqaPersist(); aiqaRender();
+  if(typeof showNavToast === 'function') showNavToast('Q&A removed', (it ? it.question : 'Entry') + ' was deleted.');
+}
+function aiqaDownload(){ if(typeof showNavToast==='function') showNavToast('Download', 'This section is under construction.'); }
+function aiqaUpload(){ if(typeof showNavToast==='function') showNavToast('Upload', 'This section is under construction.'); }
+/* ---- Add / Edit Q&A nested modal ---- */
+function aiqaAddOpen(id){
+  _aiqaAddEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _aiqaAddEditId ? _aiqaItems.filter(function(x){return x.id===_aiqaAddEditId;})[0] : null;
+  document.getElementById('aiqa-add-title').textContent = row ? 'Edit Q&A' : 'Add Q&A';
+  document.getElementById('aiqa-add-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('aiqa-add-delete'); if(del) del.hidden = !row;
+  document.getElementById('aiqa-add-q').value = row ? (row.question || '') : '';
+  document.getElementById('aiqa-add-a').value = row ? (row.answer || '') : '';
+  _aiqaAddKw = row ? (row.keywords||[]).slice() : [];
+  _aiqaAddKwRender();
+  var kwi = document.getElementById('aiqa-add-kw-input'); if(kwi) kwi.value = '';
+  document.getElementById('aiqa-add-c').value = row ? (row.category || '') : '';
+  document.getElementById('aiqa-add-modal').classList.add('open');
+  _aiqaAddSaved = _aiqaAddBuildPayload();
+  aiqaAddSync();
+  setTimeout(function(){ var n = document.getElementById('aiqa-add-q'); if(n) n.focus(); }, 20);
+}
+function aiqaAddClose(){
+  var m = document.getElementById('aiqa-add-modal'); if(m) m.classList.remove('open');
+  _aiqaAddSaved = null;
+}
+function _aiqaAddBuildPayload(){
+  // Commit any typed-not-committed chip text before reading
+  var kwi = document.getElementById('aiqa-add-kw-input');
+  if(kwi && kwi.value){ _aiqaAddKwAdd(kwi.value); kwi.value = ''; }
+  return {
+    question: (document.getElementById('aiqa-add-q').value || '').trim(),
+    answer:   (document.getElementById('aiqa-add-a').value || '').trim(),
+    keywords: _aiqaAddKw.slice(),
+    category: (document.getElementById('aiqa-add-c').value || '').trim()
+  };
+}
+function aiqaAddSync(){
+  var btn = document.getElementById('aiqa-add-save'); if(!btn) return;
+  if(!_aiqaAddSaved){ btn.disabled = true; return; }
+  var cur = _aiqaAddBuildPayload();
+  var same = cur.question === _aiqaAddSaved.question
+          && cur.answer === _aiqaAddSaved.answer
+          && cur.category === _aiqaAddSaved.category
+          && cur.keywords.join('||') === _aiqaAddSaved.keywords.join('||');
+  btn.disabled = same || !cur.question;
+}
+function aiqaAddSave(){
+  var p = _aiqaAddBuildPayload();
+  if(!p.question){ document.getElementById('aiqa-add-q').focus(); return; }
+  var wasNew = !_aiqaAddEditId;
+  if(wasNew){
+    var newId = 'aq_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+    _aiqaItems.push({ id:newId, question:p.question, answer:p.answer, keywords:p.keywords, category:p.category });
+    _aiqaAddEditId = newId;
+    document.getElementById('aiqa-add-title').textContent = 'Edit Q&A';
+    document.getElementById('aiqa-add-save').textContent = 'Update';
+    var del = document.getElementById('aiqa-add-delete'); if(del) del.hidden = false;
+    // jump to the last page where the new row landed
+    _aiqaPage = Math.max(1, Math.ceil(_aiqaItems.length / AIQA_PER));
+  } else {
+    var row = _aiqaItems.filter(function(x){return x.id===_aiqaAddEditId;})[0];
+    if(row){ row.question = p.question; row.answer = p.answer; row.keywords = p.keywords; row.category = p.category; }
+  }
+  aiqaPersist(); aiqaRender();
+  _aiqaAddSaved = p; aiqaAddSync();
+  if(typeof showNavToast==='function') showNavToast(wasNew ? 'Q&A added' : 'Q&A updated', p.question);
+}
+function aiqaAddDelete(){
+  if(!_aiqaAddEditId) return;
+  var id = _aiqaAddEditId;
+  aiqaAddClose();
+  aiqaDelete(id);
+  _aiqaAddEditId = null;
+}
+/* ---- Store Description tab ---- */
+function aiqaDescSync(){
+  var btn = document.getElementById('aiqa-desc-save'); if(!btn) return;
+  var cur = document.getElementById('aiqa-desc').value || '';
+  btn.disabled = (cur === (_aiqaDescSaved || ''));
+}
+function aiqaDescSave(){
+  var text = document.getElementById('aiqa-desc').value || '';
+  aiqaDescPersist(text);
+  _aiqaDescSaved = text;
+  aiqaDescSync();
+  if(typeof showNavToast==='function') showNavToast('Store description saved', 'AI responses will use the updated description.');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var addM = document.getElementById('aiqa-add-modal');
+  if(addM && addM.classList.contains('open')){ aiqaAddClose(); return; }
+  var m = document.getElementById('aiqa-modal');
+  if(m && m.classList.contains('open')) aiqaClose();
+});
 
 /* Remember the Settings list scroll position across sub-page navigation.
    On desktop the content scrolls inside .set-scroll; on mobile the window

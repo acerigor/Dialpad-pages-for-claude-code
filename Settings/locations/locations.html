@@ -3469,6 +3469,8 @@
   .loc-btn-cancel:hover{border-color:var(--mu);}
   .loc-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
   .loc-btn-save:hover{background:var(--ac2);}
+  #loc-modal .loc-btn-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+  #loc-modal .loc-btn-save[disabled]:hover{background:var(--ac);}
   @media (max-width:640px){
     .loc-icon{width:44px;height:44px;}
     .loc-icon svg{width:17px;height:17px;}
@@ -3670,7 +3672,7 @@
     </div>
     <div class="loc-modal-body">
       <label class="loc-field-label">Location</label>
-      <input class="loc-field-input" id="loc-input" placeholder="Enter location name" onkeydown="if(event.key==='Enter')locSaveModal()">
+      <input class="loc-field-input" id="loc-input" placeholder="Enter location name" oninput="locSyncDirty()" onkeydown="if(event.key==='Enter')locSaveModal()">
     </div>
     <div class="loc-modal-foot">
       <button class="loc-btn-cancel loc-btn-del" id="loc-delete-btn" onclick="locModalDelete()" hidden>Delete</button>
@@ -4289,11 +4291,22 @@ function locPageList(cur,tp){
   return out;
 }
 function locGo(p){ var tp=Math.max(1,Math.ceil(locFiltered().length/LOC_PER)); if(p<1||p>tp) return; locPage=p; locRender(); }
+var _locSaved = null;
+function locBuildPayload(){ return { name: (document.getElementById('loc-input').value || '').trim() }; }
+function locSyncDirty(){
+  var btn = document.querySelector('#loc-modal .loc-btn-save'); if(!btn) return;
+  if(!_locSaved){ btn.disabled = true; return; }
+  var cur = locBuildPayload();
+  var same = cur.name === _locSaved.name;
+  btn.disabled = same || (!_locEditId && !cur.name);
+}
 function locOpenModal(){
   document.getElementById('loc-modal').classList.add('open');
+  _locSaved = locBuildPayload();
+  locSyncDirty();
   setTimeout(function(){ var i=document.getElementById('loc-input'); if(i) i.focus(); }, 40);
 }
-function locCloseModal(){ document.getElementById('loc-modal').classList.remove('open'); }
+function locCloseModal(){ document.getElementById('loc-modal').classList.remove('open'); _locSaved = null; }
 function locAdd(){
   _locEditId=null;
   document.getElementById('loc-modal-title').textContent='Add Location';
@@ -4310,13 +4323,26 @@ function locEdit(id){
   locOpenModal();
 }
 function locSaveModal(){
-  var name=document.getElementById('loc-input').value.trim();
-  if(!name){ if(typeof showNavToast==='function') showNavToast('Name required','Enter a location name.'); return; }
-  var editing=!!_locEditId;
-  if(editing){ var it=locItems.filter(function(x){ return x.id===_locEditId; })[0]; if(it) it.name=name; }
-  else { locItems.push({id:'l'+Date.now(), name:name}); _locQuery=''; var si=document.getElementById('loc-search'); if(si) si.value=''; locPage=Math.max(1,Math.ceil(locItems.length/LOC_PER)); }
-  locPersist(); locCloseModal(); locRender();
-  if(typeof showNavToast==='function') showNavToast(editing?'Location updated':'Location added', name);
+  var payload = locBuildPayload();
+  if(!payload.name){ if(typeof showNavToast==='function') showNavToast('Name required','Enter a location name.'); return; }
+  if(_locSaved && payload.name === _locSaved.name) return;   // clean → no-op (Enter guard)
+  var wasNew = !_locEditId;
+  if(wasNew){
+    var newId = 'l' + Date.now();
+    locItems.push({ id: newId, name: payload.name });
+    _locEditId = newId;
+    document.getElementById('loc-modal-title').textContent = 'Edit Location';
+    var d = document.getElementById('loc-delete-btn'); if(d) d.hidden = false;
+    _locQuery = ''; var si = document.getElementById('loc-search'); if(si) si.value = '';
+    locPage = Math.max(1, Math.ceil(locItems.length / LOC_PER));
+  } else {
+    var it = locItems.filter(function(x){ return x.id === _locEditId; })[0];
+    if(it) it.name = payload.name;
+  }
+  locPersist(); locRender();
+  _locSaved = payload;
+  locSyncDirty();
+  if(typeof showNavToast==='function') showNavToast(wasNew ? 'Location added' : 'Location updated', payload.name);
 }
 function locDelete(id){
   var it=locItems.filter(function(x){ return x.id===id; })[0]; if(!it) return;

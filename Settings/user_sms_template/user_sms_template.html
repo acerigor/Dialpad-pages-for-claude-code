@@ -3456,6 +3456,8 @@
   .ust-field-textarea{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:11px 13px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.55;outline:none;resize:vertical;min-height:96px;transition:border-color .15s;}
   .ust-field-textarea:focus{border-color:var(--ac);}
   .ust-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
+  .ust-btn-del{margin-right:auto;}
+  .ust-btn-del:hover{border-color:var(--rd);color:var(--rd);}
   .ust-btn-cancel{height:38px;padding:0 16px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;}
   .ust-btn-cancel:hover{border-color:var(--mu);}
   .ust-btn-save{height:38px;padding:0 20px;background:var(--ac);border:none;border-radius:8px;color:#fff;font-weight:600;font-family:var(--font);font-size:13px;cursor:pointer;}
@@ -3654,7 +3656,6 @@
           <th class="ust-th-no">No.</th>
           <th class="ust-th-title">SMS Title</th>
           <th>SMS Message</th>
-          <th class="ust-th-act">Action</th>
         </tr></thead>
         <tbody id="ust-tbody"></tbody>
       </table>
@@ -3685,6 +3686,7 @@
       </div>
     </div>
     <div class="ust-modal-foot">
+      <button class="ust-btn-cancel ust-btn-del" id="ust-delete-btn" onclick="ustModalDelete()" hidden>Delete</button>
       <button class="ust-btn-cancel" onclick="ustCloseModal()">Cancel</button>
       <button class="ust-btn-save" onclick="ustSaveModal()">Save</button>
     </div>
@@ -4256,18 +4258,16 @@ function ustRender(){
   if(ustPage>tp) ustPage=tp;
   var start=(ustPage-1)*UST_PER, rows=list.slice(start, start+UST_PER);
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--mu);padding:30px;">'+(_ustQuery?'No templates match your search.':'No SMS templates yet — click Add Template.')+'</td></tr>';
+    tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--mu);padding:30px;">'+(_ustQuery?'No templates match your search.':'No SMS templates yet — click Add Template.')+'</td></tr>';
   } else {
     tb.innerHTML=rows.map(function(it,i){
       var no=start+i+1;
-      return '<tr>'+
+      return '<tr role="button" tabindex="0"'+
+        ' onclick="if(!event.target.closest(\'.ust-actions\'))ustEdit(\''+it.id+'\')"'+
+        ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.ust-actions\')){event.preventDefault();ustEdit(\''+it.id+'\');}">'+
         '<td class="ust-no">'+no+'</td>'+
         '<td>'+ustEsc(it.title)+'</td>'+
         '<td class="ust-msg">'+ustEsc(it.message)+'</td>'+
-        '<td><div class="ust-actions">'+
-          '<button class="ust-icon edit" onclick="ustEdit(\''+it.id+'\')" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>'+
-          '<button class="ust-icon del" onclick="ustDelete(\''+it.id+'\')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>'+
-        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -4300,8 +4300,9 @@ function ustPageList(cur,tp){
 function ustGo(p){ var tp=Math.max(1,Math.ceil(ustFiltered().length/UST_PER)); if(p<1||p>tp) return; ustPage=p; ustRender(); }
 function ustOpenModal(){ document.getElementById('ust-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('ust-input-title'); if(i) i.focus(); }, 40); }
 function ustCloseModal(){ document.getElementById('ust-modal').classList.remove('open'); }
-function ustAdd(){ _ustEditId=null; document.getElementById('ust-modal-title').textContent='Add Template'; document.getElementById('ust-input-title').value=''; document.getElementById('ust-input-msg').value=''; ustOpenModal(); }
-function ustEdit(id){ var it=ustItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _ustEditId=id; document.getElementById('ust-modal-title').textContent='Edit Template'; document.getElementById('ust-input-title').value=it.title||''; document.getElementById('ust-input-msg').value=it.message||''; ustOpenModal(); }
+function ustAdd(){ _ustEditId=null; document.getElementById('ust-modal-title').textContent='Add Template'; document.getElementById('ust-input-title').value=''; document.getElementById('ust-input-msg').value=''; var d=document.getElementById('ust-delete-btn'); if(d) d.hidden=true; ustOpenModal(); }
+function ustEdit(id){ var it=ustItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _ustEditId=id; document.getElementById('ust-modal-title').textContent='Edit Template'; document.getElementById('ust-input-title').value=it.title||''; document.getElementById('ust-input-msg').value=it.message||''; var d=document.getElementById('ust-delete-btn'); if(d) d.hidden=false; ustOpenModal(); }
+function ustModalDelete(){ if(!_ustEditId) return; var id=_ustEditId; ustDelete(id); ustCloseModal(); }
 function ustSaveModal(){
   var title=document.getElementById('ust-input-title').value.trim();
   var message=document.getElementById('ust-input-msg').value.trim();

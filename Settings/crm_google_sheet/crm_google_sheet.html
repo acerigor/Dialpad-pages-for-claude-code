@@ -3308,6 +3308,12 @@
 </div>
 
 <!-- PAGE-LEVEL NAV TOAST -->
+<!-- SHEET-COLUMN PICKER POPUP -->
+<div class="assign-popup" id="gs-map-popup" style="display:none;z-index:3300;">
+  <div id="gs-map-popup-search"><input type="text" id="gs-map-popup-search-input" placeholder="Search columns…" oninput="gsMapPopupFilter(this.value)"/></div>
+  <div class="lblp-list" id="gs-map-popup-list"></div>
+</div>
+
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -3464,6 +3470,39 @@
   .gs-field-label{font-size:12.5px;font-weight:600;color:var(--tx);}
   .gs-field-input{height:42px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:0 13px;color:var(--tx);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;}
   .gs-field-input:focus{border-color:var(--ac);}
+  .gs-map-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .gs-map-title{font-size:12.5px;font-weight:600;color:var(--tx);}
+  .gs-map-add{height:30px;padding:0 12px;background:var(--ac);border:none;border-radius:7px;color:#fff;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+  .gs-map-add:hover{background:var(--ac2);}
+  .gs-map-add svg{width:12px;height:12px;}
+  .gs-map-wrap{border:0.5px solid var(--brd2);border-radius:9px;overflow:hidden;background:var(--sur2);}
+  .gs-map-table{width:100%;border-collapse:collapse;}
+  .gs-map-table th{text-align:left;padding:8px 10px;font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:var(--sur);border-bottom:0.5px solid var(--brd);}
+  .gs-map-table th.gs-map-th-act{width:36px;}
+  .gs-map-table td{padding:6px 8px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
+  .gs-map-table tbody tr:last-child td{border-bottom:none;}
+  .gs-map-inp{width:100%;height:32px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:6px;padding:0 9px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
+  .gs-map-inp:focus{border-color:var(--ac);}
+  .gs-map-del{width:28px;height:28px;border:none;background:transparent;color:var(--mu);border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+  .gs-map-del:hover{background:rgba(232,85,85,.12);color:var(--rd);}
+  .gs-map-del svg{width:14px;height:14px;}
+  .gs-map-empty{padding:22px 12px;text-align:center;color:var(--mu);font-size:12px;}
+  .gs-map-sel{width:100%;height:32px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:6px;padding:0 26px 0 9px;color:var(--tx);font-family:var(--font);font-size:12.5px;text-align:left;cursor:pointer;position:relative;display:flex;align-items:center;transition:border-color .12s;}
+  .gs-map-sel:hover{border-color:rgba(255,255,255,.16);}
+  .gs-map-sel.open{border-color:var(--ac);}
+  .gs-map-sel-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .gs-map-sel-val.is-empty{color:var(--mu);}
+  .gs-map-sel-chev{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--mu);transition:transform .12s;}
+  .gs-map-sel.open .gs-map-sel-chev{transform:translateY(-50%) rotate(180deg);}
+  #gs-map-popup{width:260px;max-height:340px;overflow-y:auto;padding:6px;display:flex;flex-direction:column;}
+  #gs-map-popup-search{padding:4px 6px 6px;}
+  #gs-map-popup-search input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:6px;padding:6px 9px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;}
+  #gs-map-popup-search input:focus{border-color:var(--ac);}
+  #gs-map-popup-list{overflow-y:auto;max-height:250px;}
+  #gs-map-popup-list .lblp-item{padding:7px 10px;cursor:pointer;}
+  #gs-map-popup-list .lblp-item:hover{background:var(--sur2);}
+  #gs-map-popup-list .lblp-name{font-size:12.5px;color:var(--tx);font-family:var(--mono,'DM Sans');}
+  #gs-map-popup-empty{padding:16px 10px;text-align:center;color:var(--mu);font-size:12px;}
   .gs-modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:0.5px solid var(--brd);}
   .gs-btn-del{margin-right:auto;}
   .gs-btn-del:hover{border-color:var(--rd);color:var(--rd);}
@@ -3681,6 +3720,27 @@
       <div class="gs-field">
         <label class="gs-field-label">Google Sheet ID</label>
         <input class="gs-field-input" id="gs-input-id" placeholder="Enter Google Sheet ID" onkeydown="if(event.key==='Enter')gsSaveModal()">
+      </div>
+      <div class="gs-field">
+        <div class="gs-map-head">
+          <span class="gs-map-title">Column Mapping</span>
+          <button type="button" class="gs-map-add" onclick="gsMapAddRow()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add
+          </button>
+        </div>
+        <div class="gs-map-wrap">
+          <table class="gs-map-table">
+            <thead>
+              <tr>
+                <th>Sheet Column</th>
+                <th>Table Column</th>
+                <th class="gs-map-th-act"></th>
+              </tr>
+            </thead>
+            <tbody id="gs-map-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="gs-modal-foot">
@@ -4301,18 +4361,107 @@ function gsPageList(cur,tp){
   return out;
 }
 function gsGo(p){ var tp=Math.max(1,Math.ceil(gsFiltered().length/GS_PER)); if(p<1||p>tp) return; gsPage=p; gsRender(); }
+var _gsMap = [];
+function gsMapRender(){
+  var tbody = document.getElementById('gs-map-tbody'); if(!tbody) return;
+  if(!_gsMap.length){
+    tbody.innerHTML = '<tr><td colspan="3" class="gs-map-empty">No column mappings yet — click "Add" to create one.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = _gsMap.map(function(m, i){
+    var sc = (m.sheetCol||'');
+    var scHtml = sc ? sc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : 'Select column';
+    var emptyCls = sc ? '' : ' is-empty';
+    return '<tr>'
+      + '<td><button type="button" class="gs-map-sel" id="gs-map-sel-'+i+'" onclick="gsMapSelToggle(event,'+i+')">'
+        + '<span class="gs-map-sel-val'+emptyCls+'">'+scHtml+'</span>'
+        + '<svg class="gs-map-sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+      + '</button></td>'
+      + '<td><input class="gs-map-inp" type="text" placeholder="e.g. name" value="'+(m.tableCol||'').replace(/"/g,'&quot;')+'" oninput="gsMapSet('+i+',\'tableCol\',this.value)"></td>'
+      + '<td><button type="button" class="gs-map-del" onclick="gsMapDel('+i+')" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td>'
+    + '</tr>';
+  }).join('');
+}
+function gsMapAddRow(){ _gsMap.push({sheetCol:'', tableCol:''}); gsMapRender(); }
+function gsMapDel(i){ _gsMap.splice(i, 1); gsMapRender(); }
+function gsMapSet(i, key, val){ if(_gsMap[i]) _gsMap[i][key] = val; }
+
+var GS_SHEET_COLS = [
+  'id','created_time','ad_id','ad_name','adset_id','adset_name',
+  'campaign_id','campaign_name','form_id','form_name','is_organic',
+  'platform','what_car_are_you_looking_for?','full_name','lead_status',
+  'source','phonenumber'
+];
+var _gsMapPopupRowIdx = null;
+var _gsMapPopupQuery = '';
+function gsMapPopupRender(){
+  var el = document.getElementById('gs-map-popup-list'); if(!el) return;
+  var q = (_gsMapPopupQuery || '').trim().toLowerCase();
+  var rows = GS_SHEET_COLS.filter(function(c){ return !q || c.toLowerCase().indexOf(q) >= 0; });
+  if(!rows.length){ el.innerHTML = '<div id="gs-map-popup-empty">No matching columns.</div>'; return; }
+  el.innerHTML = rows.map(function(c){
+    return '<div class="lblp-item" onmousedown="event.preventDefault();" onclick="gsMapPopupPick(\''+c.replace(/'/g,"\\'")+'\')">'
+      + '<span class="lblp-name">'+c+'</span>'
+    + '</div>';
+  }).join('');
+}
+function gsMapSelToggle(e, idx){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('gs-map-popup'); if(!pop) return;
+  var btn = document.getElementById('gs-map-sel-'+idx); if(!btn) return;
+  if(pop.style.display === 'block' && _gsMapPopupRowIdx === idx){ gsMapPopupClose(); return; }
+  _gsMapPopupRowIdx = idx;
+  _gsMapPopupQuery = '';
+  var srch = document.getElementById('gs-map-popup-search-input'); if(srch) srch.value = '';
+  document.querySelectorAll('.gs-map-sel.open').forEach(function(x){x.classList.remove('open');});
+  btn.classList.add('open');
+  pop.style.visibility = 'hidden'; pop.style.display = 'block';
+  pop.style.left = '0px'; pop.style.top = '0px';
+  gsMapPopupRender();
+  var w = pop.offsetWidth || 260, h = pop.offsetHeight || 260;
+  var r = btn.getBoundingClientRect();
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  var top = r.bottom + 6;
+  if(top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  pop.style.visibility = 'visible';
+  setTimeout(function(){ if(srch) srch.focus(); }, 30);
+}
+function gsMapPopupClose(){
+  var pop = document.getElementById('gs-map-popup'); if(pop) pop.style.display = 'none';
+  document.querySelectorAll('.gs-map-sel.open').forEach(function(x){x.classList.remove('open');});
+  _gsMapPopupRowIdx = null;
+}
+function gsMapPopupFilter(v){ _gsMapPopupQuery = v || ''; gsMapPopupRender(); }
+function gsMapPopupPick(col){
+  if(_gsMapPopupRowIdx == null) return;
+  gsMapSet(_gsMapPopupRowIdx, 'sheetCol', col);
+  gsMapPopupClose();
+  gsMapRender();
+}
+document.addEventListener('mousedown', function(e){
+  if(e.target.closest && (e.target.closest('#gs-map-popup') || e.target.closest('.gs-map-sel'))) return;
+  gsMapPopupClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var p = document.getElementById('gs-map-popup');
+  if(p && p.style.display === 'block') gsMapPopupClose();
+});
 function gsOpenModal(){ document.getElementById('gs-modal').classList.add('open'); setTimeout(function(){ var i=document.getElementById('gs-input-name'); if(i) i.focus(); }, 40); }
-function gsCloseModal(){ document.getElementById('gs-modal').classList.remove('open'); }
-function gsAdd(){ _gsEditId=null; document.getElementById('gs-modal-title').textContent='Add Sheet'; document.getElementById('gs-input-name').value=''; document.getElementById('gs-input-id').value=''; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=true; gsOpenModal(); }
-function gsEdit(id){ var it=gsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gsEditId=id; document.getElementById('gs-modal-title').textContent='Edit Sheet'; document.getElementById('gs-input-name').value=it.name; document.getElementById('gs-input-id').value=it.sheetId; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=false; gsOpenModal(); }
+function gsCloseModal(){ gsMapPopupClose(); document.getElementById('gs-modal').classList.remove('open'); _gsMap = []; }
+function gsAdd(){ _gsEditId=null; document.getElementById('gs-modal-title').textContent='Add Sheet'; document.getElementById('gs-input-name').value=''; document.getElementById('gs-input-id').value=''; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=true; _gsMap = []; gsMapRender(); gsOpenModal(); }
+function gsEdit(id){ var it=gsItems.filter(function(x){ return x.id===id; })[0]; if(!it) return; _gsEditId=id; document.getElementById('gs-modal-title').textContent='Edit Sheet'; document.getElementById('gs-input-name').value=it.name; document.getElementById('gs-input-id').value=it.sheetId; var d=document.getElementById('gs-delete-btn'); if(d) d.hidden=false; _gsMap = Array.isArray(it.mappings) ? it.mappings.map(function(m){return {sheetCol:m.sheetCol||'', tableCol:m.tableCol||''};}) : []; gsMapRender(); gsOpenModal(); }
 function gsSaveModal(){
   var name=document.getElementById('gs-input-name').value.trim();
   var sheetId=document.getElementById('gs-input-id').value.trim();
   if(!name){ if(typeof showNavToast==='function') showNavToast('Name required','Enter a sheet name.'); return; }
   if(!sheetId){ if(typeof showNavToast==='function') showNavToast('Google Sheet ID required','Enter a Google Sheet ID.'); return; }
+  var mappings = _gsMap.map(function(m){ return {sheetCol:(m.sheetCol||'').trim(), tableCol:(m.tableCol||'').trim()}; })
+                       .filter(function(m){ return m.sheetCol || m.tableCol; });
   var editing=!!_gsEditId;
-  if(editing){ var it=gsItems.filter(function(x){ return x.id===_gsEditId; })[0]; if(it){ it.name=name; it.sheetId=sheetId; } }
-  else { gsItems.push({id:'g'+Date.now(), name:name, sheetId:sheetId}); _gsQuery=''; var si=document.getElementById('gs-search'); if(si) si.value=''; gsPage=Math.max(1,Math.ceil(gsItems.length/GS_PER)); }
+  if(editing){ var it=gsItems.filter(function(x){ return x.id===_gsEditId; })[0]; if(it){ it.name=name; it.sheetId=sheetId; it.mappings=mappings; } }
+  else { gsItems.push({id:'g'+Date.now(), name:name, sheetId:sheetId, mappings:mappings}); _gsQuery=''; var si=document.getElementById('gs-search'); if(si) si.value=''; gsPage=Math.max(1,Math.ceil(gsItems.length/GS_PER)); }
   gsPersist(); gsCloseModal(); gsRender();
   if(typeof showNavToast==='function') showNavToast(editing?'Sheet updated':'Sheet added', name);
 }

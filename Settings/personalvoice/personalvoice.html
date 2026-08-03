@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoreConnect — Tagged Message Format</title>
+<title>CoreConnect — Personal Voicemail Settings</title>
 <link rel="stylesheet" href="../../shared/app.css">
 <link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
@@ -50,23 +50,17 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer;}
 .notif-seeall:hover{background:rgba(79,124,255,.08);}
 
-/* ===== TAGGED MESSAGE FORMAT PAGE ===== */
-.tm-head-spacer{flex:1;}
-.tm-srch{width:240px;}
-.tm-table-wrap{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
-.tm-table{width:100%;border-collapse:collapse;font-size:13px;}
-.tm-table thead th{padding:12px 16px;text-align:left;color:var(--mu);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;background:var(--sur);}
-.tm-th-toggle{width:96px;}
-.tm-table tbody tr{border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .12s;}
-.tm-table tbody tr:last-child{border-bottom:none;}
-.tm-table tbody tr:hover{background:var(--sur2);}
-.tm-table tbody td{padding:12px 16px;vertical-align:middle;color:var(--tx);}
-.tm-td-toggle{text-align:left;}
-.tm-td-name{font-weight:500;}
-.tm-empty-cell{padding:48px 20px !important;text-align:center;color:var(--mu);cursor:default;}
-.tm-table tbody tr.tm-empty-row{cursor:default;}
-.tm-table tbody tr.tm-empty-row:hover{background:transparent;}
-/* Toggle switch (from Settings/loan_app/notifications.html) */
+/* ===== PERSONAL VOICEMAIL SETTINGS PAGE ===== */
+.pv-head-spacer{flex:1;}
+.pv-srch{width:240px;}
+.pv-empty{padding:48px 20px;text-align:center;color:var(--mu);font-size:13px;
+  background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;}
+.pv-table-wrap{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.pv-table{width:100%;border-collapse:collapse;font-size:13px;}
+.pv-table thead th{padding:12px 16px;text-align:left;color:var(--mu);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;background:var(--sur);}
+.pv-th-audio{width:360px;}
+.pv-th-file{width:180px;}
+.pv-td-file{font-family:var(--mono);font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;}
 .np-switch{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;vertical-align:middle;}
 .np-switch input{position:absolute;opacity:0;width:0;height:0;margin:0;}
 .np-switch-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;cursor:pointer;transition:all .18s;}
@@ -74,59 +68,56 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .np-switch input:checked + .np-switch-track{background:var(--ac);border-color:var(--ac);}
 .np-switch input:checked + .np-switch-track::after{background:#fff;transform:translateX(16px);}
 .np-switch input:focus-visible + .np-switch-track{box-shadow:0 0 0 2px rgba(79,124,255,.35);}
-/* ===== Add / Edit modal ===== */
-.tm-modal-backdrop .tm-modal{width:940px;max-width:calc(100vw - 32px);}
-.tm-modal .modal-body{display:flex;flex-direction:row;gap:24px;padding:20px 24px;align-items:stretch;}
-.tm-modal-form{flex:1 1 55%;min-width:0;display:flex;flex-direction:column;gap:16px;}
-.tm-preview{flex:1 1 45%;min-width:0;display:flex;align-items:flex-start;justify-content:center;padding:8px 0;}
-.tm-form-sub{color:var(--mu);font-size:12px;margin-bottom:8px;}
-.tm-var-chip{display:inline-block;background:rgba(79,124,255,.14);border:1px solid rgba(79,124,255,.5);color:var(--ac2);padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500;line-height:1.55;white-space:nowrap;vertical-align:baseline;}
-.tm-editor{min-height:180px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:12px 14px;color:var(--tx);font-family:var(--font);font-size:13.5px;line-height:1.55;outline:none;overflow-y:auto;max-height:280px;}
-.tm-editor:focus{border-color:var(--ac);}
-.tm-editor:empty::before{content:attr(data-placeholder);color:var(--mu);pointer-events:none;}
-.tm-editor .tm-var-chip{margin:0 1px;}
-.tm-fmt-toolbar{display:flex;gap:4px;padding-top:2px;}
-.tm-fmt-btn{width:32px;height:32px;border-radius:6px;background:transparent;border:none;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
-.tm-fmt-btn:hover{background:var(--sur2);color:var(--tx);}
-.tm-fmt-btn svg{width:16px;height:16px;}
-.tm-active-row{display:flex;align-items:center;gap:12px;padding-top:4px;}
-.tm-active-lbl{font-size:13px;color:var(--tx);font-weight:500;}
-.tm-modal-del{margin-right:auto;}
-.tm-modal-del:hover{border-color:var(--rd);color:var(--rd);}
-#tm-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
-#tm-modal .modal-save[disabled]:hover{background:var(--ac);}
-/* Phone frame */
-.tm-phone{width:100%;max-width:280px;background:var(--sur);border:2px solid var(--brd2);border-radius:36px;padding:14px 12px 18px;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(0,0,0,.4);}
-.tm-phone-status{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;color:var(--tx);font-weight:600;padding:0 8px 8px;}
-.tm-phone-status-icons{display:inline-flex;gap:4px;align-items:center;color:var(--tx);}
-.tm-phone-status-icons svg{width:12px;height:12px;}
-.tm-phone-header{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0 12px;border-bottom:0.5px solid var(--brd);}
-.tm-phone-av{width:32px;height:32px;border-radius:50%;background:var(--sur2);border:0.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;color:var(--mu);}
-.tm-phone-av svg{width:16px;height:16px;}
-.tm-phone-num{font-size:12.5px;color:var(--tx);font-weight:600;}
-.tm-phone-body{flex:1;min-height:240px;padding:12px 6px;display:flex;flex-direction:column;gap:6px;}
-.tm-phone-bubble{max-width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:3px 14px 14px 14px;padding:10px 12px;font-size:13px;color:var(--tx);line-height:1.5;word-wrap:break-word;}
-.tm-phone-bubble:empty{display:none;}
-.tm-phone-input{display:flex;align-items:center;gap:6px;padding:6px 4px 0;color:var(--mu);}
-.tm-phone-input svg{width:16px;height:16px;flex:none;}
-.tm-phone-input span{flex:1;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;padding:6px 10px;font-size:11px;}
-.tm-phone-send{width:22px;height:22px;border-radius:50%;background:var(--sur2);border:none;color:var(--mu);cursor:default;display:inline-flex;align-items:center;justify-content:center;font-size:9px;}
-/* Column-variable picker (opens from the Table icon) */
-#tm-var-popup{width:240px;max-height:460px;overflow-y:auto;padding:6px;}
-#tm-var-popup .assign-popup-title{padding:6px 10px 4px;font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
-#tm-var-list{max-height:none;overflow:visible;}
-#tm-var-list .lblp-item{padding:8px 10px;cursor:pointer;}
-#tm-var-list .lblp-item-name{font-size:13px;color:var(--tx);}
-#tm-var-list .lblp-item:hover{background:var(--sur2);}
-@media (max-width:640px){ #tm-var-list .lblp-item{min-height:44px;font-size:15px;} }
+.pv-th-toggle{width:96px;}
+.pv-td-toggle{text-align:left;}
+.pv-table tbody tr{border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .12s;}
+.pv-table tbody tr:last-child{border-bottom:none;}
+.pv-table tbody tr:hover{background:var(--sur2);}
+.pv-table tbody td{padding:10px 16px;vertical-align:middle;color:var(--tx);}
+.pv-td-name{font-weight:500;}
+.pv-audio{display:flex;align-items:center;gap:10px;}
+/* Custom pill player — green circular play/pause + waveform + time (ported from greeting_message) */
+.pv-wp{display:flex;align-items:center;gap:10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;padding:4px 14px 4px 4px;width:320px;max-width:100%;height:40px;}
+.pv-wp-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--gr);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:filter .12s, background .12s;}
+.pv-wp-btn:hover{filter:brightness(1.1);}
+.pv-wp-btn:disabled{background:var(--sur);color:var(--mu);cursor:default;filter:none;}
+.pv-wp-btn svg{width:14px;height:14px;}
+.pv-wp-btn svg[hidden]{display:none;}
+.pv-wp-btn .pv-wp-play{margin-left:2px;}
+.pv-wp-wave{flex:1;min-width:0;height:28px;cursor:pointer;}
+.pv-wp-wave rect{fill:var(--mu);opacity:.5;transition:opacity .1s, fill .1s;}
+.pv-wp-wave rect.on{fill:var(--gr);opacity:1;}
+.pv-wp-wave:hover rect{opacity:.75;}
+.pv-wp-wave:hover rect.on{opacity:1;}
+.pv-wp-time{font-family:var(--mono);font-size:11px;color:var(--mu);white-space:nowrap;letter-spacing:.2px;}
+.pv-audio-upload{background:var(--sur2);color:var(--mu);border:0.5px dashed var(--brd2);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;}
+.pv-audio-upload:hover{border-color:var(--ac);color:var(--ac2);}
+.pv-audio-upload svg{width:12px;height:12px;}
+.pv-empty-row{cursor:default !important;}
+.pv-empty-row:hover{background:transparent !important;}
+.pv-empty-cell{padding:48px 20px !important;text-align:center;color:var(--mu);}
+.pv-modal-del{margin-right:auto;}
+.pv-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+#pv-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#pv-modal .modal-save[disabled]:hover{background:var(--ac);}
+.pv-field-file{width:100%;font-family:var(--font);font-size:12.5px;color:var(--tx);background:var(--sur2);border:0.5px solid var(--brd2);border-radius:9px;padding:9px 11px;cursor:pointer;box-sizing:border-box;}
+.pv-field-file::file-selector-button{font-family:var(--font);font-size:12px;font-weight:600;color:var(--tx);background:var(--sur);border:0.5px solid var(--brd2);border-radius:7px;padding:6px 12px;margin-right:10px;cursor:pointer;transition:all .15s;}
+.pv-field-file::file-selector-button:hover{border-color:var(--ac);color:var(--ac2);}
+.pv-file-chip-wrap{margin-top:8px;min-height:26px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.pv-file-chip{display:inline-flex;align-items:center;gap:6px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:4px 4px 4px 12px;color:var(--tx);font-size:12px;max-width:100%;}
+.pv-file-chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);font-size:12px;}
+.pv-file-chip-dur{color:var(--mu);font-family:var(--mono);font-size:11px;flex:none;margin-left:4px;}
+.pv-file-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.pv-file-chip-x:hover{background:var(--rd);color:#fff;}
+.pv-file-chip-empty{color:var(--mu);font-size:12px;padding:0 4px;}
+.pv-file-chip-status{color:var(--mu);font-size:11.5px;padding:0 4px;}
+.pv-preview-wrap{margin-top:10px;}
+.pv-preview-wrap:empty{margin-top:0;}
+.pv-preview-wrap .pv-wp{width:100%;}
 @media (max-width:640px){
   .set-page-head{flex-wrap:wrap;}
-  .tm-head-spacer{display:none;}
-  .tm-srch{width:auto;flex:1 1 160px;}
-  .tm-td-name{max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .tm-modal .modal-body{flex-direction:column !important;gap:16px;padding:16px;}
-  .tm-preview{padding:0;}
-  .tm-phone{max-width:260px;margin:0 auto;}
+  .pv-head-spacer{display:none;}
+  .pv-srch{width:auto;flex:1 1 160px;}
 }
 </style>
 
@@ -246,6 +237,34 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   </div>
 </div>
 
+<!-- EDIT VOICEMAIL MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="pv-modal" onclick="if(event.target===this)pvModalClose()">
+  <div class="modal" style="width:440px;max-width:calc(100vw - 32px);">
+    <div class="modal-header">
+      <div class="modal-title" id="pv-modal-title">Add voicemail file</div>
+      <button class="modal-close" onclick="pvModalClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Name</div>
+        <div class="modal-field"><input type="text" id="pv-f-name" placeholder="e.g. Business hours greeting" oninput="pvSyncDirty()"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Audio file</div>
+        <input class="pv-field-file" id="pv-f-file" type="file" accept="audio/*" onchange="pvFileChange(this)"/>
+        <div class="pv-file-chip-wrap" id="pv-file-chip-wrap"></div>
+        <div class="pv-preview-wrap" id="pv-preview-wrap"></div>
+        <audio id="pv-preview-audio" preload="metadata" style="display:none;"></audio>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel pv-modal-del" id="pv-modal-delete" onclick="pvModalDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="pvModalClose()">Cancel</button>
+      <button class="modal-save" id="pv-modal-save" onclick="pvModalSave()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- PAGE-LEVEL NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
@@ -258,74 +277,6 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
 </div>
 
-<!-- COLUMN-VARIABLE PICKER POPUP -->
-<div class="assign-popup" id="tm-var-popup" style="display:none;">
-  <div class="assign-popup-title">Insert column variable</div>
-  <div class="lblp-list" id="tm-var-list"></div>
-</div>
-
-
-<!-- ADD / EDIT MODAL -->
-<div class="modal-backdrop tm-modal-backdrop modal-fullscreen-mobile" id="tm-modal" onclick="if(event.target===this)tmModalClose()">
-  <div class="modal tm-modal">
-    <div class="modal-header">
-      <div class="modal-title" id="tm-modal-title">Add Tagged Message Format</div>
-      <button class="modal-close" onclick="tmModalClose()" aria-label="Close">&#x2715;</button>
-    </div>
-    <div class="modal-body">
-      <div class="tm-modal-form">
-        <div>
-          <div class="modal-section-title">Template name</div>
-          <div class="modal-field"><input type="text" id="tm-f-name" placeholder="e.g. Rust Alert" oninput="tmSyncDirty()"/></div>
-        </div>
-        <div>
-          <div class="modal-section-title">Template</div>
-          <div class="tm-form-sub">This text message campaign will be sent to all contacts</div>
-          <div class="tm-editor" id="tm-f-body" contenteditable="true" data-placeholder="Type your message…" oninput="tmPreviewSync();tmSyncDirty();" onkeyup="tmSaveSelection()" onmouseup="tmSaveSelection()" onblur="tmSaveSelection()"></div>
-          <div class="tm-fmt-toolbar">
-            <button type="button" class="tm-fmt-btn" title="Bold" onclick="tmFmtStub('Bold')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
-            <button type="button" class="tm-fmt-btn tm-var-open" title="Insert column variable" aria-label="Insert column variable" onclick="tmVarPopupToggle(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></button>
-          </div>
-        </div>
-        <div class="tm-active-row">
-          <span class="tm-active-lbl">Is Active</span>
-          <label class="np-switch">
-            <input type="checkbox" id="tm-f-enabled" onchange="tmSyncDirty()"/>
-            <span class="np-switch-track"></span>
-          </label>
-        </div>
-      </div>
-      <div class="tm-preview">
-        <div class="tm-phone">
-          <div class="tm-phone-status">
-            <span>10:55</span>
-            <span class="tm-phone-status-icons">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="14" width="3" height="6"/><rect x="7" y="10" width="3" height="10"/><rect x="12" y="6" width="3" height="14"/><rect x="17" y="2" width="3" height="18"/></svg>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/><rect x="3" y="8" width="14" height="8" fill="currentColor" stroke="none"/></svg>
-            </span>
-          </div>
-          <div class="tm-phone-header">
-            <div class="tm-phone-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            <div class="tm-phone-num">(201) 222-1012</div>
-          </div>
-          <div class="tm-phone-body"><div class="tm-phone-bubble" id="tm-phone-bubble"></div></div>
-          <div class="tm-phone-input">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            <span>Your message</span>
-            <button type="button" class="tm-phone-send" aria-label="Send">▶</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="modal-cancel tm-modal-del" id="tm-modal-delete" onclick="tmModalDelete()" hidden>Delete</button>
-      <button class="modal-cancel" onclick="tmModalClose()">Cancel</button>
-      <button class="modal-save" id="tm-modal-save" onclick="tmModalSave()">Save</button>
-    </div>
-  </div>
-</div>
-
 <div class="root main-area" id="root">
   <!-- TOP TOOLBAR: back link + title + search + add -->
   <div class="set-page-head">
@@ -333,28 +284,30 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span>Settings</span>
     </a>
-    <span class="set-page-title">Tagged Message Format</span>
-    <div class="tm-head-spacer"></div>
-    <div class="search-pill tm-srch">
+    <span class="set-page-title">Personal Voicemail Settings</span>
+    <div class="pv-head-spacer"></div>
+    <div class="search-pill pv-srch">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="tm-search-input" placeholder="Search..." oninput="tmSearch(this.value)"/>
+      <input type="text" id="pv-search-input" placeholder="Search..." oninput="pvSearch(this.value)"/>
     </div>
-    <button class="btn btn-primary" id="tm-add-btn" onclick="tmAddOpen()">
+    <button class="btn btn-primary" id="pv-add-btn" onclick="pvAddOpen()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add
     </button>
   </div>
   <div class="set-scroll">
     <section class="set-section">
-      <div class="tm-table-wrap">
-        <table class="tm-table">
+      <div class="pv-table-wrap">
+        <table class="pv-table">
           <thead>
             <tr>
-              <th class="tm-th-toggle">Enabled</th>
-              <th>Template Name</th>
+              <th class="pv-th-toggle">Enabled</th>
+              <th>Name</th>
+              <th class="pv-th-file">File name</th>
+              <th class="pv-th-audio">Upload audio</th>
             </tr>
           </thead>
-          <tbody id="tm-tbody"></tbody>
+          <tbody id="pv-tbody"></tbody>
         </table>
       </div>
     </section>
@@ -363,8 +316,7 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 
 <script>
 function navClick(label){
-  if(label === 'Settings') return; // already here (kept active)
-  /* This page lives two folders deep (Settings/tagsmsformat/), so links use ../../ */
+  if(label === 'Settings') return;
   var routes = {
     'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
     'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
@@ -399,7 +351,6 @@ function hideNavToast(){
   var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
   if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
 }
-/* Notifications bell — shared/notifications.js wraps openNotifications + drives setNotifTab/markAll. */
 function toggleNotifications(e){
   if(e) e.stopPropagation();
   var panel = document.getElementById('notif-panel'); if(!panel) return;
@@ -442,281 +393,408 @@ window.addEventListener('resize', function(){
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNotifications(); });
 
-/* ===== Tagged Message Format — list state ===== */
-function tmEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-var TM_KEY = 'cc_tag_msg_formats';
-var _tmQuery = '';
-var tmItems = [];
-function _tmChip(k, l){ return '<span class="tm-var-chip" contenteditable="false" data-var="'+k+'">'+l+'</span>&nbsp;'; }
-function tmDefaults(){
+/* ===== Personal Voicemail Settings ===== */
+var _pvQuery = '';
+var PV_KEY = 'cc_personal_voicemail';
+var pvItems = [];
+function pvEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function pvDefaults(){
   return [
-    { id:'tm_sold',      name:'Sold – Congratulations',  enabled:true,
-      body:'Congrats '+_tmChip('name','Name')+'! Your new '+_tmChip('vehicle','Vehicle')+'is ready for pickup. Thanks for choosing us — '+_tmChip('assign','Assign')+'will reach out shortly.' },
-    { id:'tm_service',   name:'Service Reminder',        enabled:false,
-      body:'Hi '+_tmChip('name','Name')+', your '+_tmChip('vehicle','Vehicle')+'is due for service. Reply to book a time.' },
-    { id:'tm_testdrive', name:'Test Drive Booked',       enabled:false,
-      body:'Hi '+_tmChip('name','Name')+', your test drive of the '+_tmChip('vehicle','Vehicle')+'is confirmed. Your rep '+_tmChip('assign','Assign')+'will meet you at the dealership.' },
-    { id:'tm_followup',  name:'Follow-up (30 days)',     enabled:false,
-      body:'Hi '+_tmChip('name','Name')+', it\'s been 30 days — how are you liking your '+_tmChip('vehicle','Vehicle')+'so far?' }
+    { id:'pv_biz',      name:'Business hours greeting',  filename:'biz-hours.mp3',   dur:12, enabled:true  },
+    { id:'pv_after',    name:'After-hours greeting',     filename:'after-hours.mp3', dur:18, enabled:false },
+    { id:'pv_holiday',  name:'Holiday greeting',         filename:'holiday.mp3',     dur:22, enabled:false },
+    { id:'pv_callback', name:'Custom callback message',  filename:'callback.mp3',    dur:9,  enabled:false }
   ];
 }
-function tmLoad(){
+function pvLoad(){
   var s = null;
-  try{ s = JSON.parse(localStorage.getItem(TM_KEY) || 'null'); }catch(e){}
-  if(!Array.isArray(s)) s = tmDefaults();
-  s.forEach(function(it){ if(typeof it.body !== 'string') it.body = ''; });
+  try{ s = JSON.parse(localStorage.getItem(PV_KEY) || 'null'); }catch(e){}
+  if(!Array.isArray(s)) s = pvDefaults();
+  s.forEach(function(it){ if(typeof it.enabled !== 'boolean') it.enabled = false; });
   return s;
 }
-function tmPersist(){
-  try{ localStorage.setItem(TM_KEY, JSON.stringify(tmItems)); }catch(e){}
+function pvToggle(id, on){
+  for(var i=0; i<pvItems.length; i++){
+    if(on){ pvItems[i].enabled = (pvItems[i].id === id); }
+    else if(pvItems[i].id === id){ pvItems[i].enabled = false; }
+  }
+  pvPersist();
+  pvRender();
 }
-function tmFiltered(){
-  var q = (_tmQuery || '').trim().toLowerCase();
-  if(!q) return tmItems.slice();
-  return tmItems.filter(function(it){ return String(it.name||'').toLowerCase().indexOf(q) >= 0; });
+function pvPersist(){ try{ localStorage.setItem(PV_KEY, JSON.stringify(pvItems)); }catch(e){} }
+function pvFmtDur(s){ s = +s || 0; var m = Math.floor(s/60), ss = s % 60; return m + ':' + (ss < 10 ? '0' : '') + ss; }
+function pvFmtTime(t){ if(!isFinite(t)||t<0) t=0; var m=Math.floor(t/60), s=Math.floor(t-m*60); return m+':'+(s<10?'0':'')+s; }
+function pvWaveBars(seed, count){
+  var s=0; for(var i=0;i<seed.length;i++) s=((s*31 + seed.charCodeAt(i)) & 0x7fffffff);
+  var out=[];
+  for(var i=0;i<count;i++){ s=(s*1103515245 + 12345) & 0x7fffffff; out.push(4 + (s % 22)); }
+  return out;
 }
-function tmRender(){
-  var tbody = document.getElementById('tm-tbody'); if(!tbody) return;
-  var rows = tmFiltered();
+function pvBuildWaveSvg(id, count){
+  var W=300, H=32, barW=2, gap=(W - count*barW) / (count-1);
+  var heights=pvWaveBars(id, count);
+  var out='';
+  for(var i=0;i<count;i++){
+    var x=(i*(barW+gap)).toFixed(2);
+    var h=heights[i], y=((H-h)/2).toFixed(1);
+    out+='<rect data-i="'+i+'" x="'+x+'" y="'+y+'" width="'+barW+'" height="'+h+'" rx="1"/>';
+  }
+  return out;
+}
+/* Simulated playback state per row (no real audio blobs in this prototype) */
+var _pvPlay = {}; // id -> { dur, cur, playing, timer }
+function _pvState(id, dur){
+  if(!_pvPlay[id]) _pvPlay[id] = { dur: dur||0, cur: 0, playing: false, timer: null };
+  return _pvPlay[id];
+}
+function pvWpRender(id){
+  var wp = document.querySelector('.pv-wp[data-audio-id="'+id+'"]'); if(!wp) return;
+  var st = _pvState(id);
+  var timeEl = wp.querySelector('.pv-wp-time');
+  if(timeEl) timeEl.textContent = pvFmtTime(st.cur) + ' / ' + pvFmtTime(st.dur);
+  var pct = st.dur ? st.cur/st.dur : 0;
+  var rects = wp.querySelectorAll('.pv-wp-wave rect'); var n = rects.length;
+  for(var i=0;i<n;i++){ rects[i].classList.toggle('on', (i/n) < pct); }
+  var p = wp.querySelector('.pv-wp-play'), pa = wp.querySelector('.pv-wp-pause');
+  if(p) p.hidden = st.playing;
+  if(pa) pa.hidden = !st.playing;
+  var btn = wp.querySelector('.pv-wp-btn');
+  if(btn) btn.setAttribute('aria-label', st.playing ? 'Pause' : 'Play');
+}
+function pvWpToggle(id){
+  var row = pvItems.filter(function(x){return x.id === id;})[0]; if(!row) return;
+  var st = _pvState(id, row.dur);
+  // Pause any other playing rows.
+  Object.keys(_pvPlay).forEach(function(k){
+    if(k !== id && _pvPlay[k].playing){ _pvPlay[k].playing = false; if(_pvPlay[k].timer){ clearInterval(_pvPlay[k].timer); _pvPlay[k].timer = null; } pvWpRender(k); }
+  });
+  if(st.playing){
+    st.playing = false;
+    if(st.timer){ clearInterval(st.timer); st.timer = null; }
+  } else {
+    if(st.cur >= st.dur) st.cur = 0;
+    st.playing = true;
+    var t0 = Date.now() - st.cur * 1000;
+    st.timer = setInterval(function(){
+      st.cur = Math.min(st.dur, (Date.now() - t0) / 1000);
+      pvWpRender(id);
+      if(st.cur >= st.dur){
+        st.playing = false; clearInterval(st.timer); st.timer = null; st.cur = st.dur;
+        pvWpRender(id);
+      }
+    }, 100);
+  }
+  pvWpRender(id);
+}
+function pvWpSeek(id, e){
+  var row = pvItems.filter(function(x){return x.id === id;})[0]; if(!row) return;
+  var st = _pvState(id, row.dur);
+  var svg = e.currentTarget, r = svg.getBoundingClientRect();
+  var pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  st.cur = pct * st.dur;
+  pvWpRender(id);
+}
+function pvFiltered(){
+  var q = (_pvQuery || '').trim().toLowerCase();
+  if(!q) return pvItems.slice();
+  return pvItems.filter(function(it){
+    return String(it.name||'').toLowerCase().indexOf(q) >= 0
+        || String(it.filename||'').toLowerCase().indexOf(q) >= 0;
+  });
+}
+function pvRender(){
+  var tbody = document.getElementById('pv-tbody'); if(!tbody) return;
+  var rows = pvFiltered();
   if(!rows.length){
-    var msg = _tmQuery
-      ? 'No tagged message formats match your search.'
-      : 'No tagged message formats yet — click "Add" to create one.';
-    tbody.innerHTML = '<tr class="tm-empty-row"><td colspan="2" class="tm-empty-cell">'+tmEsc(msg)+'</td></tr>';
+    var msg = _pvQuery ? 'No voicemail files match your search.'
+                       : 'No voicemail files yet — click "Add" to upload one.';
+    tbody.innerHTML = '<tr class="pv-empty-row"><td colspan="4" class="pv-empty-cell">'+pvEsc(msg)+'</td></tr>';
     return;
   }
   tbody.innerHTML = rows.map(function(it){
-    var checked = it.enabled ? ' checked' : '';
-    var id = tmEsc(it.id);
+    var id = pvEsc(it.id);
+    var hasAudio = !!it.filename;
+    var audioCell = hasAudio
+      ? '<div class="pv-wp" data-audio-id="'+id+'">'
+        + '<button type="button" class="pv-wp-btn" onclick="pvWpToggle(\''+id+'\')" aria-label="Play">'
+          + '<svg class="pv-wp-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+          + '<svg class="pv-wp-pause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
+        + '</button>'
+        + '<svg class="pv-wp-wave" viewBox="0 0 300 32" preserveAspectRatio="none" onclick="pvWpSeek(\''+id+'\', event)">'+pvBuildWaveSvg(id, 44)+'</svg>'
+        + '<span class="pv-wp-time">0:00 / '+pvFmtTime(it.dur)+'</span>'
+      + '</div>'
+      : '<button type="button" class="pv-audio-upload" onclick="pvUpload(\''+id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload</button>';
     return '<tr role="button" tabindex="0"'
-      + ' onclick="if(!event.target.closest(\'.tm-actions\'))tmRowClick(\''+id+'\')"'
-      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.tm-actions\')){event.preventDefault();tmRowClick(\''+id+'\');}">'
-      + '<td class="tm-td-toggle tm-actions">'
+      + ' onclick="if(!event.target.closest(\'.pv-actions\'))pvRowClick(\''+id+'\')"'
+      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.pv-actions\')){event.preventDefault();pvRowClick(\''+id+'\');}">'
+      + '<td class="pv-td-toggle pv-actions">'
         + '<label class="np-switch" onclick="event.stopPropagation();">'
-          + '<input type="checkbox"'+checked+' onchange="tmToggle(\''+id+'\', this.checked)" aria-label="Enable '+tmEsc(it.name)+'"/>'
+          + '<input type="checkbox"'+(it.enabled?' checked':'')+' onchange="pvToggle(\''+id+'\', this.checked)" aria-label="Enable '+pvEsc(it.name)+'"/>'
           + '<span class="np-switch-track"></span>'
         + '</label>'
       + '</td>'
-      + '<td class="tm-td-name">'+tmEsc(it.name)+'</td>'
-      + '</tr>';
+      + '<td class="pv-td-name">'+pvEsc(it.name)+'</td>'
+      + '<td class="pv-td-file">'+pvEsc(it.filename || '—')+'</td>'
+      + '<td class="pv-actions">'+audioCell+'</td>'
+    + '</tr>';
   }).join('');
 }
-function tmToggle(id, on){
-  for(var i=0; i<tmItems.length; i++){
-    if(on){
-      tmItems[i].enabled = (tmItems[i].id === id);
-    } else if(tmItems[i].id === id){
-      tmItems[i].enabled = false;
-    }
+function pvRowClick(id){ pvModalOpen(id); }
+var _pvEditId = null;
+var _pvSaved = null;
+var _pvStagedFilename = null;
+var _pvStagedDur = null;
+var _pvStagedURL = null;   // object URL for a freshly picked file (revoked on close/change)
+var _pvPreviewId = 'preview';
+var _pvPreviewSim = { dur:0, cur:0, playing:false, timer:null };  // simulated fallback for saved rows
+function _pvRevokeStagedURL(){ if(_pvStagedURL){ try{ URL.revokeObjectURL(_pvStagedURL); }catch(e){} _pvStagedURL = null; } }
+function _pvSlug(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function pvCurrentFileInfo(){
+  if(_pvStagedFilename != null){
+    if(_pvStagedFilename === '') return { name:'', dur:0, source:'staged' };
+    return { name:_pvStagedFilename, dur:(_pvStagedDur||0), source:'staged' };
   }
-  tmPersist();
-  tmRender();
+  var row = _pvEditId ? pvItems.filter(function(x){return x.id === _pvEditId;})[0] : null;
+  if(row && row.filename) return { name:row.filename, dur:(row.dur||0), source:'saved' };
+  return { name:'', dur:0, source:null };
 }
-function tmRowClick(id){ tmModalOpen(id); }
-function tmSearch(v){
-  _tmQuery = String(v || '');
-  tmRender();
-}
-function tmAddOpen(){ tmModalOpen(null); }
-
-/* ===== Add / Edit modal ===== */
-var TM_VARS = [
-  {key:'from',     label:'From'         },
-  {key:'to',       label:'To'           },
-  {key:'name',     label:'Name'         },
-  {key:'phone',    label:'Phone Number' },
-  {key:'email',    label:'Email'        },
-  {key:'stock',    label:'Stock'        },
-  {key:'vehicle',  label:'Vehicle'      },
-  {key:'status',   label:'Status'       },
-  {key:'chat_url', label:'Chat URL'     },
-  {key:'message',  label:'Message Text' },
-  {key:'source',   label:'Source'       }
-];
-var _tmEditId = null;
-var _tmSavedRange = null;
-
-function tmSaveSelection(){
-  var sel = window.getSelection && window.getSelection();
-  if(!sel || !sel.rangeCount) return;
-  var r = sel.getRangeAt(0);
-  var ed = document.getElementById('tm-f-body');
-  if(!ed || !ed.contains(r.commonAncestorContainer)) return;
-  _tmSavedRange = r.cloneRange();
-}
-function tmRestoreSelection(){
-  var ed = document.getElementById('tm-f-body'); if(!ed) return;
-  ed.focus();
-  var sel = window.getSelection && window.getSelection(); if(!sel) return;
-  sel.removeAllRanges();
-  if(_tmSavedRange && ed.contains(_tmSavedRange.commonAncestorContainer)){
-    sel.addRange(_tmSavedRange);
-  } else {
-    var r = document.createRange();
-    r.selectNodeContents(ed);
-    r.collapse(false);
-    sel.addRange(r);
+function pvFileChipRender(status){
+  var wrap = document.getElementById('pv-file-chip-wrap'); if(!wrap) return;
+  if(status){ wrap.innerHTML = '<span class="pv-file-chip-status">'+pvEsc(status)+'</span>'; return; }
+  var info = pvCurrentFileInfo();
+  if(!info.name){
+    wrap.innerHTML = '<span class="pv-file-chip-empty">No file attached.</span>';
+    return;
   }
+  var dur = info.dur > 0 ? '<span class="pv-file-chip-dur">'+pvFmtDur(info.dur)+'</span>' : '';
+  wrap.innerHTML = '<span class="pv-file-chip">'
+    + '<span class="pv-file-chip-name">'+pvEsc(info.name)+'</span>'
+    + dur
+    + '<button type="button" class="pv-file-chip-x" aria-label="Remove file" onclick="pvFileDetach(event)">&times;</button>'
+  + '</span>';
 }
-function tmInsertVar(key, label){
-  tmRestoreSelection();
-  var sel = window.getSelection && window.getSelection();
-  if(!sel || !sel.rangeCount) return;
-  var range = sel.getRangeAt(0);
-  range.deleteContents();
-  var chip = document.createElement('span');
-  chip.className = 'tm-var-chip';
-  chip.setAttribute('contenteditable', 'false');
-  chip.setAttribute('data-var', key);
-  chip.textContent = label;
-  range.insertNode(chip);
-  var sp = document.createTextNode('\u00a0');
-  chip.parentNode.insertBefore(sp, chip.nextSibling);
-  var after = document.createRange();
-  after.setStartAfter(sp);
-  after.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(after);
-  _tmSavedRange = after.cloneRange();
-  tmPreviewSync();
-  tmSyncDirty();
-}
-function tmPreviewSync(){
-  var ed = document.getElementById('tm-f-body');
-  var pv = document.getElementById('tm-phone-bubble');
-  if(!ed || !pv) return;
-  pv.innerHTML = ed.innerHTML;
-}
-function tmFmtStub(name){
-  showNavToast('Formatting — ' + name, 'This section is under construction.');
-}
-function tmVarListRender(){
-  var el = document.getElementById('tm-var-list'); if(!el) return;
-  el.innerHTML = TM_VARS.map(function(v){
-    var lbl = tmEsc(v.label).replace(/'/g, '&#39;');
-    return '<div class="lblp-item" onmousedown="event.preventDefault();" onclick="tmVarPick(\''+tmEsc(v.key)+'\', \''+lbl+'\')">'
-      + '<span class="lblp-name">'+tmEsc(v.label)+'</span>'
-      + '</div>';
-  }).join('');
-}
-function tmVarPopupToggle(e){
+function pvFileDetach(e){
   if(e) e.stopPropagation();
-  var pop = document.getElementById('tm-var-popup'); if(!pop) return;
-  if(pop.style.display === 'block'){ tmVarPopupClose(); return; }
-  var btn = (e && e.currentTarget) || document.querySelector('.tm-var-open');
-  tmSaveSelection();
-  tmVarListRender();
-  tmPositionPopup(pop, btn);
+  _pvStagedFilename = '';
+  _pvStagedDur = 0;
+  _pvRevokeStagedURL();
+  var fi = document.getElementById('pv-f-file'); if(fi) fi.value = '';
+  pvPreviewStop();
+  pvFileChipRender();
+  pvPreviewRender();
+  pvSyncDirty();
 }
-function tmVarPopupClose(){
-  var pop = document.getElementById('tm-var-popup'); if(pop) pop.style.display = 'none';
+function pvFileChange(inp){
+  var f = inp && inp.files && inp.files[0];
+  if(!f){ pvFileChipRender(); return; }
+  pvPreviewStop();
+  _pvRevokeStagedURL();
+  _pvStagedFilename = f.name;
+  _pvStagedDur = 0;
+  _pvStagedURL = URL.createObjectURL(f);
+  pvFileChipRender('Reading ' + f.name + '…');
+  pvPreviewRender();
+  var a = new Audio();
+  a.preload = 'metadata';
+  a.onloadedmetadata = function(){
+    _pvStagedDur = isFinite(a.duration) ? Math.max(1, Math.round(a.duration)) : 0;
+    pvFileChipRender();
+    pvPreviewRender();
+    pvSyncDirty();
+  };
+  a.onerror = function(){
+    _pvStagedDur = 0;
+    pvFileChipRender();
+    pvPreviewRender();
+    pvSyncDirty();
+  };
+  a.src = _pvStagedURL;
+  pvSyncDirty();
 }
-function tmVarPick(key, label){
-  tmVarPopupClose();
-  tmInsertVar(key, label);
-}
-function tmPositionPopup(pop, btn){
-  var r = btn.getBoundingClientRect();
-  // Measure real rendered height by showing offscreen first
-  pop.style.visibility = 'hidden';
-  pop.style.display = 'block';
-  pop.style.left = '0px';
-  pop.style.top = '0px';
-  var w = pop.offsetWidth || 240;
-  var h = pop.offsetHeight || 90;
-  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
-  var top = r.top - h - 6;
-  if(top < 8) top = r.bottom + 6;
-  pop.style.left = left + 'px';
-  pop.style.top = top + 'px';
-  pop.style.visibility = 'visible';
-}
-document.addEventListener('mousedown', function(e){
-  if(e.target.closest && (e.target.closest('#tm-var-popup') || e.target.closest('.tm-var-open'))) return;
-  tmVarPopupClose();
-});
-var _tmSaved = null;
-function tmBuildPayload(){
+function pvBuildPayload(){
+  var row = _pvEditId ? pvItems.filter(function(x){return x.id === _pvEditId;})[0] : null;
   return {
-    name: (document.getElementById('tm-f-name').value || '').trim(),
-    body: document.getElementById('tm-f-body').innerHTML || '',
-    enabled: !!document.getElementById('tm-f-enabled').checked
+    name: (document.getElementById('pv-f-name').value || '').trim(),
+    filename: _pvStagedFilename != null ? _pvStagedFilename : (row ? (row.filename || '') : ''),
+    dur:      _pvStagedDur != null      ? _pvStagedDur      : (row ? (row.dur || 0)      : 0)
   };
 }
-function tmSyncDirty(){
-  var btn = document.getElementById('tm-modal-save'); if(!btn) return;
-  if(!_tmSaved){ btn.disabled = true; return; }
-  var cur = tmBuildPayload();
-  var same = JSON.stringify(cur) === JSON.stringify(_tmSaved);
-  btn.disabled = same || (!_tmEditId && !cur.name);
+function pvSyncDirty(){
+  var btn = document.getElementById('pv-modal-save'); if(!btn) return;
+  if(!_pvSaved){ btn.disabled = true; return; }
+  var cur = pvBuildPayload();
+  var same = cur.name === _pvSaved.name && cur.filename === _pvSaved.filename && cur.dur === _pvSaved.dur;
+  btn.disabled = same || (!_pvEditId && !cur.name);
 }
-function tmModalOpen(id){
-  var m = document.getElementById('tm-modal'); if(!m) return;
-  _tmEditId = (typeof id === 'string' && id) ? id : null;
-  var row = _tmEditId ? tmItems.filter(function(x){return x.id === _tmEditId;})[0] : null;
-  document.getElementById('tm-modal-title').textContent = row ? 'Edit Tagged Message Format' : 'Add Tagged Message Format';
-  document.getElementById('tm-modal-save').textContent = row ? 'Update' : 'Save';
-  var del = document.getElementById('tm-modal-delete'); if(del) del.hidden = !row;
-  document.getElementById('tm-f-name').value = row ? (row.name || '') : '';
-  document.getElementById('tm-f-enabled').checked = row ? !!row.enabled : false;
-  var ed = document.getElementById('tm-f-body'); ed.innerHTML = row ? (row.body || '') : '';
-  tmPreviewSync();
-  _tmSavedRange = null;
-  m.classList.add('open');
-  _tmSaved = tmBuildPayload();
-  tmSyncDirty();
-  setTimeout(function(){ var n = document.getElementById('tm-f-name'); if(n) n.focus(); }, 20);
+function pvPreviewStop(){
+  var a = document.getElementById('pv-preview-audio');
+  if(a){ try{ a.pause(); }catch(e){} a.removeAttribute('src'); try{ a.load(); }catch(e){} }
+  if(_pvPreviewSim.timer){ clearInterval(_pvPreviewSim.timer); _pvPreviewSim.timer = null; }
+  _pvPreviewSim = { dur:0, cur:0, playing:false, timer:null };
 }
-function tmModalClose(){
-  var m = document.getElementById('tm-modal'); if(m) m.classList.remove('open');
-  tmVarPopupClose();
-  _tmSavedRange = null;
-  _tmSaved = null;
+function pvPreviewSeedId(){
+  // Stable id for the waveform seed — keeps bars consistent per row (or per staged file).
+  if(_pvStagedFilename != null) return 'staged:' + _pvStagedFilename;
+  return _pvEditId || 'preview';
 }
-function tmModalSave(){
-  var payload = tmBuildPayload();
-  if(!payload.name){ document.getElementById('tm-f-name').focus(); return; }
-  var wasNew = !_tmEditId;
-  var row = _tmEditId ? tmItems.filter(function(x){return x.id === _tmEditId;})[0] : null;
-  if(row){
-    row.name = payload.name; row.body = payload.body; row.enabled = payload.enabled;
-  } else {
-    row = { id: 'tm_' + Date.now() + '_' + Math.floor(Math.random()*1e4), name: payload.name, body: payload.body, enabled: payload.enabled };
-    tmItems.push(row);
-  }
-  if(payload.enabled){
-    for(var i=0; i<tmItems.length; i++){
-      tmItems[i].enabled = (tmItems[i].id === row.id);
+function pvPreviewRender(){
+  var wrap = document.getElementById('pv-preview-wrap'); if(!wrap) return;
+  var info = pvCurrentFileInfo();
+  if(!info.name || !info.dur){ wrap.innerHTML = ''; return; }
+  var seedId = pvPreviewSeedId();
+  wrap.innerHTML = '<div class="pv-wp" data-audio-id="'+_pvPreviewId+'">'
+    + '<button type="button" class="pv-wp-btn" onclick="pvPreviewToggle()" aria-label="Play">'
+      + '<svg class="pv-wp-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+      + '<svg class="pv-wp-pause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
+    + '</button>'
+    + '<svg class="pv-wp-wave" viewBox="0 0 300 32" preserveAspectRatio="none" onclick="pvPreviewSeek(event)">'+pvBuildWaveSvg(seedId, 44)+'</svg>'
+    + '<span class="pv-wp-time">0:00 / '+pvFmtTime(info.dur)+'</span>'
+  + '</div>';
+  pvPreviewPaint(0, info.dur, false);
+}
+function pvPreviewPaint(cur, dur, playing){
+  var wp = document.querySelector('.pv-wp[data-audio-id="'+_pvPreviewId+'"]'); if(!wp) return;
+  var timeEl = wp.querySelector('.pv-wp-time');
+  if(timeEl) timeEl.textContent = pvFmtTime(cur) + ' / ' + pvFmtTime(dur);
+  var pct = dur ? cur/dur : 0;
+  var rects = wp.querySelectorAll('.pv-wp-wave rect'); var n = rects.length;
+  for(var i=0;i<n;i++){ rects[i].classList.toggle('on', (i/n) < pct); }
+  var p = wp.querySelector('.pv-wp-play'), pa = wp.querySelector('.pv-wp-pause');
+  if(p) p.hidden = playing;
+  if(pa) pa.hidden = !playing;
+  var btn = wp.querySelector('.pv-wp-btn');
+  if(btn) btn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+}
+function pvPreviewToggle(){
+  var info = pvCurrentFileInfo(); if(!info.name || !info.dur) return;
+  var audio = document.getElementById('pv-preview-audio');
+  if(_pvStagedURL && audio){
+    if(!audio.src){ audio.src = _pvStagedURL; }
+    if(audio.paused){
+      // Pause any table-row simulated players so only one plays at once.
+      Object.keys(_pvPlay).forEach(function(k){
+        if(_pvPlay[k].playing){ _pvPlay[k].playing = false; if(_pvPlay[k].timer){ clearInterval(_pvPlay[k].timer); _pvPlay[k].timer = null; } pvWpRender(k); }
+      });
+      // Wire once — idempotent by clearing dataset flag.
+      if(!audio._pvWired){
+        audio._pvWired = true;
+        audio.addEventListener('timeupdate', function(){ pvPreviewPaint(audio.currentTime||0, isFinite(audio.duration)?audio.duration:info.dur, !audio.paused); });
+        audio.addEventListener('play',       function(){ pvPreviewPaint(audio.currentTime||0, isFinite(audio.duration)?audio.duration:info.dur, true); });
+        audio.addEventListener('pause',      function(){ pvPreviewPaint(audio.currentTime||0, isFinite(audio.duration)?audio.duration:info.dur, false); });
+        audio.addEventListener('ended',      function(){ pvPreviewPaint(isFinite(audio.duration)?audio.duration:info.dur, isFinite(audio.duration)?audio.duration:info.dur, false); });
+      }
+      var pr = audio.play(); if(pr && pr.catch) pr.catch(function(){});
+    } else {
+      audio.pause();
     }
+    return;
   }
-  if(wasNew){
-    _tmEditId = row.id;
-    document.getElementById('tm-modal-title').textContent = 'Edit Tagged Message Format';
-    document.getElementById('tm-modal-save').textContent = 'Update';
-    var del = document.getElementById('tm-modal-delete'); if(del) del.hidden = false;
+  // Simulated fallback (no blob available — saved metadata only).
+  var st = _pvPreviewSim;
+  if(!st.dur){ st.dur = info.dur; }
+  if(st.playing){
+    st.playing = false;
+    if(st.timer){ clearInterval(st.timer); st.timer = null; }
+    pvPreviewPaint(st.cur, st.dur, false);
+  } else {
+    if(st.cur >= st.dur) st.cur = 0;
+    st.playing = true;
+    var t0 = Date.now() - st.cur * 1000;
+    st.timer = setInterval(function(){
+      st.cur = Math.min(st.dur, (Date.now() - t0) / 1000);
+      pvPreviewPaint(st.cur, st.dur, true);
+      if(st.cur >= st.dur){
+        st.playing = false; clearInterval(st.timer); st.timer = null; st.cur = st.dur;
+        pvPreviewPaint(st.cur, st.dur, false);
+      }
+    }, 100);
+    pvPreviewPaint(st.cur, st.dur, true);
   }
-  tmPersist(); tmRender();
-  _tmSaved = payload;
-  tmSyncDirty();
-  showNavToast(wasNew ? 'Format added' : 'Format updated', payload.name + ' was saved.');
 }
-function tmModalDelete(){
-  if(!_tmEditId) return;
-  var id = _tmEditId, row = tmItems.filter(function(x){return x.id === id;})[0];
-  tmItems = tmItems.filter(function(x){return x.id !== id;});
-  tmPersist(); tmRender(); tmModalClose();
-  showNavToast('Format deleted', (row ? row.name : 'Format') + ' was removed.');
-  _tmEditId = null;
+function pvPreviewSeek(e){
+  var info = pvCurrentFileInfo(); if(!info.name || !info.dur) return;
+  var svg = e.currentTarget, r = svg.getBoundingClientRect();
+  var pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+  var audio = document.getElementById('pv-preview-audio');
+  if(_pvStagedURL && audio && audio.src){
+    audio.currentTime = pct * (isFinite(audio.duration) ? audio.duration : info.dur);
+    return;
+  }
+  var st = _pvPreviewSim;
+  if(!st.dur) st.dur = info.dur;
+  st.cur = pct * st.dur;
+  pvPreviewPaint(st.cur, st.dur, st.playing);
+}
+function pvModalOpen(id){
+  var m = document.getElementById('pv-modal'); if(!m) return;
+  _pvEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _pvEditId ? pvItems.filter(function(x){return x.id === _pvEditId;})[0] : null;
+  document.getElementById('pv-modal-title').textContent = row ? 'Edit voicemail file' : 'Add voicemail file';
+  document.getElementById('pv-modal-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('pv-modal-delete'); if(del) del.hidden = !row;
+  document.getElementById('pv-f-name').value = row ? (row.name || '') : '';
+  _pvStagedFilename = null; _pvStagedDur = null;
+  _pvRevokeStagedURL();
+  pvPreviewStop();
+  var fi = document.getElementById('pv-f-file'); if(fi) fi.value = '';
+  pvFileChipRender();
+  pvPreviewRender();
+  m.classList.add('open');
+  _pvSaved = pvBuildPayload();
+  pvSyncDirty();
+  setTimeout(function(){ var n = document.getElementById('pv-f-name'); if(n) n.focus(); }, 20);
+}
+function pvModalClose(){
+  var m = document.getElementById('pv-modal'); if(m) m.classList.remove('open');
+  _pvSaved = null;
+  _pvStagedFilename = null; _pvStagedDur = null;
+  pvPreviewStop();
+  _pvRevokeStagedURL();
+}
+function pvModalSave(){
+  var p = pvBuildPayload();
+  if(!p.name){ document.getElementById('pv-f-name').focus(); return; }
+  var wasNew = !_pvEditId;
+  if(wasNew){
+    var baseId = _pvSlug(p.name) || ('pv_' + Date.now()); var newId = baseId, n = 2;
+    while(pvItems.some(function(x){return x.id === newId;})) newId = baseId + '-' + (n++);
+    pvItems.push({ id:newId, name:p.name, filename:p.filename, dur:p.dur, enabled:false });
+    _pvEditId = newId;
+    document.getElementById('pv-modal-title').textContent = 'Edit voicemail file';
+    document.getElementById('pv-modal-save').textContent = 'Update';
+    var del = document.getElementById('pv-modal-delete'); if(del) del.hidden = false;
+  } else {
+    var row = pvItems.filter(function(x){return x.id === _pvEditId;})[0];
+    if(row){ row.name = p.name; row.filename = p.filename; row.dur = p.dur; }
+  }
+  pvPersist(); pvRender();
+  _pvSaved = p; pvSyncDirty();
+  showNavToast(wasNew ? 'Voicemail added' : 'Voicemail updated', p.name + ' was saved.');
+}
+function pvModalDelete(){
+  if(!_pvEditId) return;
+  var id = _pvEditId, row = pvItems.filter(function(x){return x.id === id;})[0];
+  pvItems = pvItems.filter(function(x){return x.id !== id;});
+  pvPersist(); pvRender(); pvModalClose();
+  showNavToast('Voicemail deleted', (row ? row.name : 'File') + ' was removed.');
+  _pvEditId = null;
 }
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  var pop = document.getElementById('tm-var-popup');
-  if(pop && pop.style.display === 'block'){ tmVarPopupClose(); return; }
-  var m = document.getElementById('tm-modal');
-  if(m && m.classList.contains('open')) tmModalClose();
+  var mo = document.getElementById('pv-modal');
+  if(mo && mo.classList.contains('open')) pvModalClose();
 });
-(function tmInit(){
-  function run(){ tmItems = tmLoad(); tmRender(); }
+function pvPlay(id){
+  var row = pvItems.filter(function(x){return x.id === id;})[0];
+  showNavToast('Play voicemail', (row && row.filename ? row.filename : 'File') + ' would play here.');
+}
+function pvUpload(id){
+  showNavToast('Upload voicemail', 'This section is under construction.');
+}
+function pvSearch(v){ _pvQuery = String(v || ''); pvRender(); }
+function pvAddOpen(){ pvModalOpen(null); }
+(function pvInit(){
+  function run(){ pvItems = pvLoad(); pvRender(); }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
 })();

@@ -526,6 +526,8 @@
   .tam-notif-cells{display:flex;gap:14px;justify-content:flex-start;}
   .tam-notif-cb{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--tx);cursor:pointer;user-select:none;}
   .tam-notif-cb input{margin:0;accent-color:var(--ac);width:14px;height:14px;cursor:pointer;}
+  #tam-modal-backdrop .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+  #tam-modal-backdrop .modal-save[disabled]:hover{background:var(--ac);}
   @media (max-width:640px){
     .tam-notif-wrap{overflow-x:auto;}
     .tam-notif-table{min-width:420px;}
@@ -3423,7 +3425,7 @@
           <button class="set-card-info" data-info="Control how many records appear per page throughout the CRM." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../personalvoice/personalvoice.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Personal Voicemail Settings</div>
@@ -3432,7 +3434,7 @@
           <button class="set-card-info" data-info="Upload and manage personalized voicemail recordings used during customer outreach." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../depvoicemail/depvoicemail.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M7 16.2h10"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">Department Voicemail Settings</div>
@@ -3655,7 +3657,7 @@
       <div class="modal-body">
         <div class="tam-toggle-row">
           <span>Allow To Send Transcript Alert</span>
-          <label class="dks-switch"><input type="checkbox" id="tam-allow"><span class="dks-track"><span class="dks-thumb"></span></span></label>
+          <label class="dks-switch"><input type="checkbox" id="tam-allow" onchange="tamSyncDirty()"><span class="dks-track"><span class="dks-thumb"></span></span></label>
         </div>
         <div class="dks-field">
           <label class="dks-label">Users</label>
@@ -4183,7 +4185,7 @@ function tamKwAdd(raw){
   var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
   var added=false;
   parts.forEach(function(p){ if(tamKwList.indexOf(p) < 0){ tamKwList.push(p); added=true; } });
-  if(added) tamKwRender();
+  if(added){ tamKwRender(); tamSyncDirty(); }
   return added;
 }
 function tamKwCommit(){
@@ -4194,13 +4196,14 @@ function tamKwRemove(idx, ev){
   if(ev) ev.stopPropagation();
   tamKwList.splice(idx, 1);
   tamKwRender();
+  tamSyncDirty();
 }
 function tamKwKey(e){
   if(e.key==='Enter' || e.key===','){
     e.preventDefault();
     if(tamKwAdd(e.target.value)) e.target.value='';
   } else if(e.key==='Backspace' && !e.target.value && tamKwList.length){
-    tamKwList.pop(); tamKwRender();
+    tamKwList.pop(); tamKwRender(); tamSyncDirty();
   }
 }
 function tamEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
@@ -4247,6 +4250,7 @@ function tamNotifRender(){
 function tamNotifSet(key, ch, val){
   if(!tamUserNotify[key]) tamUserNotify[key] = {sms:true, email:true};
   tamUserNotify[key][ch] = !!val;
+  tamSyncDirty();
 }
 function tamUserRenderList(){
   var list=document.getElementById('tam-user-list'); if(!list) return;
@@ -4274,6 +4278,7 @@ function tamUserToggle(key){
   if(i<0){ tamUserSel.push(key); if(!tamUserNotify[key]) tamUserNotify[key]={sms:true, email:true}; }
   else   { tamUserSel.splice(i,1); delete tamUserNotify[key]; }
   tamUserRenderChips(); tamUserRenderList();
+  tamSyncDirty();
 }
 function tamUserRemove(key, ev){
   if(ev) ev.stopPropagation();
@@ -4282,6 +4287,7 @@ function tamUserRemove(key, ev){
   delete tamUserNotify[key];
   tamUserRenderChips();
   if(document.getElementById('tam-user-popup').style.display==='block') tamUserRenderList();
+  tamSyncDirty();
 }
 function tamUserSearch(v){ tamUserQuery=v||''; tamUserRenderList(); }
 function tamUserOpen(e){
@@ -4329,8 +4335,10 @@ function openTranscriptAlert(){
   tamUserRenderChips();
   tamUserClose();
   var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.add('open');
+  _tamSaved = tamBuildPayload();
+  tamSyncDirty();
 }
-function closeTranscriptAlert(){ tamUserClose(); var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); }
+function closeTranscriptAlert(){ tamUserClose(); var bd=document.getElementById('tam-modal-backdrop'); if(bd) bd.classList.remove('open'); _tamSaved = null; }
 // ── Transcript Alert Logs popup ──
 var TAM_LOG_SEED = [
   { leadKey:'ethan-wright',   userKey:'DP', keyword:'cancel',    transcript:'…and honestly I might have to cancel the deal if we can\'t get the rate lower.', at: Date.now() - 1000*60*30 },
@@ -4411,22 +4419,31 @@ document.addEventListener('keydown', function(e){
   var bd = document.getElementById('tam-logs-backdrop');
   if(bd && bd.classList.contains('open')) closeTamLogs();
 });
-function saveTranscriptAlert(){
-  // Prune any notify entries whose user is no longer selected.
-  var notify={};
+var _tamSaved = null;
+function tamBuildPayload(){
+  var notify = {};
   tamUserSel.forEach(function(k){
     var e = tamUserNotify[k] || {sms:true, email:true};
     notify[k] = { sms: !!e.sms, email: !!e.email };
   });
-  tamKwCommit();   // pick up any typed-but-not-committed keyword
-  var data={
-    allow: document.getElementById('tam-allow').checked,
-    users: tamUserSel.slice(),
-    notify: notify,
+  return {
+    allow:    document.getElementById('tam-allow').checked,
+    users:    tamUserSel.slice(),
+    notify:   notify,
     keywords: tamKwList.slice()
   };
+}
+function tamSyncDirty(){
+  var btn = document.querySelector('#tam-modal-backdrop .modal-save'); if(!btn) return;
+  if(!_tamSaved){ btn.disabled = true; return; }
+  btn.disabled = JSON.stringify(tamBuildPayload()) === JSON.stringify(_tamSaved);
+}
+function saveTranscriptAlert(){
+  tamKwCommit();
+  var data = tamBuildPayload();
   try{ localStorage.setItem(TAM_KEY, JSON.stringify(data)); }catch(e){}
-  closeTranscriptAlert();
+  _tamSaved = data;
+  tamSyncDirty();
   if(typeof showNavToast==='function') showNavToast('Transcript Alert saved','Your transcript alert settings were updated.');
 }
 // Outside-click + Esc close for the users popup

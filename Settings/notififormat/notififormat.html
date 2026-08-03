@@ -80,6 +80,8 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .nf-var-chip{display:inline-block;background:rgba(79,124,255,.14);border:1px solid rgba(79,124,255,.5);color:var(--ac2);padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500;line-height:1.55;white-space:nowrap;vertical-align:baseline;}
 .nf-modal-del{margin-right:auto;}
 .nf-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+#nf-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#nf-modal .modal-save[disabled]:hover{background:var(--ac);}
 .nf-tpl-wrap{display:flex;flex-direction:column;gap:6px;}
 .nf-tpl-toolbar{display:flex;justify-content:flex-start;}
 .nf-tpl-btn{width:32px;height:32px;border-radius:6px;background:transparent;border:none;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
@@ -244,12 +246,12 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
     <div class="modal-body">
       <div>
         <div class="modal-section-title">Template name</div>
-        <div class="modal-field"><input type="text" id="nf-f-name" placeholder="e.g. New lead alert"/></div>
+        <div class="modal-field"><input type="text" id="nf-f-name" placeholder="e.g. New lead alert" oninput="nfSyncDirty()"/></div>
       </div>
       <div>
         <div class="modal-section-title">Template</div>
         <div class="nf-tpl-wrap">
-          <div class="nf-editor" id="nf-f-body" contenteditable="true" data-placeholder="Message body…" oninput="nfSaveSelection()" onkeyup="nfSaveSelection()" onmouseup="nfSaveSelection()" onblur="nfSaveSelection()"></div>
+          <div class="nf-editor" id="nf-f-body" contenteditable="true" data-placeholder="Message body…" oninput="nfSaveSelection();nfSyncDirty();" onkeyup="nfSaveSelection()" onmouseup="nfSaveSelection()" onblur="nfSaveSelection()"></div>
           <div class="nf-tpl-toolbar">
             <button type="button" class="nf-tpl-btn nf-var-open" title="Insert column variable" aria-label="Insert column variable" onclick="nfVarPopupToggle(event)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
@@ -385,12 +387,17 @@ var NF_KEY = 'cc_notif_formats';
 var _nfQuery = '';
 var nfItems = [];
 function nfEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function _nfChip(k, l){ return '<span class="nf-var-chip" contenteditable="false" data-var="'+k+'">'+l+'</span>&nbsp;'; }
 function nfDefaults(){
   return [
-    { id:'nf_new_lead', name:'New lead alert',        enabled:true  },
-    { id:'nf_missed',   name:'Missed call summary',   enabled:false },
-    { id:'nf_appt',     name:'Appointment reminder',  enabled:false },
-    { id:'nf_followup', name:'Follow-up nudge (24h)', enabled:false }
+    { id:'nf_new_lead', name:'New lead alert',        enabled:true,
+      body:'New lead from '+_nfChip('source','Source')+'· '+_nfChip('vehicle','Vehicle')+'— reach out at '+_nfChip('email','Email')+'.' },
+    { id:'nf_missed',   name:'Missed call summary',   enabled:false,
+      body:'Missed call earlier — '+_nfChip('status','Status')+'. Last attempted '+_nfChip('last_attempt','Last Attempted Date')+'.' },
+    { id:'nf_appt',     name:'Appointment reminder',  enabled:false,
+      body:'Reminder: appointment for the '+_nfChip('vehicle','Vehicle')+'(stock '+_nfChip('stock','Stock')+') — created '+_nfChip('created','Created Date')+'.' },
+    { id:'nf_followup', name:'Follow-up nudge (24h)', enabled:false,
+      body:'Follow up — last engaged '+_nfChip('last_engaged','Last Engaged Date')+'. Current status: '+_nfChip('status','Status')+'.' }
   ];
 }
 function nfLoad(){
@@ -444,6 +451,20 @@ function nfAddOpen(){ nfModalOpen(null); }
 
 /* ===== Add / Edit modal ===== */
 var _nfEditId = null;
+var _nfSaved = null;
+function nfBuildPayload(){
+  return {
+    name: (document.getElementById('nf-f-name').value || '').trim(),
+    body: document.getElementById('nf-f-body').innerHTML || ''
+  };
+}
+function nfSyncDirty(){
+  var btn = document.getElementById('nf-modal-save'); if(!btn) return;
+  if(!_nfSaved){ btn.disabled = true; return; }
+  var cur = nfBuildPayload();
+  var same = JSON.stringify(cur) === JSON.stringify(_nfSaved);
+  btn.disabled = same || (!_nfEditId && !cur.name);
+}
 function nfModalOpen(id){
   var m = document.getElementById('nf-modal'); if(!m) return;
   _nfEditId = (typeof id === 'string' && id) ? id : null;
@@ -455,12 +476,15 @@ function nfModalOpen(id){
   document.getElementById('nf-f-body').innerHTML = row ? (row.body || '') : '';
   _nfSavedRange = null;
   m.classList.add('open');
+  _nfSaved = nfBuildPayload();
+  nfSyncDirty();
   setTimeout(function(){ var n = document.getElementById('nf-f-name'); if(n) n.focus(); }, 20);
 }
 function nfModalClose(){
   var m = document.getElementById('nf-modal'); if(m) m.classList.remove('open');
   nfVarPopupClose();
   _nfSavedRange = null;
+  _nfSaved = null;
 }
 
 /* Column-variable picker */
@@ -521,6 +545,7 @@ function nfVarInsert(key, label){
   after.setStartAfter(sp); after.collapse(true);
   sel.removeAllRanges(); sel.addRange(after);
   _nfSavedRange = after.cloneRange();
+  nfSyncDirty();
 }
 function nfVarPopupToggle(e){
   if(e) e.stopPropagation();
@@ -551,21 +576,24 @@ document.addEventListener('mousedown', function(e){
   nfVarPopupClose();
 });
 function nfModalSave(){
-  var name = (document.getElementById('nf-f-name').value || '').trim();
-  var body = document.getElementById('nf-f-body').innerHTML || '';
-  if(!name){ document.getElementById('nf-f-name').focus(); return; }
+  var payload = nfBuildPayload();
+  if(!payload.name){ document.getElementById('nf-f-name').focus(); return; }
+  var wasNew = !_nfEditId;
   if(_nfEditId){
     var row = nfItems.filter(function(x){return x.id === _nfEditId;})[0];
-    if(row){ row.name = name; row.body = body; }
+    if(row){ row.name = payload.name; row.body = payload.body; }
   } else {
-    nfItems.push({
-      id: 'nf_' + Date.now() + '_' + Math.floor(Math.random()*1e4),
-      name: name, body: body, enabled: false
-    });
+    var newId = 'nf_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+    nfItems.push({ id: newId, name: payload.name, body: payload.body, enabled: false });
+    _nfEditId = newId;
+    document.getElementById('nf-modal-title').textContent = 'Edit Notification Format';
+    document.getElementById('nf-modal-save').textContent = 'Update';
+    var del = document.getElementById('nf-modal-delete'); if(del) del.hidden = false;
   }
-  nfPersist(); nfRender(); nfModalClose();
-  showNavToast(_nfEditId ? 'Format updated' : 'Format added', name + ' was saved.');
-  _nfEditId = null;
+  nfPersist(); nfRender();
+  _nfSaved = payload;
+  nfSyncDirty();
+  showNavToast(wasNew ? 'Format added' : 'Format updated', payload.name + ' was saved.');
 }
 function nfModalDelete(){
   if(!_nfEditId) return;

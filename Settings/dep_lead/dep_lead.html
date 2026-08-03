@@ -372,7 +372,8 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNo
 
 /* ===== Department Lead Permission ===== */
 var DLP_KEY = 'cc_dept_lead_perms', DLP_VER = 'v1';
-var DLP_PERMS = ['view','create','edit','delete'];
+var DLP_PERMS = ['view','create','edit','delete','sms','email'];
+var DLP_PERM_LABELS = {view:'View', create:'Create', edit:'Edit', delete:'Delete', sms:'SMS', email:'Email'};
 // Mirrors PF_LEAD_SECTIONS in Settings/User_profile/User_profile.html — one "CRM" section,
 // default ON except the 6 rows marked false.
 var DLP_SECTIONS = [
@@ -529,7 +530,7 @@ function dlpBuildMatrix(saved){
       html += '<th class="dlp-perm-colh" data-col="'+p+'" onclick="dlpToggleCol(\''+sec.key+'\',\''+p+'\')">'
         + '<span class="dlp-perm-colh-in">'
         + _dlpCbx('<input type="checkbox" class="dlp-col-master" data-col="'+p+'" tabindex="-1" />')
-        + p.charAt(0).toUpperCase()+p.slice(1)
+        + (DLP_PERM_LABELS[p] || (p.charAt(0).toUpperCase()+p.slice(1)))
         + '</span></th>';
     });
     html += '</tr></thead><tbody>';

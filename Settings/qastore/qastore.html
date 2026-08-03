@@ -1,0 +1,1055 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — AI Q&A & Store Description</title>
+<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/settings.css">
+<link rel="stylesheet" href="../../shared/contact-panel.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
+.root.main-area{height:calc(100vh - 64px);min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+@media (max-width:640px){ .root.main-area{height:auto;min-height:0;overflow:visible;} }
+.notif-panel{display:none;position:fixed;top:64px;right:24px;width:420px;max-height:560px;background:var(--sur);border:0.5px solid var(--brd);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.55);z-index:70;flex-direction:column;overflow:hidden;}
+.notif-panel.open{display:flex;}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-title{font-size:14px;font-weight:600;color:var(--tx);}
+.notif-header-actions{display:flex;align-items:center;gap:6px;}
+.notif-markall{background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;}
+.notif-markall:hover{background:rgba(79,124,255,.10);}
+.notif-markall[disabled]{opacity:.4;cursor:not-allowed;}
+.notif-markall[disabled]:hover{background:transparent;}
+.notif-close{display:none;width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:var(--mu);cursor:pointer;align-items:center;justify-content:center;}
+.notif-close:hover{background:rgba(255,255,255,.05);color:var(--tx);}
+.notif-tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+.notif-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:12.5px;padding:8px 10px;border-bottom:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.notif-tab:hover{color:var(--tx);}
+.notif-tab.active{color:var(--ac2);border-bottom-color:var(--ac);}
+.notif-tab-count{font-family:var(--mono);font-size:10.5px;color:var(--mu);background:var(--sur2);padding:2px 6px;border-radius:8px;}
+.notif-tab.active .notif-tab-count{color:var(--ac2);background:rgba(79,124,255,.16);}
+.notif-body{overflow-y:auto;flex:1;min-height:120px;}
+.notif-empty{padding:40px 20px;text-align:center;color:var(--mu);font-size:12.5px;}
+.notif-group{padding:0 0 6px;}
+.notif-group-head{font-size:10.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:12px 18px 6px;}
+.notif-item{display:flex;gap:12px;padding:10px 18px;cursor:pointer;position:relative;border-bottom:0.5px solid rgba(255,255,255,.03);}
+.notif-item:hover{background:var(--sur2);}
+.notif-item.unread{background:rgba(79,124,255,.04);}
+.notif-item.unread:hover{background:rgba(79,124,255,.08);}
+.notif-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--sur2);color:var(--mu);}
+.notif-icon svg{width:16px;height:16px;}
+.notif-icon.new_lead{background:rgba(79,124,255,.14);color:var(--ac2);}
+.notif-icon.engagement{background:rgba(34,200,138,.14);color:var(--gr);}
+.notif-icon.reminder{background:rgba(245,166,35,.14);color:var(--am);}
+.notif-icon.status_change{background:rgba(20,184,166,.14);color:#2dd4bf;}
+.notif-icon.assignment{background:rgba(167,139,250,.14);color:#c4b5fd;}
+.notif-text{flex:1;min-width:0;}
+.notif-item-title{font-size:12.5px;font-weight:500;color:var(--tx);line-height:1.35;}
+.notif-item.unread .notif-item-title{font-weight:600;}
+.notif-item-body{font-size:11.5px;color:var(--mu);margin-top:2px;line-height:1.4;}
+.notif-item-time{font-family:var(--mono);font-size:10.5px;color:var(--mu);margin-top:4px;}
+.notif-unread-dot{position:absolute;top:18px;right:18px;width:7px;height:7px;border-radius:50%;background:var(--ac);}
+.notif-footer{padding:8px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+.notif-seeall{width:100%;background:transparent;border:none;color:var(--ac2);font-family:var(--font);font-size:12.5px;padding:9px;border-radius:8px;cursor:pointer;}
+.notif-seeall:hover{background:rgba(79,124,255,.08);}
+
+/* ===== AI Q&A & STORE DESCRIPTION PAGE ===== */
+.qs-head-spacer{flex:1;}
+.qs-srch{width:240px;}
+.qs-empty{padding:48px 20px;text-align:center;color:var(--mu);font-size:13px;
+  background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;}
+.qs-tabs{display:flex;gap:4px;padding:0 24px;border-bottom:0.5px solid var(--brd);background:var(--bg);flex-shrink:0;}
+.qs-tab{background:transparent;border:none;color:var(--mu);font-family:var(--font);font-size:13px;padding:12px 14px;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-0.5px;transition:color .12s;}
+.qs-tab:hover{color:var(--tx);}
+.qs-tab.active{color:var(--ac2);border-bottom-color:var(--ac);font-weight:500;}
+.qs-pane{padding-top:0;}
+.np-switch{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;vertical-align:middle;}
+.np-switch input{position:absolute;opacity:0;width:0;height:0;margin:0;}
+.np-switch-track{position:absolute;inset:0;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:999px;cursor:pointer;transition:all .18s;}
+.np-switch-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--mu);border-radius:50%;transition:all .18s;}
+.np-switch input:checked + .np-switch-track{background:var(--ac);border-color:var(--ac);}
+.np-switch input:checked + .np-switch-track::after{background:#fff;transform:translateX(16px);}
+.cat-table-wrap{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.cat-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cat-table thead th{padding:12px 16px;text-align:left;color:var(--mu);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;background:var(--sur);}
+.cat-th-toggle{width:96px;}
+.cat-table tbody tr{border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .12s;}
+.cat-table tbody tr:last-child{border-bottom:none;}
+.cat-table tbody tr:hover{background:var(--sur2);}
+.cat-table tbody td{padding:10px 16px;vertical-align:middle;color:var(--tx);}
+.cat-td-name{font-weight:500;}
+.cat-empty-row{cursor:default !important;}
+.cat-empty-row:hover{background:transparent !important;}
+.cat-empty-cell{padding:48px 20px !important;text-align:center;color:var(--mu);}
+.cat-modal-del{margin-right:auto;}
+.cat-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+#cat-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#cat-modal .modal-save[disabled]:hover{background:var(--ac);}
+.qs-desc{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:12px 14px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:260px;outline:none;box-sizing:border-box;}
+.qs-desc:focus{border-color:var(--ac);}
+.qs-desc-foot{display:flex;justify-content:flex-end;padding-top:12px;}
+#qs-desc-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#qs-desc-save[disabled]:hover{background:var(--ac);}
+/* AI Q&A accordion + inline edit form + pager (ported from hub modal) */
+.aiqa-list{display:flex;flex-direction:column;gap:6px;}
+.aiqa-row{background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;transition:border-color .12s;}
+.aiqa-row:hover{border-color:rgba(255,255,255,.16);}
+.aiqa-row-head{display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.aiqa-row-q{flex:1;min-width:0;color:var(--tx);font-size:13px;font-weight:500;cursor:pointer;line-height:1.4;}
+.aiqa-chev{width:16px;height:16px;color:var(--mu);flex:none;cursor:pointer;transition:transform .15s;}
+.aiqa-row.open .aiqa-chev{transform:rotate(180deg);color:var(--ac2);}
+.aiqa-row-body{display:none;padding:0 14px 14px;color:var(--mu);font-size:12.5px;line-height:1.55;}
+.aiqa-row.open .aiqa-row-body{display:block;padding:6px 14px 14px;}
+.aiqa-inp{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:9px 12px;color:var(--tx);font-family:var(--font);font-size:13px;box-sizing:border-box;outline:none;}
+.aiqa-inp:focus{border-color:var(--ac);}
+.aiqa-inp-a{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:100px;outline:none;box-sizing:border-box;}
+.aiqa-inp-a:focus{border-color:var(--ac);}
+.aiqa-inp-label{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;font-weight:500;margin:12px 0 6px;}
+.aiqa-inp-foot{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;}
+.aiqa-btn-update[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+.aiqa-btn-update[disabled]:hover{background:var(--ac);}
+.aiqa-btn-del{margin-right:auto;}
+.aiqa-btn-del:hover{border-color:var(--rd);color:var(--rd);}
+.aiqa-kw-field{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:44px;display:flex;align-items:center;transition:border-color .12s;}
+.aiqa-kw-field:focus-within{border-color:var(--ac);}
+.aiqa-kw-input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:13px;height:100%;padding:0;}
+.aiqa-kw-input::placeholder{color:var(--mu);}
+.aiqa-kw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.aiqa-kw-chips:empty{display:none;margin-top:0;}
+.aiqa-kw-chip{display:inline-flex;align-items:center;gap:4px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:3px 4px 3px 10px;color:var(--tx);font-size:12px;line-height:1;height:26px;}
+.aiqa-kw-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;}
+.aiqa-kw-chip-x:hover{background:var(--rd);color:#fff;}
+.aiqa-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:14px;margin-top:6px;border-top:0.5px solid var(--brd);}
+.aiqa-pager-info{color:var(--mu);font-size:12px;}
+.aiqa-pager-btns{display:flex;gap:4px;}
+.aiqa-pg{min-width:32px;height:30px;padding:0 8px;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);font-family:var(--font);font-size:12px;border-radius:6px;cursor:pointer;}
+.aiqa-pg:hover:not([disabled]){border-color:var(--ac);color:var(--ac2);}
+.aiqa-pg.active{background:var(--ac);border-color:var(--ac);color:#fff;}
+.aiqa-pg[disabled]{opacity:.4;cursor:not-allowed;}
+.aiqa-empty{padding:32px 20px;text-align:center;color:var(--mu);font-size:13px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;}
+.aiqa-add-a{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;resize:vertical;min-height:120px;outline:none;box-sizing:border-box;}
+.aiqa-add-a:focus{border-color:var(--ac);}
+.aiqa-modal-del{margin-right:auto;}
+.aiqa-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+#aiqa-add-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#aiqa-add-modal .modal-save[disabled]:hover{background:var(--ac);}
+.aiqa-cat-trigger{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:9px 12px;color:var(--tx);font-family:var(--font);font-size:13px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .12s;}
+.aiqa-cat-trigger:hover{border-color:rgba(255,255,255,.16);}
+.aiqa-cat-trigger.open{border-color:var(--ac);}
+.aiqa-cat-trigger .form-select-val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.aiqa-cat-trigger .form-select-val.form-select-mu{color:var(--mu);}
+.aiqa-cat-trigger .form-select-chev{width:14px;height:14px;color:var(--mu);flex:none;transition:transform .12s;}
+.aiqa-cat-trigger.open .form-select-chev{transform:rotate(180deg);}
+#aiqa-cat-popup{z-index:9500;padding:6px;max-height:320px;overflow-y:auto;}
+#aiqa-cat-popup .lblp-item{padding:8px 10px;}
+@media (max-width:640px){
+  .set-page-head{flex-wrap:wrap;}
+  .qs-head-spacer{display:none;}
+  .qs-srch{width:auto;flex:1 1 160px;}
+}
+</style>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="th-left">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileDrawer()" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="logo" onclick="toggleProductSwitcher(event)">
+      <div class="logo-mark"><svg class="logo-mark-svg" viewBox="0 0 324 221" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CoreConnect logo" style="width:100%;height:100%;"><path d="M72.30,32.52 L72.30,32.52 Q85.97,12.00 110.63,12.00 L246.25,12.00 Q270.90,12.00 257.23,32.52 L210.61,102.44 Q196.93,122.96 172.27,122.96 L36.66,122.96 Q12.00,122.96 25.68,102.44 Z" fill="#1E6BFF"/><path d="M113.39,118.82 L113.39,118.82 Q127.07,98.30 151.73,98.30 L287.34,98.30 Q312.00,98.30 298.32,118.82 L251.70,188.74 Q238.03,209.26 213.37,209.26 L77.75,209.26 Q53.10,209.26 66.77,188.74 Z" fill="#3D3DCC"/></svg></div>
+      <span class="logo-text">CoreConnect</span>
+      <svg class="logo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="product-switcher" id="product-switcher">
+        <a class="ps-item" data-pid="coreconnect" href="../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>CoreConnect</span></a>
+        <a class="ps-item" data-pid="reputation" href="../../reputation/reputation_dashboard/Dashboard.html"><svg class="ps-ic" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reputation</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="top-header-right">
+    <button class="header-bell" id="header-bell" data-label="Notifications" onclick="toggleNotifications(event)" aria-label="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="header-bell-dot" id="header-bell-dot"></span>
+      <span class="header-bell-call-dot" id="header-bell-call-dot"></span>
+    </button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-title">Notifications</span>
+    <div class="notif-header-actions">
+      <button class="notif-markall" id="notif-markall" onclick="markAllNotificationsRead()">Mark all as read</button>
+      <button class="notif-close" onclick="closeNotifications()" aria-label="Close notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="notif-tabs">
+    <button class="notif-tab active" data-tab="all" onclick="setNotifTab('all')">All <span class="notif-tab-count" id="notif-count-all">0</span></button>
+    <button class="notif-tab" data-tab="unread" onclick="setNotifTab('unread')">Unread <span class="notif-tab-count" id="notif-count-unread">0</span></button>
+  </div>
+  <div class="notif-body" id="notif-body"></div>
+  <div class="notif-footer">
+    <button class="notif-seeall" onclick="window.location.href='../../notification/notification.html'">See all notifications</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <div class="sb-item" data-nav="home" data-label="Dashboard" onclick="navClick('Home')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg>
+    </div>
+    <div class="sb-item" data-nav="crm" data-label="CRM Customer" onclick="navClick('CRM')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg>
+    </div>
+    <div class="sb-item" data-nav="call" data-label="Call History" onclick="navClick('Call')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.2744 9.08374C10.3436 9.03766 10.4233 9.00959 10.5061 9.00206C10.5889 8.99453 10.6723 9.00778 10.7488 9.04061L13.6963 10.3612C13.7956 10.4037 13.8785 10.4772 13.9326 10.5707C13.9867 10.6642 14.009 10.7727 13.9963 10.88C13.8991 11.6056 13.5418 12.2713 12.9907 12.7533C12.4395 13.2352 11.7321 13.5005 11 13.5C8.74566 13.5 6.58365 12.6045 4.98959 11.0104C3.39553 9.41633 2.5 7.25433 2.5 4.99999C2.49944 4.26786 2.7648 3.56045 3.24673 3.00932C3.72865 2.45818 4.39435 2.10084 5.12 2.00374C5.22727 1.99099 5.33578 2.01333 5.4293 2.06741C5.52281 2.12149 5.5963 2.2044 5.63875 2.30374L6.95938 5.25374C6.99182 5.3295 7.00504 5.41212 6.99784 5.49423C6.99064 5.57634 6.96326 5.65539 6.91813 5.72436L5.5825 7.31249C5.53512 7.38398 5.50711 7.46654 5.50119 7.55209C5.49528 7.63765 5.51166 7.72328 5.54875 7.80061C6.06563 8.85874 7.15938 9.93936 8.22063 10.4512C8.29836 10.4882 8.38439 10.5042 8.47021 10.4977C8.55602 10.4912 8.63867 10.4625 8.71 10.4144L10.2744 9.08374Z"/></svg>
+    </div>
+    <div class="sb-item" data-nav="message" data-label="Message History" onclick="navClick('Message')">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.47375 9L2 11V3C2 2.86739 2.05268 2.74021 2.14645 2.64645C2.24021 2.55268 2.36739 2.5 2.5 2.5H10.5C10.6326 2.5 10.7598 2.55268 10.8536 2.64645C10.9473 2.74021 11 2.86739 11 3V8.5C11 8.63261 10.9473 8.75979 10.8536 8.85355C10.7598 8.94732 10.6326 9 10.5 9H4.47375Z"/><path d="M5 9V11.5C5 11.6326 5.05268 11.7598 5.14645 11.8536C5.24021 11.9473 5.36739 12 5.5 12H11.5262L14 14V6C14 5.86739 13.9473 5.74021 13.8536 5.64645C13.7598 5.55268 13.6326 5.5 13.5 5.5H11"/></svg>
+    </div>
+    <div class="sb-item" data-nav="voicemail" data-label="Voice mail History" onclick="navClick('Voice mail')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+    </div>
+    <div class="sb-item" data-nav="appointments" data-label="Appointments" onclick="navClick('Appointments')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="sidebar-nav-spacer"></div>
+    <div class="sb-divider"></div>
+    <div class="sb-item active" data-nav="settings" data-label="Settings" onclick="navClick('Settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+    </div>
+  </div>
+  <div class="sb-account" onclick="navClick('Account')" title="Account">DP</div>
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="md-nav">
+    <div class="md-item" onclick="navClick('Home');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 13.5H15"/><path d="M9.5 13.5V9.5H6.5V13.5"/><path d="M2.5 7.29309V13.5"/><path d="M13.5 13.5V7.29309"/><path d="M1.5 8.29315L7.64625 2.14628C7.69269 2.09979 7.74783 2.06291 7.80853 2.03775C7.86923 2.01259 7.93429 1.99963 8 1.99963C8.06571 1.99963 8.13077 2.01259 8.19147 2.03775C8.25217 2.06291 8.30731 2.09979 8.35375 2.14628L14.5 8.29315"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="md-item" onclick="navClick('CRM');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9C6.38071 9 7.5 7.88071 7.5 6.5C7.5 5.11929 6.38071 4 5 4C3.61929 4 2.5 5.11929 2.5 6.5C2.5 7.88071 3.61929 9 5 9Z"/><path d="M10 5H15.5"/><path d="M10 8H15.5"/><path d="M11.5 11H15.5"/><path d="M1 12C1.44375 10.275 3.13625 9 5 9C6.86375 9 8.55625 10.275 9 12"/></svg>
+      <span>CRM Customer</span>
+    </div>
+    <div class="md-item" onclick="navClick('Call');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Call History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Message');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Message History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Voice mail');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="4"/><circle cx="18" cy="12" r="4"/><line x1="6" y1="16" x2="18" y2="16"/></svg>
+      <span>Voice mail History</span>
+    </div>
+    <div class="md-item" onclick="navClick('Appointments');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Appointments</span>
+    </div>
+    <div class="md-divider"></div>
+    <div class="md-item active" onclick="navClick('Settings');closeMobileDrawer();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg>
+      <span>Settings</span>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY ADD/EDIT MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="cat-modal" onclick="if(event.target===this)catModalClose()">
+  <div class="modal" style="width:440px;max-width:calc(100vw - 32px);">
+    <div class="modal-header">
+      <div class="modal-title" id="cat-modal-title">Add category</div>
+      <button class="modal-close" onclick="catModalClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Category name</div>
+        <div class="modal-field"><input type="text" id="cat-f-name" placeholder="e.g. financing" oninput="catSyncDirty()"/></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel cat-modal-del" id="cat-modal-delete" onclick="catModalDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="catModalClose()">Cancel</button>
+      <button class="modal-save" id="cat-modal-save" onclick="catModalSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Q&A ADD/EDIT MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="aiqa-add-modal" style="z-index:3100;" onclick="if(event.target===this)aiqaAddClose()">
+  <div class="modal" style="width:560px;max-width:calc(100vw - 32px);">
+    <div class="modal-header">
+      <div class="modal-title" id="aiqa-add-title">Add Q&amp;A</div>
+      <button class="modal-close" onclick="aiqaAddClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Question</div>
+        <div class="modal-field"><input type="text" id="aiqa-add-q" placeholder="e.g. Do you accept trade-ins?" oninput="aiqaAddSync()"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Answer</div>
+        <textarea class="aiqa-add-a" id="aiqa-add-a" rows="5" placeholder="How the AI should respond…" oninput="aiqaAddSync()"></textarea>
+      </div>
+      <div>
+        <div class="modal-section-title">Keywords</div>
+        <div class="aiqa-kw-field" onclick="_aiqaAddKwFocus()">
+          <input type="text" class="aiqa-kw-input" id="aiqa-add-kw-input" placeholder="Type a keyword and press Enter" onkeydown="_aiqaAddKwKey(event)" onblur="_aiqaAddKwCommit()"/>
+        </div>
+        <div class="aiqa-kw-chips" id="aiqa-add-kw-chips"></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Category</div>
+        <div class="aiqa-cat-trigger" id="aiqa-add-cat-trigger" onclick="aiqaCatOpen(event,'add',null)">
+          <span class="form-select-val form-select-mu" id="aiqa-add-cat-val">Select category</span>
+          <svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <input type="hidden" id="aiqa-add-c" value=""/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel aiqa-modal-del" id="aiqa-add-delete" onclick="aiqaAddDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="aiqaAddClose()">Cancel</button>
+      <button class="modal-save" id="aiqa-add-save" onclick="aiqaAddSave()" disabled>Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Q&A CATEGORY POPUP (shared by row-edit and add modal) -->
+<div class="assign-popup" id="aiqa-cat-popup" style="display:none;">
+  <div class="lblp-list" id="aiqa-cat-list"></div>
+</div>
+
+<!-- PAGE-LEVEL NAV TOAST -->
+<div class="nav-toast" id="nav-toast">
+  <div class="nav-toast-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  </div>
+  <div class="nav-toast-text">
+    <strong id="nav-toast-title">Coming soon</strong>
+    <span id="nav-toast-body">This feature is under construction.</span>
+  </div>
+  <button class="nav-toast-close" onclick="hideNavToast()" title="Dismiss">&#x2715;</button>
+</div>
+
+<div class="root main-area" id="root">
+  <!-- TOP TOOLBAR: back link + title + search + add -->
+  <div class="set-page-head">
+    <a class="ur-back" href="../Settings_main_page/coreconnect_settings.html" title="Back to Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Settings</span>
+    </a>
+    <span class="set-page-title">AI Q&A & Store Description</span>
+    <div class="qs-head-spacer"></div>
+    <div class="search-pill qs-srch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="qs-search-input" placeholder="Search..." oninput="qsSearch(this.value)"/>
+    </div>
+    <button class="btn btn-primary" id="qs-add-btn" onclick="qsAddOpen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add
+    </button>
+  </div>
+  <div class="qs-tabs" role="tablist">
+    <button class="qs-tab active" data-tab="qa"   role="tab" onclick="qsSetTab('qa')">AI Q&A Settings</button>
+    <button class="qs-tab"        data-tab="desc" role="tab" onclick="qsSetTab('desc')">Store description</button>
+    <button class="qs-tab"        data-tab="cat"  role="tab" onclick="qsSetTab('cat')">Category</button>
+  </div>
+  <div class="set-scroll">
+    <section class="set-section">
+      <div id="qs-pane-qa" class="qs-pane">
+        <div class="aiqa-list" id="aiqa-list"></div>
+        <div class="aiqa-pager">
+          <div class="aiqa-pager-info" id="aiqa-pager-info"></div>
+          <div class="aiqa-pager-btns" id="aiqa-pager-btns"></div>
+        </div>
+      </div>
+      <div id="qs-pane-desc" class="qs-pane" hidden>
+        <textarea id="qs-desc" class="qs-desc" rows="14" placeholder="Describe the dealership…" oninput="qsDescSync()"></textarea>
+        <div class="qs-desc-foot">
+          <button class="modal-save" id="qs-desc-save" onclick="qsDescSave()">Save changes</button>
+        </div>
+      </div>
+      <div id="qs-pane-cat" class="qs-pane" hidden>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead>
+              <tr>
+                <th class="cat-th-toggle">Enabled</th>
+                <th>Category name</th>
+              </tr>
+            </thead>
+            <tbody id="cat-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+function navClick(label){
+  if(label === 'Settings') return;
+  var routes = {
+    'Home':'../../coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',
+    'CRM':'../../coreconnect_leads_v83/coreconnect_leads_v83.html',
+    'Call':'../../call_history/coreconnect_call_history_v31.html',
+    'Message':'../../coreconnect_message_history_v41/coreconnect_message_history_v41.html',
+    'Voice mail':'../../coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',
+    'Appointments':'../../coreconnect_appointments/coreconnect_appointments.html'
+  };
+  if(routes[label]){ window.location.href = routes[label]; return; }
+  showNavToast(label + ' is coming soon', 'This feature is under construction.');
+}
+function toggleMobileDrawer(){
+  var d = document.getElementById('mobile-drawer'), b = document.getElementById('mobile-drawer-backdrop');
+  if(!d || !b) return;
+  if(d.classList.contains('open')) closeMobileDrawer();
+  else { d.classList.add('open'); b.classList.add('open'); }
+}
+function closeMobileDrawer(){
+  var d = document.getElementById('mobile-drawer'), b = document.getElementById('mobile-drawer-backdrop');
+  if(d) d.classList.remove('open'); if(b) b.classList.remove('open');
+}
+var navToastTimer = null;
+function showNavToast(title, body){
+  var t = document.getElementById('nav-toast'); if(!t) return;
+  if(title) document.getElementById('nav-toast-title').textContent = title;
+  if(body)  document.getElementById('nav-toast-body').textContent  = body;
+  t.classList.add('show');
+  if(navToastTimer) clearTimeout(navToastTimer);
+  navToastTimer = setTimeout(hideNavToast, 4000);
+}
+function hideNavToast(){
+  var t = document.getElementById('nav-toast'); if(t) t.classList.remove('show');
+  if(navToastTimer){ clearTimeout(navToastTimer); navToastTimer = null; }
+}
+function toggleNotifications(e){
+  if(e) e.stopPropagation();
+  var panel = document.getElementById('notif-panel'); if(!panel) return;
+  if(panel.classList.contains('open')) closeNotifications(); else openNotifications();
+}
+function openNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !bell) return;
+  if(panel.parentElement !== document.body) document.body.appendChild(panel);
+  positionNotifications();
+  panel.classList.add('open'); bell.classList.add('active');
+}
+function closeNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(panel) panel.classList.remove('open'); if(bell) bell.classList.remove('active');
+}
+function positionNotifications(){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !bell) return;
+  var r = bell.getBoundingClientRect(), gap = 8;
+  var wasOpen = panel.classList.contains('open');
+  if(!wasOpen){ panel.style.visibility = 'hidden'; panel.style.display = 'flex'; }
+  var panelH = panel.offsetHeight || 480, panelW = panel.offsetWidth || 380;
+  if(!wasOpen){ panel.style.display = ''; panel.style.visibility = ''; }
+  var spaceBelow = window.innerHeight - r.bottom;
+  var openAbove = spaceBelow < panelH + gap + 8 && r.top > panelH + gap + 8;
+  panel.style.top = openAbove ? Math.max(8, r.top - panelH - gap) + 'px' : (r.bottom + gap) + 'px';
+  panel.style.left = Math.max(8, r.right - panelW) + 'px';
+}
+document.addEventListener('click', function(e){
+  var panel = document.getElementById('notif-panel'), bell = document.getElementById('header-bell');
+  if(!panel || !panel.classList.contains('open')) return;
+  if(bell && bell.contains(e.target)) return;
+  if(panel.contains(e.target)) return;
+  closeNotifications();
+});
+window.addEventListener('resize', function(){
+  var panel = document.getElementById('notif-panel');
+  if(panel && panel.classList.contains('open')) positionNotifications();
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNotifications(); });
+
+/* ===== AI Q&A & Store Description — shell state ===== */
+var _qsQuery = '';
+var _qsTab = 'qa';
+function qsSetTab(tab){
+  _qsTab = (tab === 'desc' || tab === 'cat') ? tab : 'qa';
+  document.querySelectorAll('.qs-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === _qsTab); });
+  document.getElementById('qs-pane-qa').hidden   = (_qsTab !== 'qa');
+  document.getElementById('qs-pane-desc').hidden = (_qsTab !== 'desc');
+  document.getElementById('qs-pane-cat').hidden  = (_qsTab !== 'cat');
+  if(_qsTab === 'cat') catRender();
+  if(_qsTab === 'qa') aiqaRender();
+  // Toolbar Add + Search don't apply on the Store description tab (single field, no list).
+  // Use inline display since .btn / .search-pill set display via class, which wins over [hidden].
+  var showList = (_qsTab !== 'desc');
+  var addBtn = document.getElementById('qs-add-btn'); if(addBtn) addBtn.style.display = showList ? '' : 'none';
+  var srch = document.querySelector('.qs-srch');       if(srch)   srch.style.display   = showList ? '' : 'none';
+}
+function qsSearch(v){
+  _qsQuery = String(v || '');
+  if(_qsTab === 'cat') catRender();
+  if(_qsTab === 'qa')  aiqaRender();
+}
+function qsAddOpen(){
+  if(_qsTab === 'cat'){ catAdd(); return; }
+  if(_qsTab === 'qa'){ aiqaAddOpen(null); return; }
+  showNavToast('Add entry', 'This section is under construction.');
+}
+
+/* ===== Category tab ===== */
+var CAT_KEY = 'cc_ai_qa_categories', CAT_VER = 'v1';
+var _catItems = [];
+var _catEditId = null;
+var _catSaved = null;
+function _catEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function _catSlug(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function catDefaults(){
+  return ['trade','pricing','hours','appointment','timing','hold','warranty','contacts','financing','inventory','service','store-info']
+    .map(function(n){ return { id:n, name:n, enabled:true }; });
+}
+function catLoad(){
+  try{ var raw = localStorage.getItem(CAT_KEY); if(raw){ var p = JSON.parse(raw); if(p && p.ver === CAT_VER && Array.isArray(p.list)) return p.list; } }catch(e){}
+  var seed = catDefaults();
+  try{ localStorage.setItem(CAT_KEY, JSON.stringify({ver:CAT_VER, list:seed})); }catch(e){}
+  return seed;
+}
+function catPersist(){ try{ localStorage.setItem(CAT_KEY, JSON.stringify({ver:CAT_VER, list:_catItems})); }catch(e){} }
+function catFiltered(){
+  var q = (_qsQuery||'').trim().toLowerCase();
+  if(!q) return _catItems.slice();
+  return _catItems.filter(function(x){ return String(x.name||'').toLowerCase().indexOf(q) >= 0; });
+}
+function catRender(){
+  var tbody = document.getElementById('cat-tbody'); if(!tbody) return;
+  var rows = catFiltered();
+  if(!rows.length){
+    var msg = _qsQuery ? 'No categories match your search.' : 'No categories yet — click "Add" to create one.';
+    tbody.innerHTML = '<tr class="cat-empty-row"><td colspan="2" class="cat-empty-cell">'+_catEsc(msg)+'</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(it){
+    var id = _catEsc(it.id);
+    var checked = it.enabled ? ' checked' : '';
+    return '<tr role="button" tabindex="0"'
+      + ' onclick="if(!event.target.closest(\'.cat-actions\'))catEdit(\''+id+'\')"'
+      + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.cat-actions\')){event.preventDefault();catEdit(\''+id+'\');}">'
+      + '<td class="cat-actions">'
+        + '<label class="np-switch" onclick="event.stopPropagation();">'
+          + '<input type="checkbox"'+checked+' onchange="catToggle(\''+id+'\', this.checked)" aria-label="Enable '+_catEsc(it.name)+'"/>'
+          + '<span class="np-switch-track"></span>'
+        + '</label>'
+      + '</td>'
+      + '<td class="cat-td-name">'+_catEsc(it.name)+'</td>'
+    + '</tr>';
+  }).join('');
+}
+function catToggle(id, on){
+  var it = _catItems.filter(function(x){return x.id===id;})[0];
+  if(it){ it.enabled = !!on; catPersist(); }
+}
+function catEdit(id){ catModalOpen(id); }
+function catAdd(){ catModalOpen(null); }
+function catBuildPayload(){
+  return { name: (document.getElementById('cat-f-name').value || '').trim() };
+}
+function catSyncDirty(){
+  var btn = document.getElementById('cat-modal-save'); if(!btn) return;
+  if(!_catSaved){ btn.disabled = true; return; }
+  var cur = catBuildPayload();
+  var same = cur.name === _catSaved.name;
+  btn.disabled = same || (!_catEditId && !cur.name);
+}
+function catModalOpen(id){
+  var m = document.getElementById('cat-modal'); if(!m) return;
+  _catEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _catEditId ? _catItems.filter(function(x){return x.id===_catEditId;})[0] : null;
+  document.getElementById('cat-modal-title').textContent = row ? 'Edit category' : 'Add category';
+  document.getElementById('cat-modal-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('cat-modal-delete'); if(del) del.hidden = !row;
+  document.getElementById('cat-f-name').value = row ? (row.name || '') : '';
+  m.classList.add('open');
+  _catSaved = catBuildPayload();
+  catSyncDirty();
+  setTimeout(function(){ var n = document.getElementById('cat-f-name'); if(n) n.focus(); }, 20);
+}
+function catModalClose(){
+  var m = document.getElementById('cat-modal'); if(m) m.classList.remove('open');
+  _catSaved = null;
+}
+function catModalSave(){
+  var p = catBuildPayload();
+  if(!p.name){ document.getElementById('cat-f-name').focus(); return; }
+  var wasNew = !_catEditId;
+  if(wasNew){
+    var baseId = _catSlug(p.name) || ('cat_' + Date.now());
+    var newId = baseId, n = 2;
+    while(_catItems.some(function(x){return x.id===newId;})) newId = baseId + '-' + (n++);
+    _catItems.push({ id:newId, name:p.name, enabled:true });
+    _catEditId = newId;
+    document.getElementById('cat-modal-title').textContent = 'Edit category';
+    document.getElementById('cat-modal-save').textContent = 'Update';
+    var del = document.getElementById('cat-modal-delete'); if(del) del.hidden = false;
+  } else {
+    var row = _catItems.filter(function(x){return x.id===_catEditId;})[0];
+    if(row){ row.name = p.name; }
+  }
+  catPersist(); catRender();
+  _catSaved = p; catSyncDirty();
+  showNavToast(wasNew ? 'Category added' : 'Category updated', p.name);
+}
+function catModalDelete(){
+  if(!_catEditId) return;
+  var id = _catEditId, row = _catItems.filter(function(x){return x.id===id;})[0];
+  _catItems = _catItems.filter(function(x){return x.id!==id;});
+  catPersist(); catRender(); catModalClose();
+  showNavToast('Category deleted', (row ? row.name : 'Category') + ' was removed.');
+  _catEditId = null;
+}
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var mo = document.getElementById('cat-modal');
+  if(mo && mo.classList.contains('open')) catModalClose();
+});
+(function catInit(){
+  function run(){ _catItems = catLoad(); catRender(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+
+/* ===== AI Q&A Settings tab ===== */
+var AIQA_KEY = 'cc_ai_qa', AIQA_VER = 'v1', AIQA_PER = 10;
+var _aiqaItems = [];
+var _aiqaPage = 1;
+var _aiqaAddEditId = null;
+var _aiqaAddSaved = null;
+var _aiqaRowSnaps = {};
+var _aiqaRowKw = {};
+var _aiqaAddKw = [];
+function _aqEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function aiqaDefaults(){
+  return [
+    { id:'aq_trade_in', question:'Do you accept trade-ins? How do you determine trade-in value? What\'s the trade-in process?', answer:'Yes, we accept trade-ins. Bring the vehicle in for an appraisal — we use KBB + local market data to arrive at a fair number. The whole process takes about 20 minutes and the trade value can go straight toward your new purchase.', keywords:['trade-in','trade in','trade','value','market data','appraisal','trade value','accept trades','trade my car','trade process'], category:'trade' },
+    { id:'aq_price_negot', question:'Is the price negotiable? Can you work with me on the monthly payment?', answer:'Our prices are competitive and market-based, but we always try to make a deal work. Come in with your target monthly payment and we\'ll structure the financing (down payment, term, rate) to hit it.', keywords:['negotiate','negotiable','price','monthly payment','deal','discount','lower price','best price'], category:'pricing' },
+    { id:'aq_hours', question:'What are your hours? Can I come look at cars this weekend?', answer:'We\'re open Monday–Saturday 9 AM – 8 PM. Closed Sunday. Saturdays are our busiest day so an appointment guarantees a salesperson is ready for you.', keywords:['hours','open','weekend','saturday','sunday','closed','when open','store hours'], category:'hours' },
+    { id:'aq_appt', question:'Do I need to schedule an appointment or can I just stop by?', answer:'Walk-ins are always welcome. Appointments are recommended for weekends and after 5 PM so we can have the vehicle pulled up front and paperwork ready.', keywords:['appointment','schedule','walk in','stop by','booking','reserve time','visit'], category:'appointment' },
+    { id:'aq_buying_time', question:'How long does the buying process take? I need a car by this Friday.', answer:'A typical purchase — test drive, appraisal, financing, paperwork — takes 2–3 hours if you\'re prepared. With all documents ready and pre-approval, we can often complete same-day.', keywords:['how long','buying process','time','same day','deadline','friday','quick','fast'], category:'timing' },
+    { id:'aq_hold', question:'Can you hold a car for me? I\'ll be there tomorrow with financing.', answer:'We can hold a vehicle for 24 hours with a refundable $500 deposit. This locks the vehicle and prevents anyone else from purchasing it while you finalize your plans.', keywords:['hold','reserve','deposit','put on hold','save the car'], category:'hold' },
+    { id:'aq_warranty', question:'What kind of warranty do you offer on used cars? Does it come with warranty?', answer:'All vehicles include a 30-day / 1,000-mile powertrain warranty at no cost. Extended warranties (up to 4 years / 100,000 miles) are available at time of purchase — ask your salesperson for pricing.', keywords:['warranty','coverage','powertrain','extended warranty','guarantee'], category:'warranty' },
+    { id:'aq_sales_mgr', question:'Who is your sales manager? I\'d like to speak with someone about a deal.', answer:'Our Sales Manager is Marcus Alvarez. You can reach him directly at (713) 555-0142 or ask for him at the front desk any weekday between 10 AM and 7 PM.', keywords:['sales manager','manager','speak to manager','who is manager','marcus'], category:'contacts' },
+    { id:'aq_ins_mgr', question:'Who is the Insurance Manager? I need to reach the insurance department.', answer:'Our Insurance & Finance Manager is Lisa Chen. She handles GAP, extended warranties, and loan insurance products. Contact her at (713) 555-0148 or lchen@usadirectauto.com.', keywords:['insurance manager','insurance','finance manager','gap','lisa','insurance department'], category:'contacts' },
+    { id:'aq_followup', question:'Thanks for the information yesterday. I\'m ready to move forward. What\'s next?', answer:'Welcome back! Please bring your driver\'s license, proof of insurance, and — if financing — recent pay stubs or bank statements. We\'ll have the paperwork prepared when you arrive.', keywords:['follow up','ready to buy','next steps','what to bring','documents','moving forward'], category:'appointment' },
+    { id:'aq_credit_score', question:'What credit score do I need to get approved?', answer:'We work with buyers across every credit profile — from 500 to 800+. We partner with 12+ lenders including Capital One, Ally, Exeter, and Consumer Portfolio to find a program that fits your situation.', keywords:['credit score','approval','fico','credit needed','minimum score'], category:'financing' },
+    { id:'aq_subprime', question:'I have bad credit / no credit — can you still finance me?', answer:'Absolutely. We have dedicated subprime lenders and in-house options for buyers with challenged or no credit history. A larger down payment (typically $2,000+) helps secure the best terms.', keywords:['bad credit','no credit','subprime','challenged credit','poor credit','in-house financing'], category:'financing' },
+    { id:'aq_cash_vs_fin', question:'Do you offer discounts for paying cash?', answer:'Our prices are the same for cash or financing — we don\'t inflate the sticker for financed buyers. If you\'re paying cash, bring a cashier\'s check or arrange a wire transfer in advance.', keywords:['cash','cash discount','pay cash','wire transfer','cashiers check'], category:'financing' },
+    { id:'aq_extended_warr', question:'How much does an extended warranty cost?', answer:'Extended warranty pricing depends on the vehicle\'s age, mileage, and coverage tier. Typical plans run $1,500–$3,500 and can be rolled into your financing. Ask about our tiered coverage options.', keywords:['extended warranty','warranty cost','warranty price','coverage tier'], category:'warranty' },
+    { id:'aq_min_down', question:'What\'s the minimum down payment?', answer:'Minimum down payment varies by lender and credit profile — as low as $0 for prime credit, typically $1,500–$2,500 for standard programs, and $2,500+ for subprime. A larger down payment always helps.', keywords:['down payment','minimum down','zero down','down','no money down'], category:'financing' },
+    { id:'aq_carfax', question:'Do you provide a Carfax report? Can I see the vehicle history?', answer:'Yes, a free Carfax report is available for every vehicle on our lot. Ask any salesperson or request it via email — we\'re fully transparent about vehicle history, accidents, and prior ownership.', keywords:['carfax','vehicle history','history report','accidents','prior owners'], category:'inventory' },
+    { id:'aq_sight_unseen', question:'Can I buy a car sight-unseen? I\'m out of state.', answer:'Yes. We do out-of-state deliveries via nationwide auto transport (typically $500–$1,200). We\'ll send detailed video walkarounds, condition reports, and can arrange a third-party inspection at your cost.', keywords:['out of state','sight unseen','ship','transport','remote purchase','buy remotely'], category:'inventory' },
+    { id:'aq_test_drive', question:'Can I take the vehicle for an extended test drive?', answer:'Standard test drives are 15–30 minutes. For extended drives (up to a few hours or overnight), we require a $500 refundable deposit and a copy of your driver\'s license and insurance.', keywords:['test drive','extended test drive','overnight','try the car','drive the car'], category:'inventory' },
+    { id:'aq_service_hours', question:'When is your service department open? Do you service the cars you sell?', answer:'Our service department is open Monday–Friday 8 AM – 6 PM and Saturday 9 AM – 3 PM. We service all makes and models, and our customers get discounted service rates for the life of ownership.', keywords:['service hours','service department','service open','repair','maintenance hours'], category:'service' },
+    { id:'aq_loaner', question:'Do you provide loaner cars during service?', answer:'Loaner vehicles are available for service appointments expected to take more than 4 hours. Please request one when scheduling — availability is first-come, first-served.', keywords:['loaner','loaner car','courtesy car','rental','while serviced'], category:'service' },
+    { id:'aq_gm', question:'Who is the General Manager? I have a complaint / compliment.', answer:'Our General Manager is David Park. You can reach him directly at dpark@usadirectauto.com or (713) 555-0100. He personally reads every customer message.', keywords:['general manager','gm','david park','complaint','owner','who runs'], category:'contacts' },
+    { id:'aq_service_mgr', question:'Who is the Service Manager?', answer:'Our Service Manager is Ryan Tate. He oversees all vehicle inspections, warranty work, and service scheduling. Contact him at (713) 555-0155 or through the service department.', keywords:['service manager','ryan','who runs service','service head'], category:'contacts' },
+    { id:'aq_parts', question:'Do you have a parts department? Can I order OEM parts?', answer:'Yes, we stock common parts on-site and can order OEM parts for any make within 1–3 business days. Contact parts at (713) 555-0160 for pricing and availability.', keywords:['parts','oem','parts department','order parts','replacement parts'], category:'service' },
+    { id:'aq_address', question:'Where are you located? What\'s your address?', answer:'We\'re at 421 Little York Rd, Houston, TX 77076 — right off I-45 and 610 North Loop. Free customer parking is available on-site.', keywords:['address','location','where','find you','little york','houston'], category:'store-info' },
+    { id:'aq_phone', question:'What\'s your phone number? Best way to reach you?', answer:'Main line: (713) 555-0100. Sales: (713) 555-0110. Service: (713) 555-0140. For quickest response, text us at (713) 555-0100 or use the chat on our website.', keywords:['phone','phone number','contact number','call','text','how to reach'], category:'store-info' },
+    { id:'aq_best_time', question:'When\'s the best time to visit? When is it least busy?', answer:'Tuesday and Wednesday mornings (9 AM – noon) are typically our quietest times — a salesperson can give you full attention and there\'s no wait for test drives.', keywords:['best time','least busy','quiet','when to come','no wait','avoid crowds'], category:'store-info' },
+    { id:'aq_espanol', question:'Do you have anyone who speaks Spanish?', answer:'Sí, tenemos varios miembros del equipo que hablan español, incluyendo Maria Rodriguez y Sofia Ramos. Pide hablar con ellas cuando llegues o llames.', keywords:['spanish','español','habla espanol','bilingual','multilingual','se habla'], category:'store-info' },
+    { id:'aq_plates', question:'Do you handle license plate transfers and registration?', answer:'Yes, we handle all title, registration, and license plate work as part of every sale. Bring your current registration if you\'re transferring plates from another vehicle.', keywords:['plates','license plate','registration','title','transfer plates','dmv'], category:'store-info' },
+    { id:'aq_delivery', question:'Do you deliver the vehicle to my home?', answer:'Local delivery (within 50 miles of Houston) is complimentary for financed purchases. Deliveries beyond 50 miles are quoted case-by-case based on distance and transport method.', keywords:['delivery','deliver','ship','bring the car','home delivery'], category:'inventory' },
+    { id:'aq_pre_approval', question:'Can I get pre-approved before I come in?', answer:'Yes — our online pre-approval takes about 5 minutes and gives you a soft credit pull with no impact to your score. Complete it at usadirectauto.com/finance and bring the approval when you visit.', keywords:['pre-approval','preapproval','apply online','soft credit pull','get approved before'], category:'financing' }
+  ];
+}
+function aiqaLoad(){
+  var list = null;
+  try{ var raw = localStorage.getItem(AIQA_KEY); if(raw){ var p = JSON.parse(raw); if(p && p.ver === AIQA_VER && Array.isArray(p.list)) list = p.list; } }catch(e){}
+  if(!list){ list = aiqaDefaults(); try{ localStorage.setItem(AIQA_KEY, JSON.stringify({ver:AIQA_VER, list:list})); }catch(e){} }
+  list.forEach(function(it){ if(!Array.isArray(it.keywords)) it.keywords = []; if(typeof it.category !== 'string') it.category = ''; });
+  return list;
+}
+function aiqaPersist(){ try{ localStorage.setItem(AIQA_KEY, JSON.stringify({ver:AIQA_VER, list:_aiqaItems})); }catch(e){} }
+function aiqaFiltered(){
+  var q = (_qsQuery||'').trim().toLowerCase();
+  if(!q) return _aiqaItems.slice();
+  return _aiqaItems.filter(function(it){
+    var kw = (it.keywords||[]).join(' ').toLowerCase();
+    return String(it.question||'').toLowerCase().indexOf(q) >= 0
+        || String(it.answer||'').toLowerCase().indexOf(q) >= 0
+        || String(it.category||'').toLowerCase().indexOf(q) >= 0
+        || kw.indexOf(q) >= 0;
+  });
+}
+function aiqaRender(){
+  var list = document.getElementById('aiqa-list'); if(!list) return;
+  var all = aiqaFiltered();
+  var total = all.length;
+  var pages = Math.max(1, Math.ceil(total / AIQA_PER));
+  if(_aiqaPage > pages) _aiqaPage = pages;
+  var start = (_aiqaPage - 1) * AIQA_PER;
+  var rows = all.slice(start, start + AIQA_PER);
+  if(!rows.length){
+    var msg = _qsQuery ? 'No entries match your search.' : 'No Q&amp;A entries yet — click "Add" to create one.';
+    list.innerHTML = '<div class="aiqa-empty">'+msg+'</div>';
+  } else {
+    list.innerHTML = rows.map(function(it){
+      var id = _aqEsc(it.id);
+      return '<div class="aiqa-row" data-id="'+id+'">'
+        + '<div class="aiqa-row-head">'
+          + '<div class="aiqa-row-q" onclick="aiqaRowToggle(\''+id+'\')">'+_aqEsc(it.question)+'</div>'
+          + '<svg class="aiqa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="aiqaRowToggle(\''+id+'\')"><polyline points="6 9 12 15 18 9"/></svg>'
+        + '</div>'
+        + '<div class="aiqa-row-body">'
+          + '<input type="text" class="aiqa-inp" data-f="question" value="'+_aqEsc(it.question)+'" oninput="aiqaRowDirty(\''+id+'\')"/>'
+          + '<div class="aiqa-inp-label">Answer</div>'
+          + '<textarea class="aiqa-inp-a" data-f="answer" rows="4" oninput="aiqaRowDirty(\''+id+'\')">'+_aqEsc(it.answer)+'</textarea>'
+          + '<div class="aiqa-inp-label">Keywords</div>'
+          + '<div class="aiqa-kw-field" data-f="keywords" onclick="_aiqaKwFocus(\''+id+'\')">'
+            + '<input type="text" class="aiqa-kw-input" id="aiqa-kw-input-'+id+'" placeholder="Type a keyword and press Enter" onkeydown="_aiqaKwKey(\''+id+'\', event)" onblur="_aiqaKwCommit(\''+id+'\')"/>'
+          + '</div>'
+          + '<div class="aiqa-kw-chips" id="aiqa-kw-chips-'+id+'"></div>'
+          + '<div class="aiqa-inp-label">Category</div>'
+          + '<div class="aiqa-cat-trigger" id="aiqa-cat-trigger-'+id+'" onclick="aiqaCatOpen(event,\'row\',\''+id+'\')">'
+            + '<span class="form-select-val'+(it.category?'':' form-select-mu')+'" id="aiqa-cat-val-'+id+'">'+(it.category?_aqEsc(it.category):'Select category')+'</span>'
+            + '<svg class="form-select-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+          + '</div>'
+          + '<input type="hidden" data-f="category" id="aiqa-cat-hidden-'+id+'" value="'+_aqEsc(it.category||'')+'"/>'
+          + '<div class="aiqa-inp-foot">'
+            + '<button class="modal-cancel aiqa-btn-del" onclick="aiqaRowFooterDelete(\''+id+'\')">Delete</button>'
+            + '<button class="modal-cancel aiqa-btn-cancel" onclick="aiqaRowCancel(\''+id+'\')">Cancel</button>'
+            + '<button class="modal-save aiqa-btn-update" id="aiqa-update-'+id+'" onclick="aiqaRowUpdate(\''+id+'\')" disabled>Update</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  }
+  var info = document.getElementById('aiqa-pager-info');
+  var btns = document.getElementById('aiqa-pager-btns');
+  var startNum = total ? start + 1 : 0;
+  var endNum = Math.min(_aiqaPage * AIQA_PER, total);
+  if(info) info.textContent = 'Showing ' + startNum + ' to ' + endNum + ' of ' + total + ' Results';
+  var b = ['<button class="aiqa-pg" '+(_aiqaPage<=1?'disabled':'')+' onclick="aiqaGo('+(_aiqaPage-1)+')">Prev</button>'];
+  for(var i = 1; i <= pages; i++){ b.push('<button class="aiqa-pg'+(i===_aiqaPage?' active':'')+'" onclick="aiqaGo('+i+')">'+i+'</button>'); }
+  b.push('<button class="aiqa-pg" '+(_aiqaPage>=pages?'disabled':'')+' onclick="aiqaGo('+(_aiqaPage+1)+')">Next</button>');
+  if(btns) btns.innerHTML = b.join('');
+}
+function aiqaGo(p){
+  var pages = Math.max(1, Math.ceil(aiqaFiltered().length / AIQA_PER));
+  if(p < 1 || p > pages) return;
+  _aiqaPage = p; aiqaRender();
+}
+function aiqaRowToggle(id){
+  var row = document.querySelector('.aiqa-row[data-id="'+id+'"]'); if(!row) return;
+  var opening = !row.classList.contains('open');
+  row.classList.toggle('open');
+  if(opening){
+    var it = _aiqaItems.filter(function(x){return x.id===id;})[0];
+    if(it){
+      _aiqaRowSnaps[id] = { question: it.question||'', answer: it.answer||'', keywords:(it.keywords||[]).slice(), category: it.category||'' };
+      _aiqaRowKw[id] = (it.keywords||[]).slice();
+      _aiqaKwRender(id);
+    }
+    aiqaRowDirty(id);
+  } else {
+    delete _aiqaRowSnaps[id]; delete _aiqaRowKw[id];
+  }
+}
+function _aiqaRowInputs(id){
+  var row = document.querySelector('.aiqa-row[data-id="'+id+'"]'); if(!row) return null;
+  return { row:row, q:row.querySelector('[data-f="question"]'), a:row.querySelector('[data-f="answer"]'), k:row.querySelector('[data-f="keywords"]'), c:row.querySelector('[data-f="category"]') };
+}
+function _aiqaRowPayload(id){
+  var r = _aiqaRowInputs(id); if(!r) return null;
+  var kw = Array.isArray(_aiqaRowKw[id]) ? _aiqaRowKw[id].slice() : [];
+  return { question:(r.q.value||'').trim(), answer:(r.a.value||'').trim(), keywords:kw, category:(r.c.value||'').trim() };
+}
+function aiqaRowDirty(id){
+  var btn = document.getElementById('aiqa-update-'+id); if(!btn) return;
+  var snap = _aiqaRowSnaps[id]; if(!snap){ btn.disabled = true; return; }
+  var cur = _aiqaRowPayload(id); if(!cur){ btn.disabled = true; return; }
+  var same = cur.question===snap.question && cur.answer===snap.answer && cur.category===snap.category && cur.keywords.join('||')===snap.keywords.join('||');
+  btn.disabled = same || !cur.question;
+}
+function aiqaRowCancel(id){
+  var snap = _aiqaRowSnaps[id]; var r = _aiqaRowInputs(id); if(!r) return;
+  if(snap){ r.q.value = snap.question; r.a.value = snap.answer; aiqaCatSet('row', id, snap.category); _aiqaRowKw[id] = (snap.keywords||[]).slice(); _aiqaKwRender(id); }
+  r.row.classList.remove('open');
+  delete _aiqaRowSnaps[id]; delete _aiqaRowKw[id];
+}
+function aiqaRowUpdate(id){
+  var cur = _aiqaRowPayload(id); if(!cur) return;
+  if(!cur.question){ var r = _aiqaRowInputs(id); if(r && r.q) r.q.focus(); return; }
+  var it = _aiqaItems.filter(function(x){return x.id===id;})[0]; if(!it) return;
+  it.question = cur.question; it.answer = cur.answer; it.keywords = cur.keywords; it.category = cur.category;
+  aiqaPersist();
+  var rr = _aiqaRowInputs(id);
+  if(rr && rr.row){ var qEl = rr.row.querySelector('.aiqa-row-q'); if(qEl) qEl.textContent = cur.question; }
+  _aiqaRowSnaps[id] = { question:cur.question, answer:cur.answer, keywords:cur.keywords.slice(), category:cur.category };
+  aiqaRowDirty(id);
+  showNavToast('Q&A updated', cur.question);
+}
+function _aiqaKwRender(id){
+  var wrap = document.getElementById('aiqa-kw-chips-'+id); if(!wrap) return;
+  var arr = _aiqaRowKw[id] || [];
+  wrap.innerHTML = arr.map(function(t, i){
+    return '<span class="aiqa-kw-chip">' + _aqEsc(t)
+      + '<button type="button" class="aiqa-kw-chip-x" aria-label="Remove '+_aqEsc(t)+'" onclick="_aiqaKwRemove(\''+id+'\', '+i+', event)">&times;</button>'
+      + '</span>';
+  }).join('');
+}
+function _aiqaKwFocus(id){ var i = document.getElementById('aiqa-kw-input-'+id); if(i) i.focus(); }
+function _aiqaKwAdd(id, raw){
+  var v = String(raw||'').trim(); if(!v) return false;
+  if(!Array.isArray(_aiqaRowKw[id])) _aiqaRowKw[id] = [];
+  var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var added = false;
+  parts.forEach(function(p){ if(_aiqaRowKw[id].indexOf(p) < 0){ _aiqaRowKw[id].push(p); added = true; } });
+  if(added){ _aiqaKwRender(id); aiqaRowDirty(id); }
+  return added;
+}
+function _aiqaKwCommit(id){ var i = document.getElementById('aiqa-kw-input-'+id); if(!i) return; if(_aiqaKwAdd(id, i.value)) i.value = ''; }
+function _aiqaKwRemove(id, idx, ev){
+  if(ev) ev.stopPropagation();
+  if(!Array.isArray(_aiqaRowKw[id])) return;
+  _aiqaRowKw[id].splice(idx, 1);
+  _aiqaKwRender(id); aiqaRowDirty(id);
+}
+function _aiqaKwKey(id, e){
+  if(e.key === 'Enter' || e.key === ','){ e.preventDefault(); if(_aiqaKwAdd(id, e.target.value)) e.target.value = ''; }
+  else if(e.key === 'Backspace' && !e.target.value && Array.isArray(_aiqaRowKw[id]) && _aiqaRowKw[id].length){ _aiqaRowKw[id].pop(); _aiqaKwRender(id); aiqaRowDirty(id); }
+}
+function _aiqaAddKwRender(){
+  var wrap = document.getElementById('aiqa-add-kw-chips'); if(!wrap) return;
+  wrap.innerHTML = _aiqaAddKw.map(function(t, i){
+    return '<span class="aiqa-kw-chip">' + _aqEsc(t)
+      + '<button type="button" class="aiqa-kw-chip-x" aria-label="Remove '+_aqEsc(t)+'" onclick="_aiqaAddKwRemove('+i+', event)">&times;</button>'
+      + '</span>';
+  }).join('');
+}
+function _aiqaAddKwFocus(){ var i = document.getElementById('aiqa-add-kw-input'); if(i) i.focus(); }
+function _aiqaAddKwAdd(raw){
+  var v = String(raw||'').trim(); if(!v) return false;
+  var parts = v.split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var added = false;
+  parts.forEach(function(p){ if(_aiqaAddKw.indexOf(p) < 0){ _aiqaAddKw.push(p); added = true; } });
+  if(added){ _aiqaAddKwRender(); aiqaAddSync(); }
+  return added;
+}
+function _aiqaAddKwCommit(){ var i = document.getElementById('aiqa-add-kw-input'); if(!i) return; if(_aiqaAddKwAdd(i.value)) i.value = ''; }
+function _aiqaAddKwRemove(idx, ev){
+  if(ev) ev.stopPropagation();
+  _aiqaAddKw.splice(idx, 1);
+  _aiqaAddKwRender(); aiqaAddSync();
+}
+function _aiqaAddKwKey(e){
+  if(e.key === 'Enter' || e.key === ','){ e.preventDefault(); if(_aiqaAddKwAdd(e.target.value)) e.target.value = ''; }
+  else if(e.key === 'Backspace' && !e.target.value && _aiqaAddKw.length){ _aiqaAddKw.pop(); _aiqaAddKwRender(); aiqaAddSync(); }
+}
+function aiqaRowFooterDelete(id){ aiqaDelete(id); }
+function aiqaDelete(id, ev){
+  if(ev) ev.stopPropagation();
+  var it = _aiqaItems.filter(function(x){return x.id===id;})[0];
+  _aiqaItems = _aiqaItems.filter(function(x){return x.id!==id;});
+  delete _aiqaRowSnaps[id]; delete _aiqaRowKw[id];
+  aiqaPersist(); aiqaRender();
+  showNavToast('Q&A removed', (it ? it.question : 'Entry') + ' was deleted.');
+}
+function aiqaAddOpen(id){
+  _aiqaAddEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _aiqaAddEditId ? _aiqaItems.filter(function(x){return x.id===_aiqaAddEditId;})[0] : null;
+  document.getElementById('aiqa-add-title').textContent = row ? 'Edit Q&A' : 'Add Q&A';
+  document.getElementById('aiqa-add-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('aiqa-add-delete'); if(del) del.hidden = !row;
+  document.getElementById('aiqa-add-q').value = row ? (row.question || '') : '';
+  document.getElementById('aiqa-add-a').value = row ? (row.answer || '') : '';
+  _aiqaAddKw = row ? (row.keywords||[]).slice() : [];
+  _aiqaAddKwRender();
+  var kwi = document.getElementById('aiqa-add-kw-input'); if(kwi) kwi.value = '';
+  aiqaCatSet('add', null, row ? (row.category || '') : '');
+  document.getElementById('aiqa-add-modal').classList.add('open');
+  _aiqaAddSaved = _aiqaAddBuildPayload();
+  aiqaAddSync();
+  setTimeout(function(){ var n = document.getElementById('aiqa-add-q'); if(n) n.focus(); }, 20);
+}
+function aiqaAddClose(){
+  var m = document.getElementById('aiqa-add-modal'); if(m) m.classList.remove('open');
+  aiqaCatClose();
+  _aiqaAddSaved = null;
+}
+function _aiqaAddBuildPayload(){
+  var kwi = document.getElementById('aiqa-add-kw-input');
+  if(kwi && kwi.value){ _aiqaAddKwAdd(kwi.value); kwi.value = ''; }
+  return {
+    question:(document.getElementById('aiqa-add-q').value||'').trim(),
+    answer:(document.getElementById('aiqa-add-a').value||'').trim(),
+    keywords: _aiqaAddKw.slice(),
+    category:(document.getElementById('aiqa-add-c').value||'').trim()
+  };
+}
+function aiqaAddSync(){
+  var btn = document.getElementById('aiqa-add-save'); if(!btn) return;
+  if(!_aiqaAddSaved){ btn.disabled = true; return; }
+  var cur = _aiqaAddBuildPayload();
+  var same = cur.question===_aiqaAddSaved.question && cur.answer===_aiqaAddSaved.answer && cur.category===_aiqaAddSaved.category && cur.keywords.join('||')===_aiqaAddSaved.keywords.join('||');
+  btn.disabled = same || !cur.question;
+}
+function aiqaAddSave(){
+  var p = _aiqaAddBuildPayload();
+  if(!p.question){ document.getElementById('aiqa-add-q').focus(); return; }
+  var wasNew = !_aiqaAddEditId;
+  if(wasNew){
+    var newId = 'aq_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+    _aiqaItems.push({ id:newId, question:p.question, answer:p.answer, keywords:p.keywords, category:p.category });
+    _aiqaAddEditId = newId;
+    document.getElementById('aiqa-add-title').textContent = 'Edit Q&A';
+    document.getElementById('aiqa-add-save').textContent = 'Update';
+    var del = document.getElementById('aiqa-add-delete'); if(del) del.hidden = false;
+    _aiqaPage = Math.max(1, Math.ceil(_aiqaItems.length / AIQA_PER));
+  } else {
+    var row = _aiqaItems.filter(function(x){return x.id===_aiqaAddEditId;})[0];
+    if(row){ row.question = p.question; row.answer = p.answer; row.keywords = p.keywords; row.category = p.category; }
+  }
+  aiqaPersist(); aiqaRender();
+  _aiqaAddSaved = p; aiqaAddSync();
+  showNavToast(wasNew ? 'Q&A added' : 'Q&A updated', p.question);
+}
+function aiqaAddDelete(){
+  if(!_aiqaAddEditId) return;
+  var id = _aiqaAddEditId; aiqaAddClose(); aiqaDelete(id); _aiqaAddEditId = null;
+}
+/* Category picker (shared by row-edit + add modal, sourced from cc_ai_qa_categories) */
+var _aiqaCatCtx = null;
+function aiqaCatOpen(e, kind, id){
+  if(e) e.stopPropagation();
+  var pop = document.getElementById('aiqa-cat-popup'); if(!pop) return;
+  if(pop.style.display === 'block' && _aiqaCatCtx && _aiqaCatCtx.kind === kind && _aiqaCatCtx.id === id){ aiqaCatClose(); return; }
+  aiqaCatClose();
+  _aiqaCatCtx = {kind:kind, id:id};
+  var trigger = (kind === 'add') ? document.getElementById('aiqa-add-cat-trigger') : document.getElementById('aiqa-cat-trigger-'+id);
+  if(!trigger) return;
+  var current = (kind === 'add') ? (document.getElementById('aiqa-add-c').value || '') : (document.getElementById('aiqa-cat-hidden-'+id).value || '');
+  var cats = (Array.isArray(_catItems) ? _catItems : []).filter(function(x){return x && x.enabled;});
+  var list = document.getElementById('aiqa-cat-list');
+  if(!cats.length){
+    list.innerHTML = '<div style="padding:14px 12px;color:var(--mu);font-size:12.5px;text-align:center;">No enabled categories. Enable one in the Category tab.</div>';
+  } else {
+    list.innerHTML = cats.map(function(c){
+      var on = (c.name === current);
+      var nameEsc = _aqEsc(c.name);
+      var nameJs = nameEsc.replace(/'/g,"\\'");
+      return '<div class="lblp-item'+(on?' on':'')+'" onclick="aiqaCatPick(\''+nameJs+'\')">'
+        + '<span class="lblp-name">'+nameEsc+'</span>'
+        + (on ? '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' : '')
+        + '</div>';
+    }).join('');
+  }
+  var r = trigger.getBoundingClientRect();
+  pop.style.width = r.width + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8)) + 'px';
+  var below = r.bottom + 6;
+  pop.style.top = below + 'px';
+  pop.style.display = 'block';
+  trigger.classList.add('open');
+}
+function aiqaCatClose(){
+  var pop = document.getElementById('aiqa-cat-popup'); if(pop) pop.style.display = 'none';
+  document.querySelectorAll('.aiqa-cat-trigger.open').forEach(function(t){ t.classList.remove('open'); });
+  _aiqaCatCtx = null;
+}
+function aiqaCatSet(kind, id, val){
+  val = val || '';
+  if(kind === 'add'){
+    document.getElementById('aiqa-add-c').value = val;
+    var v = document.getElementById('aiqa-add-cat-val');
+    if(v){ v.textContent = val || 'Select category'; v.classList.toggle('form-select-mu', !val); }
+    aiqaAddSync();
+  } else {
+    var h = document.getElementById('aiqa-cat-hidden-'+id); if(h) h.value = val;
+    var vv = document.getElementById('aiqa-cat-val-'+id);
+    if(vv){ vv.textContent = val || 'Select category'; vv.classList.toggle('form-select-mu', !val); }
+    aiqaRowDirty(id);
+  }
+}
+function aiqaCatPick(name){
+  if(!_aiqaCatCtx) return;
+  aiqaCatSet(_aiqaCatCtx.kind, _aiqaCatCtx.id, name);
+  aiqaCatClose();
+}
+document.addEventListener('mousedown', function(e){
+  if(e.target.closest && (e.target.closest('#aiqa-cat-popup') || e.target.closest('.aiqa-cat-trigger'))) return;
+  aiqaCatClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var pop = document.getElementById('aiqa-cat-popup');
+  if(pop && pop.style.display === 'block'){ aiqaCatClose(); return; }
+  var am = document.getElementById('aiqa-add-modal');
+  if(am && am.classList.contains('open')) aiqaAddClose();
+});
+(function aiqaInit(){
+  function run(){ _aiqaItems = aiqaLoad(); aiqaRender(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+
+/* ===== Store description tab ===== */
+var QS_DESC_KEY = 'cc_ai_store_desc', QS_DESC_VER = 'v1';
+var _qsDescSaved = '';
+function qsDescDefault(){
+  return 'USA Direct Auto is a family-owned used-car dealership in Houston, TX, serving customers since 1998. We specialize in pre-owned vehicles across every price point, with in-house financing for buyers of all credit profiles.\n\nOpen Monday–Saturday 9 AM – 8 PM; closed Sunday. Located at 421 Little York Rd, Houston, TX 77076.\n\nWe pride ourselves on transparent pricing, free Carfax on every vehicle, and a customer-first approach that has earned us thousands of five-star reviews.';
+}
+function qsDescLoad(){
+  try{ var raw = localStorage.getItem(QS_DESC_KEY); if(raw){ var p = JSON.parse(raw); if(p && p.ver === QS_DESC_VER && typeof p.text === 'string') return p.text; } }catch(e){}
+  var seed = qsDescDefault();
+  try{ localStorage.setItem(QS_DESC_KEY, JSON.stringify({ver:QS_DESC_VER, text:seed})); }catch(e){}
+  return seed;
+}
+function qsDescPersist(text){ try{ localStorage.setItem(QS_DESC_KEY, JSON.stringify({ver:QS_DESC_VER, text:text||''})); }catch(e){} }
+function qsDescSync(){
+  var btn = document.getElementById('qs-desc-save'); if(!btn) return;
+  var cur = document.getElementById('qs-desc').value || '';
+  btn.disabled = (cur === (_qsDescSaved || ''));
+}
+function qsDescSave(){
+  var text = document.getElementById('qs-desc').value || '';
+  qsDescPersist(text);
+  _qsDescSaved = text;
+  qsDescSync();
+  showNavToast('Store description saved', 'AI responses will use the updated description.');
+}
+(function qsDescInit(){
+  function run(){
+    var t = qsDescLoad(); _qsDescSaved = t;
+    var el = document.getElementById('qs-desc'); if(el) el.value = t;
+    qsDescSync();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+</script>
+
+<!-- PRODUCT SWITCHER -->
+<script>
+(function(){
+  function portalSwitcher(){ var ps = document.getElementById('product-switcher'); if(ps && ps.parentElement !== document.body) document.body.appendChild(ps); }
+  function positionSwitcher(){ var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(!logo || !ps) return; var r = logo.getBoundingClientRect(); ps.style.left = ((window.innerWidth > 640) ? 66 : r.left) + 'px'; ps.style.top = (r.bottom + 8) + 'px'; }
+  function toggleProductSwitcher(e){ if(e) e.stopPropagation(); var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(!logo || !ps) return; portalSwitcher(); var w = !ps.classList.contains('ps-open'); if(w) positionSwitcher(); ps.classList.toggle('ps-open', w); logo.classList.toggle('ps-open', w); }
+  function closeProductSwitcher(){ var logo = document.querySelector('.logo'), ps = document.getElementById('product-switcher'); if(logo) logo.classList.remove('ps-open'); if(ps) ps.classList.remove('ps-open'); }
+  window.toggleProductSwitcher = toggleProductSwitcher;
+  window.closeProductSwitcher = closeProductSwitcher;
+  function init(){ portalSwitcher(); document.querySelectorAll('.ps-item').forEach(function(a){ a.classList.toggle('ps-active', a.getAttribute('data-pid') === 'coreconnect'); }); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  document.addEventListener('mousedown', function(e){ var ps = document.getElementById('product-switcher'); if(!ps || !ps.classList.contains('ps-open')) return; if(e.target.closest && (e.target.closest('.logo') || e.target.closest('#product-switcher'))) return; closeProductSwitcher(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProductSwitcher(); });
+  window.addEventListener('resize', function(){ var ps = document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); });
+  window.addEventListener('scroll', function(){ var ps = document.getElementById('product-switcher'); if(ps && ps.classList.contains('ps-open')) positionSwitcher(); }, true);
+})();
+</script>
+<script src="../../shared/leads-comms.js"></script>
+<script src="../../shared/notifications.js"></script>
+<script src="../../shared/contact-panel.js"></script>

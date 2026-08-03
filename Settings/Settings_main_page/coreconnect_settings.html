@@ -3554,7 +3554,7 @@
           <button class="set-card-info" data-info="Configure AI features, automation preferences, and intelligent assistance settings." aria-label="More info" aria-expanded="false" onclick="event.stopPropagation();setCardInfo(this)">i</button>
           <span class="set-card-info-pop"></span>
         </div>
-        <div class="set-card" style="cursor:pointer;" onclick="aiqaOpen()">
+        <div class="set-card" style="cursor:pointer;" onclick="window.location.href='../qastore/qastore.html'">
           <div class="set-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.45V12"/><path d="M12.5 14.5h.01"/></svg></div>
           <div class="set-card-txt">
             <div class="set-card-title">AI Q&A & Store Description</div>
@@ -3817,11 +3817,51 @@
           </div>
         </div>
         <div id="aiqa-pane-desc" hidden>
-          <textarea id="aiqa-desc" class="aiqa-desc" rows="14" placeholder="Describe the dealership…" oninput="aiqaDescSync()"></textarea>
-          <div class="aiqa-desc-foot">
-            <button class="modal-save" id="aiqa-desc-save" onclick="aiqaDescSave()">Save changes</button>
+          <div class="aiqa-toolbar">
+            <button class="btn btn-primary" onclick="sdAddOpen(null)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Description</span>
+            </button>
+            <div class="aiqa-tools">
+              <button class="list-action-btn" onclick="sdDownload()" title="Download" aria-label="Download">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button class="list-action-btn" onclick="sdUpload()" title="Upload" aria-label="Upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="aiqa-list" id="sd-list"></div>
+          <div class="aiqa-pager">
+            <div class="aiqa-pager-info" id="sd-pager-info"></div>
+            <div class="aiqa-pager-btns" id="sd-pager-btns"></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nested Add/Edit Store Description modal -->
+  <div class="modal-backdrop modal-fullscreen-mobile" id="sd-add-modal" style="z-index:3100;" onclick="if(event.target===this)sdAddClose()">
+    <div class="modal" style="width:520px;max-width:calc(100vw - 32px);">
+      <div class="modal-header">
+        <div class="modal-title" id="sd-add-title">Add Description</div>
+        <button class="modal-close" onclick="sdAddClose()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="modal-section-title">Title</div>
+          <div class="modal-field"><input type="text" id="sd-add-t" placeholder="e.g. Financing" oninput="sdAddSync()"/></div>
+        </div>
+        <div>
+          <div class="modal-section-title">Description</div>
+          <textarea id="sd-add-d" class="aiqa-add-a" rows="8" placeholder="Describe this section…" oninput="sdAddSync()"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel aiqa-modal-del" id="sd-add-delete" onclick="sdAddDelete()" hidden>Delete</button>
+        <button class="modal-cancel" onclick="sdAddClose()">Cancel</button>
+        <button class="modal-save" id="sd-add-save" onclick="sdAddSave()">Save</button>
       </div>
     </div>
   </div>
@@ -4727,34 +4767,25 @@ function aiqaLoad(){
   return list;
 }
 function aiqaPersist(){ try{ localStorage.setItem(AIQA_KEY, JSON.stringify({ver:AIQA_VER, list:_aiqaItems})); }catch(e){} }
-function aiqaDescLoad(){
-  try{
-    var raw = localStorage.getItem(AIQA_DESC_KEY); if(raw){
-      var p = JSON.parse(raw);
-      if(p && p.ver === AIQA_VER && typeof p.text === 'string') return p.text;
-    }
-  }catch(e){}
-  var seed = 'USA Direct Auto is a family-owned used-car dealership in Houston, TX, serving customers since 1998. We specialize in pre-owned vehicles across every price point, with in-house financing for buyers of all credit profiles.\n\nOpen Monday–Saturday 9 AM – 8 PM; closed Sunday. Located at 421 Little York Rd, Houston, TX 77076.\n\nWe pride ourselves on transparent pricing, free Carfax on every vehicle, and a customer-first approach that has earned us thousands of five-star reviews.';
-  try{ localStorage.setItem(AIQA_DESC_KEY, JSON.stringify({ver:AIQA_VER, text:seed})); }catch(e){}
-  return seed;
-}
-function aiqaDescPersist(text){ try{ localStorage.setItem(AIQA_DESC_KEY, JSON.stringify({ver:AIQA_VER, text:text||''})); }catch(e){} }
+/* aiqaDescLoad / aiqaDescPersist removed — Store Description is now a multi-entry list
+   backed by sd* (see below). The legacy `cc_ai_store_desc` key stays in place and is
+   read once by sdLoad() for seed migration. */
 function aiqaOpen(){
   _aiqaItems = aiqaLoad();
   _aiqaPage = 1;
   _aiqaTab = 'qa';
   _aiqaSetTabUI('qa');
   aiqaRender();
-  // preload description tab state for dirty tracking
-  var t = aiqaDescLoad();
-  document.getElementById('aiqa-desc').value = t;
-  _aiqaDescSaved = t;
-  aiqaDescSync();
+  // Load + render the Store Description list so switching tabs is instant.
+  _sdItems = sdLoad();
+  _sdPage = 1;
+  sdRender();
   document.getElementById('aiqa-modal').classList.add('open');
 }
 function aiqaClose(){
   document.getElementById('aiqa-modal').classList.remove('open');
   aiqaAddClose();
+  sdAddClose();
 }
 function _aiqaSetTabUI(tab){
   document.querySelectorAll('.aiqa-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab') === tab); });
@@ -4764,7 +4795,6 @@ function _aiqaSetTabUI(tab){
 function aiqaSetTab(tab){
   _aiqaTab = (tab === 'desc') ? 'desc' : 'qa';
   _aiqaSetTabUI(_aiqaTab);
-  if(_aiqaTab === 'desc') aiqaDescSync();
 }
 function aiqaRender(){
   var list = document.getElementById('aiqa-list'); if(!list) return;
@@ -5055,23 +5085,210 @@ function aiqaAddDelete(){
   aiqaDelete(id);
   _aiqaAddEditId = null;
 }
-/* ---- Store Description tab ---- */
-function aiqaDescSync(){
-  var btn = document.getElementById('aiqa-desc-save'); if(!btn) return;
-  var cur = document.getElementById('aiqa-desc').value || '';
-  btn.disabled = (cur === (_aiqaDescSaved || ''));
+/* ---- Store Description tab (multi-entry list) ---- */
+var SD_KEY = 'cc_ai_store_desc_list';
+var SD_VER = 'v1';
+var SD_PER = 10;
+var _sdItems = [];
+var _sdPage = 1;
+var _sdRowSnaps = {};
+var _sdAddEditId = null;
+var _sdAddSaved = null;
+function sdDefaults(){
+  var legacyAbout = null;
+  try{
+    var raw = localStorage.getItem(AIQA_DESC_KEY);
+    if(raw){ var p = JSON.parse(raw); if(p && typeof p.text === 'string' && p.text.trim()) legacyAbout = p.text; }
+  }catch(e){}
+  var about = legacyAbout || 'USA Direct Auto is a family-owned used-car dealership in Houston, TX, serving customers since 1998. We specialize in pre-owned vehicles across every price point, with in-house financing for buyers of all credit profiles.\n\nOpen Monday–Saturday 9 AM – 8 PM; closed Sunday. Located at 421 Little York Rd, Houston, TX 77076.';
+  return [
+    { id:'sd_about',     title:'About us',           description: about },
+    { id:'sd_financing', title:'Financing',          description:'We partner with 12+ lenders — Capital One, Ally, Exeter, Consumer Portfolio, Westlake, and more — to place buyers across every credit tier from 500 to 800+. In-house financing is available for challenged or no credit; a $2,000+ down payment typically secures the best subprime terms. Online pre-approval takes 5 minutes with a soft-pull only.' },
+    { id:'sd_service',   title:'Service department', description:'Our service department handles all makes and models. Hours: Mon–Fri 8 AM – 6 PM, Sat 9 AM – 3 PM. Customers who buy from us receive discounted service rates for the life of ownership. Loaner cars are available for services expected to exceed 4 hours; call to reserve.' },
+    { id:'sd_contacts',  title:'Key contacts',       description:'General Manager: David Park — dpark@usadirectauto.com · (713) 555-0100.\nSales Manager: Marcus Alvarez — (713) 555-0142.\nInsurance/Finance Manager: Lisa Chen — (713) 555-0148.\nService Manager: Ryan Tate — (713) 555-0155.\nParts department: (713) 555-0160.' }
+  ];
 }
-function aiqaDescSave(){
-  var text = document.getElementById('aiqa-desc').value || '';
-  aiqaDescPersist(text);
-  _aiqaDescSaved = text;
-  aiqaDescSync();
-  if(typeof showNavToast==='function') showNavToast('Store description saved', 'AI responses will use the updated description.');
+function sdLoad(){
+  var list = null;
+  try{
+    var raw = localStorage.getItem(SD_KEY); if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.ver === SD_VER && Array.isArray(p.list)) list = p.list;
+    }
+  }catch(e){}
+  if(!list){
+    list = sdDefaults();
+    try{ localStorage.setItem(SD_KEY, JSON.stringify({ver:SD_VER, list:list})); }catch(e){}
+  }
+  list.forEach(function(it){
+    if(typeof it.title !== 'string') it.title = '';
+    if(typeof it.description !== 'string') it.description = '';
+  });
+  return list;
+}
+function sdPersist(){ try{ localStorage.setItem(SD_KEY, JSON.stringify({ver:SD_VER, list:_sdItems})); }catch(e){} }
+function sdRender(){
+  var list = document.getElementById('sd-list'); if(!list) return;
+  var total = _sdItems.length;
+  var pages = Math.max(1, Math.ceil(total / SD_PER));
+  if(_sdPage > pages) _sdPage = pages;
+  var start = (_sdPage - 1) * SD_PER;
+  var rows = _sdItems.slice(start, start + SD_PER);
+  if(!rows.length){
+    list.innerHTML = '<div class="aiqa-empty">No descriptions yet — click "Add Description" to create one.</div>';
+  } else {
+    list.innerHTML = rows.map(function(it){
+      var id = _aqEsc(it.id);
+      return '<div class="aiqa-row" data-id="'+id+'">'
+        + '<div class="aiqa-row-head">'
+          + '<div class="aiqa-row-q" onclick="sdRowToggle(\''+id+'\')">'+_aqEsc(it.title)+'</div>'
+          + '<svg class="aiqa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="sdRowToggle(\''+id+'\')"><polyline points="6 9 12 15 18 9"/></svg>'
+        + '</div>'
+        + '<div class="aiqa-row-body">'
+          + '<input type="text" class="aiqa-inp" data-f="title" value="'+_aqEsc(it.title)+'" oninput="sdRowDirty(\''+id+'\')"/>'
+          + '<div class="aiqa-inp-label">Description</div>'
+          + '<textarea class="aiqa-inp-a" data-f="description" rows="6" oninput="sdRowDirty(\''+id+'\')">'+_aqEsc(it.description)+'</textarea>'
+          + '<div class="aiqa-inp-foot">'
+            + '<button class="modal-cancel aiqa-btn-del" onclick="sdRowFooterDelete(\''+id+'\')">Delete</button>'
+            + '<button class="modal-cancel aiqa-btn-cancel" onclick="sdRowCancel(\''+id+'\')">Cancel</button>'
+            + '<button class="modal-save aiqa-btn-update" id="sd-update-'+id+'" onclick="sdRowUpdate(\''+id+'\')" disabled>Update</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  }
+  var info = document.getElementById('sd-pager-info');
+  var btns = document.getElementById('sd-pager-btns');
+  var startNum = total ? start + 1 : 0;
+  var endNum = Math.min(_sdPage * SD_PER, total);
+  if(info) info.textContent = 'Showing ' + startNum + ' to ' + endNum + ' of ' + total + ' Results';
+  var b = ['<button class="aiqa-pg" '+(_sdPage<=1?'disabled':'')+' onclick="sdGo('+(_sdPage-1)+')">Prev</button>'];
+  for(var i = 1; i <= pages; i++){
+    b.push('<button class="aiqa-pg'+(i===_sdPage?' active':'')+'" onclick="sdGo('+i+')">'+i+'</button>');
+  }
+  b.push('<button class="aiqa-pg" '+(_sdPage>=pages?'disabled':'')+' onclick="sdGo('+(_sdPage+1)+')">Next</button>');
+  if(btns) btns.innerHTML = b.join('');
+}
+function sdGo(p){ var pages = Math.max(1, Math.ceil(_sdItems.length / SD_PER)); if(p < 1 || p > pages) return; _sdPage = p; sdRender(); }
+function sdRowToggle(id){
+  var row = document.querySelector('#sd-list .aiqa-row[data-id="'+id+'"]'); if(!row) return;
+  var opening = !row.classList.contains('open');
+  row.classList.toggle('open');
+  if(opening){
+    var it = _sdItems.filter(function(x){return x.id===id;})[0];
+    if(it){ _sdRowSnaps[id] = { title: it.title||'', description: it.description||'' }; }
+    sdRowDirty(id);
+  } else {
+    delete _sdRowSnaps[id];
+  }
+}
+function _sdRowInputs(id){
+  var row = document.querySelector('#sd-list .aiqa-row[data-id="'+id+'"]'); if(!row) return null;
+  var t = row.querySelector('[data-f="title"]');
+  var d = row.querySelector('[data-f="description"]');
+  return { row:row, t:t, d:d };
+}
+function _sdRowPayload(id){
+  var r = _sdRowInputs(id); if(!r) return null;
+  return { title: (r.t.value || '').trim(), description: (r.d.value || '').trim() };
+}
+function sdRowDirty(id){
+  var btn = document.getElementById('sd-update-'+id); if(!btn) return;
+  var snap = _sdRowSnaps[id]; if(!snap){ btn.disabled = true; return; }
+  var cur = _sdRowPayload(id); if(!cur){ btn.disabled = true; return; }
+  var same = cur.title === snap.title && cur.description === snap.description;
+  btn.disabled = same || !cur.title;
+}
+function sdRowCancel(id){
+  var snap = _sdRowSnaps[id];
+  var r = _sdRowInputs(id); if(!r) return;
+  if(snap){ r.t.value = snap.title; r.d.value = snap.description; }
+  r.row.classList.remove('open');
+  delete _sdRowSnaps[id];
+}
+function sdRowUpdate(id){
+  var cur = _sdRowPayload(id); if(!cur) return;
+  if(!cur.title){ var rr = _sdRowInputs(id); if(rr && rr.t) rr.t.focus(); return; }
+  var it = _sdItems.filter(function(x){return x.id===id;})[0]; if(!it) return;
+  it.title = cur.title; it.description = cur.description;
+  sdPersist();
+  var r = _sdRowInputs(id);
+  if(r && r.row){ var head = r.row.querySelector('.aiqa-row-q'); if(head) head.textContent = cur.title; }
+  _sdRowSnaps[id] = { title: cur.title, description: cur.description };
+  sdRowDirty(id);
+  if(typeof showNavToast === 'function') showNavToast('Description updated', cur.title);
+}
+function sdRowFooterDelete(id){ sdDelete(id); }
+function sdDelete(id, ev){
+  if(ev) ev.stopPropagation();
+  var it = _sdItems.filter(function(x){return x.id===id;})[0];
+  _sdItems = _sdItems.filter(function(x){return x.id!==id;});
+  delete _sdRowSnaps[id];
+  sdPersist(); sdRender();
+  if(typeof showNavToast === 'function') showNavToast('Description removed', (it ? it.title : 'Entry') + ' was deleted.');
+}
+function sdDownload(){ if(typeof showNavToast==='function') showNavToast('Download', 'This section is under construction.'); }
+function sdUpload(){ if(typeof showNavToast==='function') showNavToast('Upload', 'This section is under construction.'); }
+function sdAddOpen(id){
+  _sdAddEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _sdAddEditId ? _sdItems.filter(function(x){return x.id===_sdAddEditId;})[0] : null;
+  document.getElementById('sd-add-title').textContent = row ? 'Edit Description' : 'Add Description';
+  document.getElementById('sd-add-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('sd-add-delete'); if(del) del.hidden = !row;
+  document.getElementById('sd-add-t').value = row ? (row.title || '') : '';
+  document.getElementById('sd-add-d').value = row ? (row.description || '') : '';
+  document.getElementById('sd-add-modal').classList.add('open');
+  _sdAddSaved = _sdAddBuildPayload();
+  sdAddSync();
+  setTimeout(function(){ var n = document.getElementById('sd-add-t'); if(n) n.focus(); }, 20);
+}
+function sdAddClose(){ var m = document.getElementById('sd-add-modal'); if(m) m.classList.remove('open'); _sdAddSaved = null; }
+function _sdAddBuildPayload(){
+  return {
+    title: (document.getElementById('sd-add-t').value || '').trim(),
+    description: (document.getElementById('sd-add-d').value || '').trim()
+  };
+}
+function sdAddSync(){
+  var btn = document.getElementById('sd-add-save'); if(!btn) return;
+  if(!_sdAddSaved){ btn.disabled = true; return; }
+  var cur = _sdAddBuildPayload();
+  var same = cur.title === _sdAddSaved.title && cur.description === _sdAddSaved.description;
+  btn.disabled = same || !cur.title;
+}
+function sdAddSave(){
+  var p = _sdAddBuildPayload();
+  if(!p.title){ document.getElementById('sd-add-t').focus(); return; }
+  var wasNew = !_sdAddEditId;
+  if(wasNew){
+    var newId = 'sd_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
+    _sdItems.push({ id:newId, title:p.title, description:p.description });
+    _sdAddEditId = newId;
+    document.getElementById('sd-add-title').textContent = 'Edit Description';
+    document.getElementById('sd-add-save').textContent = 'Update';
+    var del = document.getElementById('sd-add-delete'); if(del) del.hidden = false;
+    _sdPage = Math.max(1, Math.ceil(_sdItems.length / SD_PER));
+  } else {
+    var row = _sdItems.filter(function(x){return x.id===_sdAddEditId;})[0];
+    if(row){ row.title = p.title; row.description = p.description; }
+  }
+  sdPersist(); sdRender();
+  _sdAddSaved = p; sdAddSync();
+  if(typeof showNavToast==='function') showNavToast(wasNew ? 'Description added' : 'Description updated', p.title);
+}
+function sdAddDelete(){
+  if(!_sdAddEditId) return;
+  var id = _sdAddEditId;
+  sdAddClose();
+  sdDelete(id);
+  _sdAddEditId = null;
 }
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
   var addM = document.getElementById('aiqa-add-modal');
   if(addM && addM.classList.contains('open')){ aiqaAddClose(); return; }
+  var sdM = document.getElementById('sd-add-modal');
+  if(sdM && sdM.classList.contains('open')){ sdAddClose(); return; }
   var m = document.getElementById('aiqa-modal');
   if(m && m.classList.contains('open')) aiqaClose();
 });

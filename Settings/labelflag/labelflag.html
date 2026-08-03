@@ -53,6 +53,27 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 /* ===== LABEL FLAG PAGE ===== */
 .lf-head-spacer{flex:1;}
 .lf-srch{width:240px;}
+.lf-table-wrap{background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;overflow:hidden;}
+.lf-table{width:100%;border-collapse:collapse;font-size:13px;}
+.lf-table thead th{padding:12px 16px;text-align:left;color:var(--mu);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;background:var(--sur);}
+.lf-table tbody tr{border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .12s;}
+.lf-table tbody tr:last-child{border-bottom:none;}
+.lf-table tbody tr:hover{background:var(--sur2);}
+.lf-table tbody td{padding:12px 16px;vertical-align:middle;color:var(--tx);}
+.lf-td-name{display:flex;align-items:center;gap:10px;font-weight:500;}
+.lf-td-name .lf-dot{width:12px;height:12px;border-radius:50%;flex:none;}
+.lf-empty-row{cursor:default !important;}
+.lf-empty-row:hover{background:transparent !important;}
+.lf-empty-cell{padding:48px 20px !important;text-align:center;color:var(--mu);}
+.lf-palette{display:flex;flex-wrap:wrap;gap:10px;}
+.lf-sw{width:28px;height:28px;border-radius:50%;cursor:pointer;position:relative;border:2px solid transparent;transition:transform .12s,border-color .12s;}
+.lf-sw:hover{transform:scale(1.08);}
+.lf-sw.on{border-color:var(--tx);}
+.lf-sw.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4);}
+.lf-modal-del{margin-right:auto;}
+.lf-modal-del:hover{border-color:var(--rd);color:var(--rd);}
+#lf-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
+#lf-modal .modal-save[disabled]:hover{background:var(--ac);}
 .lf-empty{padding:48px 20px;text-align:center;color:var(--mu);font-size:13px;
   background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;}
 @media (max-width:640px){
@@ -179,6 +200,31 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 </div>
 
 <!-- PAGE-LEVEL NAV TOAST -->
+<!-- ADD / EDIT LABEL MODAL -->
+<div class="modal-backdrop modal-fullscreen-mobile" id="lf-modal" onclick="if(event.target===this)lfModalClose()">
+  <div class="modal" style="width:440px;max-width:calc(100vw - 32px);">
+    <div class="modal-header">
+      <div class="modal-title" id="lf-modal-title">Add Label</div>
+      <button class="modal-close" onclick="lfModalClose()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">Label name</div>
+        <div class="modal-field"><input type="text" id="lf-f-name" placeholder="e.g. Hot" oninput="lfSyncDirty()"/></div>
+      </div>
+      <div>
+        <div class="modal-section-title">Color</div>
+        <div class="lf-palette" id="lf-palette"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel lf-modal-del" id="lf-modal-delete" onclick="lfModalDelete()" hidden>Delete</button>
+      <button class="modal-cancel" onclick="lfModalClose()">Cancel</button>
+      <button class="modal-save" id="lf-modal-save" onclick="lfModalSave()">Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -210,8 +256,14 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   </div>
   <div class="set-scroll">
     <section class="set-section">
-      <!-- Shell only — the label list goes here in a follow-up turn. -->
-      <div class="lf-empty" id="lf-empty">No labels yet — click "Add" to create one.</div>
+      <div class="lf-table-wrap">
+        <table class="lf-table">
+          <thead>
+            <tr><th>Name</th></tr>
+          </thead>
+          <tbody id="lf-tbody"></tbody>
+        </table>
+      </div>
     </section>
   </div>
 </div>
@@ -300,13 +352,136 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNo
 /* ===== Label Flag — shell state (list lands in a follow-up) ===== */
 function lfEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 var _lfQuery = '';
+var LF_KEY = 'cc_lead_labels';
+var lfItems = [];
+function lfEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function lfDefaults(){
+  return [
+    { id:'hot',      name:'Hot',       color:'#e85555' },
+    { id:'warm',     name:'Warm',      color:'#f5a623' },
+    { id:'cold',     name:'Cold',      color:'#4f7cff' },
+    { id:'vip',      name:'VIP',       color:'#a78bfa' },
+    { id:'followup', name:'Follow-up', color:'#22c88a' }
+  ];
+}
+function lfLoad(){
+  var s = null;
+  try{ s = JSON.parse(localStorage.getItem(LF_KEY) || 'null'); }catch(e){}
+  if(!Array.isArray(s)) s = lfDefaults();
+  return s;
+}
+function lfFiltered(){
+  var q = (_lfQuery || '').trim().toLowerCase();
+  if(!q) return lfItems.slice();
+  return lfItems.filter(function(it){ return String(it.name||'').toLowerCase().indexOf(q) >= 0; });
+}
+function lfRender(){
+  var tbody = document.getElementById('lf-tbody'); if(!tbody) return;
+  var rows = lfFiltered();
+  if(!rows.length){
+    var msg = _lfQuery ? 'No labels match your search.' : 'No labels yet — click "Add" to create one.';
+    tbody.innerHTML = '<tr class="lf-empty-row"><td class="lf-empty-cell">'+lfEsc(msg)+'</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(it){
+    return '<tr role="button" tabindex="0"'
+      + ' onclick="lfRowClick(\''+lfEsc(it.id)+'\')"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();lfRowClick(\''+lfEsc(it.id)+'\');}">'
+      + '<td><div class="lf-td-name"><span class="lf-dot" style="background:'+lfEsc(it.color||'#4f7cff')+';"></span>'+lfEsc(it.name)+'</div></td>'
+    + '</tr>';
+  }).join('');
+}
+function lfPersist(){ try{ localStorage.setItem(LF_KEY, JSON.stringify(lfItems)); }catch(e){} }
+function lfRowClick(id){ lfModalOpen(id); }
+
+/* ===== Add / Edit label modal ===== */
+var LF_PALETTE = ['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#64748b'];
+var _lfEditId = null;
+var _lfColor = LF_PALETTE[0];
+var _lfSaved = null;
+function lfPaletteRender(){
+  var el = document.getElementById('lf-palette'); if(!el) return;
+  el.innerHTML = LF_PALETTE.map(function(c){
+    var on = (c.toLowerCase() === String(_lfColor||'').toLowerCase()) ? ' on' : '';
+    return '<span class="lf-sw'+on+'" role="button" tabindex="0" aria-label="'+c+'" data-color="'+c+'" style="background:'+c+';" onclick="lfPickColor(\''+c+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();lfPickColor(\''+c+'\');}"></span>';
+  }).join('');
+}
+function lfPickColor(c){ _lfColor = c; lfPaletteRender(); lfSyncDirty(); }
+function lfBuildPayload(){
+  return { name: (document.getElementById('lf-f-name').value || '').trim(), color: _lfColor };
+}
+function lfSyncDirty(){
+  var btn = document.getElementById('lf-modal-save'); if(!btn) return;
+  if(!_lfSaved){ btn.disabled = true; return; }
+  var cur = lfBuildPayload();
+  var same = cur.name === _lfSaved.name && cur.color === _lfSaved.color;
+  btn.disabled = same || (!_lfEditId && !cur.name);
+}
+function _lfSlug(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function lfModalOpen(id){
+  var m = document.getElementById('lf-modal'); if(!m) return;
+  _lfEditId = (typeof id === 'string' && id) ? id : null;
+  var row = _lfEditId ? lfItems.filter(function(x){return x.id === _lfEditId;})[0] : null;
+  document.getElementById('lf-modal-title').textContent = row ? 'Edit Label' : 'Add Label';
+  document.getElementById('lf-modal-save').textContent = row ? 'Update' : 'Save';
+  var del = document.getElementById('lf-modal-delete'); if(del) del.hidden = !row;
+  document.getElementById('lf-f-name').value = row ? (row.name || '') : '';
+  _lfColor = row ? (row.color || LF_PALETTE[0]) : LF_PALETTE[0];
+  lfPaletteRender();
+  m.classList.add('open');
+  _lfSaved = lfBuildPayload();
+  lfSyncDirty();
+  setTimeout(function(){ var n = document.getElementById('lf-f-name'); if(n) n.focus(); }, 20);
+}
+function lfModalClose(){
+  var m = document.getElementById('lf-modal'); if(m) m.classList.remove('open');
+  _lfSaved = null;
+}
+function lfModalSave(){
+  var payload = lfBuildPayload();
+  if(!payload.name){ document.getElementById('lf-f-name').focus(); return; }
+  var wasNew = !_lfEditId;
+  if(wasNew){
+    var baseId = _lfSlug(payload.name) || ('lbl-' + Date.now());
+    var newId = baseId, n = 2;
+    while(lfItems.some(function(x){return x.id === newId;})) newId = baseId + '-' + (n++);
+    lfItems.push({ id: newId, name: payload.name, color: payload.color });
+    _lfEditId = newId;
+    document.getElementById('lf-modal-title').textContent = 'Edit Label';
+    document.getElementById('lf-modal-save').textContent = 'Update';
+    var del = document.getElementById('lf-modal-delete'); if(del) del.hidden = false;
+  } else {
+    var row = lfItems.filter(function(x){return x.id === _lfEditId;})[0];
+    if(row){ row.name = payload.name; row.color = payload.color; }
+  }
+  lfPersist(); lfRender();
+  _lfSaved = payload;
+  lfSyncDirty();
+  showNavToast(wasNew ? 'Label added' : 'Label updated', payload.name + ' was saved.');
+}
+function lfModalDelete(){
+  if(!_lfEditId) return;
+  var id = _lfEditId, row = lfItems.filter(function(x){return x.id === id;})[0];
+  lfItems = lfItems.filter(function(x){return x.id !== id;});
+  lfPersist(); lfRender(); lfModalClose();
+  showNavToast('Label deleted', (row ? row.name : 'Label') + ' was removed.');
+  _lfEditId = null;
+}
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var mo = document.getElementById('lf-modal');
+  if(mo && mo.classList.contains('open')) lfModalClose();
+});
+(function lfInit(){
+  function run(){ lfItems = lfLoad(); lfRender(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
 function lfSearch(v){
   _lfQuery = String(v || '');
-  /* No list yet — lfRender() will consume _lfQuery once the list lands. */
+  lfRender();
 }
-function lfAddOpen(){
-  showNavToast('Add label', 'This section is under construction.');
-}
+function lfAddOpen(){ lfModalOpen(null); }
 </script>
 
 <!-- PRODUCT SWITCHER -->

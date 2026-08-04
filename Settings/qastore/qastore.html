@@ -951,9 +951,21 @@ function aiqaCatOpen(e, kind, id){
   var r = trigger.getBoundingClientRect();
   pop.style.width = r.width + 'px';
   pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8)) + 'px';
-  var below = r.bottom + 6;
-  pop.style.top = below + 'px';
+  pop.style.maxHeight = '';
+  pop.style.top = '0px';
+  pop.style.visibility = 'hidden';
   pop.style.display = 'block';
+  var ph = pop.offsetHeight;
+  var spaceBelow = window.innerHeight - r.bottom - 12;
+  var spaceAbove = r.top - 12;
+  if(ph <= spaceBelow || spaceBelow >= spaceAbove){
+    pop.style.maxHeight = Math.min(320, Math.max(120, spaceBelow)) + 'px';
+    pop.style.top = (r.bottom + 6) + 'px';
+  } else {
+    pop.style.maxHeight = Math.min(320, Math.max(120, spaceAbove)) + 'px';
+    pop.style.top = Math.max(8, r.top - Math.min(pop.offsetHeight, spaceAbove) - 6) + 'px';
+  }
+  pop.style.visibility = 'visible';
   trigger.classList.add('open');
 }
 function aiqaCatClose(){

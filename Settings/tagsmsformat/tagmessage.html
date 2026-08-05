@@ -119,10 +119,45 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 #tm-var-list .lblp-item-name{font-size:13px;color:var(--tx);}
 #tm-var-list .lblp-item:hover{background:var(--sur2);}
 @media (max-width:640px){ #tm-var-list .lblp-item{min-height:44px;font-size:15px;} }
+/* Mobile search overlay (ported from vidlib / CRM) */
+.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--sur);}
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-back svg{width:20px;height:20px;}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+.mso-clear svg{width:16px;height:16px;}
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .set-page-head{display:none;}
+/* Mobile kebab */
+.mobile-kebab-btn{display:none;}
+.tm-dd{position:relative;}
+.tm-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:200px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:4px;z-index:60;display:none;}
+.tm-menu.open{display:block;}
+.tm-menu .tm-mi{display:flex;align-items:center;gap:10px;padding:9px 12px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;border-radius:6px;background:transparent;border:none;width:100%;text-align:left;}
+.tm-menu .tm-mi:hover{background:var(--sur2);color:var(--ac2);}
+.tm-menu .tm-mi svg{width:14px;height:14px;color:var(--mu);flex:none;}
+.tm-menu .tm-mi:hover svg{color:var(--ac2);}
+
 @media (max-width:640px){
-  .set-page-head{flex-wrap:wrap;}
+  .set-page-head{flex-wrap:nowrap;gap:6px;}
   .tm-head-spacer{display:none;}
-  .tm-srch{width:auto;flex:1 1 160px;}
+  .tm-srch{display:none;}
+  #tm-add-btn{display:none;}
+  .ur-back span{display:none;}
+  .mobile-search-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;gap:0;margin-left:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);cursor:pointer;}
+  .mobile-search-toggle svg{width:18px;height:18px;}
+  .mobile-kebab-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;gap:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);cursor:pointer;}
+  .mobile-kebab-btn svg{width:18px;height:18px;}
   .tm-td-name{max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .tm-modal .modal-body{flex-direction:column !important;gap:16px;padding:16px;}
   .tm-preview{padding:0;}
@@ -246,6 +281,21 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   </div>
 </div>
 
+<!-- MOBILE SEARCH OVERLAY -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search templates…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)"/>
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- PAGE-LEVEL NAV TOAST -->
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
@@ -339,10 +389,24 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="tm-search-input" placeholder="Search..." oninput="tmSearch(this.value)"/>
     </div>
+    <button class="mobile-search-toggle" id="mobile-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
     <button class="btn btn-primary" id="tm-add-btn" onclick="tmAddOpen()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add
     </button>
+    <div class="tm-dd" id="tm-kebab-dd">
+      <button type="button" class="mobile-kebab-btn" id="tm-kebab-btn" onclick="tmKebabToggle(event)" aria-label="More">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>
+      </button>
+      <div class="tm-menu" id="tm-kebab-menu">
+        <button type="button" class="tm-mi" onclick="tmKebabPick('add')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Template
+        </button>
+      </div>
+    </div>
   </div>
   <div class="set-scroll">
     <section class="set-section">
@@ -516,8 +580,76 @@ function tmRowClick(id){ tmModalOpen(id); }
 function tmSearch(v){
   _tmQuery = String(v || '');
   tmRender();
+  if(typeof msoUpdateDot === 'function') msoUpdateDot();
 }
 function tmAddOpen(){ tmModalOpen(null); }
+
+/* ===== Mobile search overlay (ported from CRM/vidlib) ===== */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('mobile-search-toggle'); }
+function msoUpdateDot(){
+  var btn = _msoToggleBtn(); if(!btn) return;
+  if(_tmQuery && _tmQuery.length) btn.classList.add('has-query');
+  else btn.classList.remove('has-query');
+}
+function msoUpdateClear(){
+  var inp = _msoInput(), clr = _msoClearBtn(); if(!inp || !clr) return;
+  if(inp.value && inp.value.length) clr.classList.add('show');
+  else clr.classList.remove('show');
+}
+function msoOnInput(v){
+  var deskInp = document.getElementById('tm-search-input'); if(deskInp) deskInp.value = v;
+  tmSearch(v);
+  msoUpdateClear();
+}
+function msoClearInput(){
+  var inp = _msoInput(); if(!inp) return;
+  inp.value = ''; msoOnInput(''); inp.focus();
+}
+function toggleMobileSearch(){
+  var ov = _msoEl(), inp = _msoInput(); if(!ov || !inp) return;
+  inp.value = _tmQuery || '';
+  msoUpdateClear();
+  document.body.classList.add('mso-active');
+  ov.classList.add('open');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+function closeMobileSearch(){
+  var ov = _msoEl(); if(!ov || !ov.classList.contains('open')) return;
+  ov.classList.remove('open');
+  document.body.classList.remove('mso-active');
+  var inp = _msoInput(); if(inp) inp.blur();
+  msoUpdateDot();
+}
+
+/* ===== Mobile kebab menu ===== */
+function tmKebabToggle(e){
+  if(e) e.stopPropagation();
+  var m = document.getElementById('tm-kebab-menu'), b = document.getElementById('tm-kebab-btn');
+  if(!m || !b) return;
+  var open = m.classList.toggle('open');
+  b.classList.toggle('open', open);
+}
+function tmKebabClose(){
+  var m = document.getElementById('tm-kebab-menu'), b = document.getElementById('tm-kebab-btn');
+  if(m) m.classList.remove('open'); if(b) b.classList.remove('open');
+}
+function tmKebabPick(k){
+  tmKebabClose();
+  if(k === 'add') tmAddOpen();
+}
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest) return;
+  if(!e.target.closest('#tm-kebab-dd')) tmKebabClose();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  var ov = document.getElementById('mso');
+  if(ov && ov.classList.contains('open')){ closeMobileSearch(); return; }
+  tmKebabClose();
+});
 
 /* ===== Add / Edit modal ===== */
 var TM_VARS = [

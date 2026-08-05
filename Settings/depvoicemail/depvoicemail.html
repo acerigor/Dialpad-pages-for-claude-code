@@ -65,6 +65,9 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .dv-table tbody tr:hover{background:var(--sur2);}
 .dv-table tbody td{padding:10px 16px;vertical-align:middle;color:var(--tx);}
 .dv-td-dept{font-weight:500;}
+.dv-audio-upload{background:var(--sur2);color:var(--mu);border:0.5px dashed var(--brd2);font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;}
+.dv-audio-upload:hover{border-color:var(--ac);color:var(--ac2);}
+.dv-audio-upload svg{width:12px;height:12px;}
 .dv-td-users{display:flex;align-items:center;}
 .dv-av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;border:2px solid var(--sur);position:relative;}
 .dv-av-more{background:var(--sur2);color:var(--mu);}
@@ -533,14 +536,19 @@ function dvRender(){
   }
   tbody.innerHTML = rows.map(function(it){
     var id = dvEsc(it.id);
-    var player = '<div class="dv-wp" data-audio-id="'+id+'">'
-      + '<button type="button" class="dv-wp-btn" onclick="dvWpToggle(\''+id+'\')" aria-label="Play">'
-        + '<svg class="dv-wp-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
-        + '<svg class="dv-wp-pause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
-      + '</button>'
-      + '<svg class="dv-wp-wave" viewBox="0 0 300 32" preserveAspectRatio="none" onclick="dvWpSeek(\''+id+'\', event)">'+dvBuildWaveSvg(id, 44)+'</svg>'
-      + '<span class="dv-wp-time">0:00 / '+dvFmtTime(it.dur)+'</span>'
-    + '</div>';
+    var hasAudio = !!it.filename;
+    var player = hasAudio
+      ? ('<div class="dv-wp" data-audio-id="'+id+'">'
+        + '<button type="button" class="dv-wp-btn" onclick="dvWpToggle(\''+id+'\')" aria-label="Play">'
+          + '<svg class="dv-wp-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+          + '<svg class="dv-wp-pause" viewBox="0 0 24 24" fill="currentColor" hidden><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
+        + '</button>'
+        + '<svg class="dv-wp-wave" viewBox="0 0 300 32" preserveAspectRatio="none" onclick="dvWpSeek(\''+id+'\', event)">'+dvBuildWaveSvg(id, 44)+'</svg>'
+        + '<span class="dv-wp-time">0:00 / '+dvFmtTime(it.dur)+'</span>'
+      + '</div>')
+      : ('<button type="button" class="dv-audio-upload" onclick="dvModalOpen(\''+id+'\')">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'
+        + 'Upload</button>');
     return '<tr role="button" tabindex="0"'
       + ' onclick="if(!event.target.closest(\'.dv-actions\'))dvRowClick(\''+id+'\')"'
       + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&!event.target.closest(\'.dv-actions\')){event.preventDefault();dvRowClick(\''+id+'\');}">'
@@ -549,7 +557,7 @@ function dvRender(){
       + '<td class="dv-actions">'+player+'</td>'
     + '</tr>';
   }).join('');
-  rows.forEach(function(it){ _dvState(it.id, it.dur); dvWpRender(it.id); });
+  rows.forEach(function(it){ if(!it.filename) return; _dvState(it.id, it.dur); dvWpRender(it.id); });
 }
 function dvRowClick(id){ dvModalOpen(id); }
 function dvSearch(v){ _dvQuery = String(v || ''); dvRender(); }

@@ -67,18 +67,11 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .np-switch input:focus-visible + .np-switch-track{box-shadow:0 0 0 2px rgba(79,124,255,.35);}
 .lan-active-row{display:flex;align-items:center;gap:12px;padding-top:4px;}
 .lan-active-lbl{font-size:13px;color:var(--tx);font-weight:500;}
-.lan-th-users{width:200px;}
 .lan-table tbody tr{border-bottom:0.5px solid var(--brd);cursor:pointer;transition:background .12s;}
 .lan-table tbody tr:last-child{border-bottom:none;}
 .lan-table tbody tr:hover{background:var(--sur2);}
 .lan-table tbody td{padding:12px 16px;vertical-align:middle;color:var(--tx);}
 .lan-td-name{font-weight:500;}
-.lan-td-users{display:flex;align-items:center;}
-.lan-av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;border:2px solid var(--sur);position:relative;flex:none;}
-.lan-table tbody tr:hover .lan-av{border-color:var(--sur2);}
-.lan-av-more{background:var(--sur2);color:var(--mu);}
-.lan-av[data-name]::after{content:attr(data-name);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--sur2);color:var(--ac2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:100;}
-.lan-av[data-name]:hover::after{opacity:1;}
 .lan-empty-row{cursor:default !important;}
 .lan-empty-row:hover{background:transparent !important;}
 .lan-empty-cell{padding:48px 20px !important;text-align:center;color:var(--mu);}
@@ -87,51 +80,17 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
   .lan-head-spacer{display:none;}
   .lan-srch{width:auto;flex:1 1 160px;}
   .lan-td-name{max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .lan-th-users{width:auto;}
 }
-/* Modal — Users field + chips + notif table (ported from Transcript Alert Management) */
+/* Modal — Template body editor + column-variable picker + Is Active */
 .lan-editor{min-height:100px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13.5px;line-height:1.55;outline:none;overflow-y:auto;max-height:220px;box-sizing:border-box;}
 .lan-editor:focus{border-color:var(--ac);}
 .lan-editor:empty::before{content:attr(data-placeholder);color:var(--mu);pointer-events:none;}
 .lan-editor .lan-var-chip{margin:0 1px;}
 .lan-var-chip{display:inline-block;background:rgba(79,124,255,.14);border:1px solid rgba(79,124,255,.5);color:var(--ac2);padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500;line-height:1.55;white-space:nowrap;vertical-align:baseline;}
-.lan-user-field{min-height:44px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 34px 0 12px;display:flex;align-items:center;cursor:pointer;position:relative;transition:border-color .12s;}
-.lan-user-field:hover{border-color:rgba(255,255,255,.16);}
-.lan-user-empty{color:var(--mu);font-size:13px;}
-.lan-user-chev{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--mu);transition:transform .12s;}
-.lan-user-field.open .lan-user-chev{transform:translateY(-50%) rotate(180deg);}
-.lan-user-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-.lan-user-chips:empty{display:none;}
-.lan-user-chip{display:inline-flex;align-items:center;gap:6px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:999px;padding:3px 4px 3px 3px;color:var(--tx);font-size:12px;}
-.lan-user-chip-name{padding:0 2px 0 0;}
-.lan-user-chip-x{width:20px;height:20px;border:none;background:transparent;color:var(--mu);border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;display:inline-flex;align-items:center;justify-content:center;}
-.lan-user-chip-x:hover{background:var(--rd);color:#fff;}
-.lan-chip-av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;flex:none;}
-.lan-notif-wrap{margin-top:12px;border:0.5px solid var(--brd2);border-radius:8px;overflow:hidden;background:var(--sur2);}
-.lan-notif-table{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--tx);}
-.lan-notif-table th{text-align:left;padding:8px 10px;background:var(--sur);color:var(--mu);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;border-bottom:0.5px solid var(--brd);white-space:nowrap;}
-.lan-notif-table td{padding:8px 10px;border-bottom:0.5px solid var(--brd);vertical-align:middle;}
-.lan-notif-table tr:last-child td{border-bottom:none;}
-.lan-notif-name{display:flex;align-items:center;gap:8px;font-weight:500;}
-.lan-notif-name .lan-chip-av{width:22px;height:22px;font-size:10px;}
-.lan-notif-dept,.lan-notif-role{color:var(--mu);font-size:12px;}
-.lan-notif-th{width:180px;}
-.lan-notif-cells{display:flex;gap:14px;justify-content:flex-start;}
-.lan-notif-cb{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--tx);cursor:pointer;user-select:none;}
-.lan-notif-cb input{margin:0;accent-color:var(--ac);width:14px;height:14px;cursor:pointer;}
-.lan-user-search{padding:6px 8px;}
-.lan-user-search input{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);font-family:var(--font);font-size:13px;padding:8px 10px;outline:none;}
-.lan-user-search input:focus{border-color:var(--ac);}
-.lan-user-empty-search{padding:20px 12px;text-align:center;color:var(--mu);font-size:12.5px;}
-#lan-user-popup{width:300px;max-height:380px;display:flex;flex-direction:column;padding:6px;}
 #lan-var-popup{width:240px;max-height:320px;display:flex;flex-direction:column;padding:6px;}
-#lan-user-list{overflow-y:auto;flex:1;min-height:0;max-height:280px;}
 #lan-var-list{overflow-y:auto;flex:1;min-height:0;max-height:260px;}
-#lan-user-list .lblp-item,#lan-var-list .lblp-item{padding:8px 10px;gap:10px;cursor:pointer;}
+#lan-var-list .lblp-item{padding:8px 10px;gap:10px;cursor:pointer;}
 #lan-var-list .lblp-item:hover{background:var(--sur2);}
-#lan-user-list .lblp-item-txt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
-#lan-user-list .lblp-item-name{font-size:13px;color:var(--tx);font-weight:500;}
-#lan-user-list .lblp-item-sub{font-size:11.5px;color:var(--mu);}
 #lan-var-list .lblp-name{font-size:13px;color:var(--tx);}
 .lan-tpl-wrap{display:flex;flex-direction:column;gap:6px;}
 .lan-tpl-toolbar{display:flex;justify-content:flex-start;}
@@ -142,11 +101,6 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 .lan-modal-del:hover{border-color:var(--rd);color:var(--rd);}
 #lan-modal .modal-save[disabled]{opacity:.5;cursor:not-allowed;background:var(--ac);}
 #lan-modal .modal-save[disabled]:hover{background:var(--ac);}
-@media (max-width:640px){
-  .lan-notif-wrap{overflow-x:auto;}
-  .lan-notif-table{min-width:420px;}
-  #lan-user-list .lblp-item{min-height:44px;font-size:15px;}
-}
 </style>
 
 <!-- TOP HEADER -->
@@ -301,17 +255,20 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
         </div>
       </div>
       <div>
-        <div class="modal-section-title">Users</div>
-        <div class="lan-user-field" id="lan-user-field" role="button" tabindex="0" onclick="lanUserOpen(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();lanUserOpen(event);}">
-          <span class="lan-user-empty">Click to select users</span>
-          <svg class="lan-user-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="modal-section-title">Notification</div>
+        <div class="lan-active-row">
+          <span class="lan-active-lbl">SMS</span>
+          <label class="np-switch">
+            <input type="checkbox" id="lan-f-sms" onchange="lanSyncDirty()"/>
+            <span class="np-switch-track"></span>
+          </label>
         </div>
-        <div class="lan-user-chips" id="lan-user-chips"></div>
-        <div class="lan-notif-wrap" id="lan-notif-wrap" hidden>
-          <table class="lan-notif-table">
-            <thead><tr><th>Name</th><th>Department</th><th>Role</th><th class="lan-notif-th">Notification</th></tr></thead>
-            <tbody id="lan-notif-tbody"></tbody>
-          </table>
+        <div class="lan-active-row" style="margin-top:8px;">
+          <span class="lan-active-lbl">Email</span>
+          <label class="np-switch">
+            <input type="checkbox" id="lan-f-email" onchange="lanSyncDirty()"/>
+            <span class="np-switch-track"></span>
+          </label>
         </div>
       </div>
       <div class="lan-active-row">
@@ -328,13 +285,6 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
       <button class="modal-save" id="lan-modal-save" onclick="lanModalSave()">Save</button>
     </div>
   </div>
-</div>
-
-<!-- USER PICKER POPUP -->
-<div class="assign-popup" id="lan-user-popup" style="display:none;z-index:3300;">
-  <div class="assign-popup-title">Select users</div>
-  <div class="lan-user-search"><input type="text" id="lan-user-search-input" placeholder="Search users…" oninput="lanUserSearch(this.value)"/></div>
-  <div class="lblp-list" id="lan-user-list"></div>
 </div>
 
 <!-- COLUMN-VARIABLE PICKER POPUP -->
@@ -369,7 +319,6 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
             <tr>
               <th class="lan-th-toggle">Enabled</th>
               <th>Template Name</th>
-              <th class="lan-th-users">Users</th>
             </tr>
           </thead>
           <tbody id="lan-tbody"></tbody>
@@ -466,13 +415,13 @@ function lanEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return
 function _lanChip(k, l){ return '<span class="lan-var-chip" contenteditable="false" data-var="'+k+'">'+l+'</span>&nbsp;'; }
 function lanDefaults(){
   return [
-    { id:'lan_new_app',   name:'New application received', users:['DP','MR','JD'], enabled:true,
+    { id:'lan_new_app',   name:'New application received', enabled:true,
       body:'New loan application from '+_lanChip('name','Name')+'for a '+_lanChip('vehicle','Vehicle')+'. Contact: '+_lanChip('phone','Phone number')+'.' },
-    { id:'lan_credit_ok', name:'Credit approved',          users:['DP','MR'],      enabled:true,
+    { id:'lan_credit_ok', name:'Credit approved',          enabled:true,
       body:'Credit approved for '+_lanChip('name','Name')+'on the '+_lanChip('vehicle','Vehicle')+'. Ready to move forward.' },
-    { id:'lan_missing',   name:'Missing document alert',   users:['MR','TK'],      enabled:true,
+    { id:'lan_missing',   name:'Missing document alert',   enabled:true,
       body:'Missing document required on '+_lanChip('name','Name')+'\'s file. Follow up at '+_lanChip('email','Email')+'.' },
-    { id:'lan_signed',    name:'Signed contract',          users:['DP'],           enabled:true,
+    { id:'lan_signed',    name:'Signed contract',          enabled:true,
       body:'Contract signed by '+_lanChip('name','Name')+'— stock #'+_lanChip('stock','Stock')+'. Deal ready to finalize.' }
   ];
 }
@@ -483,38 +432,12 @@ function lanLoad(){
   s.forEach(function(it){
     if(typeof it.body !== 'string') it.body = '';
     if(typeof it.enabled !== 'boolean') it.enabled = true;
-    if(!it.notify || typeof it.notify !== 'object') it.notify = {};
-    (it.users || []).forEach(function(k){
-      if(!it.notify[k]) it.notify[k] = {sms:true, email:true};
-    });
+    if(typeof it.sms !== 'boolean') it.sms = true;
+    if(typeof it.email !== 'boolean') it.email = true;
   });
   return s;
 }
 function lanPersist(){ try{ localStorage.setItem(LAN_KEY, JSON.stringify(lanItems)); }catch(e){} }
-function lanRoster(){ return (window.CCLeads && Array.isArray(CCLeads.TEAM)) ? CCLeads.TEAM : []; }
-function lanRosterByKey(k){
-  var r = lanRoster();
-  for(var i=0; i<r.length; i++){ if(r[i].key === k) return r[i]; }
-  return null;
-}
-function lanInitials(name){
-  return String(name||'').trim().split(/\s+/).slice(0,2).map(function(s){return s.charAt(0).toUpperCase();}).join('');
-}
-function lanUsersCell(userKeys){
-  var MAX = 4;
-  var mems = (userKeys||[]).map(lanRosterByKey).filter(Boolean);
-  var shown = mems.slice(0, MAX);
-  var extra = mems.length - shown.length;
-  var html = '<div class="lan-td-users">' + shown.map(function(m, i){
-    return '<span class="lan-av" data-name="'+lanEsc(m.name)+'" style="background:'+lanEsc(m.color||'#4f7cff')+';'+(i>0?'margin-left:-8px;':'')+'">'
-      + lanEsc(lanInitials(m.name)) + '</span>';
-  }).join('');
-  if(extra > 0){
-    html += '<span class="lan-av lan-av-more" style="margin-left:-8px;" data-name="'+extra+' more">+' + extra + '</span>';
-  }
-  html += '</div>';
-  return html;
-}
 function lanFiltered(){
   var q = (_lanQuery || '').trim().toLowerCase();
   if(!q) return lanItems.slice();
@@ -527,7 +450,7 @@ function lanRender(){
     var msg = _lanQuery
       ? 'No loan-app notifications match your search.'
       : 'No loan-app notifications yet — click "Add" to create one.';
-    tbody.innerHTML = '<tr class="lan-empty-row"><td colspan="3" class="lan-empty-cell">'+lanEsc(msg)+'</td></tr>';
+    tbody.innerHTML = '<tr class="lan-empty-row"><td colspan="2" class="lan-empty-cell">'+lanEsc(msg)+'</td></tr>';
     return;
   }
   tbody.innerHTML = rows.map(function(it){
@@ -543,7 +466,6 @@ function lanRender(){
         + '</label>'
       + '</td>'
       + '<td class="lan-td-name">'+lanEsc(it.name)+'</td>'
-      + '<td>'+lanUsersCell(it.users)+'</td>'
     + '</tr>';
   }).join('');
 }
@@ -557,24 +479,16 @@ function lanRowClick(id){ lanModalOpen(id); }
 function lanSearch(v){ _lanQuery = String(v || ''); lanRender(); }
 function lanAddOpen(){ lanModalOpen(null); }
 
-/* ===== Add / Edit modal (Name + Body + Users + Notify) ===== */
+/* ===== Add / Edit modal (Name + Body + Is Active) ===== */
 var _lanEditId = null;
-var _lanUserSel = [];
-var _lanUserNotify = {};
-var _lanUserQuery = '';
 var _lanSaved = null;
 function lanBuildPayload(){
-  var notify = {};
-  _lanUserSel.forEach(function(k){
-    var e = _lanUserNotify[k] || {sms:true, email:true};
-    notify[k] = { sms: !!e.sms, email: !!e.email };
-  });
   return {
     name: (document.getElementById('lan-f-name').value || '').trim(),
     body: document.getElementById('lan-f-body').innerHTML || '',
-    users: _lanUserSel.slice(),
-    notify: notify,
-    enabled: !!document.getElementById('lan-f-enabled').checked
+    enabled: !!document.getElementById('lan-f-enabled').checked,
+    sms:   !!document.getElementById('lan-f-sms').checked,
+    email: !!document.getElementById('lan-f-email').checked
   };
 }
 function lanSyncDirty(){
@@ -584,90 +498,6 @@ function lanSyncDirty(){
   var same = JSON.stringify(cur) === JSON.stringify(_lanSaved);
   btn.disabled = same || (!_lanEditId && !cur.name);
 }
-
-function lanUserRenderChips(){
-  var wrap = document.getElementById('lan-user-chips'); if(!wrap) return;
-  var byKey = {}; lanRoster().forEach(function(m){ byKey[m.key] = m; });
-  var keys = _lanUserSel.filter(function(k){ return !!byKey[k]; });
-  wrap.innerHTML = keys.map(function(k){
-    var m = byKey[k];
-    return '<span class="lan-user-chip">'
-      + '<span class="lan-chip-av" style="background:'+lanEsc(m.color||'#4f7cff')+';">'+lanEsc(lanInitials(m.name))+'</span>'
-      + '<span class="lan-user-chip-name">'+lanEsc(m.name)+'</span>'
-      + '<button class="lan-user-chip-x" type="button" aria-label="Remove '+lanEsc(m.name)+'" onclick="lanUserRemove(\''+lanEsc(k)+'\', event)">&times;</button>'
-    + '</span>';
-  }).join('');
-  lanNotifRender();
-}
-function lanNotifRender(){
-  var wrap = document.getElementById('lan-notif-wrap'); if(!wrap) return;
-  var tbody = document.getElementById('lan-notif-tbody'); if(!tbody) return;
-  var byKey = {}; lanRoster().forEach(function(m){ byKey[m.key] = m; });
-  var keys = _lanUserSel.filter(function(k){ return !!byKey[k]; });
-  if(!keys.length){ wrap.hidden = true; tbody.innerHTML = ''; return; }
-  wrap.hidden = false;
-  tbody.innerHTML = keys.map(function(k){
-    var m = byKey[k];
-    var n = _lanUserNotify[k] || {sms:true, email:true};
-    return '<tr>'
-      + '<td><div class="lan-notif-name"><span class="lan-chip-av" style="background:'+lanEsc(m.color||'#4f7cff')+';">'+lanEsc(lanInitials(m.name))+'</span>'+lanEsc(m.name)+'</div></td>'
-      + '<td class="lan-notif-dept">'+lanEsc(m.dept||'—')+'</td>'
-      + '<td class="lan-notif-role">'+lanEsc(m.role||'—')+'</td>'
-      + '<td class="lan-notif-th"><div class="lan-notif-cells">'
-        + '<label class="lan-notif-cb"><input type="checkbox"'+(n.sms?' checked':'')+' onchange="lanNotifSet(\''+lanEsc(k)+'\',\'sms\',this.checked)">SMS</label>'
-        + '<label class="lan-notif-cb"><input type="checkbox"'+(n.email?' checked':'')+' onchange="lanNotifSet(\''+lanEsc(k)+'\',\'email\',this.checked)">Email</label>'
-      + '</div></td>'
-    + '</tr>';
-  }).join('');
-}
-function lanNotifSet(key, ch, val){
-  if(!_lanUserNotify[key]) _lanUserNotify[key] = {sms:true, email:true};
-  _lanUserNotify[key][ch] = !!val;
-  if(typeof lanSyncDirty === 'function') lanSyncDirty();
-}
-function lanUserRenderList(){
-  var list = document.getElementById('lan-user-list'); if(!list) return;
-  var q = (_lanUserQuery || '').trim().toLowerCase();
-  var rows = lanRoster().filter(function(m){
-    if(!q) return true;
-    return (m.name||'').toLowerCase().indexOf(q) >= 0
-        || (m.role||'').toLowerCase().indexOf(q) >= 0
-        || (m.dept||'').toLowerCase().indexOf(q) >= 0;
-  });
-  if(!rows.length){ list.innerHTML = '<div class="lan-user-empty-search">No users match your search.</div>'; return; }
-  var sel = {}; _lanUserSel.forEach(function(k){ sel[k] = 1; });
-  list.innerHTML = rows.map(function(m){
-    var on = sel[m.key] ? ' on' : '';
-    var sub = [m.role, m.dept].filter(Boolean).join(' · ');
-    return '<div class="lblp-item'+on+'" onclick="lanUserToggle(\''+lanEsc(m.key)+'\')">'
-      + '<span class="lan-chip-av" style="background:'+lanEsc(m.color||'#4f7cff')+';">'+lanEsc(lanInitials(m.name))+'</span>'
-      + '<span class="lblp-item-txt"><span class="lblp-item-name">'+lanEsc(m.name)+'</span>'+(sub?'<span class="lblp-item-sub">'+lanEsc(sub)+'</span>':'')+'</span>'
-      + '<span class="lblp-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
-    + '</div>';
-  }).join('');
-}
-function lanUserToggle(key){
-  var i = _lanUserSel.indexOf(key);
-  if(i < 0){
-    _lanUserSel.push(key);
-    if(!_lanUserNotify[key]) _lanUserNotify[key] = {sms:true, email:true};
-  } else {
-    _lanUserSel.splice(i, 1);
-    delete _lanUserNotify[key];
-  }
-  lanUserRenderChips(); lanUserRenderList();
-  lanSyncDirty();
-}
-function lanUserRemove(key, ev){
-  if(ev) ev.stopPropagation();
-  var i = _lanUserSel.indexOf(key); if(i < 0) return;
-  _lanUserSel.splice(i, 1);
-  delete _lanUserNotify[key];
-  lanUserRenderChips();
-  if(document.getElementById('lan-user-popup').style.display === 'block') lanUserRenderList();
-  lanSyncDirty();
-}
-function lanUserSearch(v){ _lanUserQuery = v || ''; lanUserRenderList(); }
 
 /* Column-variable picker */
 var LAN_VARS = [
@@ -732,7 +562,6 @@ function lanVarPopupToggle(e){
   if(e) e.stopPropagation();
   var pop = document.getElementById('lan-var-popup'); if(!pop) return;
   if(pop.style.display === 'block'){ lanVarPopupClose(); return; }
-  lanUserClose();
   lanSaveSelection();
   var btn = (e && e.currentTarget) || document.querySelector('.lan-var-open');
   pop.style.visibility = 'hidden'; pop.style.display = 'block';
@@ -753,27 +582,6 @@ function lanVarPick(key, label){
   lanVarPopupClose();
   lanVarInsert(key, label);
 }
-function lanUserOpen(e){
-  if(e) e.stopPropagation();
-  var pop = document.getElementById('lan-user-popup'); if(!pop) return;
-  if(pop.style.display === 'block'){ lanUserClose(); return; }
-  var anchor = document.getElementById('lan-user-field');
-  var r = anchor.getBoundingClientRect();
-  var popW = Math.max(300, Math.round(r.width));
-  pop.style.width = popW + 'px';
-  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - popW - 8)) + 'px';
-  pop.style.top = (r.bottom + 6) + 'px';
-  var s = document.getElementById('lan-user-search-input'); if(s) s.value = '';
-  _lanUserQuery = '';
-  lanUserRenderList();
-  pop.style.display = 'block';
-  anchor.classList.add('open');
-  setTimeout(function(){ if(s) s.focus(); }, 30);
-}
-function lanUserClose(){
-  var pop = document.getElementById('lan-user-popup'); if(pop) pop.style.display = 'none';
-  var f = document.getElementById('lan-user-field'); if(f) f.classList.remove('open');
-}
 function lanModalOpen(id){
   var m = document.getElementById('lan-modal'); if(!m) return;
   _lanEditId = (typeof id === 'string' && id) ? id : null;
@@ -784,16 +592,9 @@ function lanModalOpen(id){
   document.getElementById('lan-f-name').value = row ? (row.name || '') : '';
   document.getElementById('lan-f-body').innerHTML = row ? (row.body || '') : '';
   _lanSavedRange = null;
-  _lanUserSel = row && Array.isArray(row.users) ? row.users.slice() : [];
-  _lanUserNotify = {};
-  var storedNotify = (row && row.notify && typeof row.notify === 'object') ? row.notify : {};
-  _lanUserSel.forEach(function(k){
-    var e = storedNotify[k];
-    _lanUserNotify[k] = (e && typeof e === 'object') ? {sms: e.sms!==false, email: e.email!==false} : {sms:true, email:true};
-  });
   document.getElementById('lan-f-enabled').checked = row ? !!row.enabled : true;
-  lanUserRenderChips();
-  lanUserClose();
+  document.getElementById('lan-f-sms').checked     = row ? row.sms   !== false : true;
+  document.getElementById('lan-f-email').checked   = row ? row.email !== false : true;
   m.classList.add('open');
   _lanSaved = lanBuildPayload();
   lanSyncDirty();
@@ -801,7 +602,6 @@ function lanModalOpen(id){
 }
 function lanModalClose(){
   var m = document.getElementById('lan-modal'); if(m) m.classList.remove('open');
-  lanUserClose();
   lanVarPopupClose();
   _lanSavedRange = null;
   _lanSaved = null;
@@ -812,14 +612,14 @@ function lanModalSave(){
   var wasNew = !_lanEditId;
   if(wasNew){
     var newId = 'lan_' + Date.now() + '_' + Math.floor(Math.random()*1e4);
-    lanItems.push({ id: newId, name: payload.name, body: payload.body, users: payload.users, enabled: payload.enabled, notify: payload.notify });
+    lanItems.push({ id: newId, name: payload.name, body: payload.body, enabled: payload.enabled, sms: payload.sms, email: payload.email });
     _lanEditId = newId;
     document.getElementById('lan-modal-title').textContent = 'Edit Loan-App Notification';
     document.getElementById('lan-modal-save').textContent = 'Update';
     var del = document.getElementById('lan-modal-delete'); if(del) del.hidden = false;
   } else {
     var row = lanItems.filter(function(x){return x.id === _lanEditId;})[0];
-    if(row){ row.name = payload.name; row.body = payload.body; row.users = payload.users; row.enabled = payload.enabled; row.notify = payload.notify; }
+    if(row){ row.name = payload.name; row.body = payload.body; row.enabled = payload.enabled; row.sms = payload.sms; row.email = payload.email; delete row.users; delete row.notify; }
   }
   lanPersist(); lanRender();
   _lanSaved = payload;
@@ -836,16 +636,13 @@ function lanModalDelete(){
 }
 document.addEventListener('mousedown', function(e){
   if(e.target.closest){
-    if(!(e.target.closest('#lan-user-popup') || e.target.closest('#lan-user-field'))) lanUserClose();
-    if(!(e.target.closest('#lan-var-popup')  || e.target.closest('.lan-var-open')))    lanVarPopupClose();
-  } else { lanUserClose(); lanVarPopupClose(); }
+    if(!(e.target.closest('#lan-var-popup')  || e.target.closest('.lan-var-open'))) lanVarPopupClose();
+  } else { lanVarPopupClose(); }
 });
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
   var vp = document.getElementById('lan-var-popup');
   if(vp && vp.style.display === 'block'){ lanVarPopupClose(); return; }
-  var pop = document.getElementById('lan-user-popup');
-  if(pop && pop.style.display === 'block'){ lanUserClose(); return; }
   var mo = document.getElementById('lan-modal');
   if(mo && mo.classList.contains('open')) lanModalClose();
 });

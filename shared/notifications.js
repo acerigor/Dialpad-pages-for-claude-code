@@ -401,7 +401,7 @@
   }
   var LA_CAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M14.5 13.5c0-.83-.67-1.5-1.5-1.5h-2c-.83 0-1.5.67-1.5 1.5S10.17 15 11 15h2c.83 0 1.5.67 1.5 1.5S13.83 18 13 18h-2c-.83 0-1.5-.67-1.5-1.5"/></svg>';
   /* Notification-type registry — each entry: {titlePrefix, icon (SVG), iconBg, iconFg, tab}.
-     Phase 1 only ships new_app + a credit_pulled placeholder; later phases extend this. */
+     Later phases extend this. */
   var LA_TYPES = {
     new_app: {
       titlePrefix: 'New application',
@@ -409,13 +409,6 @@
       iconBg: 'rgba(79,124,255,.14)',
       iconFg: 'var(--ac2)',
       tab: 'all'
-    },
-    credit_pulled: {
-      titlePrefix: 'Credit pulled',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14" x2="10" y2="14"/></svg>',
-      iconBg: 'rgba(79,124,255,.14)',
-      iconFg: 'var(--ac2)',
-      tab: 'loanapp'
     },
     lender_approved: {
       titlePrefix: 'Lender approved',
@@ -432,7 +425,7 @@
       tab: 'loanapp'
     },
     doc_requested: {
-      titlePrefix: 'Document requested',
+      titlePrefix: 'Document Upload',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
       iconBg: 'rgba(245,166,35,.15)',
       iconFg: 'var(--am)',
@@ -472,12 +465,10 @@
      to LA_TYPES[type].titlePrefix). `leadName` resolves against CCLeads.LEADS at render. */
   var LA_STORE_KEY = 'cc_loanapp_notifications';
   var LA_STORE_VER_KEY = 'cc_loanapp_notifications_ver';
-  var LA_STORE_VER = 3;   // bump when adding/removing seed rows
+  var LA_STORE_VER = 4;   // bump when adding/removing seed rows
   function laDefaultSeed(){
     var now = Date.now();
     return [
-      { id:'la_seed_credit_ethan',     type:'credit_pulled',   leadName:'Ethan Wright',
-        body:'FICO 612 · TransUnion',                          ts: now - 1000*60*45 },
       { id:'la_seed_lapproved_mason',  type:'lender_approved', leadName:'Mason Reid',
         body:'Capital One · 6.9% APR · 72 mo',                 ts: now - 1000*60*90 },
       { id:'la_seed_ldeclined_james',  type:'lender_declined', leadName:'James Okoye',

@@ -13,6 +13,9 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-serif;}
 
+/* Transient "New loan application" card disabled for now — hidden regardless of the JS show call. */
+#loanapp-card{display:none !important;}
+
 /* ── Design tokens ─────────────────────────────────────────────────────── */
 :root{
   --bg:#0f1117;--sur:#181c27;--sur2:#1e2333;

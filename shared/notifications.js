@@ -850,14 +850,386 @@
     else setTimeout(show, 20);
   }
   function laBannerInit(){
-    laEnsureLeadsData(function(){
-      var lead = laNewestLoanLead(); if(!lead) return;
-      setTimeout(function(){ laShowCard(lead); }, 700);
-    });
+    /* Transient "New loan application" card disabled for now. Re-enable by uncommenting below. */
+    return;
+    // laEnsureLeadsData(function(){
+    //   var lead = laNewestLoanLead(); if(!lead) return;
+    //   setTimeout(function(){ laShowCard(lead); }, 700);
+    // });
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectLoanAppIcon);
   else injectLoanAppIcon();
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', laBannerInit);
   else laBannerInit();
+})();
+
+/* ============================================================================
+   CoreConnect — Global search palette (command-palette style)
+   ----------------------------------------------------------------------------
+   Adds a search magnifier button to the top-header (before the theme toggle).
+   Click → dark full-viewport overlay with input + filtered results list of
+   app pages + Settings hub cards. Arrow keys navigate, Enter goes.
+   Idempotent — checks for #header-search before injecting.
+   ============================================================================ */
+(function(){
+  var GS_MAX = 20;
+  // Absolute paths from site root so results resolve from any folder depth.
+  var GS_INDEX = [
+    // Main app pages
+    { title:'Dashboard',                              sub:'Home view — activity, KPIs, widgets',                  href:'/coreconnect_dashboard_v41/coreconnect_dashboard_v41.html',                       type:'Page' },
+    { title:'CRM · Leads',                            sub:'All leads — kanban and table views',                    href:'/coreconnect_leads_v83/coreconnect_leads_v83.html',                                type:'Page' },
+    { title:'Call History',                           sub:'Inbound, outbound, missed calls',                       href:'/call_history/coreconnect_call_history_v31.html',                                  type:'Page' },
+    { title:'Messages',                               sub:'SMS conversations',                                     href:'/coreconnect_message_history_v41/coreconnect_message_history_v41.html',            type:'Page' },
+    { title:'Voicemail',                              sub:'Voicemail inbox and playback',                          href:'/coreconnect_voicemail_history_v9/coreconnect_voicemail_history_v9.html',          type:'Page' },
+    { title:'Appointments',                           sub:'Calendar — day, week, month',                           href:'/coreconnect_appointments/coreconnect_appointments.html',                          type:'Page' },
+    { title:'Contacts',                               sub:'Full contact directory',                                href:'/Settings/contacts/coreconnect_contact.html',                                      type:'Page' },
+    { title:'Reports',                                sub:'Reporting & analytics',                                 href:'/Settings/reports/coreconnect_report.html',                                        type:'Page' },
+    { title:'Deal Desk',                              sub:'Deal desking workspace',                                href:'/Settings/desking_module/desking_module.html',                                     type:'Page' },
+    { title:'Notifications inbox',                    sub:'All notifications',                                     href:'/notification/notification.html',                                                  type:'Page' },
+
+    // Reputation module
+    { title:'Reputation · Dashboard',                 sub:'Reviews overview and scores',                           href:'/reputation/reputation_dashboard/Dashboard.html',                                  type:'Reputation' },
+    { title:'Reputation · Reviews',                   sub:'All customer reviews',                                  href:'/reputation/reviews/reviews.html',                                                 type:'Reputation' },
+    { title:'Reputation · Requests',                  sub:'Review request campaigns',                              href:'/reputation/requests/review_request/review_request.html',                          type:'Reputation' },
+    { title:'Reputation · Leaderboard',               sub:'Team review-request leaderboard',                       href:'/reputation/requests/leaderboard/leaderboard.html',                                type:'Reputation' },
+    { title:'Reputation · Request Templates',         sub:'Email + SMS request templates',                         href:'/reputation/requests/template/template.html',                                      type:'Reputation' },
+    { title:'Reputation · Review Templates',          sub:'Review-response templates',                             href:'/reputation/settings/reviews/template/template.html',                              type:'Reputation' },
+    { title:'Reputation · Rate rules',                sub:'Route reviews by rating',                               href:'/reputation/settings/requests/ratesettings.html',                                  type:'Reputation' },
+    { title:'Reputation · Source',                    sub:'Review platforms and integrations',                     href:'/reputation/source/source.html',                                                   type:'Reputation' },
+    { title:'Reputation · Settings',                  sub:'Reputation module settings hub',                        href:'/reputation/settings/settings.html',                                               type:'Reputation' },
+    { title:'Reputation · Listing performance',       sub:'Listing performance metrics',                           href:'/reputation/listing/performance/performance.html',                                 type:'Reputation' },
+
+    // Settings hub
+    { title:'Settings',                               sub:'Settings hub — all cards',                              href:'/Settings/Settings_main_page/coreconnect_settings.html',                           type:'Settings' },
+    { title:'User Management',                        sub:'Manage all users',                                      href:'/Settings/Users/coreconnect_user.html',                                            type:'Settings' },
+    { title:'Role Management',                        sub:'Roles and their permissions',                           href:'/Settings/User_roles/coreconnect_user_roles.html',                                 type:'Settings' },
+    { title:'Contact Management',                     sub:'All customer contacts',                                 href:'/Settings/contacts/coreconnect_contact.html',                                      type:'Settings' },
+    { title:'Reporting & Analytics',                  sub:'Report builders and schedules',                         href:'/Settings/reports/coreconnect_report.html',                                        type:'Settings' },
+    { title:'CRM Alerts & Automation',                sub:'CRM alert rules',                                       href:'/Settings/crm_alert_management/crm_alert_management.html',                          type:'Settings' },
+    { title:'Notification Settings',                  sub:'Notification management',                               href:'/Settings/notification_management/notification_management.html',                    type:'Settings' },
+    { title:'Location Management',                    sub:'Store locations',                                       href:'/Settings/locations/locations.html',                                               type:'Settings' },
+    { title:'Lead Status Reasons',                    sub:'Inactive reason list',                                  href:'/Settings/inactive_reason/inactive_reason.html',                                   type:'Settings' },
+    { title:'Inventory Integration',                  sub:'Sold inventory feed',                                   href:'/Settings/sold_inventory/sold_inventory.html',                                     type:'Settings' },
+    { title:'Lead Source Cost Management',            sub:'Vendor cost tracking',                                  href:'/Settings/crm_vendors_cost/crm_vendors_cost.html',                                 type:'Settings' },
+    { title:'Google Sheets Integration',              sub:'Sheet feeds and column mapping',                        href:'/Settings/crm_google_sheet/crm_google_sheet.html',                                 type:'Settings' },
+    { title:'Lead Status Management',                 sub:'CRM statuses',                                          href:'/Settings/crm_status/crm_status.html',                                             type:'Settings' },
+    { title:'Lead Rule Status',                       sub:'Auto-status rules',                                     href:'/Settings/lead_rule_status/lead_rule_status.html',                                 type:'Settings' },
+    { title:'Disable Rules',                          sub:'Auto-disable rules',                                    href:'/Settings/disable_rule/disable_rule.html',                                         type:'Settings' },
+    { title:'Initial Greeting Message',               sub:'Voicemail-drop greetings',                              href:'/Settings/greeting_message/greeting_message.html',                                 type:'Settings' },
+    { title:'Personal SMS Templates',                 sub:'Your SMS templates',                                    href:'/Settings/user_sms_template/user_sms_template.html',                               type:'Settings' },
+    { title:'Department Message Templates',           sub:'Shared department SMS templates',                       href:'/Settings/department_sms_template/department_sms_template.html',                   type:'Settings' },
+    { title:'Email Templates',                        sub:'Email template library',                                href:'/Settings/email_template/email_template.html',                                     type:'Settings' },
+    { title:'Email Marketing Campaigns',              sub:'Broadcast campaigns',                                   href:'/Settings/email_campaign/email_campaign.html',                                     type:'Settings' },
+    { title:'Workflow Automation',                    sub:'Automated tasks',                                       href:'/Settings/automated_task/autotask.html',                                           type:'Settings' },
+    { title:'Department Access Control',              sub:'Per-department permissions',                            href:'/Settings/departmentpermissions/departmentpermissions.html',                       type:'Settings' },
+    { title:'Department Lead Access Rules',           sub:'Which leads a department can see',                      href:'/Settings/dep_lead/dep_lead.html',                                                 type:'Settings' },
+    { title:'Lead Tags & Labels',                     sub:'Label palette and rules',                               href:'/Settings/labelflag/labelflag.html',                                               type:'Settings' },
+    { title:'AI Configuration',                       sub:'AI-rule builder',                                       href:'/Settings/aisettings/aisettings.html',                                             type:'Settings' },
+    { title:'AI Q&A & Store Description',             sub:'AI knowledge base',                                     href:'/Settings/qastore/qastore.html',                                                   type:'Settings' },
+    { title:'Application Settings',                   sub:'Loan-app recipients',                                   href:'/Settings/loan_app/application_settings.html',                                     type:'Settings' },
+    { title:'Notification Format',                    sub:'Notification message templates',                        href:'/Settings/notififormat/notififormat.html',                                         type:'Settings' },
+    { title:'Tagged Message Format',                  sub:'Tag-message templates',                                 href:'/Settings/tagsmsformat/tagmessage.html',                                           type:'Settings' },
+    { title:'Loan Application Notifications',         sub:'Loan-app notification templates',                       href:'/Settings/loanappnotifi/loanappnotifi.html',                                       type:'Settings' },
+    { title:'Personal Voicemail Settings',            sub:'Your voicemail files',                                  href:'/Settings/personalvoice/personalvoice.html',                                       type:'Settings' },
+    { title:'Department Voicemail Settings',          sub:'Shared department voicemail files',                     href:'/Settings/depvoicemail/depvoicemail.html',                                         type:'Settings' },
+    { title:'Video Library',                          sub:'Uploaded videos',                                       href:'/Settings/videofiles/vidlib.html',                                                 type:'Settings' },
+    { title:'Conversation Keyword Alerts',            sub:'Alert on chat keywords',                                href:'/Settings/converketword/converketword.html',                                       type:'Settings' }
+  ];
+
+  function gsEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  var _gsSel = 0, _gsHits = [], _gsBuilt = false;
+
+  function ensureGsCss(){
+    if(document.getElementById('gs-style')) return;
+    var css = '.gs-backdrop{position:fixed;inset:0;background:var(--overlay,rgba(0,0,0,.6));z-index:10000;display:none;align-items:flex-start;justify-content:center;padding:80px 20px 20px;}'
+      + '.gs-backdrop.open{display:flex;}'
+      + '.gs-panel{width:100%;max-width:640px;max-height:calc(100vh - 100px);background:var(--sur);border:0.5px solid var(--brd2);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden;}'
+      + '.gs-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
+      + '.gs-mag{width:18px;height:18px;color:var(--mu);flex:none;}'
+      + '.gs-head input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;padding:0;min-width:0;}'
+      + '.gs-head input::placeholder{color:var(--mu);}'
+      + '.gs-esc{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);font-family:var(--font);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;flex:none;font-weight:500;}'
+      + '.gs-esc:hover{color:var(--tx);}'
+      + '.gs-body{overflow-y:auto;flex:1;padding:6px 4px 8px;}'
+      + '.gs-empty{padding:32px 20px;text-align:center;color:var(--mu);font-size:13px;}'
+      + '.gs-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border-left:2px solid transparent;background:transparent;border-top:none;border-right:none;border-bottom:none;width:calc(100% - 8px);margin:0 4px;text-align:left;font-family:var(--font);}'
+      + '.gs-row:hover,.gs-row.on{background:var(--sur2);}'
+      + '.gs-row.on{border-left-color:var(--ac);}'
+      + '.gs-row-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}'
+      + '.gs-row-title{font-size:13.5px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
+      + '.gs-row-sub{font-size:12.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}'
+      + '.gs-row-type{font-size:10.5px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:var(--sur);padding:3px 8px;border-radius:999px;border:0.5px solid var(--brd2);flex:none;}'
+      + '.gs-row-av{width:28px;height:28px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;letter-spacing:.3px;}'
+      + '@media (max-width:640px){.gs-backdrop{padding:0;align-items:stretch;justify-content:stretch;}.gs-panel{max-width:none;max-height:none;height:100vh;border-radius:0;border:none;}.gs-esc{min-height:32px;}.gs-head input{font-size:16px;}}';
+    var st = document.createElement('style'); st.id = 'gs-style'; st.textContent = css; document.head.appendChild(st);
+  }
+
+  function ensureGsBuilt(){
+    if(_gsBuilt) return;
+    ensureGsCss();
+    var bd = document.createElement('div');
+    bd.className = 'gs-backdrop';
+    bd.id = 'gs-backdrop';
+    bd.innerHTML = '<div class="gs-panel" role="dialog" aria-modal="true" aria-label="Global search">'
+      + '<div class="gs-head">'
+        + '<svg class="gs-mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+        + '<input type="text" id="gs-input" placeholder="Search leads, pages, and settings…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>'
+        + '<button type="button" class="gs-esc" onclick="closeGlobalSearch()">Esc</button>'
+      + '</div>'
+      + '<div class="gs-body" id="gs-body"></div>'
+      + '<div class="gs-empty" id="gs-empty" hidden>No matches. Try another word.</div>'
+    + '</div>';
+    bd.addEventListener('click', function(e){ if(e.target === bd) closeGlobalSearch(); });
+    document.body.appendChild(bd);
+    var inp = document.getElementById('gs-input');
+    inp.addEventListener('input', function(){ gsFilter(this.value); });
+    inp.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowDown'){ e.preventDefault(); _gsSel = Math.min(_gsSel + 1, _gsHits.length - 1); gsRender(); gsScrollSel(); }
+      else if(e.key === 'ArrowUp'){ e.preventDefault(); _gsSel = Math.max(_gsSel - 1, 0); gsRender(); gsScrollSel(); }
+      else if(e.key === 'Enter'){ e.preventDefault(); gsGo(_gsSel); }
+      else if(e.key === 'Escape'){ closeGlobalSearch(); }
+    });
+    var body = document.getElementById('gs-body');
+    if(body){
+      body.addEventListener('click', gsBodyClick);
+      body.addEventListener('mouseover', gsBodyMouseOver);
+    }
+    _gsBuilt = true;
+  }
+
+  function gsLeadHits(q){
+    var arr = (window.CCLeads && Array.isArray(CCLeads.LEADS)) ? CCLeads.LEADS : [];
+    if(!q) return [];
+    return arr.filter(function(l){
+      return String(l.name    || '').toLowerCase().indexOf(q) >= 0
+          || String(l.phone   || '').toLowerCase().indexOf(q) >= 0
+          || String(l.email   || '').toLowerCase().indexOf(q) >= 0
+          || String(l.vehicle || '').toLowerCase().indexOf(q) >= 0
+          || String(l.stock   || '').toLowerCase().indexOf(q) >= 0;
+    }).map(function(l){
+      var subParts = [];
+      if(l.vehicle) subParts.push(l.vehicle);
+      if(l.phone)   subParts.push(l.phone);
+      return { title: l.name || ('Lead #' + l.no), sub: subParts.join(' · '), type: 'Lead', lead: l };
+    });
+  }
+
+  /* ── Interaction search — matches lead history (calls, SMS, voicemail) ─────── */
+  // Sample pools mirror the seed used by the history pages so search hits align with
+  // what a user actually sees in a lead's contact panel.
+  var GS_SMS_IN  = ['Hi, is this still available?','Can we schedule a test drive?',"What's the best price you can do?",'Saturday morning works for me.','Do you have it in another color?',"Thanks, I'll think it over.",'Can you send the financing options?','Still considering — will get back to you.'];
+  var GS_SMS_OUT = ['Yes it is! Want to come in this week?','Absolutely — when works for you?','I can do a great deal this weekend.','Just sent the details to your email.','Following up — any questions?','Your appointment is confirmed.','Happy to help — call me anytime.','Checking now, back to you shortly.'];
+  // Voicemail: each entry is a full transcript conversation (short) — matched on any line.
+  var GS_VM_SAMPLES = [
+    'Hi, this is a follow-up on the test drive we scheduled. Please call me back at your earliest convenience.',
+    'Just wanted to check in about the financing paperwork — pre-approval is still open through Friday.',
+    'Left you a voicemail about the trade-in value we discussed. I have the numbers if you want to talk.',
+    'Following up on the appointment for Saturday morning — send me a text to confirm.',
+    'Quick question about the vehicle inspection — everything checked out clean except a minor cosmetic item.',
+    'Hey, wanted to let you know the color you asked about just came in on the lot.',
+    'Sorry I missed you — trying to reach out about the offer we discussed last week.',
+    'This is about the loan application. We need one more document to move forward.'
+  ];
+  // Call outcomes we announce as a title prefix.
+  var GS_CALL_OUTCOME_LABEL = { in:'Inbound call', out:'Outbound call', missed:'Missed call' };
+
+  function gsInteractionHits(q){
+    if(!q || !window.CCLeads || !Array.isArray(CCLeads.LEADS)) return [];
+    var leads = CCLeads.LEADS;
+    var hits = [];
+    for(var i = 0; i < leads.length; i++){
+      var L = leads[i];
+      // ── SMS thread for this lead ──
+      if(typeof CCLeads.smsCountsForLead === 'function'){
+        var sc = CCLeads.smsCountsForLead(L);
+        if(sc && (sc.in + sc.out) > 0){
+          var oi = 0, ii = 0, dirs = [];
+          for(var k = 0; k < sc.in + sc.out; k++){
+            var wantIn = (k % 2 === 0);
+            if((wantIn && ii < sc.in) || oi >= sc.out){ dirs.push('in'); ii++; } else { dirs.push('out'); oi++; }
+          }
+          for(var m = 0; m < dirs.length; m++){
+            var text = (dirs[m] === 'in' ? GS_SMS_IN : GS_SMS_OUT)[(i + m) % 8];
+            if(text.toLowerCase().indexOf(q) >= 0){
+              hits.push({
+                title: (dirs[m] === 'in' ? '↙ ' : '↗ ') + text,
+                sub: L.name + ' · SMS',
+                type: 'SMS',
+                lead: L,
+                tab: 'sms'
+              });
+            }
+          }
+        }
+      }
+      // ── Voicemails from missed inbound calls ──
+      if(typeof CCLeads.callCountsForLead === 'function'){
+        var cc = CCLeads.callCountsForLead(L);
+        if(cc && cc.missed > 0){
+          for(var v = 0; v < cc.missed; v++){
+            var vt = GS_VM_SAMPLES[(i + v) % GS_VM_SAMPLES.length];
+            if(vt.toLowerCase().indexOf(q) >= 0){
+              hits.push({
+                title: vt,
+                sub: L.name + ' · Voicemail',
+                type: 'Voicemail',
+                lead: L,
+                tab: 'calls'
+              });
+            }
+          }
+        }
+        // ── Call rows (matches on outcome + lead name + direction, not transcript) ──
+        if(cc){
+          var outcomes = [];
+          for(var mk = 0; mk < cc.missed; mk++) outcomes.push('missed');
+          for(var ak = 0; ak < (cc.in - cc.missed); ak++) outcomes.push('in');
+          for(var ok = 0; ok < cc.out; ok++) outcomes.push('out');
+          for(var c = 0; c < outcomes.length; c++){
+            var label = GS_CALL_OUTCOME_LABEL[outcomes[c]] || 'Call';
+            var callText = label + ' — ' + (L.name || 'Lead');
+            if(callText.toLowerCase().indexOf(q) >= 0){
+              hits.push({
+                title: callText,
+                sub: (L.phone || '') + ' · Call',
+                type: 'Call',
+                lead: L,
+                tab: 'calls'
+              });
+            }
+          }
+        }
+      }
+      if(hits.length >= 40) break; // cap the scan for perf
+    }
+    return hits;
+  }
+
+  function gsFilter(v){
+    var q = String(v || '').toLowerCase().trim();
+    if(!q){ _gsHits = GS_INDEX.slice(0, GS_MAX); }
+    else {
+      var navHits = GS_INDEX.filter(function(e){
+        return String(e.title||'').toLowerCase().indexOf(q) >= 0
+            || String(e.sub||'').toLowerCase().indexOf(q) >= 0
+            || String(e.type||'').toLowerCase().indexOf(q) >= 0;
+      });
+      var leadHits = gsLeadHits(q);
+      var interactionHits = gsInteractionHits(q);
+      // Order: exact lead matches, then interactions, then navigation.
+      _gsHits = leadHits.concat(interactionHits).concat(navHits).slice(0, GS_MAX);
+    }
+    _gsSel = 0;
+    gsRender();
+  }
+
+  function gsRender(){
+    var body = document.getElementById('gs-body');
+    var empty = document.getElementById('gs-empty');
+    if(!body || !empty) return;
+    if(!_gsHits.length){ body.innerHTML = ''; empty.hidden = false; return; }
+    empty.hidden = true;
+    body.innerHTML = _gsHits.map(function(e, i){
+      var on = (i === _gsSel) ? ' on' : '';
+      var avatar = '';
+      if(e.lead){
+        var color = e.lead.ac || 'var(--ac)';
+        var initials = String(e.lead.name || '').trim().split(/\s+/).slice(0,2).map(function(p){return (p[0]||'').toUpperCase();}).join('');
+        avatar = '<span class="gs-row-av" style="background:' + gsEsc(color) + ';">' + gsEsc(initials) + '</span>';
+      }
+      return '<button type="button" class="gs-row' + on + '" data-i="' + i + '">'
+        + avatar
+        + '<span class="gs-row-txt">'
+          + '<span class="gs-row-title">' + gsEsc(e.title) + '</span>'
+          + (e.sub ? '<span class="gs-row-sub">' + gsEsc(e.sub) + '</span>' : '')
+        + '</span>'
+        + (e.type ? '<span class="gs-row-type">' + gsEsc(e.type) + '</span>' : '')
+      + '</button>';
+    }).join('');
+  }
+  // Delegate row events to #gs-body so listeners survive re-renders.
+  function gsBodyClick(e){
+    var row = e.target && e.target.closest ? e.target.closest('.gs-row') : null;
+    if(!row) return;
+    gsGo(+row.getAttribute('data-i'));
+  }
+  function gsBodyMouseOver(e){
+    var row = e.target && e.target.closest ? e.target.closest('.gs-row') : null;
+    if(!row) return;
+    var i = +row.getAttribute('data-i');
+    if(i === _gsSel) return;
+    _gsSel = i;
+    // In-place class toggle — do NOT re-render (that would kill the row mid-click).
+    var body = document.getElementById('gs-body'); if(!body) return;
+    var all = body.querySelectorAll('.gs-row');
+    for(var k = 0; k < all.length; k++) all[k].classList.toggle('on', k === i);
+  }
+
+  function gsScrollSel(){
+    var body = document.getElementById('gs-body'); if(!body) return;
+    var row = body.querySelector('.gs-row.on'); if(!row) return;
+    var rr = row.getBoundingClientRect(), br = body.getBoundingClientRect();
+    if(rr.top < br.top) row.scrollIntoView({block:'nearest'});
+    else if(rr.bottom > br.bottom) row.scrollIntoView({block:'nearest'});
+  }
+
+  function gsGo(i){
+    var e = _gsHits[i]; if(!e) return;
+    closeGlobalSearch();
+    if(e.lead){
+      var tab = e.tab || 'all';
+      if(typeof window.openContactPanel === 'function'){ window.openContactPanel(e.lead.no, tab); return; }
+      window.location.href = '/coreconnect_leads_v83/coreconnect_leads_v83.html?lead=' + e.lead.no;
+      return;
+    }
+    window.location.href = e.href;
+  }
+
+  function openGlobalSearch(){
+    ensureGsBuilt();
+    document.getElementById('gs-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    var inp = document.getElementById('gs-input'); if(inp){ inp.value = ''; setTimeout(function(){ inp.focus(); }, 30); }
+    _gsSel = 0; _gsHits = GS_INDEX.slice(0, GS_MAX);
+    gsRender();
+  }
+  function closeGlobalSearch(){
+    var bd = document.getElementById('gs-backdrop'); if(bd) bd.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  window.openGlobalSearch = openGlobalSearch;
+  window.closeGlobalSearch = closeGlobalSearch;
+
+  function injectGlobalSearchIcon(){
+    var bell = document.getElementById('header-bell'); if(!bell) return;
+    if(document.getElementById('header-search')) return;
+    var anchor = document.getElementById('header-theme') || document.getElementById('header-loanapp') || bell;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'header-bell';
+    btn.id = 'header-search';
+    btn.setAttribute('data-label', 'Search');
+    btn.setAttribute('aria-label', 'Search');
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+    btn.onclick = function(e){ if(e) e.stopPropagation(); openGlobalSearch(); };
+    anchor.parentNode.insertBefore(btn, anchor);
+  }
+
+  // Ctrl/Cmd+K global shortcut + Esc closer
+  document.addEventListener('keydown', function(e){
+    if((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)){
+      e.preventDefault();
+      openGlobalSearch();
+      return;
+    }
+    if(e.key === 'Escape'){
+      var bd = document.getElementById('gs-backdrop');
+      if(bd && bd.classList.contains('open')) closeGlobalSearch();
+    }
+  });
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectGlobalSearchIcon);
+  else injectGlobalSearchIcon();
 })();

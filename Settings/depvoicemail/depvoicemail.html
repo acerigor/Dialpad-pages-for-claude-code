@@ -1,6 +1,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CoreConnect — Department Voicemail Settings</title>
-<link rel="stylesheet" href="../../shared/app.css">
+<link rel="stylesheet" href="../../shared/app.css?v=2">
 <link rel="stylesheet" href="../../shared/settings.css">
 <link rel="stylesheet" href="../../shared/contact-panel.css">
 <style>
@@ -113,10 +113,44 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 #dv-dept-popup .lblp-item.is-disabled:hover{background:transparent;}
 .dv-dept-used{margin-left:auto;color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
 @media (max-width:640px){ #dv-dept-popup .lblp-item{min-height:44px;font-size:15px;} }
+/* Mobile search overlay */
+.mobile-search-toggle{display:none;position:relative;}
+.mobile-search-toggle.has-query::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 2px var(--sur);}
+.mso{position:fixed;top:0;left:0;right:0;height:60px;background:var(--bg);z-index:200;display:none;flex-direction:column;transform:translateY(-100%);transition:transform .18s ease-out;box-shadow:0 1px 0 var(--brd);}
+.mso.open{display:flex;transform:translateY(0);}
+.mso-header{display:flex;align-items:center;gap:6px;height:60px;padding:0 8px 0 4px;flex-shrink:0;}
+.mso-back{width:40px;height:40px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .12s,background .12s;}
+.mso-back:hover,.mso-back:active{color:var(--tx);background:var(--sur2);}
+.mso-back svg{width:20px;height:20px;}
+.mso-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:0;}
+.mso-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--tx);font-family:var(--font);font-size:16px;font-weight:400;padding:0;min-width:0;}
+.mso-input-wrap input::placeholder{color:var(--mu);}
+.mso-clear{width:32px;height:32px;flex-shrink:0;background:transparent;border:none;cursor:pointer;color:var(--mu);display:none;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;}
+.mso-clear.show{display:flex;}
+.mso-clear:hover,.mso-clear:active{color:var(--tx);background:var(--sur2);}
+.mso-clear svg{width:16px;height:16px;}
+body.mso-active{overflow:hidden;}
+body.mso-active .top-header{visibility:hidden;}
+body.mso-active .set-page-head{display:none;}
+/* Mobile kebab */
+.mobile-kebab-btn{display:none;}
+.dv-dd{position:relative;}
+.dv-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45);padding:4px;z-index:60;display:none;}
+.dv-menu.open{display:block;}
+.dv-menu .dv-mi{display:flex;align-items:center;gap:10px;padding:9px 12px;color:var(--tx);font-family:var(--font);font-size:13px;cursor:pointer;border-radius:6px;background:transparent;border:none;width:100%;text-align:left;}
+.dv-menu .dv-mi:hover{background:var(--sur2);color:var(--ac2);}
+.dv-menu .dv-mi svg{width:14px;height:14px;color:var(--mu);flex:none;}
+.dv-menu .dv-mi:hover svg{color:var(--ac2);}
 @media (max-width:640px){
-  .set-page-head{flex-wrap:wrap;}
+  .set-page-head{flex-wrap:nowrap;gap:6px;}
   .dv-head-spacer{display:none;}
-  .dv-srch{width:auto;flex:1 1 160px;}
+  .dv-srch{display:none;}
+  .ur-back span{display:none;}
+  #dv-add-btn{display:none;}
+  .mobile-search-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;gap:0;margin-left:auto;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);cursor:pointer;}
+  .mobile-search-toggle svg{width:18px;height:18px;}
+  .mobile-kebab-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;gap:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;color:var(--tx);cursor:pointer;}
+  .mobile-kebab-btn svg{width:18px;height:18px;}
 }
 </style>
 
@@ -276,6 +310,20 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
 </div>
 
 <!-- PAGE-LEVEL NAV TOAST -->
+<div class="mso" id="mso" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="mso-header">
+    <button class="mso-back" id="mso-back" onclick="closeMobileSearch()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <div class="mso-input-wrap">
+      <input type="text" id="mso-input" placeholder="Search…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="msoOnInput(this.value)"/>
+      <button class="mso-clear" id="mso-clear" onclick="msoClearInput()" aria-label="Clear">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="nav-toast" id="nav-toast">
   <div class="nav-toast-icon">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -304,6 +352,20 @@ html,body{background:var(--bg);margin:0;padding:0;font-family:'DM Sans',sans-ser
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add
     </button>
+    <button class="mobile-search-toggle" id="mobile-search-toggle" onclick="toggleMobileSearch()" title="Search" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div class="dv-dd" id="dv-kebab-dd">
+      <button type="button" class="mobile-kebab-btn" id="dv-kebab-btn" onclick="dvKebabToggle(event)" aria-label="More">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>
+      </button>
+      <div class="dv-menu" id="dv-kebab-menu">
+        <button type="button" class="dv-mi" onclick="dvKebabPick('add')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add department voicemail
+        </button>
+      </div>
+    </div>
   </div>
   <div class="set-scroll">
     <section class="set-section">
@@ -560,7 +622,23 @@ function dvRender(){
   rows.forEach(function(it){ if(!it.filename) return; _dvState(it.id, it.dur); dvWpRender(it.id); });
 }
 function dvRowClick(id){ dvModalOpen(id); }
-function dvSearch(v){ _dvQuery = String(v || ''); dvRender(); }
+function dvSearch(v){ _dvQuery = String(v || ''); dvRender(); if(typeof msoUpdateDot==='function') msoUpdateDot(); }
+/* Mobile search overlay */
+function _msoEl(){ return document.getElementById('mso'); }
+function _msoInput(){ return document.getElementById('mso-input'); }
+function _msoClearBtn(){ return document.getElementById('mso-clear'); }
+function _msoToggleBtn(){ return document.getElementById('mobile-search-toggle'); }
+function msoUpdateDot(){ var b=_msoToggleBtn(); if(!b) return; if(_dvQuery && _dvQuery.length) b.classList.add('has-query'); else b.classList.remove('has-query'); }
+function msoUpdateClear(){ var i=_msoInput(),c=_msoClearBtn(); if(!i||!c) return; if(i.value && i.value.length) c.classList.add('show'); else c.classList.remove('show'); }
+function msoOnInput(v){ var d=document.getElementById('dv-search-input'); if(d) d.value=v; dvSearch(v); msoUpdateClear(); }
+function msoClearInput(){ var i=_msoInput(); if(!i) return; i.value=''; msoOnInput(''); i.focus(); }
+function toggleMobileSearch(){ var o=_msoEl(),i=_msoInput(); if(!o||!i) return; i.value=_dvQuery||''; msoUpdateClear(); document.body.classList.add('mso-active'); o.classList.add('open'); setTimeout(function(){ i.focus(); },60); }
+function closeMobileSearch(){ var o=_msoEl(); if(!o||!o.classList.contains('open')) return; o.classList.remove('open'); document.body.classList.remove('mso-active'); var i=_msoInput(); if(i) i.blur(); msoUpdateDot(); }
+function dvKebabToggle(e){ if(e) e.stopPropagation(); var m=document.getElementById('dv-kebab-menu'),b=document.getElementById('dv-kebab-btn'); if(!m||!b) return; var o=m.classList.toggle('open'); b.classList.toggle('open',o); }
+function dvKebabClose(){ var m=document.getElementById('dv-kebab-menu'),b=document.getElementById('dv-kebab-btn'); if(m) m.classList.remove('open'); if(b) b.classList.remove('open'); }
+function dvKebabPick(k){ dvKebabClose(); if(k==='add') dvAddOpen(); }
+document.addEventListener('mousedown', function(e){ if(!e.target.closest) return; if(!e.target.closest('#dv-kebab-dd')) dvKebabClose(); });
+document.addEventListener('keydown', function(e){ if(e.key!=='Escape') return; var o=document.getElementById('mso'); if(o && o.classList.contains('open')){ closeMobileSearch(); return; } dvKebabClose(); });
 function dvAddOpen(){ dvModalOpen(null); }
 
 /* ===== Edit modal — dept picker + upload + chip + preview player ===== */
@@ -881,5 +959,5 @@ document.addEventListener('mousedown', function(e){
 })();
 </script>
 <script src="../../shared/leads-comms.js"></script>
-<script src="../../shared/notifications.js"></script>
+<script src="../../shared/notifications.js?v=6"></script>
 <script src="../../shared/contact-panel.js"></script>

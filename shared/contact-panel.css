@@ -1362,3 +1362,38 @@
   .cp-loan-cell-val{font-size:13px;color:var(--tx);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cp-loan-cell-val.is-empty{min-height:17px;}
   @media (max-width:640px){ .cp-loan-fields{grid-template-columns:1fr;} .cp-loan-cells{grid-template-columns:1fr;} .cp-loan-cell{border-right:none;} }
+
+  /* Bank Approval block — sits between Application Summary and Finance Form Information */
+  .cp-loan-bank{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .cp-loan-bank-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(110,157,255,.12);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;color:var(--ac2);}
+  .cp-loan-bank-banner svg{flex:none;}
+  .cp-loan-bank-body{display:flex;flex-direction:column;}
+  .cp-loan-bank-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--brd);}
+  .cp-loan-bank-row:last-child{border-bottom:none;}
+  .cp-loan-bank-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .cp-loan-bank-name{flex:1;font-size:13px;color:var(--tx);}
+  .cp-loan-bank-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px;flex:none;}
+  .cp-loan-bank-status.is-approved{background:rgba(34,200,138,.16);color:var(--gr);}
+  .cp-loan-bank-status.is-declined{background:rgba(232,85,85,.16);color:var(--rd);}
+  .cp-loan-bank-status.is-pending{background:rgba(245,166,35,.16);color:var(--am);}
+  .cp-loan-bank-banner{cursor:pointer;border:none;width:100%;text-align:left;font-family:inherit;}
+  .cp-loan-bank-banner:hover{background:rgba(110,157,255,.18);}
+  .cp-loan-bank-chev{width:14px;height:14px;color:currentColor;margin-left:auto;transition:transform .18s ease;flex:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-body{display:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-banner{border-bottom:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-chev{transform:rotate(-90deg);}
+  .cp-loan-bank-row-wrap{display:flex;flex-direction:column;border-bottom:0.5px solid var(--brd);}
+  .cp-loan-bank-row-wrap:last-child{border-bottom:none;}
+  .cp-loan-bank-row-wrap .cp-loan-bank-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:none;width:100%;text-align:left;font-family:inherit;cursor:pointer;color:var(--tx);}
+  .cp-loan-bank-row-wrap .cp-loan-bank-row:hover{background:rgba(110,157,255,.08);}
+  .cp-loan-bank-row-chev{width:12px;height:12px;color:var(--mu);margin-left:8px;transition:transform .18s ease;flex:none;}
+  .cp-loan-bank-row-wrap.is-open .cp-loan-bank-row-chev{transform:rotate(-90deg);}
+  .cp-loan-bank-details{display:none;padding:12px 14px 16px;background:rgba(0,0,0,.15);}
+  .cp-loan-bank-row-wrap.is-open .cp-loan-bank-details{display:block;}
+  .cp-loan-bank-det-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;}
+  .cp-loan-bank-det-cell{display:flex;flex-direction:column;gap:2px;}
+  .cp-loan-bank-det-lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+  .cp-loan-bank-det-val{font-size:12.5px;color:var(--tx);font-weight:500;}
+  .cp-loan-bank-det-full{grid-column:1 / -1;}
+  .cp-loan-bank-det-foot{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--brd);font-size:11.5px;color:var(--mu);display:flex;align-items:center;gap:8px;}
+  .cp-loan-bank-det-notes{margin-top:8px;font-size:12px;color:var(--tx);line-height:1.5;}

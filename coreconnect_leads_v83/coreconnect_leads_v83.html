@@ -423,6 +423,343 @@
   .rows-select{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--tx);
     border-radius:6px;padding:3px 7px;font-family:var(--font);font-size:12px;cursor:pointer;}
 
+  /* ===== SMS MODAL (ported from call_history v31) ===== */
+  .sms-backdrop{display:none;position:fixed;inset:0;z-index:1500;
+    background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s ease;}
+  .sms-backdrop.show{display:block;opacity:1;}
+  .sms-modal{display:none;position:fixed;top:50%;left:50%;z-index:1501;
+    width:480px;max-width:calc(100vw - 32px);height:580px;max-height:calc(100vh - 48px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;
+    box-shadow:0 16px 48px rgba(0,0,0,.55);
+    transform:translate(-50%,-50%) translateY(8px);opacity:0;
+    flex-direction:column;overflow:hidden;
+    transition:opacity .2s ease, transform .2s ease;}
+  .sms-modal.show{display:flex;opacity:1;transform:translate(-50%,-50%) translateY(0);}
+  .sms-head{display:flex;align-items:center;gap:12px;padding:14px 16px;
+    border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+  .sms-head-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
+  .sms-head-info{flex:1;min-width:0;}
+  .sms-head-name{font-size:14px;font-weight:600;color:var(--tx);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sms-head-num{font-size:11.5px;color:var(--mu);font-family:var(--mono);margin-top:2px;}
+  .sms-head-close{width:30px;height:30px;border-radius:8px;border:0.5px solid var(--brd2);
+    background:transparent;color:var(--mu);cursor:pointer;display:flex;
+    align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+  .sms-head-close:hover{border-color:var(--rd);color:var(--rd);}
+  .sms-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+  .sms-body::-webkit-scrollbar{width:6px;}
+  .sms-body::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .sms-daysep{display:flex;align-items:center;gap:8px;margin:6px 0;}
+  .sms-daysep-line{flex:1;height:0.5px;background:var(--brd);}
+  .sms-daysep-label{font-size:10.5px;color:var(--mu);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:500;}
+  .sms-msg{display:flex;flex-direction:column;max-width:78%;gap:3px;}
+  .sms-msg.in{align-self:flex-start;}
+  .sms-msg.out{align-self:flex-end;align-items:flex-end;}
+  .sms-bubble{padding:9px 12px;font-size:13px;line-height:1.5;word-break:break-word;}
+  .sms-msg.in .sms-bubble{background:var(--sur2);color:var(--tx);
+    border-radius:3px 14px 14px 14px;}
+  .sms-msg.out .sms-bubble{background:var(--ac);color:#fff;
+    border-radius:14px 3px 14px 14px;}
+  .sms-meta{font-family:var(--mono);font-size:10px;color:var(--mu);padding:0 6px;}
+  .sms-meta .sms-delivered{color:var(--gr);margin-left:4px;}
+  .sms-msg.new{animation:sms-bubble-in .25s ease-out;}
+  @keyframes sms-bubble-in{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+  .sms-textarea-wrap{padding:10px 14px 8px;flex-shrink:0;border-top:0.5px solid var(--brd);}
+  .att-clip{width:30px;height:30px;border-radius:7px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:color .15s;flex:none;}
+  .att-clip:hover{color:var(--ac2);}
+  .att-clip svg{width:16px;height:16px;}
+  .att-tray{display:none;flex-wrap:wrap;gap:6px;margin:0;padding:0 14px 8px;}
+  .att-tray.has{display:flex;}
+  .att-chip{display:inline-flex;align-items:center;gap:7px;max-width:200px;height:34px;padding:0 6px 0 10px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;font-size:12px;color:var(--tx);}
+  .att-chip .att-ic{color:var(--ac2);flex:none;display:flex;}
+  .att-chip .att-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .att-chip .att-sz{color:var(--mu);font-size:11px;flex:none;}
+  .att-x{width:22px;height:22px;border-radius:5px;border:none;background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;transition:all .15s;}
+  .att-x:hover{background:rgba(232,85,85,.14);color:var(--rd);}
+  @media (max-width:640px){ .att-clip{width:40px;height:40px;} .att-chip{height:40px;} .att-x{width:40px;height:40px;} }
+  .sms-textarea{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);
+    border-radius:10px;padding:10px 12px;color:var(--tx);font-family:var(--font);
+    font-size:13px;line-height:1.5;resize:none;outline:none;
+    max-height:120px;min-height:40px;transition:border-color .15s;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;
+    box-sizing:border-box;display:block;}
+  .sms-textarea::-webkit-scrollbar{width:6px;}
+  .sms-textarea::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .sms-textarea::placeholder{color:var(--mu);}
+  .sms-textarea:focus{border-color:var(--ac);}
+  .sms-foot{padding:10px 14px 14px;flex-shrink:0;display:flex;align-items:center;gap:10px;}
+  .sms-foot-meta{display:flex;align-items:center;gap:10px;margin-left:auto;font-size:10.5px;color:var(--mu);}
+  .sms-counter.over{color:var(--rd);}
+  .sms-hint{font-family:var(--mono);}
+  .sms-send-btn{display:flex;align-items:center;gap:7px;padding:0 16px;height:38px;
+    border-radius:8px;background:var(--ac);border:none;color:#fff;
+    font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);
+    transition:background .15s;flex-shrink:0;}
+  .sms-send-btn:hover:not(:disabled){background:var(--ac2);}
+  .sms-send-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .sms-send-btn svg{width:13px;height:13px;}
+  .sms-ai-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
+    border-radius:8px;background:linear-gradient(135deg, rgba(79,124,255,.22), rgba(196,181,253,.22));
+    border:0.5px solid rgba(79,124,255,.4);color:var(--tx);font-size:12px;font-weight:500;
+    font-family:var(--font);cursor:pointer;flex-shrink:0;white-space:nowrap;
+    transition:filter .15s, transform .15s;}
+  .sms-ai-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
+  .sms-ai-btn svg{display:block;flex-shrink:0;}
+  @media (max-width: 640px){
+    .sms-modal{width:100%;max-width:100%;height:100vh;max-height:100vh;
+      top:0;left:0;transform:translateX(100%);border-radius:0;border:none;
+      padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);}
+    .sms-modal.show{transform:translateX(0);}
+    .sms-head{padding:14px 14px;}
+    .sms-head-close{width:36px;height:36px;}
+    .sms-msg{max-width:85%;}
+    .sms-bubble{padding:10px 13px;font-size:14px;line-height:1.5;}
+    .sms-textarea-wrap .modal-from-row{font-size:10.5px;padding:0 0 5px 0;}
+    .sms-textarea{min-height:44px;font-size:14px;padding:12px 12px;}
+    .sms-foot{padding:10px 14px 14px;}
+    .sms-ai-btn{height:38px;padding:0 14px;}
+    .sms-send-btn{height:44px;padding:0 18px;font-size:14px;}
+    .sms-hint{display:none;}
+    .sms-foot-meta{font-size:11px;}
+  }
+  /* ===== NOTE MODAL (new, mirrors SMS/Email modal shape) ===== */
+  .nt-backdrop{display:none;position:fixed;inset:0;z-index:1500;
+    background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s ease;}
+  .nt-backdrop.show{display:block;opacity:1;}
+  .nt-modal{display:none;position:fixed;top:50%;left:50%;z-index:1501;
+    width:480px;max-width:calc(100vw - 32px);height:580px;max-height:calc(100vh - 48px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;
+    box-shadow:0 16px 48px rgba(0,0,0,.55);
+    transform:translate(-50%,-50%) translateY(8px);opacity:0;
+    flex-direction:column;overflow:hidden;
+    transition:opacity .2s ease, transform .2s ease;}
+  .nt-modal.show{display:flex;opacity:1;transform:translate(-50%,-50%) translateY(0);}
+  .nt-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+  .nt-head-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
+  .nt-head-info{flex:1;min-width:0;}
+  .nt-head-name{font-size:14px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nt-head-sub{font-size:11.5px;color:var(--mu);font-family:var(--mono);margin-top:2px;}
+  .nt-head-close{width:30px;height:30px;border-radius:8px;border:0.5px solid var(--brd2);background:transparent;color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+  .nt-head-close:hover{border-color:var(--rd);color:var(--rd);}
+  .nt-list{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+  .nt-list::-webkit-scrollbar{width:6px;}
+  .nt-list::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .nt-item{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;padding:10px 12px;}
+  .nt-item-text{font-size:13px;color:var(--tx);line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+  .nt-item-meta{font-family:var(--mono);font-size:10.5px;color:var(--mu);margin-top:6px;}
+  .nt-empty{padding:20px;text-align:center;color:var(--mu);font-size:12.5px;}
+  .nt-composer{padding:10px 14px 14px;border-top:0.5px solid var(--brd);flex-shrink:0;}
+  .nt-textarea{width:100%;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;
+    padding:10px 12px;color:var(--tx);font-family:var(--font);font-size:13px;line-height:1.5;
+    resize:none;outline:none;min-height:68px;max-height:160px;transition:border-color .15s;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;box-sizing:border-box;display:block;}
+  .nt-textarea::-webkit-scrollbar{width:6px;}
+  .nt-textarea::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .nt-textarea::placeholder{color:var(--mu);}
+  .nt-textarea:focus{border-color:var(--ac);}
+  .nt-foot{display:flex;align-items:center;gap:10px;margin-top:8px;}
+  .nt-hint{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--mu);}
+  .nt-save-btn{display:flex;align-items:center;gap:7px;padding:0 16px;height:38px;border-radius:8px;
+    background:var(--ac);border:none;color:#fff;font-size:13px;font-weight:500;cursor:pointer;
+    font-family:var(--font);transition:background .15s;flex-shrink:0;}
+  .nt-save-btn:hover:not(:disabled){background:var(--ac2);}
+  .nt-save-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .nt-save-btn svg{width:13px;height:13px;}
+  @media (max-width:640px){
+    .nt-modal{width:100%;max-width:100%;height:100vh;max-height:100vh;
+      top:0;left:0;transform:translateX(100%);border-radius:0;border:none;
+      padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);}
+    .nt-modal.show{transform:translateX(0);}
+    .nt-head{padding:14px 14px;}
+    .nt-head-close{width:36px;height:36px;}
+    .nt-textarea{min-height:80px;font-size:14px;padding:12px 12px;}
+    .nt-save-btn{height:44px;padding:0 18px;font-size:14px;}
+    .nt-hint{display:none;}
+  }
+
+  /* ===== EMAIL MODAL (ported from call_history v31) ===== */
+  .em-backdrop{display:none;position:fixed;inset:0;z-index:1500;
+    background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s ease;}
+  .em-backdrop.show{display:block;opacity:1;}
+  .em-modal{display:none;position:fixed;top:50%;left:50%;z-index:1501;
+    width:560px;max-width:calc(100vw - 32px);height:880px;max-height:calc(100vh - 48px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:14px;
+    box-shadow:0 16px 48px rgba(0,0,0,.55);
+    transform:translate(-50%,-50%) translateY(8px);opacity:0;
+    flex-direction:column;overflow:hidden;
+    transition:opacity .2s ease, transform .2s ease;}
+  .em-modal.show{display:flex;opacity:1;transform:translate(-50%,-50%) translateY(0);}
+  .em-head{display:flex;align-items:center;gap:12px;padding:14px 16px;
+    border-bottom:0.5px solid var(--brd);flex-shrink:0;}
+  .em-head-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;}
+  .em-head-info{flex:1;min-width:0;}
+  .em-head-name{font-size:14px;font-weight:600;color:var(--tx);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .em-head-email{font-size:11.5px;color:var(--mu);font-family:var(--mono);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .em-head-close{width:30px;height:30px;border-radius:8px;border:0.5px solid var(--brd2);
+    background:transparent;color:var(--mu);cursor:pointer;display:flex;
+    align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+  .em-head-close:hover{border-color:var(--rd);color:var(--rd);}
+  .em-body{flex-shrink:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+  .em-thread{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;
+    border-bottom:0.5px solid var(--brd);
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+  .em-thread::-webkit-scrollbar{width:6px;}
+  .em-thread::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .em-msg{display:flex;align-items:flex-end;gap:8px;max-width:100%;}
+  .em-msg.out{flex-direction:row-reverse;}
+  .em-bav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;}
+  .em-msg.out .em-bav{display:none;}
+  .em-bubble-col{display:flex;flex-direction:column;gap:4px;max-width:82%;}
+  .em-msg.out .em-bubble-col{align-items:flex-end;}
+  .em-card{overflow:hidden;border-radius:14px 14px 3px 14px;}
+  .em-msg.in .em-card{border-radius:14px 14px 14px 3px;}
+  .em-card-head{display:flex;align-items:center;gap:7px;padding:9px 14px;
+    font-size:11px;font-weight:600;letter-spacing:.4px;}
+  .em-msg.out .em-card-head{background:rgba(0,0,0,.18);color:#fff;justify-content:flex-start;
+    background-color:rgba(255,255,255,.10);}
+  .em-msg.in .em-card-head{background:rgba(0,0,0,.25);color:var(--tx);justify-content:flex-end;}
+  .em-card-icon{display:flex;align-items:center;}
+  .em-card-body{padding:12px 14px 13px;display:flex;flex-direction:column;gap:6px;}
+  .em-card-subj{font-size:13px;font-weight:600;line-height:1.4;}
+  .em-card-text{font-size:12.5px;line-height:1.55;opacity:.92;}
+  .em-msg.out .em-card{background:var(--ac);}
+  .em-msg.out .em-card-subj,.em-msg.out .em-card-text{color:#fff;}
+  .em-msg.in .em-card{background:var(--sur2);}
+  .em-msg.in .em-card-subj,.em-msg.in .em-card-text{color:var(--tx);}
+  .em-msg-meta{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--mu);}
+  .em-msg-tick svg{width:10px;height:10px;stroke:var(--gr);display:block;}
+  .em-daysep{display:flex;align-items:center;gap:8px;margin:4px 0;}
+  .em-daysep-line{flex:1;height:0.5px;background:var(--brd);}
+  .em-daysep-label{font-size:10.5px;color:var(--mu);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:500;white-space:nowrap;}
+  .em-to{display:flex;align-items:center;gap:8px;padding:9px 12px;
+    background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;flex-shrink:0;}
+  .em-to-lbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;
+    font-weight:500;flex-shrink:0;}
+  .em-to-val{font-size:12.5px;color:var(--tx);font-family:var(--mono);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .em-subject{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:9px 12px;font-size:13px;color:var(--tx);font-family:var(--font);outline:none;
+    transition:border-color .15s;width:100%;flex-shrink:0;}
+  .em-subject::placeholder{color:var(--mu);}
+  .em-subject:focus{border-color:var(--ac);}
+  .em-tb{display:flex;flex-wrap:wrap;align-items:center;gap:2px;
+    background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:4px 6px;flex-shrink:0;}
+  .em-tb-btn{width:28px;height:28px;border-radius:5px;border:none;background:transparent;
+    color:var(--mu);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:all .12s;}
+  .em-tb-btn svg{width:14px;height:14px;}
+  .em-tb-btn:hover{background:var(--hover);color:var(--ac2);}
+  .em-tb-sep{width:0.5px;height:18px;background:var(--brd2);margin:0 4px;}
+  .em-tb-sel{background:transparent;border:none;color:var(--tx);font-family:var(--font);
+    font-size:12px;outline:none;cursor:pointer;padding:4px 6px;border-radius:5px;
+    transition:background .12s;}
+  .em-tb-sel:hover{background:var(--hover);}
+  .em-tb-sel option{background:var(--sur);}
+  .em-content{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;
+    padding:12px 14px;flex:1;min-height:200px;overflow-y:auto;
+    font-size:13px;line-height:1.55;color:var(--tx);font-family:var(--font);outline:none;
+    transition:border-color .15s;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+  .em-content::-webkit-scrollbar{width:6px;}
+  .em-content::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .em-content:focus{border-color:var(--ac);}
+  .em-content:empty::before{content:attr(data-placeholder);color:var(--mu);pointer-events:none;}
+  .em-content p{margin:0 0 8px;}
+  .em-content p:last-child{margin-bottom:0;}
+  .em-content a{color:var(--ac2);text-decoration:underline;}
+  .em-content blockquote{border-left:2px solid var(--brd2);padding:2px 12px;margin:6px 0;color:var(--mu);}
+  .em-content ul,.em-content ol{padding-left:22px;margin:6px 0;}
+  .em-content h1{font-size:18px;margin:8px 0;font-weight:600;}
+  .em-content h2{font-size:16px;margin:8px 0;font-weight:600;}
+  .em-content h3{font-size:14px;margin:6px 0;font-weight:600;}
+  .em-foot{padding:10px 14px 14px;border-top:0.5px solid var(--brd);flex-shrink:0;
+    display:flex;align-items:center;gap:10px;}
+  .em-foot .sms-ai-btn{margin-right:auto;}
+  .em-hint{font-size:10.5px;color:var(--mu);font-family:var(--mono);}
+  .em-send-btn{display:flex;align-items:center;gap:7px;padding:0 16px;height:38px;border-radius:8px;
+    background:var(--ac);border:none;color:#fff;font-size:13px;font-weight:500;cursor:pointer;
+    font-family:var(--font);transition:background .15s;}
+  .em-send-btn:hover:not(:disabled){background:var(--ac2);}
+  .em-send-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .em-send-btn svg{width:13px;height:13px;}
+  .em-no-email{flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:10px;padding:40px 20px;text-align:center;}
+  .em-no-email-title{font-size:15px;font-weight:600;color:var(--tx);}
+  .em-no-email-hint{font-size:12.5px;color:var(--mu);line-height:1.55;max-width:320px;}
+  .em-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
+    padding:11px 18px;color:var(--tx);font-size:13px;
+    box-shadow:0 8px 28px rgba(0,0,0,.55);z-index:1600;
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    display:flex;align-items:center;gap:8px;}
+  .em-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+  .em-toast svg{color:var(--gr);width:16px;height:16px;}
+  @media (max-width: 640px){
+    .em-modal{width:100%;max-width:100%;height:100vh;max-height:100vh;
+      top:0;left:0;transform:translateY(8px);border-radius:0;border:none;}
+    .em-modal.show{transform:translateY(0);}
+  }
+
+  /* Sent From row (shared) + picker popup */
+  .modal-from-row{display:flex;align-items:center;gap:6px;padding:6px 14px 8px;
+    font-size:11px;color:var(--mu);cursor:pointer;user-select:none;
+    border-bottom:0.5px solid var(--brd);flex-shrink:0;transition:color .15s;}
+  .modal-from-row:hover{color:var(--ac2);}
+  .modal-from-row span{color:var(--ac2);font-weight:500;}
+  .modal-from-row svg{width:10px;height:10px;flex-shrink:0;opacity:.6;}
+  .modal-from-popup{display:none;position:fixed;z-index:2600;width:280px;
+    background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;
+    box-shadow:0 12px 32px rgba(0,0,0,.55);overflow:hidden;}
+  .modal-from-popup.open{display:block;}
+  .modal-from-ptabs{display:flex;border-bottom:0.5px solid var(--brd);padding:0 8px;}
+  .modal-from-ptab{padding:11px 12px;font-size:12.5px;color:var(--mu);cursor:pointer;
+    border-bottom:1.5px solid transparent;margin-bottom:-0.5px;transition:all .12s;}
+  .modal-from-ptab:hover{color:var(--tx);}
+  .modal-from-ptab.active{color:var(--ac2);border-bottom-color:var(--ac);font-weight:500;}
+  .modal-from-psearch{display:flex;align-items:center;gap:7px;background:var(--sur2);
+    border:0.5px solid var(--brd2);border-radius:7px;padding:0 10px;height:34px;margin:10px;}
+  .modal-from-psearch:focus-within{border-color:var(--ac);}
+  .modal-from-psearch svg{width:13px;height:13px;color:var(--mu);flex-shrink:0;}
+  .modal-from-psearch input{background:none;border:none;outline:none;color:var(--tx);
+    font-family:var(--font);font-size:12.5px;width:100%;}
+  .modal-from-psearch input::placeholder{color:var(--mu);}
+  .modal-from-plist{max-height:240px;overflow-y:auto;padding:0 8px 10px;
+    scrollbar-width:thin;scrollbar-color:var(--brd2) transparent;}
+  .modal-from-plist::-webkit-scrollbar{width:6px;}
+  .modal-from-plist::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+  .modal-from-pitem{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;
+    cursor:pointer;transition:background .1s;}
+  .modal-from-pitem:hover{background:var(--hover);}
+  .modal-from-pitem.selected{background:rgba(79,124,255,.14);}
+  .modal-from-pitem-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0;}
+  .modal-from-pitem-av.dept{background:var(--sur2);color:var(--ac2);border:0.5px solid var(--brd2);}
+  .modal-from-pitem-name{font-size:12.5px;color:var(--tx);}
+  .modal-from-pitem-role{font-size:10.5px;color:var(--mu);}
+  .modal-from-pempty{padding:14px 8px;text-align:center;font-size:12px;color:var(--mu);}
+
+  /* ROW ACTION BAR */
+  .row-action-bar{position:fixed;z-index:9500;display:flex;flex-direction:row;align-items:stretch;gap:2px;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+  .rab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:transparent;border:none;color:var(--tx);font-family:inherit;font-size:11.5px;padding:8px 12px;border-radius:7px;cursor:pointer;min-width:64px;transition:background .12s,color .12s;}
+  .rab-item:hover{background:rgba(110,157,255,.14);color:var(--ac2);}
+  .rab-item svg{width:18px;height:18px;color:var(--mu);flex:none;}
+  .rab-item:hover svg{color:var(--ac2);}
+  @media (max-width:640px){
+    .row-action-bar{position:fixed;left:12px;right:12px;bottom:12px;top:auto;padding:6px;z-index:9500;}
+    .rab-item{flex:1;font-size:12.5px;padding:10px 8px;min-width:0;}
+    .rab-item svg{width:20px;height:20px;}
+  }
+
   /* ASSIGN POPUP */
   .assign-popup{position:absolute;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;padding:6px;min-width:220px;width:240px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);}
   .assign-popup-title{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:4px 8px 8px;}
@@ -2051,6 +2388,38 @@
   .cp-loan-summary{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
   .cp-loan-sum-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(110,157,255,.12);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;color:var(--ac2);}
   .cp-loan-sum-banner svg{flex:none;}
+  /* Bank Approval block */
+  .cp-loan-bank{background:var(--sur2);border:0.5px solid var(--brd2);border-radius:10px;overflow:hidden;}
+  .cp-loan-bank-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(110,157,255,.12);border-bottom:0.5px solid var(--brd2);font-size:13px;font-weight:600;color:var(--ac2);cursor:pointer;border:none;width:100%;text-align:left;font-family:inherit;}
+  .cp-loan-bank-banner:hover{background:rgba(110,157,255,.18);}
+  .cp-loan-bank-banner svg{flex:none;}
+  .cp-loan-bank-chev{width:14px;height:14px;color:currentColor;margin-left:auto;transition:transform .18s ease;flex:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-body{display:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-banner{border-bottom:none;}
+  .cp-loan-bank.is-collapsed .cp-loan-bank-chev{transform:rotate(-90deg);}
+  .cp-loan-bank-body{display:flex;flex-direction:column;}
+  .cp-loan-bank-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--brd);}
+  .cp-loan-bank-row:last-child{border-bottom:none;}
+  .cp-loan-bank-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .cp-loan-bank-name{flex:1;font-size:13px;color:var(--tx);}
+  .cp-loan-bank-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px;flex:none;}
+  .cp-loan-bank-status.is-approved{background:rgba(34,200,138,.16);color:var(--gr);}
+  .cp-loan-bank-status.is-declined{background:rgba(232,85,85,.16);color:var(--rd);}
+  .cp-loan-bank-row-wrap{display:flex;flex-direction:column;border-bottom:0.5px solid var(--brd);}
+  .cp-loan-bank-row-wrap:last-child{border-bottom:none;}
+  .cp-loan-bank-row-wrap .cp-loan-bank-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:none;width:100%;text-align:left;font-family:inherit;cursor:pointer;color:var(--tx);}
+  .cp-loan-bank-row-wrap .cp-loan-bank-row:hover{background:rgba(110,157,255,.08);}
+  .cp-loan-bank-row-chev{width:12px;height:12px;color:var(--mu);margin-left:8px;transition:transform .18s ease;flex:none;}
+  .cp-loan-bank-row-wrap.is-open .cp-loan-bank-row-chev{transform:rotate(-90deg);}
+  .cp-loan-bank-details{display:none;padding:12px 14px 16px;background:rgba(0,0,0,.15);}
+  .cp-loan-bank-row-wrap.is-open .cp-loan-bank-details{display:block;}
+  .cp-loan-bank-det-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;}
+  .cp-loan-bank-det-cell{display:flex;flex-direction:column;gap:2px;}
+  .cp-loan-bank-det-lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);}
+  .cp-loan-bank-det-val{font-size:12.5px;color:var(--tx);font-weight:500;}
+  .cp-loan-bank-det-full{grid-column:1 / -1;}
+  .cp-loan-bank-det-foot{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--brd);font-size:11.5px;color:var(--mu);display:flex;align-items:center;gap:8px;}
+  .cp-loan-bank-det-notes{margin-top:8px;font-size:12px;color:var(--tx);line-height:1.5;}
   .cp-loan-sum-body{display:flex;flex-wrap:wrap;gap:16px 22px;padding:16px 14px;}
   .cp-loan-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;flex:1 1 320px;min-width:0;}
   .cp-loan-mcol{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -3369,6 +3738,26 @@
   <!-- BUCKETS -->
   <div class="buckets-area" id="buckets-area"></div>
 
+  <!-- ROW ACTION BAR (Call / SMS / Note) -->
+  <div class="row-action-bar" id="row-action-bar" style="display:none;" role="menu" aria-label="Row actions">
+    <button class="rab-item" type="button" role="menuitem" onclick="rabPick('call')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Call</span>
+    </button>
+    <button class="rab-item" type="button" role="menuitem" onclick="rabPick('sms')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>SMS</span>
+    </button>
+    <button class="rab-item" type="button" role="menuitem" onclick="rabPick('email')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+      <span>Email</span>
+    </button>
+    <button class="rab-item" type="button" role="menuitem" onclick="rabPick('note')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="14" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+      <span>Notes</span>
+    </button>
+  </div>
+
   <!-- ASSIGN USER POPUP -->
   <div class="assign-popup" id="assign-popup" style="display:none;">
     <div class="assign-popup-title">Assign to</div>
@@ -3569,6 +3958,156 @@
         <button class="modal-save" onclick="saveTask()">Save</button>
       </div>
     </div>
+  </div>
+
+  <!-- ===== SMS MODAL (ported from call_history v31) ===== -->
+  <div class="sms-backdrop" id="sms-backdrop" onclick="closeSmsModal()"></div>
+  <div class="sms-modal" id="sms-modal" role="dialog" aria-modal="true" aria-label="Send SMS">
+    <div class="sms-head">
+      <div class="sms-head-av" id="sms-head-av">—</div>
+      <div class="sms-head-info">
+        <div class="sms-head-name" id="sms-head-name">—</div>
+        <div class="sms-head-num" id="sms-head-num">—</div>
+      </div>
+      <button class="sms-head-close" onclick="closeSmsModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="sms-body" id="sms-body"></div>
+    <div class="sms-textarea-wrap">
+      <div class="modal-from-row" id="sms-from-row" onclick="toggleModalFromPopup('sms', event)" style="border-bottom:none;padding:0 0 6px 0;margin:0;justify-content:flex-end;">
+        Sent From: <span id="sms-from-agent">Angel Garcia</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <textarea class="sms-textarea" id="sms-textarea" placeholder="Type a message…" rows="1" maxlength="320" oninput="onSmsInputChange()" onkeydown="onSmsKeyDown(event)"></textarea>
+    </div>
+    <input type="file" id="sms-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('sms',this.files);this.value='';">
+    <div class="att-tray" id="sms-att-tray"></div>
+    <div class="sms-foot">
+      <button class="sms-ai-btn" onclick="aiSmsCompose()" title="AI compose suggestion" aria-label="AI Compose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
+        <span>AI Compose</span>
+      </button>
+      <button class="att-clip" type="button" onclick="document.getElementById('sms-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+      <div class="sms-foot-meta">
+        <span class="sms-counter" id="sms-counter">0/160</span>
+        <span class="sms-hint">⌘+Enter to send</span>
+      </div>
+      <button class="sms-send-btn" id="sms-send-btn" onclick="sendSmsMessage()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== NOTE MODAL ===== -->
+  <div class="nt-backdrop" id="nt-backdrop" onclick="closeNoteModal()"></div>
+  <div class="nt-modal" id="nt-modal" role="dialog" aria-modal="true" aria-label="Add note">
+    <div class="nt-head">
+      <div class="nt-head-av" id="nt-head-av">—</div>
+      <div class="nt-head-info">
+        <div class="nt-head-name" id="nt-head-name">—</div>
+        <div class="nt-head-sub" id="nt-head-sub">Notes</div>
+      </div>
+      <button class="nt-head-close" onclick="closeNoteModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="nt-list" id="nt-list"></div>
+    <div class="nt-composer">
+      <textarea class="nt-textarea" id="nt-textarea" placeholder="Add a note…" rows="3" oninput="onNoteInputChange()" onkeydown="onNoteKeyDown(event)"></textarea>
+      <div class="nt-foot">
+        <button class="sms-ai-btn" onclick="aiNoteCompose()" title="AI note suggestion" aria-label="AI Compose">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
+          <span>AI Compose</span>
+        </button>
+        <span class="nt-hint">⌘+Enter to save</span>
+        <button class="nt-save-btn" id="nt-save-btn" onclick="saveNoteFromModal()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EMAIL MODAL (ported from call_history v31) ===== -->
+  <div class="em-backdrop" id="em-backdrop" onclick="closeEmailModal()"></div>
+  <div class="em-modal" id="em-modal" role="dialog" aria-modal="true" aria-label="Send Email">
+    <div class="em-head">
+      <div class="em-head-av" id="em-head-av">—</div>
+      <div class="em-head-info">
+        <div class="em-head-name" id="em-head-name">—</div>
+        <div class="em-head-email" id="em-head-email">—</div>
+      </div>
+      <button class="em-head-close" onclick="closeEmailModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="em-no-email" id="em-no-email" style="display:none;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <div class="em-no-email-title">No email on file</div>
+      <div class="em-no-email-hint">This contact doesn't have an email address yet. Add one from the CRM to send emails.</div>
+    </div>
+    <div class="em-thread" id="em-thread"></div>
+    <div class="em-body" id="em-body">
+      <div class="modal-from-row" id="em-from-row" onclick="toggleModalFromPopup('em', event)" style="border-bottom:none;padding:0 0 2px 0;margin:0;justify-content:flex-end;">
+        Sent From: <span id="em-from-agent">Angel Garcia</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <input type="text" class="em-subject" id="em-subject" placeholder="Subject" />
+      <div class="em-tb">
+        <select class="em-tb-sel" onchange="emExBlock(this.value, event); this.value='';" title="Paragraph style">
+          <option value="">Paragraph</option>
+          <option value="p">Paragraph</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+        </select>
+        <div class="em-tb-sep"></div>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('bold', null, event)" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h7a4 4 0 010 8H6zM6 12h8a4 4 0 010 8H6z"/></svg></button>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('italic', null, event)" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+        <div class="em-tb-sep"></div>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emLink(event)" title="Link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('formatBlock', 'blockquote', event)" title="Quote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2c1 0 2 .5 2 2v1c0 2-2 3-4 3"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h2c1 0 2 .5 2 2v1c0 2-2 3-4 3"/></svg></button>
+        <div class="em-tb-sep"></div>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertUnorderedList', null, event)" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg></button>
+        <button class="em-tb-btn" onmousedown="event.preventDefault();" onclick="emEx('insertOrderedList', null, event)" title="Numbered list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+      </div>
+      <div class="em-content" id="em-content" contenteditable="true" data-placeholder="Write your email…"></div>
+    </div>
+    <input type="file" id="em-att-input" multiple style="display:none;" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onchange="attPick('em',this.files);this.value='';">
+    <div class="att-tray" id="em-att-tray"></div>
+    <div class="em-foot">
+      <button class="sms-ai-btn" onclick="aiEmailCompose()" title="AI compose suggestion" aria-label="AI Compose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
+        <span>AI Compose</span>
+      </button>
+      <button class="att-clip" type="button" onclick="document.getElementById('em-att-input').click()" title="Attach files" aria-label="Attach files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+      <span class="em-hint">⌘+Enter to send</span>
+      <button class="em-send-btn" id="em-send-btn" onclick="sendEmailMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- EMAIL SENT TOAST -->
+  <div class="em-toast" id="em-toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+    <span>Email sent</span>
+  </div>
+
+  <!-- SENT FROM popup (shared by SMS modal) -->
+  <div class="modal-from-popup" id="modal-from-popup" onclick="event.stopPropagation()">
+    <div class="modal-from-ptabs">
+      <div class="modal-from-ptab active" id="modal-from-ptab-users" onclick="setModalFromTab('users')">Users</div>
+      <div class="modal-from-ptab" id="modal-from-ptab-depts" onclick="setModalFromTab('depts')">Department</div>
+    </div>
+    <div class="modal-from-psearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="modal-from-search" placeholder="Search…" oninput="renderModalFromList(this.value)" />
+    </div>
+    <div class="modal-from-plist" id="modal-from-plist"></div>
   </div>
 
   <!-- ACTIVITY CALENDAR SETTINGS SUB-MODAL (per-activity, layered above the create modal) -->
@@ -5363,7 +5902,11 @@ function renderTable(){
   pageLeads.forEach(l=>{
     const tr=document.createElement('tr');
     if(l.unviewed) tr.classList.add('lead-unviewed');
-    tr.onclick=e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='OPTION')return;if(e.target.closest('.ci'))return;tr.classList.toggle('sel');};
+    tr.onclick=e=>{
+      if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='OPTION')return;
+      if(e.target.closest('.tog')||e.target.closest('.ci')||e.target.closest('.assign-popup')||e.target.closest('.label-popup')||e.target.closest('.status-popup')||e.target.closest('#row-action-bar'))return;
+      openRowActionBar(e, l.no);
+    };
     tr.innerHTML=leadRowHTML(l);
     tbody.appendChild(tr);
   });
@@ -7174,6 +7717,780 @@ function openAssignPopup(e, leadNo){
   popup.style.top = top + 'px';
   popup.style.left = left + 'px';
 }
+
+/* Row action bar (Call / SMS / Note) */
+var _rabLeadNo = null;
+function openRowActionBar(e, leadNo){
+  if(e) e.stopPropagation();
+  var bar = document.getElementById('row-action-bar'); if(!bar) return;
+  _rabLeadNo = leadNo;
+  bar.style.display = 'flex';
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(vw <= 640){
+    // Mobile: CSS bottom-sheet wins — clear any inline top/left from a prior desktop open
+    bar.style.top = '';
+    bar.style.left = '';
+    return;
+  }
+  var w = bar.offsetWidth, h = bar.offsetHeight;
+  var cx = (e && typeof e.clientX === 'number') ? e.clientX : 0;
+  var cy = (e && typeof e.clientY === 'number') ? e.clientY : 0;
+  // Default: anchor top-left to cursor, hang down-and-right (+6px offset)
+  var left = cx + 6;
+  var top = cy + 6;
+  // Flip left if it would run off the right edge
+  if(left + w > vw - 8) left = Math.max(8, cx - w - 6);
+  // Flip up if it would run off the bottom
+  if(top + h > vh - 8) top = Math.max(8, cy - h - 6);
+  bar.style.top = top + 'px';
+  bar.style.left = left + 'px';
+}
+function closeRowActionBar(){
+  var bar = document.getElementById('row-action-bar');
+  if(bar) bar.style.display = 'none';
+  _rabLeadNo = null;
+}
+function rabPick(action){
+  var no = _rabLeadNo;
+  closeRowActionBar();
+  if(no == null) return;
+  if(action === 'call'){ if(typeof callLead === 'function') callLead(no); return; }
+  if(action === 'sms'){ openSmsModalForLead(no); return; }
+  if(action === 'email'){ openEmailModalForLead(no); return; }
+  if(action === 'note'){ openNoteModalForLead(no); return; }
+}
+function openContactPanelWithNote(no){
+  if(typeof openContactPanel === 'function') openContactPanel(no);
+  setTimeout(function(){
+    var sel = document.getElementById('cp-type-select');
+    if(sel){ sel.value = 'Notes'; if(typeof onCPTypeChange === 'function') onCPTypeChange('Notes'); }
+  }, 30);
+}
+
+/* ===== SMS MODAL (ported from call_history v31) ===== */
+let smsState = { contact: null, messages: [] };
+const SMS_TEMPLATES = [
+  ["Hi {first}, this is Devon from CoreConnect. Just following up on our call — would Saturday work for a quick tour?",
+   "Hey Devon, Saturday morning works. What time were you thinking?"],
+  ["{first}, sending over the disclosure packet for the Elm St listing. Let me know what you think.",
+   "Got it, thanks. Will review tonight and circle back tomorrow."],
+  ["Hi {first} — circling back on the financing question from earlier. Any updates from your lender?",
+   "Yes! Pre-approval came through. Good through Friday."],
+  ["{first}, the comps you asked for are in your inbox. Three matched units within the same zip.",
+   "Perfect. Reviewing now."]
+];
+const AI_SMS_SUGGESTIONS = [
+  "Hi {first}, thanks for taking my call earlier. When's a good time to follow up — later today or tomorrow?",
+  "Hey {first}, just checking in after our chat. Happy to walk through any questions whenever you're ready.",
+  "Hi {first}, wanted to send a quick recap of what we discussed and the next steps. Let me know if you'd like to set a time to dig in.",
+  "Hey {first}, following up — let me know if you'd like me to send over additional details or schedule a tour."
+];
+let aiSmsIdx = 0;
+function aiSmsCompose(){
+  if(!smsState.contact) return;
+  const first = smsState.contact.name.split(' ')[0] || 'there';
+  const suggestion = AI_SMS_SUGGESTIONS[aiSmsIdx % AI_SMS_SUGGESTIONS.length].replace(/\{first\}/g, first);
+  aiSmsIdx++;
+  const ta = document.getElementById('sms-textarea'); if(!ta) return;
+  const existing = ta.value.trim();
+  ta.value = existing ? (existing + '\n\n' + suggestion) : suggestion;
+  onSmsInputChange();
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+function smsSeedHash(id){ let h=0; for(let i=0;i<id.length;i++) h=(h*31+id.charCodeAt(i))|0; return Math.abs(h); }
+// Rebuild the modal's SMS conversation from cpMessages[leadNo].sms so the
+// modal and the contact panel SMS tab stay in sync. Seeds both stores on first open.
+function syncSmsFromPanel(contact){
+  var leadNo = _ntLeadNoFromId(contact.id);
+  if(leadNo != null && typeof cpMessages !== 'undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+    if(!cpMessages[leadNo].sms) cpMessages[leadNo].sms = [];
+    var panel = cpMessages[leadNo].sms;
+    if(!panel.length){
+      var seed = seedSmsConversation(contact, contact.id);
+      seed.forEach(function(m){
+        panel.push({ dir:m.dir, text:m.text, time:_ntFmtPanelTime(m.time), agent: m.dir==='out' ? 'Angel Garcia' : undefined });
+      });
+    }
+    return panel.map(function(pm){
+      return { dir: pm.dir, text: pm.text || '', time: _ntParsePanelTime(pm.time), delivered: pm.dir === 'out' };
+    });
+  }
+  // Fallback (no cpMessages available) — legacy in-modal seed.
+  return seedSmsConversation(contact, contact.id);
+}
+function seedSmsConversation(contact, seedId){
+  const h = smsSeedHash(seedId || contact.name);
+  const tpl = SMS_TEMPLATES[h % SMS_TEMPLATES.length];
+  const first = contact.name.split(' ')[0];
+  const now = new Date();
+  const t1 = new Date(now.getTime() - (24 + (h%6)) * 3600 * 1000);
+  const t2 = new Date(t1.getTime() + (4 + (h%20)) * 60 * 1000);
+  return [
+    {dir:'out', text: tpl[0].replace('{first}', first), time: t1, delivered:true},
+    {dir:'in',  text: tpl[1].replace('{first}', first), time: t2}
+  ];
+}
+function smsFormatTime(d){
+  let h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ap;
+}
+function smsDayLabel(d){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  const diff = (today - dd) / 86400000;
+  if(diff === 0) return 'Today';
+  if(diff === 1) return 'Yesterday';
+  return dd.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+}
+function _smsInitialsOf(name){
+  return String(name||'').trim().split(/\s+/).slice(0,2).map(function(p){return p.charAt(0).toUpperCase();}).join('') || '?';
+}
+function openSmsModalForLead(leadNo){
+  var lead = (typeof leads !== 'undefined' && leads) ? leads.find(function(l){return l.no === leadNo;}) : null;
+  if(!lead) return;
+  var contact = {
+    name: lead.name || 'Unknown',
+    num: lead.phone || '(no phone on file)',
+    av: _smsInitialsOf(lead.name),
+    clr: lead.ac || lead.color || 'var(--ac)',
+    id: 'lead:' + leadNo
+  };
+  openSmsModal(contact);
+}
+function openSmsModal(contactOrId){
+  var contact = (contactOrId && typeof contactOrId === 'object')
+    ? contactOrId
+    : null;
+  if(!contact) return;
+  if(typeof attClear === 'function') attClear('sms');
+  smsState.contact = contact;
+  smsState.messages = syncSmsFromPanel(contact);
+  const avEl = document.getElementById('sms-head-av');
+  avEl.textContent = contact.av;
+  avEl.style.background = contact.clr || 'var(--ac)';
+  document.getElementById('sms-head-name').textContent = contact.name;
+  document.getElementById('sms-head-num').textContent = contact.num;
+  const ta = document.getElementById('sms-textarea');
+  ta.value = '';
+  ta.style.height = '';
+  document.getElementById('sms-counter').textContent = '0/160';
+  document.getElementById('sms-counter').classList.remove('over');
+  document.getElementById('sms-send-btn').disabled = true;
+  renderSmsBody();
+  document.getElementById('sms-backdrop').classList.add('show');
+  document.getElementById('sms-modal').classList.add('show');
+  setTimeout(function(){ ta.focus(); }, 80);
+  setTimeout(function(){ var body = document.getElementById('sms-body'); body.scrollTop = body.scrollHeight; }, 100);
+}
+function closeSmsModal(){
+  document.getElementById('sms-backdrop').classList.remove('show');
+  document.getElementById('sms-modal').classList.remove('show');
+  closeModalFromPopup();
+}
+function renderSmsBody(){
+  const body = document.getElementById('sms-body'); if(!body) return;
+  let html = '', lastDay = null;
+  smsState.messages.forEach(function(m){
+    const day = smsDayLabel(m.time);
+    if(day !== lastDay){
+      html += '<div class="sms-daysep"><div class="sms-daysep-line"></div><span class="sms-daysep-label">'+day+'</span><div class="sms-daysep-line"></div></div>';
+      lastDay = day;
+    }
+    const deliveredTag = (m.dir === 'out' && m.delivered) ? '<span class="sms-delivered">✓ Delivered</span>' : '';
+    const isNew = m.isNew ? ' new' : '';
+    if(m.isNew) delete m.isNew;
+    html += '<div class="sms-msg ' + m.dir + isNew + '">'
+      + (m.text ? '<div class="sms-bubble">' + smsEscapeHtml(m.text) + '</div>' : '')
+      + attListHtml(m.attachments)
+      + '<div class="sms-meta">' + smsFormatTime(m.time) + deliveredTag + '</div>'
+    + '</div>';
+  });
+  body.innerHTML = html;
+}
+function smsEscapeHtml(s){ return String(s).replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }
+function onSmsInputChange(){
+  const ta = document.getElementById('sms-textarea');
+  const counter = document.getElementById('sms-counter');
+  const sendBtn = document.getElementById('sms-send-btn');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
+  const len = ta.value.length;
+  counter.textContent = len + '/160';
+  counter.classList.toggle('over', len > 160);
+  sendBtn.disabled = ta.value.trim().length === 0;
+}
+function onSmsKeyDown(e){
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); sendSmsMessage(); }
+}
+/* ===== Composer file attachments (SMS) ===== */
+var ATT = { sms:[], em:[] };
+var _attSeq = 0;
+var ATT_ICONS = {
+  image:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+  audio:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  video:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+  file:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+};
+function attKind(t){ if(/^image\//.test(t))return'image'; if(/^audio\//.test(t))return'audio'; if(/^video\//.test(t))return'video'; return'file'; }
+function attSize(b){ b=b||0; if(b<1024)return b+' B'; var k=b/1024; if(k<1024)return Math.round(k)+' KB'; return (k/1024).toFixed(1)+' MB'; }
+function attIcon(k){ return ATT_ICONS[k]||ATT_ICONS.file; }
+function attPick(ch, files){ if(!files||!files.length)return; [].forEach.call(files,function(f){ var rd=new FileReader(); rd.onload=function(){ ATT[ch].push({id:'a'+(++_attSeq),name:f.name,type:f.type||'',size:f.size,kind:attKind(f.type||''),url:rd.result}); attRenderTray(ch); }; rd.readAsDataURL(f); }); }
+function attRemove(ch,id){ ATT[ch]=ATT[ch].filter(function(a){return a.id!==id;}); attRenderTray(ch); }
+function attClear(ch){ ATT[ch]=[]; attRenderTray(ch); }
+function attRenderTray(ch){
+  var tray=document.getElementById(ch+'-att-tray'); if(!tray)return;
+  if(!ATT[ch].length){ tray.classList.remove('has'); tray.innerHTML=''; return; }
+  tray.classList.add('has');
+  tray.innerHTML=ATT[ch].map(function(a){ return '<span class="att-chip" title="'+smsEscapeHtml(a.name)+'"><span class="att-ic">'+attIcon(a.kind)+'</span><span class="att-nm">'+smsEscapeHtml(a.name)+'</span><span class="att-sz">'+attSize(a.size)+'</span><button class="att-x" onclick="attRemove(\''+ch+'\',\''+a.id+'\')" title="Remove" aria-label="Remove attachment">&#x2715;</button></span>'; }).join('');
+}
+function attListHtml(arr){
+  if(!arr||!arr.length)return'';
+  var items=arr.map(function(a){
+    if(a.kind==='image')return '<img class="att-thumb" src="'+a.url+'" alt="'+smsEscapeHtml(a.name)+'" onclick="window.open(\''+a.url+'\',\'_blank\')">';
+    if(a.kind==='audio')return '<audio class="att-audio" controls preload="metadata" src="'+a.url+'"></audio>';
+    if(a.kind==='video')return '<video class="att-video" controls preload="metadata" src="'+a.url+'"></video>';
+    return '<a class="att-file" href="'+a.url+'" download="'+smsEscapeHtml(a.name)+'" target="_blank" rel="noopener"><span class="att-ic">'+attIcon('file')+'</span><span class="att-nm">'+smsEscapeHtml(a.name)+'</span><span class="att-sz">'+attSize(a.size)+'</span></a>';
+  }).join('');
+  return '<div class="att-list">'+items+'</div>';
+}
+function sendSmsMessage(){
+  const ta = document.getElementById('sms-textarea');
+  const text = ta.value.trim();
+  if(!text && !ATT.sms.length) return;
+  var now = new Date();
+  var atts = ATT.sms.slice();
+  smsState.messages.push({ dir:'out', text: text, time: now, delivered:false, isNew:true, attachments: atts });
+  // Mirror into contact panel's SMS store so panel's SMS tab shows the same message.
+  if(smsState.contact){
+    var leadNo = _ntLeadNoFromId(smsState.contact.id);
+    if(leadNo != null && typeof cpMessages !== 'undefined'){
+      if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+      if(!cpMessages[leadNo].sms) cpMessages[leadNo].sms = [];
+      cpMessages[leadNo].sms.push({ dir:'out', text:text, time:_ntFmtPanelTime(now), agent:'Angel Garcia', attachments: atts });
+      if(typeof cpLead !== 'undefined' && cpLead && cpLead.no === leadNo
+         && typeof cpTab !== 'undefined' && cpTab === 'sms'
+         && typeof renderCPMessages === 'function'){
+        renderCPMessages();
+      }
+    }
+  }
+  attClear('sms');
+  ta.value = ''; ta.style.height = '';
+  document.getElementById('sms-counter').textContent = '0/160';
+  document.getElementById('sms-counter').classList.remove('over');
+  document.getElementById('sms-send-btn').disabled = true;
+  renderSmsBody();
+  const body = document.getElementById('sms-body');
+  body.scrollTop = body.scrollHeight;
+  const idx = smsState.messages.length - 1;
+  setTimeout(function(){
+    if(smsState.messages[idx]){
+      smsState.messages[idx].delivered = true;
+      renderSmsBody();
+      body.scrollTop = body.scrollHeight;
+    }
+  }, 900);
+  ta.focus();
+}
+
+/* ===== Sent-From picker (shared by SMS modal) ===== */
+const MODAL_FROM_USERS = [
+  {key:'AG', name:'Angel Garcia', role:'BDC Agent',      color:'#22c88a'},
+  {key:'DP', name:'David P.',     role:'Sales',           color:'#4f7cff'},
+  {key:'JD', name:'James D.',     role:'Sales Manager',   color:'#f5a623'},
+  {key:'MR', name:'Maria R.',     role:'Finance',         color:'#a78bfa'},
+  {key:'TK', name:'Tom K.',       role:'Service Advisor', color:'#2dd4bf'}
+];
+const MODAL_FROM_DEPTS = [
+  {key:'SA', name:'Sales',     color:'#4f7cff'},
+  {key:'BD', name:'BDC',       color:'#22c88a'},
+  {key:'SV', name:'Service',   color:'#f5a623'},
+  {key:'MK', name:'Marketing', color:'#a78bfa'},
+  {key:'FI', name:'Finance',   color:'#e85555'}
+];
+let modalFromTab = 'users';
+let modalFromContext = 'sms';
+function toggleModalFromPopup(ctx, ev){
+  if(ev){ ev.stopPropagation(); }
+  const popup = document.getElementById('modal-from-popup');
+  if(popup.classList.contains('open') && modalFromContext === ctx){ popup.classList.remove('open'); return; }
+  modalFromContext = ctx;
+  modalFromTab = 'users';
+  document.getElementById('modal-from-ptab-users').classList.add('active');
+  document.getElementById('modal-from-ptab-depts').classList.remove('active');
+  document.getElementById('modal-from-search').value = '';
+  renderModalFromList('');
+  popup.classList.add('open');
+  const anchor = document.getElementById(ctx === 'sms' ? 'sms-from-row' : 'em-from-row');
+  const r = anchor.getBoundingClientRect();
+  const pw = 280, ph = popup.offsetHeight || 320;
+  let top = r.bottom + 4;
+  if(top + ph > window.innerHeight - 8) top = r.top - ph - 4;
+  let left = r.right - pw;
+  if(left < 8) left = 8;
+  if(left + pw > window.innerWidth - 8) left = window.innerWidth - 8 - pw;
+  popup.style.top = top + 'px';
+  popup.style.left = left + 'px';
+}
+function closeModalFromPopup(){
+  const popup = document.getElementById('modal-from-popup');
+  if(popup) popup.classList.remove('open');
+}
+function setModalFromTab(tab){
+  modalFromTab = tab;
+  document.getElementById('modal-from-ptab-users').classList.toggle('active', tab === 'users');
+  document.getElementById('modal-from-ptab-depts').classList.toggle('active', tab === 'depts');
+  document.getElementById('modal-from-search').value = '';
+  renderModalFromList('');
+}
+function renderModalFromList(filter){
+  const q = (filter || '').trim().toLowerCase();
+  const list = document.getElementById('modal-from-plist');
+  const currentSpanId = modalFromContext === 'sms' ? 'sms-from-agent' : 'em-from-agent';
+  const curEl = document.getElementById(currentSpanId);
+  const current = curEl ? curEl.textContent.trim() : '';
+  if(modalFromTab === 'users'){
+    const matches = MODAL_FROM_USERS.filter(function(u){ return u.name.toLowerCase().includes(q) || u.role.toLowerCase().includes(q); });
+    if(!matches.length){ list.innerHTML = '<div class="modal-from-pempty">No users found</div>'; return; }
+    list.innerHTML = matches.map(function(u){
+      return '<div class="modal-from-pitem ' + (current === u.name ? 'selected' : '') + '" onclick="pickModalFrom(\'user\',\'' + u.name.replace(/'/g,"\\'") + '\',\'' + u.color + '\',\'' + u.key + '\')"><div class="modal-from-pitem-av" style="background:' + u.color + ';">' + u.key + '</div><div><div class="modal-from-pitem-name">' + u.name + '</div><div class="modal-from-pitem-role">' + u.role + '</div></div></div>';
+    }).join('');
+  } else {
+    const matches = MODAL_FROM_DEPTS.filter(function(d){ return d.name.toLowerCase().includes(q); });
+    if(!matches.length){ list.innerHTML = '<div class="modal-from-pempty">No departments found</div>'; return; }
+    const disp = function(n){ return n + ' (Dept)'; };
+    list.innerHTML = matches.map(function(d){
+      return '<div class="modal-from-pitem ' + (current === disp(d.name) ? 'selected' : '') + '" onclick="pickModalFrom(\'dept\',\'' + d.name.replace(/'/g,"\\'") + '\',\'' + d.color + '\',\'' + d.key + '\')"><div class="modal-from-pitem-av dept">' + d.key + '</div><div><div class="modal-from-pitem-name">' + d.name + '</div><div class="modal-from-pitem-role">Department</div></div></div>';
+    }).join('');
+  }
+}
+function pickModalFrom(kind, name, color, key){
+  const display = kind === 'dept' ? (name + ' (Dept)') : name;
+  const spanId = modalFromContext === 'sms' ? 'sms-from-agent' : 'em-from-agent';
+  var el = document.getElementById(spanId); if(el) el.textContent = display;
+  closeModalFromPopup();
+}
+document.addEventListener('click', function(e){
+  const popup = document.getElementById('modal-from-popup');
+  if(popup && popup.classList.contains('open') && !popup.contains(e.target)){
+    const smsRow = document.getElementById('sms-from-row');
+    const emRow  = document.getElementById('em-from-row');
+    if(smsRow && smsRow.contains(e.target)) return;
+    if(emRow && emRow.contains(e.target)) return;
+    closeModalFromPopup();
+  }
+});
+
+/* ===== NOTE MODAL (per-lead, in-memory) ===== */
+let ntState = { contact: null };
+const notesByLead = {};
+const AI_NOTE_SUGGESTIONS = [
+  "Left voicemail — will follow up tomorrow morning.",
+  "Discussed pricing and timeline. Sending recap email today.",
+  "Wants to see the vehicle in person — scheduling a walkaround.",
+  "Requested financing options; forwarded to finance team."
+];
+let aiNoteIdx = 0;
+function openNoteModalForLead(leadNo){
+  var lead = (typeof leads !== 'undefined' && leads) ? leads.find(function(l){return l.no === leadNo;}) : null;
+  if(!lead) return;
+  openNoteModal({
+    name: lead.name || 'Unknown',
+    av: _smsInitialsOf(lead.name),
+    clr: lead.ac || lead.color || 'var(--ac)',
+    id: 'lead:' + leadNo
+  });
+}
+function openNoteModal(contact){
+  if(!contact) return;
+  ntState.contact = contact;
+  syncNotesFromPanel(contact.id);
+  var avEl = document.getElementById('nt-head-av');
+  avEl.textContent = contact.av;
+  avEl.style.background = contact.clr || 'var(--ac)';
+  document.getElementById('nt-head-name').textContent = contact.name;
+  document.getElementById('nt-head-sub').textContent = 'Notes';
+  var ta = document.getElementById('nt-textarea');
+  ta.value = ''; ta.style.height = '';
+  document.getElementById('nt-save-btn').disabled = true;
+  renderNoteList();
+  document.getElementById('nt-backdrop').classList.add('show');
+  document.getElementById('nt-modal').classList.add('show');
+  setTimeout(function(){ ta.focus(); }, 80);
+}
+function closeNoteModal(){
+  document.getElementById('nt-backdrop').classList.remove('show');
+  document.getElementById('nt-modal').classList.remove('show');
+}
+function _ntLeadNoFromId(contactId){
+  var m = /^lead:(\d+)$/.exec(String(contactId||''));
+  return m ? +m[1] : null;
+}
+function _ntParsePanelTime(s){
+  // "May 25, 10:02 AM" → Date. Falls back to now if unparseable.
+  var d = new Date(String(s||'') + ' ' + new Date().getFullYear());
+  return isNaN(d) ? new Date() : d;
+}
+function _ntFmtPanelTime(d){
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ', ' + smsFormatTime(d);
+}
+// Rebuild notesByLead[contactId] from cpMessages[leadNo].notes so the modal and
+// the contact-panel Notes tab share the same underlying data. Seeds both on first open.
+function syncNotesFromPanel(contactId){
+  var leadNo = _ntLeadNoFromId(contactId);
+  if(leadNo != null && typeof cpMessages !== 'undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+    if(!cpMessages[leadNo].notes) cpMessages[leadNo].notes = [];
+    var panelNotes = cpMessages[leadNo].notes;
+    if(!panelNotes.length && !notesByLead[contactId]){
+      // First-time open — seed both stores with the same two canned notes so
+      // the modal and the panel start in sync.
+      var seed = [
+        { text: 'Initial contact — interested in mid-size SUVs, budget ~$35k.', time: new Date(Date.now() - 86400000*2), author: 'Angel Garcia' },
+        { text: 'Follow-up scheduled for later this week.',                     time: new Date(Date.now() - 3600000*3),  author: 'Angel Garcia' }
+      ];
+      seed.forEach(function(n){
+        panelNotes.push({ dir:'out', channel:'notes', text:n.text, time:_ntFmtPanelTime(n.time), agent:n.author });
+      });
+    }
+    // Always rebuild modal store from the panel store (source of truth).
+    notesByLead[contactId] = panelNotes.map(function(pn){
+      return { text: pn.text || '', time: _ntParsePanelTime(pn.time), author: pn.agent || 'You' };
+    });
+    return;
+  }
+  // Fallback (no lead lookup available) — legacy seed-once behavior.
+  if(notesByLead[contactId]) return;
+  notesByLead[contactId] = [
+    { text: 'Initial contact — interested in mid-size SUVs, budget ~$35k.', time: new Date(Date.now() - 86400000*2), author: 'Angel Garcia' },
+    { text: 'Follow-up scheduled for later this week.',                     time: new Date(Date.now() - 3600000*3),  author: 'Angel Garcia' }
+  ];
+}
+function renderNoteList(){
+  var list = document.getElementById('nt-list'); if(!list) return;
+  var items = notesByLead[ntState.contact.id] || [];
+  if(!items.length){ list.innerHTML = '<div class="nt-empty">No notes yet.</div>'; return; }
+  list.innerHTML = items.slice().reverse().map(function(n){
+    return '<div class="nt-item">'
+      + '<div class="nt-item-text">' + smsEscapeHtml(n.text) + '</div>'
+      + '<div class="nt-item-meta">' + smsEscapeHtml(n.author || 'You') + ' &middot; ' + smsFormatTime(n.time) + '</div>'
+    + '</div>';
+  }).join('');
+}
+function onNoteInputChange(){
+  var ta = document.getElementById('nt-textarea');
+  var btn = document.getElementById('nt-save-btn');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(160, ta.scrollHeight) + 'px';
+  btn.disabled = ta.value.trim().length === 0;
+}
+function onNoteKeyDown(e){
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); saveNoteFromModal(); }
+}
+function aiNoteCompose(){
+  var ta = document.getElementById('nt-textarea');
+  var suggestion = AI_NOTE_SUGGESTIONS[aiNoteIdx % AI_NOTE_SUGGESTIONS.length];
+  aiNoteIdx++;
+  ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + suggestion;
+  onNoteInputChange();
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+function saveNoteFromModal(){
+  if(!ntState.contact) return;
+  var ta = document.getElementById('nt-textarea');
+  var txt = ta.value.trim(); if(!txt) return;
+  var id = ntState.contact.id;
+  var now = new Date();
+  var author = 'You';
+  if(!notesByLead[id]) notesByLead[id] = [];
+  notesByLead[id].push({ text: txt, time: now, author: author });
+  // Mirror into the contact panel's notes store so the panel's Notes tab sees it.
+  var leadNo = _ntLeadNoFromId(id);
+  if(leadNo != null && typeof cpMessages !== 'undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+    if(!cpMessages[leadNo].notes) cpMessages[leadNo].notes = [];
+    cpMessages[leadNo].notes.push({ dir:'out', channel:'notes', text:txt, time:_ntFmtPanelTime(now), agent:author });
+    // Re-render the panel if it's currently open on Notes for this same lead.
+    if(typeof cpLead !== 'undefined' && cpLead && cpLead.no === leadNo
+       && typeof cpTab !== 'undefined' && cpTab === 'notes'
+       && typeof renderCPMessages === 'function'){
+      renderCPMessages();
+    }
+  }
+  ta.value = ''; ta.style.height = '';
+  document.getElementById('nt-save-btn').disabled = true;
+  renderNoteList();
+  var list = document.getElementById('nt-list'); if(list) list.scrollTop = 0;
+  if(typeof showNavToast === 'function') showNavToast('Note saved', 'Added to ' + ntState.contact.name);
+  ta.focus();
+}
+
+/* ===== EMAIL MODAL (ported from call_history v31) ===== */
+let emState = { contact: null };
+const AI_EMAIL_SUGGESTIONS = [
+  { subject: "Following up on our call",
+    body: "<p>Hi {first},</p><p>Thanks for taking my call earlier. I wanted to follow up in writing with a quick summary of what we discussed and the next steps.</p><p>If you have any questions in the meantime, feel free to reply here or give me a call directly.</p><p>Best regards,<br>Devon Powell<br>CoreConnect</p>" },
+  { subject: "Next steps — your inquiry",
+    body: "<p>Hi {first},</p><p>Following up on your inquiry. I'd love to learn a bit more about what you're looking for so I can put together the right options for you.</p><p>What works best for a quick call this week?</p><p>Best,<br>Devon Powell</p>" },
+  { subject: "Quick check-in",
+    body: "<p>Hi {first},</p><p>Just a quick note to see how things are progressing. Happy to walk through any questions or send over additional details if it would help.</p><p>Let me know what works best for you.</p><p>Thanks,<br>Devon Powell</p>" },
+  { subject: "Documents ready for review",
+    body: "<p>Hi {first},</p><p>The documents we discussed are ready. I've attached the relevant pieces below for your review at your convenience.</p><p>Let me know if anything is unclear and I'll get back to you right away.</p><p>Best,<br>Devon Powell</p>" }
+];
+let aiEmailIdx = 0;
+function openEmailModalForLead(leadNo){
+  var lead = (typeof leads !== 'undefined' && leads) ? leads.find(function(l){return l.no === leadNo;}) : null;
+  if(!lead) return;
+  openEmailModal({
+    name: lead.name || 'Unknown',
+    email: lead.email || null,
+    av: _smsInitialsOf(lead.name),
+    clr: lead.ac || lead.color || 'var(--ac)',
+    id: 'lead:' + leadNo
+  });
+}
+function openEmailModal(contact){
+  if(!contact) return;
+  if(typeof attClear === 'function') attClear('em');
+  emState.contact = contact;
+  const avEl = document.getElementById('em-head-av');
+  avEl.textContent = contact.av;
+  avEl.style.background = contact.clr || 'var(--ac)';
+  document.getElementById('em-head-name').textContent = contact.name;
+  document.getElementById('em-head-email').textContent = contact.email || 'No email on file';
+  const emBody = document.getElementById('em-body');
+  const emFoot = document.querySelector('.em-foot');
+  const emThread = document.getElementById('em-thread');
+  const noEmail = document.getElementById('em-no-email');
+  if(!contact.email){
+    emBody.style.display = 'none';
+    emFoot.style.display = 'none';
+    emThread.style.display = 'none';
+    noEmail.style.display = 'flex';
+  } else {
+    emBody.style.display = '';
+    emFoot.style.display = '';
+    emThread.style.display = '';
+    noEmail.style.display = 'none';
+    document.getElementById('em-subject').value = '';
+    document.getElementById('em-content').innerHTML = '';
+    syncEmFromPanel(contact);
+    renderEmThread(contact.id, contact.clr);
+  }
+  document.getElementById('em-backdrop').classList.add('show');
+  document.getElementById('em-modal').classList.add('show');
+  if(contact.email) setTimeout(function(){ document.getElementById('em-subject').focus(); }, 80);
+}
+function closeEmailModal(){
+  document.getElementById('em-backdrop').classList.remove('show');
+  document.getElementById('em-modal').classList.remove('show');
+  closeModalFromPopup();
+}
+function emEx(cmd, val, e){
+  if(e){ e.preventDefault(); e.stopPropagation(); }
+  const content = document.getElementById('em-content');
+  if(content) content.focus();
+  try { document.execCommand(cmd, false, val || ''); } catch(_) {}
+}
+function emExBlock(tag, e){ if(!tag) return; emEx('formatBlock', tag, e); }
+function emLink(e){
+  if(e){ e.preventDefault(); e.stopPropagation(); }
+  const url = window.prompt('Link URL:', 'https://');
+  if(!url) return;
+  const content = document.getElementById('em-content');
+  if(content) content.focus();
+  const sel = window.getSelection();
+  if(sel && sel.toString().trim().length === 0){
+    document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank" rel="noopener">' + smsEscapeHtml(url) + '</a>');
+  } else {
+    document.execCommand('createLink', false, url);
+  }
+}
+function aiEmailCompose(){
+  if(!emState.contact) return;
+  const first = emState.contact.name.split(' ')[0] || 'there';
+  const tpl = AI_EMAIL_SUGGESTIONS[aiEmailIdx % AI_EMAIL_SUGGESTIONS.length];
+  aiEmailIdx++;
+  const subjEl = document.getElementById('em-subject');
+  const bodyEl = document.getElementById('em-content');
+  if(!subjEl || !bodyEl) return;
+  if(!subjEl.value.trim()) subjEl.value = tpl.subject;
+  bodyEl.innerHTML = tpl.body.replace(/\{first\}/g, first);
+  bodyEl.focus();
+  const range = document.createRange();
+  range.selectNodeContents(bodyEl);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+function sendEmailMessage(){
+  if(!emState.contact) return;
+  const subject = document.getElementById('em-subject').value.trim();
+  const bodyEl  = document.getElementById('em-content');
+  const text    = (bodyEl.innerText || '').trim();
+  if(!subject && !text && !ATT.em.length) return;
+  const contactId = emState.contact.id;
+  if(!emThreads[contactId]) emThreads[contactId] = [];
+  const now = new Date();
+  const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' +
+                  now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const agentName = document.getElementById('em-from-agent').textContent.trim() || 'Angel Garcia';
+  var atts = ATT.em.slice();
+  var msg = { dir:'out', subject: subject, text: text, time: timeStr, agent: agentName, attachments: atts };
+  emThreads[contactId].push(msg);
+  // Mirror into contact panel's email store.
+  var leadNo = _ntLeadNoFromId(contactId);
+  if(leadNo != null && typeof cpMessages !== 'undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+    if(!cpMessages[leadNo].email) cpMessages[leadNo].email = [];
+    cpMessages[leadNo].email.push({ dir:'out', subject:subject, text:text, time:timeStr, agent:agentName, attachments:atts });
+    if(typeof cpLead !== 'undefined' && cpLead && cpLead.no === leadNo
+       && typeof cpTab !== 'undefined' && cpTab === 'email'
+       && typeof renderCPMessages === 'function'){
+      renderCPMessages();
+    }
+  }
+  document.getElementById('em-subject').value = '';
+  bodyEl.innerHTML = '';
+  attClear('em');
+  renderEmThread(contactId, emState.contact.clr);
+  showEmToast();
+}
+function showEmToast(){
+  const t = document.getElementById('em-toast');
+  if(!t) return;
+  t.classList.add('show');
+  clearTimeout(t._hideTimer);
+  t._hideTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+document.addEventListener('keydown', function(e){
+  const modal = document.getElementById('em-modal');
+  if(!modal || !modal.classList.contains('show')) return;
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); sendEmailMessage(); }
+});
+const MAIL_ICON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';
+const TICK_SVG  = '<span class="em-msg-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
+const emThreads = {};
+// Rebuild emThreads[contactId] from cpMessages[leadNo].email so the modal and
+// the contact panel Email tab stay in sync. Seeds both stores on first open.
+function syncEmFromPanel(contact){
+  var contactId = contact.id;
+  var leadNo = _ntLeadNoFromId(contactId);
+  if(leadNo != null && typeof cpMessages !== 'undefined'){
+    if(!cpMessages[leadNo]) cpMessages[leadNo] = {};
+    if(!cpMessages[leadNo].email) cpMessages[leadNo].email = [];
+    var panel = cpMessages[leadNo].email;
+    if(!panel.length){
+      // First-time open — seed panel with the same 3 canned emails the modal ships,
+      // then rebuild emThreads from the panel so both stores match exactly.
+      seedEmThread(contact, contactId);
+      (emThreads[contactId] || []).forEach(function(m){
+        panel.push({ dir:m.dir, subject:m.subject, text:m.text, time:m.time, agent:m.agent });
+      });
+    }
+    // Modal store is the panel store (same shape — dir/subject/text/time/agent/attachments).
+    emThreads[contactId] = panel.map(function(pm){ return {
+      dir: pm.dir, subject: pm.subject || '', text: pm.text || '',
+      time: pm.time || '', agent: pm.agent, attachments: pm.attachments || []
+    }; });
+    return;
+  }
+  // Fallback (no cpMessages available) — legacy in-modal seed only.
+  seedEmThread(contact, contactId);
+}
+function seedEmThread(contact, contactId){
+  if(emThreads[contactId]) return;
+  const first = contact.name.split(' ')[0];
+  emThreads[contactId] = [
+    { dir:'out', subject:'Following up on your inquiry',
+      text: 'Hi ' + first + ', thanks for connecting with us. We wanted to follow up on your recent inquiry and see if you have any questions we can help answer. Looking forward to hearing from you!',
+      time: 'May 25, 10:02 AM', agent: 'Angel Garcia' },
+    { dir:'in', subject:'Re: Following up on your inquiry',
+      text: 'Thanks for reaching out! I do have a few questions. Can we schedule a call sometime this week?',
+      time: 'May 25, 11:30 AM' },
+    { dir:'out', subject:'Re: Following up on your inquiry',
+      text: "Absolutely! I'll send over a calendar link. Looking forward to chatting with you.",
+      time: 'May 25, 11:47 AM', agent: 'Angel Garcia' }
+  ];
+}
+function emDayLabel(timeStr){
+  if(!timeStr) return '';
+  if(timeStr.includes('May 25')) return 'Mon, May 25';
+  if(timeStr.includes('May 26')) return 'Tue, May 26';
+  if(timeStr.includes('May 27')) return 'Today';
+  return timeStr.split(',')[0] || timeStr;
+}
+function buildEmThreadNode(m, contactClr){
+  const out = m.dir === 'out';
+  const avBg  = out ? 'var(--ac)' : (contactClr || 'var(--ac)');
+  const avTxt = out
+    ? (m.agent || 'AG').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase()
+    : (emState.contact ? emState.contact.av : '??');
+  const sender = out ? (m.agent || 'Angel Garcia') : (emState.contact ? emState.contact.name : '');
+  const timeOnly = (m.time || '').replace(/^[A-Za-z]+,?\s+[A-Za-z]+\s+\d+,\s*/, '').trim() || m.time;
+  const headHtml = out
+    ? '<div class="em-card-head"><span class="em-card-icon">' + MAIL_ICON + '</span><span>EMAIL</span></div>'
+    : '<div class="em-card-head"><span>EMAIL</span><span class="em-card-icon">' + MAIL_ICON + '</span></div>';
+  const subjHtml = m.subject ? '<div class="em-card-subj">' + smsEscapeHtml(m.subject) + '</div>' : '';
+  const bodyHtml = m.text ? '<div class="em-card-text">' + smsEscapeHtml(m.text) + '</div>' : '';
+  const node = document.createElement('div');
+  node.className = 'em-msg ' + (out ? 'out' : 'in');
+  node.innerHTML =
+    '<div class="em-bav" style="background:' + avBg + ';">' + avTxt + '</div>'
+    + '<div class="em-bubble-col">'
+    +   '<div class="em-card">'
+    +     headHtml
+    +     '<div class="em-card-body">' + subjHtml + bodyHtml + attListHtml(m.attachments) + '</div>'
+    +   '</div>'
+    +   '<div class="em-msg-meta"><span>' + smsEscapeHtml(sender) + '</span><span>' + smsEscapeHtml(timeOnly) + '</span>' + (out ? TICK_SVG : '') + '</div>'
+    + '</div>';
+  return node;
+}
+function renderEmThread(contactId, contactClr){
+  const container = document.getElementById('em-thread');
+  if(!container) return;
+  container.innerHTML = '';
+  const msgs = emThreads[contactId] || [];
+  if(!msgs.length){
+    container.innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:13px;">No email history yet</div>';
+    return;
+  }
+  let lastDay = null;
+  msgs.forEach(function(m){
+    const day = emDayLabel(m.time);
+    if(day && day !== lastDay){
+      lastDay = day;
+      const sep = document.createElement('div');
+      sep.className = 'em-daysep';
+      sep.innerHTML = '<div class="em-daysep-line"></div><span class="em-daysep-label">' + day + '</span><div class="em-daysep-line"></div>';
+      container.appendChild(sep);
+    }
+    container.appendChild(buildEmThreadNode(m, contactClr));
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+document.addEventListener('mousedown', function(e){
+  if(!e.target.closest) return;
+  if(!e.target.closest('#row-action-bar') && !e.target.closest('#tbody tr')) closeRowActionBar();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    var nt = document.getElementById('nt-modal');
+    if(nt && nt.classList.contains('show')){ closeNoteModal(); return; }
+    var em = document.getElementById('em-modal');
+    if(em && em.classList.contains('show')){ closeEmailModal(); return; }
+    var sm = document.getElementById('sms-modal');
+    if(sm && sm.classList.contains('show')){ closeSmsModal(); return; }
+    closeRowActionBar();
+  }
+});
 
 function doAssign(initials, name, key, color){
   const lead = leads.find(l => l.no === assignTargetNo);
@@ -9303,6 +10620,105 @@ function cpLoanFieldHtml(f){
     + '<div class="cp-loan-fbox' + (f.prefix ? ' has-prefix' : '') + (empty ? ' is-empty' : '') + (f.highlight ? ' is-hl' : '') + '">' + prefix + inner + '</div></div>';
 }
 var CP_DOC_ICON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>';
+var CP_BANK_DECL_REASONS = ['DTI exceeds guideline','Insufficient credit history','Employment tenure below threshold','Loan-to-value too high','Recent derogatory account','Requested payment exceeds capacity'];
+var CP_BANK_DECL_NOTES = ['Consider co-signer or larger down payment to re-submit.','Recommend re-applying after 60 days of on-time payments.','Try a shorter term or lower loan amount for reconsideration.','Verify pay stubs and re-submit with updated income documentation.'];
+var CP_BANK_CONTACTS = ['Regional Finance Rep','Dealer Desk','Account Manager','Underwriting Team'];
+function cpLoanBankRowData(seed, i, status, lenderName){
+  var s = (seed + i * 97) & 0x7fffffff;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mIdx = s % 12, day = ((s >> 3) % 28) + 1, year = 2026;
+  var decisionDate = months[mIdx] + ' ' + day + ', ' + year;
+  var contactName = CP_BANK_CONTACTS[(s >> 5) % CP_BANK_CONTACTS.length];
+  var phoneA = 200 + ((s >> 7) % 799), phoneB = 100 + ((s >> 11) % 899), phoneC = 1000 + ((s >> 4) % 8999);
+  var contactPhone = '(' + phoneA + ') ' + phoneB + '-' + phoneC;
+  var d = { status: status, decisionDate: decisionDate, contactName: contactName, contactPhone: contactPhone, lenderName: lenderName };
+  if(status === 'Approved'){
+    var terms = [60,66,72,75,84];
+    var term = terms[(s >> 6) % terms.length];
+    var aprHalfSteps = ((s >> 2) % 17);
+    var apr = (6.9 + aprHalfSteps * 0.5);
+    var loanAmt = 22000 + ((s >> 9) % 161) * 100;
+    var downPmt = 1500 + ((s >> 13) % 31) * 100;
+    var monthlyRate = apr / 100 / 12;
+    var payment = Math.round((loanAmt * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term)));
+    d.apr = apr.toFixed(1) + '%';
+    d.term = term + ' mo';
+    d.payment = '$' + payment.toLocaleString();
+    d.loanAmt = '$' + loanAmt.toLocaleString();
+    d.downPmt = '$' + downPmt.toLocaleString();
+  } else {
+    d.reason = CP_BANK_DECL_REASONS[(s >> 6) % CP_BANK_DECL_REASONS.length];
+    d.notes = CP_BANK_DECL_NOTES[(s >> 10) % CP_BANK_DECL_NOTES.length];
+  }
+  return d;
+}
+function cpLoanBankDetailsHtml(d){
+  var cell = function(lbl, val, full){
+    return '<div class="cp-loan-bank-det-cell' + (full ? ' cp-loan-bank-det-full' : '') + '">'
+      + '<div class="cp-loan-bank-det-lbl">' + cpEscape(lbl) + '</div>'
+      + '<div class="cp-loan-bank-det-val">' + cpEscape(val) + '</div>'
+    + '</div>';
+  };
+  var grid;
+  if(d.status === 'Approved'){
+    grid = cell('APR', d.apr) + cell('Term', d.term) + cell('Monthly Payment', d.payment)
+         + cell('Loan Amount', d.loanAmt) + cell('Down Payment', d.downPmt) + cell('Decision Date', d.decisionDate);
+  } else {
+    grid = cell('Reason', d.reason, true) + cell('Decision Date', d.decisionDate);
+  }
+  var notes = (d.status === 'Declined' && d.notes) ? '<div class="cp-loan-bank-det-notes">' + cpEscape(d.notes) + '</div>' : '';
+  var foot = '<div class="cp-loan-bank-det-foot">' + cpEscape(d.contactName) + ' &middot; ' + cpEscape(d.contactPhone) + '</div>';
+  return '<div class="cp-loan-bank-det-grid">' + grid + '</div>' + notes + foot;
+}
+function cpLoanBankApprovalHtml(sum, seed){
+  const DOC = CP_DOC_ICON;
+  const CHEV = '<svg class="cp-loan-bank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const ROW_CHEV = '<svg class="cp-loan-bank-row-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const STATUSES = ['Approved','Declined'];
+  const rows = (sum.lenders || []).map((l, i) => {
+    const status = STATUSES[(seed + i) % STATUSES.length];
+    const cls = status.toLowerCase();
+    const d = cpLoanBankRowData(seed, i, status, l.name);
+    return '<div class="cp-loan-bank-row-wrap">'
+      + '<button type="button" class="cp-loan-bank-row" onclick="cpLoanBankRowToggle(event)" aria-expanded="false">'
+        + '<span class="cp-loan-bank-dot" style="background:' + l.color + ';"></span>'
+        + '<span class="cp-loan-bank-name">' + cpEscape(l.name) + '</span>'
+        + '<span class="cp-loan-bank-status is-' + cls + '">' + status + '</span>'
+        + ROW_CHEV
+      + '</button>'
+      + '<div class="cp-loan-bank-details">' + cpLoanBankDetailsHtml(d) + '</div>'
+    + '</div>';
+  }).join('');
+  return '<div class="cp-loan-bank">'
+    + '<button type="button" class="cp-loan-bank-banner" onclick="cpLoanBankToggle(event)" aria-expanded="true">' + DOC + '<span>Bank Approval</span>' + CHEV + '</button>'
+    + '<div class="cp-loan-bank-body">' + rows + '</div>'
+  + '</div>';
+}
+function cpLoanBankToggle(e){
+  if(e) e.stopPropagation();
+  var btn = e.currentTarget;
+  var card = btn.closest && btn.closest('.cp-loan-bank'); if(!card) return;
+  var collapsed = card.classList.toggle('is-collapsed');
+  btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+}
+function cpLoanBankRowToggle(e){
+  if(e) e.stopPropagation();
+  var btn = e.currentTarget;
+  var wrap = btn.parentNode; if(!wrap) return;
+  var card = wrap.closest && wrap.closest('.cp-loan-bank'); if(!card) return;
+  var willOpen = !wrap.classList.contains('is-open');
+  var opens = card.querySelectorAll('.cp-loan-bank-row-wrap.is-open');
+  for(var k = 0; k < opens.length; k++){
+    var w = opens[k];
+    if(w !== wrap){
+      w.classList.remove('is-open');
+      var b = w.querySelector('.cp-loan-bank-row');
+      if(b) b.setAttribute('aria-expanded', 'false');
+    }
+  }
+  wrap.classList.toggle('is-open', willOpen);
+  btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+}
 function cpLoanFormHtml(form){
   const DOC = CP_DOC_ICON;
   const field = cpLoanFieldHtml;
@@ -9390,6 +10806,7 @@ function renderCPLoanAppTab(container){
   wrap.innerHTML =
     cpLoanHeaderHtml(data.header) +
     cpLoanSummaryHtml(data.summary) +
+    cpLoanBankApprovalHtml(data.summary, cpLoanSeed(cpLead)) +
     cpLoanFormHtml(data.form) +
     cpLoanApplicantHtml(data.applicant);
   container.appendChild(wrap);

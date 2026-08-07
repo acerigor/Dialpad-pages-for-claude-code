@@ -138,7 +138,7 @@
     if(!here){ cb(); return; }
     _loanModLoading = true;
     var s = document.createElement('script');
-    s.src = here.replace(/contact-panel\.js(\?.*)?$/, 'loan-app-panel.js');
+    s.src = here.replace(/contact-panel\.js(\?.*)?$/, 'loan-app-panel.js?v=5');
     s.onload = function(){ _loanModLoading = false; cb(); };
     s.onerror = function(){ _loanModLoading = false; cb(); };
     document.head.appendChild(s);

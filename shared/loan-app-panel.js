@@ -535,6 +535,105 @@ function cpLoanFieldHtml(f){
     + '<div class="cp-loan-fbox' + (f.prefix ? ' has-prefix' : '') + (empty ? ' is-empty' : '') + (f.highlight ? ' is-hl' : '') + '">' + prefix + inner + '</div></div>';
 }
 var CP_DOC_ICON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>';
+var CP_BANK_DECL_REASONS = ['DTI exceeds guideline','Insufficient credit history','Employment tenure below threshold','Loan-to-value too high','Recent derogatory account','Requested payment exceeds capacity'];
+var CP_BANK_DECL_NOTES = ['Consider co-signer or larger down payment to re-submit.','Recommend re-applying after 60 days of on-time payments.','Try a shorter term or lower loan amount for reconsideration.','Verify pay stubs and re-submit with updated income documentation.'];
+var CP_BANK_CONTACTS = ['Regional Finance Rep','Dealer Desk','Account Manager','Underwriting Team'];
+function cpLoanBankRowData(seed, i, status, lenderName){
+  var s = (seed + i * 97) & 0x7fffffff;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mIdx = s % 12, day = ((s >> 3) % 28) + 1, year = 2026;
+  var decisionDate = months[mIdx] + ' ' + day + ', ' + year;
+  var contactName = CP_BANK_CONTACTS[(s >> 5) % CP_BANK_CONTACTS.length];
+  var phoneA = 200 + ((s >> 7) % 799), phoneB = 100 + ((s >> 11) % 899), phoneC = 1000 + ((s >> 4) % 8999);
+  var contactPhone = '(' + phoneA + ') ' + phoneB + '-' + phoneC;
+  var d = { status: status, decisionDate: decisionDate, contactName: contactName, contactPhone: contactPhone, lenderName: lenderName };
+  if(status === 'Approved'){
+    var terms = [60,66,72,75,84];
+    var term = terms[(s >> 6) % terms.length];
+    var aprHalfSteps = ((s >> 2) % 17);
+    var apr = (6.9 + aprHalfSteps * 0.5);
+    var loanAmt = 22000 + ((s >> 9) % 161) * 100;
+    var downPmt = 1500 + ((s >> 13) % 31) * 100;
+    var monthlyRate = apr / 100 / 12;
+    var payment = Math.round((loanAmt * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term)));
+    d.apr = apr.toFixed(1) + '%';
+    d.term = term + ' mo';
+    d.payment = '$' + payment.toLocaleString();
+    d.loanAmt = '$' + loanAmt.toLocaleString();
+    d.downPmt = '$' + downPmt.toLocaleString();
+  } else {
+    d.reason = CP_BANK_DECL_REASONS[(s >> 6) % CP_BANK_DECL_REASONS.length];
+    d.notes = CP_BANK_DECL_NOTES[(s >> 10) % CP_BANK_DECL_NOTES.length];
+  }
+  return d;
+}
+function cpLoanBankDetailsHtml(d){
+  var cell = function(lbl, val, full){
+    return '<div class="cp-loan-bank-det-cell' + (full ? ' cp-loan-bank-det-full' : '') + '">'
+      + '<div class="cp-loan-bank-det-lbl">' + cpEscape(lbl) + '</div>'
+      + '<div class="cp-loan-bank-det-val">' + cpEscape(val) + '</div>'
+    + '</div>';
+  };
+  var grid;
+  if(d.status === 'Approved'){
+    grid = cell('APR', d.apr) + cell('Term', d.term) + cell('Monthly Payment', d.payment)
+         + cell('Loan Amount', d.loanAmt) + cell('Down Payment', d.downPmt) + cell('Decision Date', d.decisionDate);
+  } else {
+    grid = cell('Reason', d.reason, true) + cell('Decision Date', d.decisionDate);
+  }
+  var notes = (d.status === 'Declined' && d.notes) ? '<div class="cp-loan-bank-det-notes">' + cpEscape(d.notes) + '</div>' : '';
+  var foot = '<div class="cp-loan-bank-det-foot">' + cpEscape(d.contactName) + ' &middot; ' + cpEscape(d.contactPhone) + '</div>';
+  return '<div class="cp-loan-bank-det-grid">' + grid + '</div>' + notes + foot;
+}
+function cpLoanBankApprovalHtml(sum, seed){
+  const DOC = CP_DOC_ICON;
+  const CHEV = '<svg class="cp-loan-bank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const ROW_CHEV = '<svg class="cp-loan-bank-row-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const STATUSES = ['Approved','Declined'];
+  const rows = (sum.lenders || []).map((l, i) => {
+    const status = STATUSES[(seed + i) % STATUSES.length];
+    const cls = status.toLowerCase();
+    const d = cpLoanBankRowData(seed, i, status, l.name);
+    return '<div class="cp-loan-bank-row-wrap">'
+      + '<button type="button" class="cp-loan-bank-row" onclick="cpLoanBankRowToggle(event)" aria-expanded="false">'
+        + '<span class="cp-loan-bank-dot" style="background:' + l.color + ';"></span>'
+        + '<span class="cp-loan-bank-name">' + cpEscape(l.name) + '</span>'
+        + '<span class="cp-loan-bank-status is-' + cls + '">' + status + '</span>'
+        + ROW_CHEV
+      + '</button>'
+      + '<div class="cp-loan-bank-details">' + cpLoanBankDetailsHtml(d) + '</div>'
+    + '</div>';
+  }).join('');
+  return '<div class="cp-loan-bank">'
+    + '<button type="button" class="cp-loan-bank-banner" onclick="cpLoanBankToggle(event)" aria-expanded="true">' + DOC + '<span>Bank Approval</span>' + CHEV + '</button>'
+    + '<div class="cp-loan-bank-body">' + rows + '</div>'
+  + '</div>';
+}
+window.cpLoanBankRowToggle = function(e){
+  if(e) e.stopPropagation();
+  var btn = e.currentTarget;
+  var wrap = btn.parentNode; if(!wrap) return;
+  var card = wrap.closest && wrap.closest('.cp-loan-bank'); if(!card) return;
+  var willOpen = !wrap.classList.contains('is-open');
+  var opens = card.querySelectorAll('.cp-loan-bank-row-wrap.is-open');
+  for(var k = 0; k < opens.length; k++){
+    var w = opens[k];
+    if(w !== wrap){
+      w.classList.remove('is-open');
+      var b = w.querySelector('.cp-loan-bank-row');
+      if(b) b.setAttribute('aria-expanded', 'false');
+    }
+  }
+  wrap.classList.toggle('is-open', willOpen);
+  btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+};
+window.cpLoanBankToggle = function(e){
+  if(e) e.stopPropagation();
+  var btn = e.currentTarget;
+  var card = btn.closest && btn.closest('.cp-loan-bank'); if(!card) return;
+  var collapsed = card.classList.toggle('is-collapsed');
+  btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+};
 function cpLoanFormHtml(form){
   const DOC = CP_DOC_ICON;
   const field = cpLoanFieldHtml;
@@ -622,6 +721,7 @@ function renderCPLoanAppTab(container){
   wrap.innerHTML =
     cpLoanHeaderHtml(data.header) +
     cpLoanSummaryHtml(data.summary) +
+    cpLoanBankApprovalHtml(data.summary, cpLoanSeed(cpLead)) +
     cpLoanFormHtml(data.form) +
     cpLoanApplicantHtml(data.applicant);
   container.appendChild(wrap);

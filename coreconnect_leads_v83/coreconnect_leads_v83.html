@@ -209,6 +209,9 @@
   .chip:hover{border-color:var(--ac);}
   .chip-x-corner{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--rd);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:10;border:1.5px solid var(--bg);}
   .chip:hover .chip-x-corner{display:flex;}
+  .chip-tooltip{position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);background:var(--sur2);color:var(--ac2);font-size:12px;font-weight:500;padding:7px 12px;border-radius:8px;border:0.5px solid var(--ac);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:200;display:flex;flex-direction:column;gap:2px;}
+  .chip:hover .chip-tooltip{opacity:1;}
+  @media(max-width:640px){.chip-tooltip{display:none !important;}}
   .clear-all{font-size:12.5px;color:var(--mu);cursor:pointer;padding:3px 6px;border-radius:5px;transition:color .15s;white-space:nowrap;flex-shrink:0;}
   .clear-all:hover{color:var(--rd);}
 
@@ -1192,6 +1195,7 @@
     font-family:var(--font);min-width:120px;}
   .bucket-count{font-family:var(--mono);font-size:11px;color:var(--mu);background:var(--sur2);padding:2px 7px;border-radius:4px;border:0.5px solid var(--brd);}
   .bucket-chips{display:flex;align-items:center;gap:5px;flex:1;flex-wrap:nowrap;overflow:hidden;}
+  .bucket-fc{display:none;}   /* mobile-only indicator; desktop shows chips instead */
   .bucket-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:500;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);white-space:nowrap;}
   .bucket-chip-val{color:var(--ac2);}
 
@@ -1908,6 +1912,47 @@
   .cb-check-opt.on .cb-check{background:var(--ac);border-color:var(--ac);}
   .cb-check-opt.on .cb-check::after{content:'';width:5px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px);}
   .cb-check-opt span{font-size:12.5px;color:var(--tx);}
+  .cb-section-trigger{display:none;}
+  /* Mobile: Create Bucket modal fills the viewport */
+  @media (max-width:640px){
+    .cb-modal.modal{width:100%;max-width:100%;height:100vh;max-height:100vh;border-radius:0;border:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);}
+    #bucket-modal-backdrop.modal-backdrop{padding:0;align-items:stretch;}
+  }
+  /* Mobile: collapse each section grid into a dropdown trigger; the shared #cbfs sheet handles selection. */
+  @media (max-width:640px){
+    .cb-section-grid{display:none;}
+    .cb-section-trigger{display:flex;align-items:center;gap:8px;width:100%;background:var(--sur);border:0.5px solid var(--brd2);border-radius:8px;padding:11px 14px;color:var(--tx);font-family:inherit;font-size:14px;cursor:pointer;margin:8px 10px;width:calc(100% - 20px);}
+    .cb-section-trigger:hover{border-color:var(--ac);}
+    .cb-section-trigger-val{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .cb-section-trigger-val.is-empty{color:var(--mu);}
+    .cb-section-trigger svg{width:14px;height:14px;color:var(--mu);flex:none;}
+  }
+  /* Bucket-filter bottom sheet — mobile-only multi-select picker */
+  .cbfs-backdrop{display:none;position:fixed;inset:0;z-index:3200;background:rgba(0,0,0,.55);opacity:0;transition:opacity .18s ease;}
+  .cbfs-backdrop.show{display:block;opacity:1;}
+  .cbfs-sheet{display:none;position:fixed;left:0;right:0;bottom:0;z-index:3201;background:var(--sur);
+    border-top:0.5px solid var(--brd2);border-top-left-radius:16px;border-top-right-radius:16px;
+    max-height:88vh;flex-direction:column;overflow:hidden;
+    transform:translateY(100%);transition:transform .22s cubic-bezier(.2,.7,.3,1);
+    padding-bottom:env(safe-area-inset-bottom);}
+  .cbfs-sheet.show{display:flex;transform:translateY(0);}
+  .cbfs-grip{width:44px;height:4px;background:var(--brd2);border-radius:2px;margin:8px auto 4px;flex:none;}
+  .cbfs-head{display:flex;align-items:center;gap:10px;padding:8px 16px 12px;border-bottom:0.5px solid var(--brd);flex:none;}
+  .cbfs-title{flex:1;font-size:15px;font-weight:600;color:var(--tx);}
+  .cbfs-done{background:var(--ac);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;}
+  .cbfs-done:hover{background:var(--ac2);}
+  .cbfs-search{display:flex;align-items:center;gap:8px;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:0 12px;height:40px;margin:12px 16px 0;flex:none;}
+  .cbfs-search svg{width:14px;height:14px;color:var(--mu);flex:none;}
+  .cbfs-search input{flex:1;background:transparent;border:none;outline:none;color:var(--tx);font-family:inherit;font-size:14px;height:100%;}
+  .cbfs-search input::placeholder{color:var(--mu);}
+  .cbfs-list{flex:1;overflow-y:auto;padding:8px 8px 16px;}
+  .cbfs-item{display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:8px;cursor:pointer;user-select:none;min-height:48px;}
+  .cbfs-item:active{background:var(--hover);}
+  .cbfs-item .cbfs-cb{width:20px;height:20px;border:1.5px solid var(--brd2);border-radius:5px;flex:none;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+  .cbfs-item.on .cbfs-cb{background:var(--ac);border-color:var(--ac);}
+  .cbfs-item.on .cbfs-cb::after{content:'';width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px);}
+  .cbfs-item span{font-size:14px;color:var(--tx);}
+  .cbfs-empty{padding:24px;text-align:center;color:var(--mu);font-size:13px;}
   .cb-modal-footer{justify-content:space-between;}
   .cb-clear-all{font-size:12.5px;color:var(--mu);cursor:pointer;transition:color .15s;}
   .cb-clear-all:hover{color:var(--rd);}
@@ -3075,6 +3120,14 @@
     .bucket-header{flex-wrap:wrap;gap:8px;padding:12px;}
     .bucket-row .bucket-menu-wrap{display:none;}
     .bucket-row .bucket-chips{display:none;}
+    /* Mobile filter-count badge (funnel + N) — right-aligned indicator, taps to open Filter editor */
+    .bucket-fc{display:inline-flex;align-items:center;gap:6px;margin-left:auto;color:var(--mu);font-family:var(--font);cursor:pointer;}
+    .bucket-fc:hover,.bucket-fc:focus-visible{color:var(--tx);outline:none;}
+    .bucket-fc:hover .bucket-fc-num,.bucket-fc:focus-visible .bucket-fc-num{background:var(--ac2);}
+    .bucket-fc svg{width:14px;height:14px;flex:none;}
+    .bucket-fc-num{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--ac);color:#fff;font-size:10.5px;font-weight:600;font-family:var(--mono);display:inline-flex;align-items:center;justify-content:center;}
+    .bucket-fc[data-count="0"]{opacity:.45;}
+    .bucket-fc[data-count="0"] .bucket-fc-num{background:var(--sur2);color:var(--mu);}
 
     .tfooter > div:first-child strong{color:var(--tx);}
 
@@ -3253,9 +3306,6 @@
      RESPONSIVE — PHASE 2C: Monday-style FAB + Read more
      ──────────────────────────────────────────────────────────────────────── */
 
-  /* FAB — hidden by default (desktop & tablet) */
-  .fab{display:none;}
-
   /* "Read more" / "Show less" toggle */
   .read-more-wrap{position:relative;}
   .read-more-content{overflow:hidden;}
@@ -3273,34 +3323,10 @@
   }
   .read-more-toggle:hover{color:var(--ac);}
 
-  /* ─────────────── PHONE (≤ 640px): show FAB ─────────────── */
+  /* ─────────────── PHONE (≤ 640px) ─────────────── */
   @media (max-width: 640px){
-    .fab{
-      display:flex;align-items:center;justify-content:center;
-      position:fixed;bottom:20px;right:20px;width:56px;height:56px;
-      border-radius:50%;background:var(--ac);border:none;color:#fff;
-      cursor:pointer;z-index:1200;
-      box-shadow:0 4px 16px rgba(79,124,255,.45), 0 2px 6px rgba(0,0,0,.3);
-      transition:transform .15s, box-shadow .15s, bottom .25s;
-      /* Scale-up entrance animation */
-      animation:fab-pop-in .3s cubic-bezier(.34,1.56,.64,1) backwards;
-    }
-    .fab:hover{
-      transform:translateY(-2px);
-      box-shadow:0 6px 22px rgba(79,124,255,.55), 0 3px 8px rgba(0,0,0,.35);
-    }
-    .fab:active{
-      transform:translateY(0) scale(.96);
-    }
-    /* When the Live Call bar is active, shift the FAB up to clear it */
-    body:has(.lc-bar.open) .fab{ bottom:80px; }
-
     /* Bigger "Read more" tap target on phone */
     .read-more-toggle{min-height:36px;font-size:13px;padding:8px 0;}
-  }
-  @keyframes fab-pop-in{
-    0%   {opacity:0;transform:scale(.5);}
-    100% {opacity:1;transform:scale(1);}
   }
 
   /* ════════════════════════════════════════════════════════════════════════════
@@ -3715,14 +3741,6 @@
     <button class="kanban-toast-close" onclick="hideKanbanToast()" aria-label="Dismiss">✕</button>
   </div>
 
-  <!-- FLOATING ACTION BUTTON ('+' Add Lead, phone-only) -->
-  <button class="fab" id="fab" onclick="openAddModal()" aria-label="Add lead" title="Add lead">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <line x1="12" y1="5" x2="12" y2="19"/>
-      <line x1="5" y1="12" x2="19" y2="12"/>
-    </svg>
-  </button>
-
   <!-- FOOTER -->
   <div class="tfooter">
     <div>Showing <strong style="color:var(--tx)" id="showing">1–10</strong> of <strong style="color:var(--tx)" id="total">20</strong></div>
@@ -3737,6 +3755,21 @@
 
   <!-- BUCKETS -->
   <div class="buckets-area" id="buckets-area"></div>
+
+  <!-- BUCKET FILTER SHEET (mobile-only multi-select picker) -->
+  <div class="cbfs-backdrop" id="cbfs-backdrop" onclick="closeBucketFilterSheet()"></div>
+  <div class="cbfs-sheet" id="cbfs-sheet" role="dialog" aria-modal="true" aria-label="Select filter values">
+    <div class="cbfs-grip"></div>
+    <div class="cbfs-head">
+      <div class="cbfs-title" id="cbfs-title">Filter</div>
+      <button class="cbfs-done" type="button" onclick="closeBucketFilterSheet()">Done</button>
+    </div>
+    <div class="cbfs-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="cbfs-search-input" placeholder="Search…" oninput="renderBucketFilterSheet(this.value)"/>
+    </div>
+    <div class="cbfs-list" id="cbfs-list"></div>
+  </div>
 
   <!-- ROW ACTION BAR (Call / SMS / Note) -->
   <div class="row-action-bar" id="row-action-bar" style="display:none;" role="menu" aria-label="Row actions">
@@ -6968,22 +7001,10 @@ const filterConfig=[
     {val:'true',label:'Active only',count:49},
     {val:'false',label:'Inactive only',count:7},
   ]},
-  {key:'engage',label:'Engagement',type:'multi',options:[
-    {val:'has_email',label:'Has email',count:38},
-    {val:'no_email',label:'No email',count:6},
-    {val:'has_phone',label:'Has phone',count:51},
-    {val:'no_phone',label:'No phone',count:4},
-    {val:'never_engaged',label:'Never engaged',count:12},
-    {val:'unread_email',label:'Unread email',count:12},
-    {val:'has_inbound_email',label:'Inbound email',count:42},
-    {val:'has_outbound_email',label:'Outbound email',count:42},
-    {val:'has_inbound_sms',label:'Inbound SMS',count:46},
-    {val:'has_outbound_sms',label:'Outbound SMS',count:43},
-    {val:'has_inbound_calls',label:'Inbound calls',count:25},
-    {val:'has_outbound_calls',label:'Outbound calls',count:23},
-    {val:'has_missed_calls',label:'Missed calls',count:12},
-    {val:'has_answered_calls',label:'Answered calls',count:25},
-    {val:'has_returned_calls',label:'Returned calls',count:23},
+  {key:'engage',label:'Contacts',type:'multi',options:[
+    {val:'has_both',label:'All'},
+    {val:'has_email',label:'Email Address',count:38},
+    {val:'has_phone',label:'Phone Number',count:51},
   ]},
   {key:'unreadEmail',label:'Unread Email',type:'toggle'},
   {key:'unreadSms',label:'Unread SMS',type:'toggle'},
@@ -7278,15 +7299,17 @@ function renderRightPane(cat){
     : (t.state[cat.key]||new Set());
   const isSingle=cat.type==='single';
   cat.options.forEach(opt=>{
+    const isAllRow = opt.val === 'has_both';
+    const on = sel.has(opt.val);
     const row=document.createElement('div');
-    row.className='fd-opt'+(sel.has(opt.val)?' chosen':'');
+    row.className='fd-opt'+(on?' chosen':'');
     row.dataset.val=opt.val;
     row.dataset.label=opt.label.toLowerCase();
     const indicator=isSingle
-      ? `<div class="fp-radio${sel.has(opt.val)?' on':''}"></div>`
-      : `<div class="fp-cb${sel.has(opt.val)?' on':''}"></div>`;
-    const count=getFilterOptionCount(cat.key, opt.val);
-    row.innerHTML=`${indicator}<span class="fd-opt-label">${opt.label}</span><span class="fd-opt-count">${count}</span>`;
+      ? `<div class="fp-radio${on?' on':''}"></div>`
+      : `<div class="fp-cb${on?' on':''}"></div>`;
+    const countHtml = isAllRow ? '' : `<span class="fd-opt-count">${getFilterOptionCount(cat.key, opt.val)}</span>`;
+    row.innerHTML=`${indicator}<span class="fd-opt-label">${opt.label}</span>${countHtml}`;
     row.onclick=()=>toggleFilterValue(cat,opt.val);
     opts.appendChild(row);
   });
@@ -7326,6 +7349,30 @@ function toggleFilterValue(cat,val){
   const t=fdTarget();
   if(cat.key==='period'){
     t.setPeriod(val);
+    renderRightPane(cat);
+    renderFilterDropdown();
+    if(t.mode==='bucket') liveBucketUpdate();
+    return;
+  }
+  // Contacts (engage) is mutually-exclusive: All / Email Address / Phone Number are
+  // three distinct predicates (both / email-only / phone-only). Clicking a row replaces
+  // the current pick; clicking the same row again clears the filter entirely.
+  if(cat.key === 'engage'){
+    const currentSet = (t.mode==='bucket')
+      ? new Set((t.bucket.filters||[]).filter(f=>f.group==='engage').flatMap(f => f.vals || (f.val ? [f.val] : [])))
+      : new Set(t.state[cat.key] || []);
+    const isOnlyPick = currentSet.size === 1 && currentSet.has(val);
+    if(t.mode==='bucket'){
+      t.bucket.filters = (t.bucket.filters||[]).filter(f => f.group !== 'engage');
+      if(!isOnlyPick) bucketFiltersToggle(t.bucket, 'engage', val, true);
+    } else {
+      if(isOnlyPick){
+        delete t.state[cat.key];
+      } else {
+        t.state[cat.key] = new Set([val]);
+      }
+      updateBadge();
+    }
     renderRightPane(cat);
     renderFilterDropdown();
     if(t.mode==='bucket') liveBucketUpdate();
@@ -7432,8 +7479,8 @@ window.addEventListener('scroll',()=>{
   if(dd&&dd.classList.contains('open')) positionFilterDropdown();
 },{passive:true});
 
-const groupLabels={status:'Status',source:'Source',assign:'Assign',active:'Active',engage:'Engagement',label:'Label',lastAttempt:'Last attempt'};
-const engageLabels={has_email:'Has email',has_phone:'Has phone',never_engaged:'Never engaged',unread_email:'Unread email',has_inbound_email:'Inbound email',has_outbound_email:'Outbound email',has_inbound_sms:'Inbound SMS',has_outbound_sms:'Outbound SMS',has_inbound_calls:'Inbound calls',has_outbound_calls:'Outbound calls',has_missed_calls:'Missed calls',has_answered_calls:'Answered calls',has_returned_calls:'Returned calls'};
+const groupLabels={status:'Status',source:'Source',assign:'Assign',active:'Active',engage:'Contacts',label:'Label',lastAttempt:'Last attempt'};
+const engageLabels={has_both:'All',has_email:'Email Address',has_phone:'Phone Number'};
 const lastAttemptLabels={today:'Today',yesterday:'Yesterday',last7:'Last 7 days',last30:'Last 30 days',older:'Older'};
 const xIcon='<svg width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12.5 4.5L4.5 12.5M4.5 4.5L12.5 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
@@ -7452,14 +7499,19 @@ function renderChips(){
   pchip.innerHTML=`${cornerX('removePeriodChip()')}<span class="chip-label">Period:</span>${currentPeriod}`;
   row.appendChild(pchip);
   Object.entries(activeFilters).forEach(([group,vals])=>{
-    vals.forEach(val=>{
-      chipCount++;
-      const chip=document.createElement('div');
-      chip.className='chip';
+    chipCount++;
+    const chip=document.createElement('div');
+    chip.className='chip';
+    if(vals.size===1){
+      const val=[...vals][0];
       const displayVal=group==='engage'?(engageLabels[val]||val):group==='lastAttempt'?(lastAttemptLabels[val]||val):(val==='true'?'Active only':val==='false'?'Inactive only':val);
       chip.innerHTML=`${cornerX("removeChip('" + group + "','" + val + "')")}<span class='chip-label'>${groupLabels[group]}:</span>${displayVal}`;
-      row.appendChild(chip);
-    });
+    }else{
+      const tipItems=[...vals].map(v=>group==='assign'?(typeof assignFullName==='function'?assignFullName(v):v):group==='engage'?(engageLabels[v]||v):group==='lastAttempt'?(lastAttemptLabels[v]||v):(v==='true'?'Active only':v==='false'?'Inactive only':v));
+      const tipHtml=tipItems.map(t=>`<span>${t}</span>`).join('');
+      chip.innerHTML=`${cornerX("removeGroupChips('" + group + "')")}<span class='chip-label'>${groupLabels[group]}:</span>${vals.size} selected<span class="chip-tooltip">${tipHtml}</span>`;
+    }
+    row.appendChild(chip);
   });
   if(chipCount>1){
     const ca=document.createElement('span');
@@ -7502,6 +7554,23 @@ function updateMobileChipsFade(){
   }
 }
 
+function removeGroupChips(group){
+  delete activeFilters[group];
+  updateBadge();
+  renderChips();
+  currentPage=1;
+  renderLeads();
+  if(typeof renderBuckets==='function') renderBuckets();
+  document.getElementById('filter-btn').classList.toggle('active-filter',Object.keys(activeFilters).length>0);
+  const dd=document.getElementById('filter-dropdown');
+  if(dd&&dd.classList.contains('open')){
+    renderFilterDropdown();
+    if(activeCatKey===group){
+      const cat=filterConfig.find(c=>c.key===group);
+      if(cat&&cat.type!=='toggle') renderRightPane(cat);
+    }
+  }
+}
 function removeChip(group,val){
   if(activeFilters[group]){
     activeFilters[group].delete(val);
@@ -8482,6 +8551,8 @@ document.addEventListener('mousedown', function(e){
 });
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
+    var cbfs = document.getElementById('cbfs-sheet');
+    if(cbfs && cbfs.classList.contains('show')){ closeBucketFilterSheet(); return; }
     var nt = document.getElementById('nt-modal');
     if(nt && nt.classList.contains('show')){ closeNoteModal(); return; }
     var em = document.getElementById('em-modal');
@@ -8697,13 +8768,13 @@ function saveEditLead(){
 // ── BUCKETS ──────────────────────────────────────────────────────────────
 const buckets = [
   {
-    id: 1, name: 'Unread Emails', expanded: false,
-    filters: [{group:'engage', val:'unread_email', label:'Engagement', valLabel:'Unread email'}],
+    id: 1, name: 'Has Email', expanded: false,
+    filters: [{group:'engage', val:'has_email', label:'Contacts', valLabel:'Email Address'}],
     color: '#4f7cff'
   },
   {
-    id: 2, name: 'Never Engaged', expanded: false,
-    filters: [{group:'engage', val:'never_engaged', label:'Engagement', valLabel:'Never engaged'}],
+    id: 2, name: 'Has Phone', expanded: false,
+    filters: [{group:'engage', val:'has_phone', label:'Contacts', valLabel:'Phone Number'}],
     color: '#f5a623'
   },
   {
@@ -8721,7 +8792,7 @@ const buckets = [
 let nextBucketId = 5;
 let editingBucketId = null;
 
-const bucketGroupLabels = {status:'Status',source:'Source',assign:'Assign',active:'Active',engage:'Engagement',label:'Label',lastAttempt:'Last Attempt',lastEngaged:'Last Engaged',createdDate:'Created Date'};
+const bucketGroupLabels = {status:'Status',source:'Source',assign:'Assign',active:'Active',engage:'Contacts',label:'Label',lastAttempt:'Last Attempt',lastEngaged:'Last Engaged',createdDate:'Created Date'};
 
 // Normalize any filter to the grouped multi-value shape: {group, vals:[], label, valLabels:[]}
 function normalizeBucketFilters(filters){
@@ -8752,9 +8823,10 @@ function leadMatchesFilterValue(l, group, val){
     return false;
   }
   if(group === 'engage'){
-    if(val === 'has_email')     return !!l.email;
+    if(val === 'has_both')      return !!l.email && !!l.phone;
+    if(val === 'has_email')     return !!l.email && !l.phone;
     if(val === 'no_email')      return !l.email;
-    if(val === 'has_phone')     return !!l.phone;
+    if(val === 'has_phone')     return !!l.phone && !l.email;
     if(val === 'no_phone')      return !l.phone;
     if(val === 'never_engaged') return l.sms === '0/0' && l.calls === '0/0';
     if(val === 'unread_email')  return !!l.unreadEmail;
@@ -8865,6 +8937,8 @@ function renderBuckets() {
       const vlabels = (f.valLabels && f.valLabels.length) ? f.valLabels.join(', ') : (f.valLabel || '');
       return `<span class="bucket-chip"><span style="color:var(--mu)">${f.label}:</span> <span class="bucket-chip-val">${vlabels}</span></span>`;
     }).join('');
+    const fcount = (b.filters || []).length;
+    const fcountLabel = fcount + (fcount === 1 ? ' filter' : ' filters');
 
     row.innerHTML = `
       <div class="bucket-header" onclick="toggleBucket(${b.id})">
@@ -8891,6 +8965,12 @@ function renderBuckets() {
         <span class="bucket-name" onclick="startBucketRename(${b.id}, event)" title="Click to rename">${b.name}</span>
         <span class="bucket-count">${bLeads.length} leads</span>
         <div class="bucket-chips">${chipHtml}</div>
+        <span class="bucket-fc" data-count="${fcount}" aria-label="${fcountLabel}" title="${fcountLabel} — tap to edit" role="button" tabindex="0"
+          onclick="event.stopPropagation();bucketMenuAction(${b.id},'filter',event)"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();bucketMenuAction(${b.id},'filter',event);}">
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2.13125 3.83625C2.06619 3.76465 2.0233 3.67571 2.00777 3.58022C1.99225 3.48473 2.00477 3.38678 2.0438 3.29826C2.08284 3.20974 2.14671 3.13445 2.22769 3.0815C2.30866 3.02856 2.40326 3.00025 2.5 3H13.5C13.5969 3.00001 13.6916 3.02815 13.7728 3.08099C13.8539 3.13384 13.918 3.20912 13.9572 3.29769C13.9964 3.38626 14.009 3.48431 13.9935 3.57991C13.978 3.67552 13.9351 3.76457 13.87 3.83625L9.5 8.5V12.1656C9.50005 12.248 9.47977 12.329 9.44096 12.4017C9.40214 12.4743 9.34599 12.5362 9.2775 12.5819L7.2775 13.915C7.20227 13.9652 7.11484 13.994 7.02451 13.9985C6.93418 14.0029 6.84434 13.9828 6.76456 13.9402C6.68478 13.8976 6.61804 13.8342 6.57145 13.7566C6.52486 13.6791 6.50017 13.5904 6.5 13.5V8.5L2.13125 3.83625Z"/></svg>
+          <span class="bucket-fc-num">${fcount}</span>
+        </span>
       </div>
       <div class="bucket-table-wrap">
         ${bLeads.length > 0 ? `
@@ -9029,7 +9109,7 @@ const filterGroupOptions = [
   {val:'source', label:'Source'},
   {val:'assign', label:'Assign'},
   {val:'active', label:'Active'},
-  {val:'engage', label:'Engagement'},
+  {val:'engage', label:'Contacts'},
   {val:'label',  label:'Label'},
   {val:'lastAttempt', label:'Last Attempt'},
   {val:'lastEngaged', label:'Last Engaged'},
@@ -9041,7 +9121,7 @@ const filterValOptions = {
   // Generated from assignUsers (all 18) + a synthetic 'Unassigned' option
   assign:  assignUsers.map(u => ({val:u.key, label:u.key})).concat([{val:'Unassigned',label:'Unassigned'}]),
   active:  [{val:'true',label:'Active only'},{val:'false',label:'Inactive only'}],
-  engage:  [{val:'has_email',label:'Has email'},{val:'no_email',label:'No email'},{val:'has_phone',label:'Has phone'},{val:'no_phone',label:'No phone'},{val:'never_engaged',label:'Never engaged'},{val:'unread_email',label:'Unread email'}],
+  engage:  [{val:'has_both',label:'All'},{val:'has_email',label:'Email Address'},{val:'has_phone',label:'Phone Number'}],
   label:   [{val:'Hot',label:'Hot'},{val:'Warm',label:'Warm'},{val:'Cold',label:'Cold'},{val:'No Label',label:'No label'}],
   lastAttempt: [{val:'today',label:'Today'},{val:'yesterday',label:'Yesterday'},{val:'last7',label:'Last 7 days'},{val:'last30',label:'Last 30 days'},{val:'older',label:'Older'}],
   lastEngaged: [{val:'today',label:'Today'},{val:'yesterday',label:'Yesterday'},{val:'last7',label:'Last 7 days'},{val:'last30',label:'Last 30 days'},{val:'older',label:'Older'},{val:'never',label:'Never'}],
@@ -9086,14 +9166,26 @@ function renderBucketFilterRows() {
     const selected = bucketFilterState[grp.val] || [];
     const d = document.createElement('div');
     d.className = 'cb-section';
+    const hasAllOpt = valOpts.some(o => o.val === 'has_both');
+    const triggerLabel = selected.length === 0
+      ? 'Choose…'
+      : (selected.length === 1
+          ? ((valOpts.find(o => o.val === selected[0]) || {label: selected[0]}).label)
+          : (selected.length + ' selected'));
     d.innerHTML = `
       <div class="cb-section-head">${grp.label}</div>
       <div class="cb-section-grid">
-        ${valOpts.map(o => `
-          <div class="cb-check-opt ${selected.includes(o.val)?'on':''}" onclick="toggleBucketFilterVal('${grp.val}','${String(o.val).replace(/'/g,"\\'")}')">
+        ${valOpts.map(o => {
+          const on = selected.includes(o.val);
+          return `<div class="cb-check-opt ${on?'on':''}" onclick="toggleBucketFilterVal('${grp.val}','${String(o.val).replace(/'/g,"\\'")}')">
             <div class="cb-check"></div><span>${o.label}</span>
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
       </div>
+      <button type="button" class="cb-section-trigger" onclick="openBucketFilterSheet('${grp.val}')">
+        <span class="cb-section-trigger-val ${(selected.length===0 && !hasAllOpt)?'is-empty':''}">${triggerLabel}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
     `;
     list.appendChild(d);
   });
@@ -9101,11 +9193,63 @@ function renderBucketFilterRows() {
 
 function toggleBucketFilterVal(group, val) {
   if(!bucketFilterState[group]) bucketFilterState[group] = [];
-  const arr = bucketFilterState[group];
-  const idx = arr.indexOf(val);
-  if(idx === -1) arr.push(val); else arr.splice(idx, 1);
+  // Contacts (engage): mutually-exclusive singleton — All / Email Address / Phone Number
+  // are three distinct predicates. Clicking a row replaces the pick; clicking the same
+  // row again clears it.
+  if(group === 'engage'){
+    const arr = bucketFilterState[group];
+    if(arr.length === 1 && arr[0] === val){
+      bucketFilterState[group] = [];
+    } else {
+      bucketFilterState[group] = [val];
+    }
+  } else {
+    const arr = bucketFilterState[group];
+    const idx = arr.indexOf(val);
+    if(idx === -1) arr.push(val); else arr.splice(idx, 1);
+  }
   renderBucketFilterRows();
   updateBucketSaveBtn();
+  // If the mobile picker is open on this group, re-render its rows in place too.
+  if(_cbfsGroup === group){
+    var q = document.getElementById('cbfs-search-input');
+    renderBucketFilterSheet(q ? q.value : '');
+  }
+}
+
+/* Mobile filter sheet (multi-select) */
+var _cbfsGroup = null;
+function openBucketFilterSheet(group){
+  var grp = filterGroupOptions.find(function(g){return g.val === group;});
+  if(!grp) return;
+  _cbfsGroup = group;
+  var titleEl = document.getElementById('cbfs-title');
+  if(titleEl) titleEl.textContent = grp.label;
+  var q = document.getElementById('cbfs-search-input');
+  if(q) q.value = '';
+  renderBucketFilterSheet('');
+  document.getElementById('cbfs-backdrop').classList.add('show');
+  document.getElementById('cbfs-sheet').classList.add('show');
+}
+function closeBucketFilterSheet(){
+  document.getElementById('cbfs-backdrop').classList.remove('show');
+  document.getElementById('cbfs-sheet').classList.remove('show');
+  _cbfsGroup = null;
+}
+function renderBucketFilterSheet(filter){
+  var list = document.getElementById('cbfs-list'); if(!list || !_cbfsGroup) return;
+  var opts = filterValOptions[_cbfsGroup] || [];
+  var selected = bucketFilterState[_cbfsGroup] || [];
+  var q = String(filter || '').trim().toLowerCase();
+  var rows = q ? opts.filter(function(o){ return String(o.label).toLowerCase().indexOf(q) >= 0; }) : opts;
+  if(!rows.length){ list.innerHTML = '<div class="cbfs-empty">No matches.</div>'; return; }
+  list.innerHTML = rows.map(function(o){
+    var on = selected.indexOf(o.val) >= 0;
+    var valEsc = String(o.val).replace(/'/g,"\\'");
+    return '<div class="cbfs-item' + (on ? ' on' : '') + '" onclick="toggleBucketFilterVal(\'' + _cbfsGroup + '\',\'' + valEsc + '\')">'
+      + '<div class="cbfs-cb"></div><span>' + o.label + '</span>'
+    + '</div>';
+  }).join('');
 }
 
 function clearBucketFilters() {

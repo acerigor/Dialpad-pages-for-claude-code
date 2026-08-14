@@ -939,7 +939,7 @@
 
   function gsEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-  var _gsSel = 0, _gsHits = [], _gsBuilt = false;
+  var _gsSel = 0, _gsHits = [], _gsBuilt = false, _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
 
   function ensureGsCss(){
     if(document.getElementById('gs-style')) return;
@@ -952,6 +952,10 @@
       + '.gs-head input::placeholder{color:var(--mu);}'
       + '.gs-esc{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);font-family:var(--font);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;flex:none;font-weight:500;}'
       + '.gs-esc:hover{color:var(--tx);}'
+      + '.gs-chips{display:flex;align-items:center;gap:6px;padding:8px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
+      + '.gs-chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:500;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);cursor:pointer;transition:all .12s;font-family:var(--font);}'
+      + '.gs-chip:hover{border-color:var(--ac);color:var(--tx);}'
+      + '.gs-chip.on{background:var(--ac);border-color:var(--ac);color:#fff;}'
       + '.gs-body{overflow-y:auto;flex:1;padding:6px 4px 8px;}'
       + '.gs-empty{padding:32px 20px;text-align:center;color:var(--mu);font-size:13px;}'
       + '.gs-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border-left:2px solid transparent;background:transparent;border-top:none;border-right:none;border-bottom:none;width:calc(100% - 8px);margin:0 4px;text-align:left;font-family:var(--font);}'
@@ -978,6 +982,13 @@
         + '<input type="text" id="gs-input" placeholder="Search leads, pages, and settings…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>'
         + '<button type="button" class="gs-esc" onclick="closeGlobalSearch()">Esc</button>'
       + '</div>'
+      + '<div class="gs-chips" id="gs-chips">'
+        + '<button type="button" class="gs-chip on" data-gs-scope="lead">Leads</button>'
+        + '<button type="button" class="gs-chip" data-gs-scope="email">Email</button>'
+        + '<button type="button" class="gs-chip" data-gs-scope="phone">Phone</button>'
+        + '<button type="button" class="gs-chip" data-gs-scope="vehicle">Vehicle</button>'
+        + '<button type="button" class="gs-chip" data-gs-scope="pages">Pages</button>'
+      + '</div>'
       + '<div class="gs-body" id="gs-body"></div>'
       + '<div class="gs-empty" id="gs-empty" hidden>No matches. Try another word.</div>'
     + '</div>';
@@ -996,18 +1007,55 @@
       body.addEventListener('click', gsBodyClick);
       body.addEventListener('mouseover', gsBodyMouseOver);
     }
+    var chips = document.getElementById('gs-chips');
+    if(chips){
+      chips.addEventListener('click', function(e){
+        var chip = e.target.closest('.gs-chip');
+        if(!chip) return;
+        var scope = chip.getAttribute('data-gs-scope') || 'lead';
+        if(scope === 'lead'){
+          _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
+        } else if(_gsScope.lead){
+          _gsScope = {lead:false,email:false,phone:false,vehicle:false};
+          _gsScope[scope] = true;
+        } else {
+          _gsScope[scope] = !_gsScope[scope];
+          if(!_gsScope.email && !_gsScope.phone && !_gsScope.vehicle && !_gsScope.pages){
+            _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
+          } else if(_gsScope.email && _gsScope.phone && _gsScope.vehicle && _gsScope.pages){
+            _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
+          }
+        }
+        gsUpdateChips(chips);
+        var inp = document.getElementById('gs-input');
+        gsFilter(inp ? inp.value : '');
+      });
+    }
     _gsBuilt = true;
+  }
+
+  function gsUpdateChips(container){
+    var all = container.querySelectorAll('.gs-chip');
+    for(var k = 0; k < all.length; k++){
+      var s = all[k].getAttribute('data-gs-scope');
+      all[k].classList.toggle('on', !!_gsScope[s]);
+    }
   }
 
   function gsLeadHits(q){
     var arr = (window.CCLeads && Array.isArray(CCLeads.LEADS)) ? CCLeads.LEADS : [];
     if(!q) return [];
     return arr.filter(function(l){
-      return String(l.name    || '').toLowerCase().indexOf(q) >= 0
-          || String(l.phone   || '').toLowerCase().indexOf(q) >= 0
-          || String(l.email   || '').toLowerCase().indexOf(q) >= 0
-          || String(l.vehicle || '').toLowerCase().indexOf(q) >= 0
-          || String(l.stock   || '').toLowerCase().indexOf(q) >= 0;
+      if(_gsScope.lead) return String(l.name||'').toLowerCase().indexOf(q)>=0
+          ||String(l.phone||'').toLowerCase().indexOf(q)>=0
+          ||String(l.email||'').toLowerCase().indexOf(q)>=0
+          ||String(l.vehicle||'').toLowerCase().indexOf(q)>=0
+          ||String(l.stock||'').toLowerCase().indexOf(q)>=0;
+      if(_gsScope.email   && String(l.email  ||'').toLowerCase().indexOf(q)>=0) return true;
+      if(_gsScope.phone   && String(l.phone  ||'').toLowerCase().indexOf(q)>=0) return true;
+      if(_gsScope.vehicle && (String(l.vehicle||'').toLowerCase().indexOf(q)>=0
+                           || String(l.stock  ||'').toLowerCase().indexOf(q)>=0)) return true;
+      return false;
     }).map(function(l){
       var subParts = [];
       if(l.vehicle) subParts.push(l.vehicle);
@@ -1109,8 +1157,17 @@
 
   function gsFilter(v){
     var q = String(v || '').toLowerCase().trim();
-    if(!q){ _gsHits = GS_INDEX.slice(0, GS_MAX); }
-    else {
+    if(!q){ _gsHits = []; }
+    else if(!_gsScope.lead){
+      var hits = [];
+      if(_gsScope.email || _gsScope.phone || _gsScope.vehicle) hits = hits.concat(gsLeadHits(q));
+      if(_gsScope.pages) hits = hits.concat(GS_INDEX.filter(function(e){
+        return String(e.title||'').toLowerCase().indexOf(q) >= 0
+            || String(e.sub||'').toLowerCase().indexOf(q) >= 0
+            || String(e.type||'').toLowerCase().indexOf(q) >= 0;
+      }));
+      _gsHits = hits.slice(0, GS_MAX);
+    } else {
       var navHits = GS_INDEX.filter(function(e){
         return String(e.title||'').toLowerCase().indexOf(q) >= 0
             || String(e.sub||'').toLowerCase().indexOf(q) >= 0
@@ -1118,7 +1175,6 @@
       });
       var leadHits = gsLeadHits(q);
       var interactionHits = gsInteractionHits(q);
-      // Order: exact lead matches, then interactions, then navigation.
       _gsHits = leadHits.concat(interactionHits).concat(navHits).slice(0, GS_MAX);
     }
     _gsSel = 0;
@@ -1192,7 +1248,9 @@
     document.getElementById('gs-backdrop').classList.add('open');
     document.body.style.overflow = 'hidden';
     var inp = document.getElementById('gs-input'); if(inp){ inp.value = ''; setTimeout(function(){ inp.focus(); }, 30); }
-    _gsSel = 0; _gsHits = GS_INDEX.slice(0, GS_MAX);
+    _gsSel = 0; _gsHits = []; _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
+    var chips = document.getElementById('gs-chips');
+    if(chips) gsUpdateChips(chips);
     gsRender();
   }
   function closeGlobalSearch(){

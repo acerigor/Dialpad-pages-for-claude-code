@@ -4966,7 +4966,7 @@
         </div>
         <div class="cp-compose">
           <div class="cp-compose-row1">
-            <select class="cp-type-sel" id="cp-type-select" onchange="onCPTypeChange(this.value)"><option>SMS</option><option>Email</option><option>Notes</option></select>
+            <select class="cp-type-sel" id="cp-type-select" onchange="onCPTypeChange(this.value)" style="display:none"><option>SMS</option><option>Email</option><option>Notes</option></select>
             <div class="cp-from-row" id="cp-from-row" onclick="toggleCPFromPopup(event)">Sent From: <span id="cp-from-agent">Angel Garcia</span> ▾</div>
           </div>
           <div class="cp-input-row" id="cp-sms-row">
@@ -5198,10 +5198,19 @@
   </div>
 </div>
 
+<script src="../shared/auth.js"></script>
+<script>if(window.CCAuth) CCAuth.requireAuth();</script>
 <script src="../shared/leads-comms.js"></script>
 <script>
 // Lead seed lives in the shared single-source file (also read by the dashboard).
 const leads = window.CCLeads.LEADS;
+
+// ── API helpers (optimistic updates — UI mutates first, API persists in background) ──
+var _API = '/api';
+function _authH(){ var h = {'Content-Type':'application/json'}; var t = (window.CCAuth && CCAuth.getToken()); if(t) h['Authorization']='Bearer '+t; return h; }
+function _apiPost(path, body){ return fetch(_API+path,{method:'POST',headers:_authH(),body:JSON.stringify(body)}).catch(function(e){ console.warn('API POST failed',path,e); }); }
+function _apiPut(path, body){ return fetch(_API+path,{method:'PUT',headers:_authH(),body:JSON.stringify(body)}).catch(function(e){ console.warn('API PUT failed',path,e); }); }
+function _apiDel(path){ var h = (window.CCAuth && CCAuth.authHeaders()) || {}; return fetch(_API+path,{method:'DELETE',headers:h}).catch(function(e){ console.warn('API DELETE failed',path,e); }); }
 
 // ── Seed varied createdAt timestamps + lastEngaged timestamps on each lead
 // Each lead gets:
@@ -5211,7 +5220,7 @@ const leads = window.CCLeads.LEADS;
 //   - lastEngagedAt:   a JS Date OR null (null = never engaged)
 //   - lastEngaged:     pretty display OR null
 //   - eAgo:            relative time chip OR null
-(function seedTimestamps(){
+function seedTimestamps(){
   // Anchor + offsets come from the shared single-source file so both pages window leads identically.
   const NOW = window.CCLeads.NOW;
   const createdOffsets = window.CCLeads.createdOffsets;
@@ -5269,7 +5278,8 @@ const leads = window.CCLeads.LEADS;
     // no outbound/inbound call or SMS activity at all.
     l.unviewed = (l.calls === '0/0') && (l.sms === '0/0');
   });
-})();
+}
+seedTimestamps();
 
 const activeFilters={};
 let currentPage=1;
@@ -5313,6 +5323,7 @@ function updateStatus(sel, leadNo){
   if(oldStatus === newStatus) return;  // no-op when unchanged
 
   lead.status = newStatus;
+  _apiPut('/leads/'+(lead._dbId||lead.no),{status:newStatus});
 
   // Log to activity history so the Activity tab in the contact panel reflects
   // this change. Mirrors the shape used by Kanban drag-drop and cp-sidebar.
@@ -6324,6 +6335,7 @@ function kanbanDrop(ev, targetStatus){
 
   // Apply the status change
   lead.status = targetStatus;
+  _apiPut('/leads/'+(lead._dbId||lead.no),{status:targetStatus});
 
   // Log to activity history (cpMessages[leadNo].activity), so it appears in the
   // contact panel's Activity tab. Mirrors the shape of seeded entries.
@@ -8033,6 +8045,11 @@ function sendSmsMessage(){
   var now = new Date();
   var atts = ATT.sms.slice();
   smsState.messages.push({ dir:'out', text: text, time: now, delivered:false, isNew:true, attachments: atts });
+  // Persist to API
+  if(smsState.contact){
+    var _ln = _ntLeadNoFromId(smsState.contact.id);
+    if(_ln != null){ var _lead = leads.find(function(l){ return l.no===_ln; }); _apiPost('/messages',{leadId:(_lead&&_lead._dbId)||_ln,type:'sms',direction:'outbound',body:text}); }
+  }
   // Mirror into contact panel's SMS store so panel's SMS tab shows the same message.
   if(smsState.contact){
     var leadNo = _ntLeadNoFromId(smsState.contact.id);
@@ -8278,6 +8295,8 @@ function saveNoteFromModal(){
   var author = 'You';
   if(!notesByLead[id]) notesByLead[id] = [];
   notesByLead[id].push({ text: txt, time: now, author: author });
+  var _noteLeadNo = _ntLeadNoFromId(id);
+  if(_noteLeadNo != null){ var _nl = leads.find(function(l){ return l.no===_noteLeadNo; }); _apiPost('/notes',{leadId:(_nl&&_nl._dbId)||_noteLeadNo,body:txt,agent:author}); }
   // Mirror into the contact panel's notes store so the panel's Notes tab sees it.
   var leadNo = _ntLeadNoFromId(id);
   if(leadNo != null && typeof cpMessages !== 'undefined'){
@@ -8413,6 +8432,9 @@ function sendEmailMessage(){
   var atts = ATT.em.slice();
   var msg = { dir:'out', subject: subject, text: text, time: timeStr, agent: agentName, attachments: atts };
   emThreads[contactId].push(msg);
+  // Persist to API
+  var _emLeadNo = _ntLeadNoFromId(contactId);
+  if(_emLeadNo != null){ var _el = leads.find(function(l){ return l.no===_emLeadNo; }); _apiPost('/messages',{leadId:(_el&&_el._dbId)||_emLeadNo,type:'email',direction:'outbound',body:text,subject:subject}); }
   // Mirror into contact panel's email store.
   var leadNo = _ntLeadNoFromId(contactId);
   if(leadNo != null && typeof cpMessages !== 'undefined'){
@@ -8568,6 +8590,7 @@ function doAssign(initials, name, key, color){
   if(lead){
     lead.assign = initials;
     lead.ac = color || lead.ac;
+    _apiPut('/leads/'+(lead._dbId||lead.no),{assign:initials,accentColor:lead.ac});
   }
   document.getElementById('assign-popup').style.display = 'none';
   assignTargetNo = null;
@@ -8701,6 +8724,13 @@ function saveNewLead(){
   closeAddModal();
   renderLeads();
   renderChips();
+  _apiPost('/leads',{
+    name: newLead.name, email: newLead.email, phone: newLead.phone,
+    source: newLead.source, stock: newLead.stock, vehicle: newLead.vehicle,
+    accentColor: newLead.ac
+  }).then(function(r){ if(r && r.ok) return r.json(); }).then(function(saved){
+    if(saved) newLead._dbId = saved.id;
+  });
 }
 
 // ── EDIT LEAD ──────────────────────────────────────────
@@ -8763,6 +8793,11 @@ function saveEditLead(){
   closeEditModal();
   renderLeads();
   if(typeof renderBuckets === 'function') renderBuckets();
+  var dbId = lead._dbId || lead.no;
+  _apiPut('/leads/'+dbId,{
+    name: lead.name, email: lead.email, phone: lead.phone,
+    stock: lead.stock, vehicle: lead.vehicle, source: lead.source
+  });
 }
 
 // ── BUCKETS ──────────────────────────────────────────────────────────────
@@ -9971,6 +10006,38 @@ function openContactPanel(leadNo, mode) {
   updateComposerForTab();
 
   renderCPMessages();
+  // Fetch messages & notes from API and merge into cpMessages for this lead
+  (function loadFromAPI(lno){
+    var dbId = cpLead._dbId || cpLead.no;
+    var _ah = (window.CCAuth && CCAuth.authHeaders()) || {};
+    Promise.all([
+      fetch('/api/messages/lead/'+dbId,{headers:_ah}).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/api/notes/lead/'+dbId,{headers:_ah}).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+    ]).then(function(res){
+      var apiMsgs = res[0], apiNotes = res[1];
+      if(!cpMessages[lno]) cpMessages[lno] = {};
+      function fmtTime(iso){
+        var d = new Date(iso);
+        return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      }
+      if(apiMsgs.length){
+        apiMsgs.forEach(function(m){
+          var ch = m.type || 'sms';
+          if(!cpMessages[lno][ch]) cpMessages[lno][ch] = [];
+          var exists = cpMessages[lno][ch].some(function(x){ return x._apiId === m.id; });
+          if(!exists) cpMessages[lno][ch].push({ _apiId:m.id, dir:m.direction==='inbound'?'in':'out', text:m.body||'', subject:m.subject||undefined, time:fmtTime(m.createdAt), agent:m.agent||'' });
+        });
+      }
+      if(apiNotes.length){
+        if(!cpMessages[lno].notes) cpMessages[lno].notes = [];
+        apiNotes.forEach(function(n){
+          var exists = cpMessages[lno].notes.some(function(x){ return x._apiId === n.id; });
+          if(!exists) cpMessages[lno].notes.push({ _apiId:n.id, dir:'out', channel:'notes', text:n.body||'', time:fmtTime(n.createdAt), agent:n.agent||'You' });
+        });
+      }
+      if((apiMsgs.length || apiNotes.length) && cpLead && cpLead.no === lno) renderCPMessages();
+    });
+  })(cpLead.no);
   // Mobile: start with sidebar collapsed (messages-first); desktop keeps current state
   const isPhone = window.innerWidth <= 640;
   const sb = document.getElementById('cp-sidebar');
@@ -10066,6 +10133,7 @@ function applyLeadStatus(leadNo, newStatus){
 
   // Mutate the underlying lead (reference into the leads array)
   lead.status=newStatus;
+  _apiPut('/leads/'+(lead._dbId||lead.no),{status:newStatus});
 
   // Log to activity history (mirrors Kanban drag-drop / other activity entries)
   if(typeof cpMessages!=='undefined'){
@@ -10200,6 +10268,7 @@ function sendCPEmail(){
   const now = new Date();
   const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   cpMessages[leadKey].email.push({dir:'out', subject:subject, text:text, time:timeStr, agent:'David P.', attachments:cpAttachments.slice()});
+  _apiPost('/messages',{leadId:(cpLead._dbId||cpLead.no),type:'email',direction:'outbound',body:text,subject:subject});
   document.getElementById('cp-email-subject').value = '';
   body.innerHTML = '';
   cpAttachClear();
@@ -10218,8 +10287,7 @@ function updateComposerForTab(){
   if(ta){
     ta.placeholder = cpTab === 'notes' ? 'Write a private note…' : 'Enter message here';
   }
-  // Files and Loan App are read-only views — hide the composer + summary card on those tabs.
-  const isReadOnly = cpTab === 'files' || cpTab === 'loanapp';
+  const isReadOnly = cpTab === 'all' || cpTab === 'files' || cpTab === 'calls' || cpTab === 'activity' || cpTab === 'loanapp';
   const compose = document.querySelector('.cp-compose');
   if(compose) compose.style.display = isReadOnly ? 'none' : '';
   const summary = document.getElementById('cp-summary');
@@ -11461,6 +11529,9 @@ function sendCPMessage() {
   const now = new Date();
   const timeStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   cpMessages[leadKey][targetTab].push({dir:'out', text, time:timeStr, agent:'David P.', attachments:cpAttachments.slice()});
+  var _dbId = (cpLead._dbId||cpLead.no);
+  if(targetTab==='notes') _apiPost('/notes',{leadId:_dbId,body:text,agent:'David P.'});
+  else _apiPost('/messages',{leadId:_dbId,type:targetTab,direction:'outbound',body:text});
   ta.value = '';
   ta.style.height = '';
   cpAttachClear();
@@ -13712,6 +13783,15 @@ function toggleKeypad(){
 renderDialerContacts();
 renderBuckets();
 renderBellDot();
+
+if(window.CCLeads && CCLeads.ready){
+  CCLeads.ready.then(function(){
+    if(typeof seedTimestamps==='function') seedTimestamps();
+    if(typeof renderLeads==='function') renderLeads();
+    if(typeof renderBuckets==='function') renderBuckets();
+    if(typeof renderChips==='function') renderChips();
+  });
+}
 
 </script><!-- PRODUCT-SWITCHER:JS START -->
 <script>

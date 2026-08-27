@@ -3350,7 +3350,9 @@
 
   <!-- (User add/edit modal removed — this is the profile page shell) -->
 
-<!-- Shared roster (CCLeads.TEAM) — single source of truth for users -->
+<!-- Auth + Shared roster -->
+<script src="../../shared/auth.js"></script>
+<script>if(window.CCAuth) CCAuth.requireAuth();</script>
 <script src="../../shared/leads-comms.js"></script>
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
@@ -4094,13 +4096,19 @@ function pfUpdate(){
   if(PF_NEW){
     patch.status='Active';
     patch.hasPassword=true;
+    var rawPw = document.getElementById('pf-pass').value;
+    if(rawPw && rawPw !== PF_PW_PLACEHOLDER) patch._password = rawPw;
     if(window.CCLeads && CCLeads.addTeamMember) CCLeads.addTeamMember(patch);
     if(typeof showNavToast==='function') showNavToast('User added', name+' was added.');
   } else {
     var u=_pfUser(); if(!u){ pfCancel(); return; }
     if(!patch.name) patch.name=u.name;
     if(!patch.phone) patch.phone=u.phone;
-    if(pw.changed) patch.hasPassword=true;   // only touch when the password was actually changed
+    if(pw.changed){
+      patch.hasPassword=true;
+      var rawPw2 = document.getElementById('pf-pass').value;
+      if(rawPw2 && rawPw2 !== PF_PW_PLACEHOLDER) patch._password = rawPw2;
+    }
     if(window.CCLeads && CCLeads.updateTeamMember) CCLeads.updateTeamMember(PF_KEY, patch);
     if(typeof showNavToast==='function') showNavToast('Profile updated', patch.name+' was saved.');
   }

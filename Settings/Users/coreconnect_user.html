@@ -3141,7 +3141,9 @@
 
   <!-- Add/Edit user now happens on the full User Profile screen (../User_profile/User_profile.html) -->
 
-<!-- Shared roster (CCLeads.TEAM) — single source of truth for users -->
+<!-- Auth + Shared roster -->
+<script src="../../shared/auth.js"></script>
+<script>if(window.CCAuth) CCAuth.requireAuth();</script>
 <script src="../../shared/leads-comms.js"></script>
 <script>
 // ── NOTIFICATIONS PANEL ─────────────────────────
@@ -3487,6 +3489,9 @@ function deleteUser(key){
   if(typeof showNavToast==='function') showNavToast('User removed', (u?u.name:'User')+' was removed.');
 }
 renderUsers();
+if(window.CCLeads && CCLeads.ready){
+  CCLeads.ready.then(function(){ renderUsers(); });
+}
 </script><!-- PRODUCT-SWITCHER:JS START -->
 <script>
 (function(){

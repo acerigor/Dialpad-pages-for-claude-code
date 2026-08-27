@@ -5,7 +5,10 @@
       "Bash(npx --version)",
       "mcp__Claude_Preview__preview_start",
       "Bash(grep -E \"^d|\\\\.html$\")",
-      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); gh pr view 49 --json url,state,isDraft)"
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); gh pr view 49 --json url,state,isDraft)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); gh pr merge 49 --merge --delete-branch)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)"
     ]
   }
 }

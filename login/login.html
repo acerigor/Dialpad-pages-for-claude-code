@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreConnect — Login</title>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('cc_theme')==='light'?'light':'dark')}catch(e){}</script>
+<link rel="stylesheet" href="../shared/app.css?v=2">
+<style>
+html,body{height:100%;}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-card{background:var(--sur);border:1px solid var(--brd);border-radius:16px;
+  padding:48px 40px 40px;width:100%;max-width:380px;box-shadow:var(--shadow);}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;justify-content:center;}
+.login-logo img{width:36px;height:36px;border-radius:8px;}
+.login-logo span{font-size:17px;font-weight:600;color:var(--tx);letter-spacing:-.3px;}
+.login-title{font-size:22px;font-weight:600;color:var(--tx);text-align:center;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--mu);text-align:center;margin-bottom:28px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:12px;font-weight:500;color:var(--mu);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.form-group input{width:100%;height:44px;background:var(--sur2);border:1px solid var(--brd2);
+  border-radius:10px;padding:0 14px;font-size:14px;color:var(--tx);font-family:var(--font);
+  outline:none;transition:border .15s;}
+.form-group input:focus{border-color:var(--ac);}
+.form-group input::placeholder{color:var(--mu);}
+.login-btn{width:100%;height:44px;background:var(--ac);color:#fff;border:none;border-radius:10px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .15s;margin-top:6px;}
+.login-btn:hover{opacity:.9;}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;}
+.login-error{background:rgba(232,85,85,.12);border:1px solid rgba(232,85,85,.25);color:var(--rd);
+  font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:18px;display:none;}
+.login-hint{font-size:12px;color:var(--mu);text-align:center;margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="../shared/cc-logo.png" alt="CC" onerror="this.style.display='none'">
+      <span>CoreConnect</span>
+    </div>
+    <div class="login-title">Welcome back</div>
+    <div class="login-sub">Sign in to your agent account</div>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm" autocomplete="off">
+      <div class="form-group">
+        <label>Agent Initials</label>
+        <input type="text" id="initials" placeholder="e.g. DP" maxlength="4" autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+      </div>
+      <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+    </form>
+    <div class="login-hint">Default password: <strong>core123</strong></div>
+  </div>
+</div>
+<script>
+(function(){
+  if(localStorage.getItem('cc_token')){
+    window.location.href = '/coreconnect_dashboard_v41/coreconnect_dashboard_v41.html';
+    return;
+  }
+
+  var form = document.getElementById('loginForm');
+  var errEl = document.getElementById('loginError');
+  var btn = document.getElementById('loginBtn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var initials = document.getElementById('initials').value.trim();
+    var password = document.getElementById('password').value;
+    if(!initials || !password){ showErr('Please enter your initials and password.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    errEl.style.display = 'none';
+
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ initials: initials, password: password })
+    })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+    .then(function(res){
+      if(!res.ok){ showErr(res.data.error || 'Login failed'); btn.disabled=false; btn.textContent='Sign In'; return; }
+      localStorage.setItem('cc_token', res.data.token);
+      localStorage.setItem('cc_user', JSON.stringify(res.data.user));
+      var redirect = new URLSearchParams(window.location.search).get('redirect');
+      window.location.href = redirect || '/coreconnect_dashboard_v41/coreconnect_dashboard_v41.html';
+    })
+    .catch(function(){
+      showErr('Network error — is the server running?');
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    });
+  });
+
+  function showErr(msg){ errEl.textContent = msg; errEl.style.display = 'block'; }
+})();
+</script>
+</body>
+</html>

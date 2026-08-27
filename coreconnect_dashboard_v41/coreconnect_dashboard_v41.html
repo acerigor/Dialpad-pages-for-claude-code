@@ -1811,6 +1811,8 @@
 
 </div>
 
+<script src="../shared/auth.js"></script>
+<script>if(window.CCAuth) CCAuth.requireAuth();</script>
 <script src="../shared/leads-comms.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════════════════
@@ -3221,69 +3223,25 @@ function toggleKeypad(){
    Data is seeded in-file for now; swap callRecords[] for real data later.
    ════════════════════════════════════════════════════════════════════════════ */
 
-// ── Seed call records ──────────────────────────────────────────────────────
-// Deterministic pseudo-random so numbers are stable across reloads within a session.
-const callRecords = (function seedCalls(){
-  // Roster of lead names — drawn from the leads-page kanban data.
-  // Embedding here keeps the call seed independent of leadRecords order.
-  const LEAD_ROSTER = [
-    'Ac Thakur','Kristina Stuf','Taylor Dang','Gage Quarles','Jason Stark',
-    'Christian Webster','Saurabh Singh','Jasbir Chandok','Derek Huff','Priya Mehta',
-    'Sandra Lee','James Okoye','Mei Huang','Luis Garza','Omar Shaikh',
-    'Rachel Kim','Daniel Park','Sofia Reyes','Marcus Chen','Aisha Patel',
-    'Nathan Vargas','Olivia Brooks','Ethan Hsu','Maya Singh','Liam OConnor'
-  ];
-  const out = [];
-  let seed = 20260528;
-  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-  // Independent rng for the new lead-name + duration fields, so that adding
-  // them doesn't shift the main rng sequence (would change KPI card numbers).
-  let seed2 = 19470115;
-  function rnd2(){ seed2 = (seed2 * 1103515245 + 12345) & 0x7fffffff; return seed2 / 0x7fffffff; }
-  function pickLead(){ return LEAD_ROSTER[Math.floor(rnd2() * LEAD_ROSTER.length)]; }
-  // Sales-realistic duration in seconds. Missed = 0. Most connected calls 30s–4min,
-  // with a long tail to ~12min.
-  function duration(connected){
-    if(!connected) return 0;
-    const r = rnd2();
-    if(r < 0.45) return 30 + Math.floor(rnd2() * 90);   // 30s–2m (45%)
-    if(r < 0.80) return 120 + Math.floor(rnd2() * 180); // 2m–5m  (35%)
-    return 300 + Math.floor(rnd2() * 420);              // 5m–12m (20%)
-  }
-  const today = new Date(); today.setHours(0,0,0,0);
-  // Walk back 35 days; give each day a believable spread of calls.
-  for(let dayOffset = 0; dayOffset < 35; dayOffset++){
-    const day = new Date(today);
-    day.setDate(day.getDate() - dayOffset);
-    // Fewer calls on weekends, more midweek
-    const dow = day.getDay();
-    const weekendDamp = (dow === 0 || dow === 6) ? 0.4 : 1;
-    const baseCalls = Math.round((6 + rnd() * 12) * weekendDamp);  // ~3–18/day
-    for(let i = 0; i < baseCalls; i++){
-      const r = rnd();
-      let type, dir, connected;
-      // missed + answered are inbound; returned is outbound (callback)
-      if(r < 0.32)      { type = 'missed';    dir = 'in';  connected = false; }  // ~32%
-      else if(r < 0.80) { type = 'answered';  dir = 'in';  connected = true;  }  // ~48%
-      else              { type = 'returned';  dir = 'out'; connected = true;  }  // ~20%
-      const at = new Date(day);
-      at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
-      out.push({ at, type, dir, leadName: pickLead(), durationSec: duration(connected) });
-    }
-    // Add extra outbound calls not tied to a missed inbound (cold calls,
-    // follow-ups initiated by us). Sales-realistic: ~30-50% more outbound
-    // than what's captured by "returned" alone.
-    const extraOut = Math.round((3 + rnd() * 6) * weekendDamp);  // ~1–9/day
-    for(let i = 0; i < extraOut; i++){
-      const at = new Date(day);
-      at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
-      // Outbound cold/follow-up: most connect (75%), some go to voicemail (no talk).
-      const connected = rnd2() < 0.75;
-      out.push({ at, type:'outbound-other', dir:'out', leadName: pickLead(), durationSec: duration(connected) });
-    }
-  }
-  return out;
-})();
+// ── Call records (loaded from API) ──────────────────────────────────────────
+let callRecords = [];
+function fetchCallRecords(){
+  var h = window.CCAuth ? CCAuth.authHeaders() : {};
+  return fetch('/api/calls', { headers: h })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      callRecords = rows.map(function(r){
+        return {
+          at: new Date(r.createdAt),
+          type: r.type,
+          dir: r.direction,
+          leadName: r.leadName || '',
+          durationSec: r.durationSec || 0
+        };
+      });
+    })
+    .catch(function(){ callRecords = []; });
+}
 
 // ── Count helper ───────────────────────────────────────────────────────────
 function countCalls(win){
@@ -3521,28 +3479,19 @@ widgetRegistry.push({
    Swap smsRecords[] for real data later.
    ════════════════════════════════════════════════════════════════════════════ */
 
-// ── Seed SMS records ───────────────────────────────────────────────────────
-const smsRecords = (function seedSms(){
-  const out = [];
-  let seed = 19840712;
-  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  for(let dayOffset = 0; dayOffset < 35; dayOffset++){
-    const day = new Date(today);
-    day.setDate(day.getDate() - dayOffset);
-    const dow = day.getDay();
-    const weekendDamp = (dow === 0 || dow === 6) ? 0.5 : 1;
-    const baseMsgs = Math.round((10 + rnd() * 16) * weekendDamp);  // ~5–26/day
-    for(let i = 0; i < baseMsgs; i++){
-      // ~60% outbound, ~40% inbound
-      const dir = rnd() < 0.60 ? 'out' : 'in';
-      const at = new Date(day);
-      at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
-      out.push({ at: at, dir: dir });
-    }
-  }
-  return out;
-})();
+// ── SMS records (loaded from API) ──────────────────────────────────────────
+let smsRecords = [];
+function fetchSmsRecords(){
+  var h = window.CCAuth ? CCAuth.authHeaders() : {};
+  return fetch('/api/sms-records', { headers: h })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      smsRecords = rows.map(function(r){
+        return { at: new Date(r.createdAt), dir: r.direction };
+      });
+    })
+    .catch(function(){ smsRecords = []; });
+}
 
 // ── Count helper ───────────────────────────────────────────────────────────
 function countSms(win){
@@ -3618,28 +3567,19 @@ widgetRegistry.push({
    Roughly even balance. Swap emailRecords[] for real data later.
    ════════════════════════════════════════════════════════════════════════════ */
 
-// ── Seed email records ─────────────────────────────────────────────────────
-const emailRecords = (function seedEmail(){
-  const out = [];
-  let seed = 20011225;
-  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  for(let dayOffset = 0; dayOffset < 35; dayOffset++){
-    const day = new Date(today);
-    day.setDate(day.getDate() - dayOffset);
-    const dow = day.getDay();
-    const weekendDamp = (dow === 0 || dow === 6) ? 0.35 : 1;  // email quieter on weekends
-    const baseMsgs = Math.round((7 + rnd() * 11) * weekendDamp);  // ~3–18/day
-    for(let i = 0; i < baseMsgs; i++){
-      // roughly even in/out
-      const dir = rnd() < 0.50 ? 'in' : 'out';
-      const at = new Date(day);
-      at.setHours(8 + Math.floor(rnd() * 11), Math.floor(rnd() * 60), 0, 0);
-      out.push({ at: at, dir: dir });
-    }
-  }
-  return out;
-})();
+// ── Email records (loaded from API) ────────────────────────────────────────
+let emailRecords = [];
+function fetchEmailRecords(){
+  var h = window.CCAuth ? CCAuth.authHeaders() : {};
+  return fetch('/api/email-records', { headers: h })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      emailRecords = rows.map(function(r){
+        return { at: new Date(r.createdAt), dir: r.direction };
+      });
+    })
+    .catch(function(){ emailRecords = []; });
+}
 
 /* ════════════════════════════════════════════════════════════════════════════
    USER ROSTER + linking activity records to users
@@ -3677,10 +3617,7 @@ function pickUserForRecord(timestampMs, idx){
   return USER_ROSTER[USER_ROSTER.length - 1].id;
 }
 
-// Apply userId additively — existing fields untouched, other widgets unaffected.
-callRecords.forEach((r, i)  => { r.userId = pickUserForRecord(r.at.getTime(), i); });
-smsRecords.forEach((r, i)   => { r.userId = pickUserForRecord(r.at.getTime(), i); });
-emailRecords.forEach((r, i) => { r.userId = pickUserForRecord(r.at.getTime(), i); });
+// userId is assigned after each API fetch resolves (see fetchCallRecords / fetchSmsRecords / fetchEmailRecords).
 
 // ── Count helper ───────────────────────────────────────────────────────────
 function countEmail(win){
@@ -5733,6 +5670,15 @@ function applyRememberedPeriod(){
 }
 applyRememberedPeriod();
 refreshWidgets();
+Promise.all([fetchCallRecords(), fetchSmsRecords(), fetchEmailRecords()]).then(function(){
+  callRecords.forEach(function(r, i){ r.userId = pickUserForRecord(r.at.getTime(), i); });
+  smsRecords.forEach(function(r, i){ r.userId = pickUserForRecord(r.at.getTime(), i); });
+  emailRecords.forEach(function(r, i){ r.userId = pickUserForRecord(r.at.getTime(), i); });
+  refreshWidgets();
+});
+if(window.CCLeads && CCLeads.ready){
+  CCLeads.ready.then(function(){ refreshWidgets(); });
+}
 window.addEventListener('storage', (e) => {
   if(e.key !== 'cc_period') return;
   applyRememberedPeriod();

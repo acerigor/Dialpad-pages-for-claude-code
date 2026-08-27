@@ -4,7 +4,8 @@
       "Bash(py --version)",
       "Bash(npx --version)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(grep -E \"^d|\\\\.html$\")"
+      "Bash(grep -E \"^d|\\\\.html$\")",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); gh pr view 49 --json url,state,isDraft)"
     ]
   }
 }

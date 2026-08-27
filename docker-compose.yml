@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8123:8123"
+    environment:
+      NODE_ENV: production
+      PORT: 8123
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-to-a-random-string}
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED}
+    command: >
+      sh -c "npx prisma migrate deploy && node serve.js"

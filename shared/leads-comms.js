@@ -155,28 +155,65 @@
   function setPeriod(p){ try { localStorage.setItem('cc_period', p); } catch(e){} }
 
   // ── Shared "activities" store ─────────────────────────────────────────────
-  // User-created appointments / reminders / tasks. Written by the CRM contact
-  // panel, read by the Appointments calendar. localStorage-backed (same guarded
-  // approach as getPeriod) so the two standalone pages share one source of truth.
-  // Activity shape:
-  //   { id, type:'appointment'|'reminder'|'task', leadNo:Number, title:String,
-  //     date:'YYYY-M-D' (1-based month, UNPADDED), time:'H:MM' ('' = all-day), notes:String }
+  // Synced to /api/activities. localStorage is the local cache; API is the source of truth.
   const ACT_KEY = 'cc_activities';
   function getActivities(){ try { return JSON.parse(localStorage.getItem(ACT_KEY) || '[]'); } catch(e){ return []; } }
+  function _saveActivities(list){ try { localStorage.setItem(ACT_KEY, JSON.stringify(list)); } catch(e){} }
+
+  function refreshActivities(){
+    var headers = (window.CCAuth && CCAuth.authHeaders) ? CCAuth.authHeaders() : {};
+    return fetch('/api/activities', { headers: headers })
+      .then(function(r){ if(r.status===401) return []; return r.json(); })
+      .then(function(data){
+        var list = (Array.isArray(data) ? data : []).map(function(a){
+          return { id: a.id, _dbId: a.id, type: a.type, leadNo: a.leadId, title: a.title, date: a.date, time: a.time||'', notes: a.notes||'', agent: a.agent||'' };
+        });
+        _saveActivities(list);
+        return list;
+      })
+      .catch(function(){ return getActivities(); });
+  }
+
   function addActivity(a){
-    try {
-      const list = getActivities();
-      a.id = a.id || ('act_' + Date.now() + '_' + Math.floor(Math.random() * 1e4));
-      list.push(a);
-      localStorage.setItem(ACT_KEY, JSON.stringify(list));
-    } catch(e){}
+    var list = getActivities();
+    a.id = a.id || ('act_' + Date.now() + '_' + Math.floor(Math.random() * 1e4));
+    list.push(a);
+    _saveActivities(list);
+    var headers = (window.CCAuth && CCAuth.authHeaders) ? CCAuth.authHeaders() : {};
+    headers['Content-Type'] = 'application/json';
+    fetch('/api/activities', {
+      method: 'POST', headers: headers,
+      body: JSON.stringify({ type: a.type, title: a.title, date: a.date, time: a.time||'', notes: a.notes||'', agent: a.agent||'', leadId: a.leadNo||null })
+    }).then(function(r){ return r.json(); }).then(function(saved){
+      if(saved && saved.id) a._dbId = saved.id;
+    }).catch(function(e){ console.warn('API activity create failed', e); });
     return a;
   }
   function removeActivity(id){
-    try { localStorage.setItem(ACT_KEY, JSON.stringify(getActivities().filter(function(a){ return a.id !== id; }))); } catch(e){}
+    var list = getActivities();
+    var act = list.find(function(a){ return a.id === id; });
+    _saveActivities(list.filter(function(a){ return a.id !== id; }));
+    var dbId = (act && act._dbId) || id;
+    if(typeof dbId === 'number'){
+      var headers = (window.CCAuth && CCAuth.authHeaders) ? CCAuth.authHeaders() : {};
+      fetch('/api/activities/' + dbId, { method: 'DELETE', headers: headers }).catch(function(){});
+    }
   }
   function updateActivity(id, patch){
-    try { localStorage.setItem(ACT_KEY, JSON.stringify(getActivities().map(function(a){ return a.id === id ? Object.assign({}, a, patch) : a; }))); } catch(e){}
+    _saveActivities(getActivities().map(function(a){ return a.id === id ? Object.assign({}, a, patch) : a; }));
+    var act = getActivities().find(function(a){ return a.id === id; });
+    var dbId = (act && act._dbId) || id;
+    if(typeof dbId === 'number'){
+      var headers = (window.CCAuth && CCAuth.authHeaders) ? CCAuth.authHeaders() : {};
+      headers['Content-Type'] = 'application/json';
+      var apiPatch = {};
+      if(patch.title) apiPatch.title = patch.title;
+      if(patch.date) apiPatch.date = patch.date;
+      if(patch.time !== undefined) apiPatch.time = patch.time;
+      if(patch.notes !== undefined) apiPatch.notes = patch.notes;
+      if(patch.type) apiPatch.type = patch.type;
+      fetch('/api/activities/' + dbId, { method: 'PUT', headers: headers, body: JSON.stringify(apiPatch) }).catch(function(){});
+    }
   }
 
   // ── Canonical team roster ─────────────────────────────────────────────────
@@ -204,7 +241,7 @@
   ];
 
   // Persist + enrich the roster so it's the live source for Assign, the appointment team-picker,
-  // and the Users settings page. Stored under cc_team; persisted copy (if any) loads over defaults.
+  // and the Users settings page. Synced to the backend /api/users endpoint.
   const TEAM_KEY = 'cc_team';
   const TEAM_PALETTE = ['#4f7cff','#22c88a','#f5a623','#e85555','#a78bfa','#2dd4bf','#ec4899','#0ea5e9','#f97316','#534AB7','#185FA5','#72243E'];
   (function loadTeam(){
@@ -220,6 +257,48 @@
     u.dept   = u.dept   || ({'Sales Manager':'Sales','Sales Rep':'Sales','BDC Agent':'BDC'}[u.role] || 'Sales');
   });
   function saveTeam(){ try { localStorage.setItem(TEAM_KEY, JSON.stringify(TEAM)); } catch(e){} }
+
+  function _apiHeaders(){
+    var h = {'Content-Type':'application/json'};
+    var t = (window.CCAuth && CCAuth.getToken()); if(t) h['Authorization']='Bearer '+t;
+    return h;
+  }
+
+  function _mapApiUser(api){
+    return {
+      _dbId: api.id,
+      key: api.initials,
+      name: api.name,
+      email: api.email || '',
+      role: api.role || 'agent',
+      color: api.avatar || TEAM_PALETTE[(api.id - 1) % TEAM_PALETTE.length],
+      status: 'Active',
+      dept: ({'Sales Manager':'Sales','Sales Rep':'Sales','BDC Agent':'BDC'}[api.role] || 'Sales')
+    };
+  }
+
+  function refreshTeam(){
+    return fetch('/api/users', { headers: _apiHeaders() })
+      .then(function(r){ if(r.status===401) return []; return r.json(); })
+      .then(function(data){
+        var apiUsers = (Array.isArray(data) ? data : []).map(_mapApiUser);
+        if(apiUsers.length){
+          TEAM.length = 0;
+          apiUsers.forEach(function(u,i){
+            u.phone = u.phone || '(555) ' + (100 + i*10) + '-' + (2000 + i);
+            u.email = u.email || (u.name.toLowerCase().replace(/[^a-z]+/g,'.').replace(/^\.+|\.+$/g,'') + '@coreconnect.io');
+            TEAM.push(u);
+          });
+          saveTeam();
+        }
+        return TEAM;
+      })
+      .catch(function(err){
+        console.warn('CCLeads: users API fetch failed, using local data', err);
+        return TEAM;
+      });
+  }
+
   function _teamKeyFor(name){
     var p = String(name||'').trim().split(/\s+/);
     var base = (((p[0]||'')[0]||'') + ((p[1]||p[0]||'')[0]||'') || 'U').toUpperCase();
@@ -232,17 +311,50 @@
     if(!m.key)   m.key = _teamKeyFor(m.name);
     if(!m.color) m.color = TEAM_PALETTE[TEAM.length % TEAM_PALETTE.length];
     if(!m.status) m.status = 'Active';
-    if(!m.createdAt) m.createdAt = Date.now();   // stamp so UIs can show newest-first
-    TEAM.push(m); saveTeam(); return m;
+    if(!m.createdAt) m.createdAt = Date.now();
+    TEAM.push(m); saveTeam();
+    var apiBody = { initials: m.key, name: m.name, email: m.email||'', role: m.role||'agent', avatar: m.color||'' };
+    if(m._password) apiBody.password = m._password;
+    fetch('/api/users', {
+      method: 'POST', headers: _apiHeaders(),
+      body: JSON.stringify(apiBody)
+    }).then(function(r){ return r.json(); }).then(function(saved){
+      if(saved && saved.id) m._dbId = saved.id;
+    }).catch(function(e){ console.warn('API user create failed', e); });
+    return m;
   }
   function updateTeamMember(key, patch){
     var u = TEAM.find(function(x){ return x.key === key; });
-    if(u){ Object.assign(u, patch); saveTeam(); }
+    if(u){
+      Object.assign(u, patch);
+      saveTeam();
+      var dbId = u._dbId;
+      if(dbId){
+        var apiPatch = {};
+        if(patch.name) apiPatch.name = patch.name;
+        if(patch.email) apiPatch.email = patch.email;
+        if(patch.role) apiPatch.role = patch.role;
+        if(patch.color) apiPatch.avatar = patch.color;
+        if(patch._password) apiPatch.password = patch._password;
+        fetch('/api/users/' + dbId, {
+          method: 'PUT', headers: _apiHeaders(),
+          body: JSON.stringify(apiPatch)
+        }).catch(function(e){ console.warn('API user update failed', e); });
+      }
+    }
     return u;
   }
   function removeTeamMember(key){
     var i = TEAM.findIndex(function(x){ return x.key === key; });
-    if(i >= 0){ TEAM.splice(i, 1); saveTeam(); }
+    if(i >= 0){
+      var u = TEAM[i];
+      TEAM.splice(i, 1); saveTeam();
+      if(u._dbId){
+        fetch('/api/users/' + u._dbId, {
+          method: 'DELETE', headers: _apiHeaders()
+        }).catch(function(e){ console.warn('API user delete failed', e); });
+      }
+    }
   }
 
   // ── Reviews seed (synced to LEADS) ────────────────────────────────────────
@@ -417,16 +529,63 @@
 
   var STATUS_LIST = ['Dead','Active','Follow Up','Sold','Deposit',
     'BDC - Show','BDC - No Show','BDC - Reschedule','BDC - Follow Up','BDC - Appt Set'];
+
+  // ── API integration ──────────────────────────────────────────────────────
+  var _seedByNo = {};
+  LEADS.forEach(function(l){ _seedByNo[l.no] = l; });
+
+  function _mapApiLead(api) {
+    var seed = _seedByNo[api.id] || {};
+    return {
+      no:          api.id,
+      active:      api.active,
+      status:      api.status,
+      name:        api.name,
+      email:       api.email || '',
+      phone:       api.phone || '',
+      source:      api.source || '',
+      stock:       api.stock || '',
+      vehicle:     api.vehicle || '',
+      assign:      api.assign || null,
+      ac:          api.accentColor || seed.ac || '#534AB7',
+      lastAttempt: seed.lastAttempt || '',
+      hrs:         seed.hrs || '0:00',
+      calls:       seed.calls || '0/0',
+      sms:         seed.sms || '0/0'
+    };
+  }
+
+  function refreshLeads() {
+    var headers = (window.CCAuth && CCAuth.authHeaders) ? CCAuth.authHeaders() : {};
+    return fetch('/api/leads?limit=1000', { headers: headers })
+      .then(function(r){ if(r.status===401){ return {leads:[]}; } return r.json(); })
+      .then(function(data){
+        var apiLeads = (data.leads || data).map(_mapApiLead);
+        LEADS.length = 0;
+        apiLeads.forEach(function(l){ LEADS.push(l); });
+        _revStatsCache = null;
+        return LEADS;
+      })
+      .catch(function(err){
+        console.warn('CCLeads: API fetch failed, using seed data', err);
+        return LEADS;
+      });
+  }
+
+  var _ready = Promise.all([refreshLeads(), refreshTeam(), refreshActivities()]).then(function(){ return LEADS; });
+
   global.CCLeads = {
     LEADS, emailCountsForLead, emailTotals, EMAIL_SEED_OUT, EMAIL_SEED_IN,
     smsCountsForLead, smsTotals,
     callCountsForLead, callTotals,
     NOW, createdOffsets, leadHoursBack, leadInPeriod, getPeriod, setPeriod,
-    getActivities, addActivity, removeActivity, updateActivity,
-    TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember,
+    getActivities, addActivity, removeActivity, updateActivity, refreshActivities,
+    TEAM, saveTeam, addTeamMember, updateTeamMember, removeTeamMember, refreshTeam,
     REVIEWS, reviewsByLead, reviewStats, reviewSeedKey: REVIEW_SEED_KEY,
     clearReviewStatsCache: function(){ _revStatsCache = null; },
-    STATUS_LIST: STATUS_LIST
+    STATUS_LIST: STATUS_LIST,
+    refreshLeads: refreshLeads,
+    ready: _ready
   };
 
   // Dynamic logo text: "CoreConnect" on main app, "Reputation" on Reputation pages.

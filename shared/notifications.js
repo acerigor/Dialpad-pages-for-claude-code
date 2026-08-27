@@ -55,6 +55,8 @@
   var TAB_LABELS = { all:'All', unread:'Unread', sms:'SMS', email:'Emails', call:'Calls', appt:'Appointments' };
   var _list = null;
   var _currentTab = 'all';
+  var _searchQuery = '';
+  var _readFilter = 'all';
 
   /* ── persistence ─────────────────────────────────────────────────────── */
   function load(){
@@ -184,18 +186,48 @@
     + '</button>';
   }
   function listFor(tab){
-    if(tab==='all') return all();
-    if(tab==='unread') return unread();
-    return byType(tab);
+    var list;
+    if(tab==='all') list = all();
+    else if(tab==='unread') list = unread();
+    else list = byType(tab);
+    if(_searchQuery){
+      var q = _searchQuery.toLowerCase();
+      list = list.filter(function(n){
+        return (n.leadName && n.leadName.toLowerCase().indexOf(q)>=0)
+            || (n.title && n.title.toLowerCase().indexOf(q)>=0)
+            || (n.body && n.body.toLowerCase().indexOf(q)>=0);
+      });
+    }
+    if(_readFilter === 'unread') list = list.filter(function(n){ return !n.read; });
+    else if(_readFilter === 'read') list = list.filter(function(n){ return n.read; });
+    return list;
   }
   function render(tab){
     if(tab) _currentTab = tab;
     var body = document.getElementById('notif-body'); if(!body) return;
     var list = listFor(_currentTab);
     if(!list.length){
-      body.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">🔔</div>You\'re all caught up</div>';
+      var emptyMsg, emptyIcon;
+      if(_searchQuery){ emptyMsg = 'No matching notifications'; emptyIcon = '🔍'; }
+      else if(_readFilter === 'unread'){ emptyMsg = 'No unread notifications'; emptyIcon = '✓'; }
+      else if(_readFilter === 'read'){ emptyMsg = 'No read notifications'; emptyIcon = '📭'; }
+      else { emptyMsg = 'You\'re all caught up'; emptyIcon = '🔔'; }
+      body.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">'+emptyIcon+'</div>'+emptyMsg+'</div>';
     } else {
       body.innerHTML = list.map(rowHtml).join('');
+    }
+    // update filter button + dropdown state
+    var filterBtn = document.getElementById('notif-filter-btn');
+    if(filterBtn){
+      filterBtn.classList.toggle('active', _readFilter !== 'all');
+      var lbl = filterBtn.querySelector('.notif-filter-label');
+      if(lbl) lbl.textContent = _readFilter === 'all' ? '' : (_readFilter === 'unread' ? 'Unread' : 'Read');
+    }
+    var filterDd = document.getElementById('notif-filter-dd');
+    if(filterDd){
+      filterDd.querySelectorAll('.notif-filter-opt').forEach(function(o){
+        o.classList.toggle('selected', o.getAttribute('data-filter') === _readFilter);
+      });
     }
     // tab counts
     var counts = { all: all().length, unread: unread().length, sms: byType('sms').length, email: byType('email').length, call: byType('call').length, appt: byType('appt').length };
@@ -257,7 +289,27 @@
       + '.cc-ntf-row.is-unread{background:rgba(79,124,255,.04);}'
       + '.notif-tab.icon-tab{padding:10px 10px;gap:5px;}'
       + '.notif-tab .nt-ic{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;}'
-      + '.notif-tab .nt-ic svg{width:16px;height:16px;display:block;}';
+      + '.notif-tab .nt-ic svg{width:16px;height:16px;display:block;}'
+      + '.notif-search{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
+      + '.notif-search-icon{width:16px;height:16px;color:var(--mu);flex:none;}'
+      + '.notif-search-input{flex:1;background:var(--sur2);border:0.5px solid var(--brd2);border-radius:8px;padding:7px 10px;color:var(--tx);font-family:var(--font);font-size:12.5px;outline:none;min-width:0;}'
+      + '.notif-search-input::placeholder{color:var(--mu);}'
+      + '.notif-search-input:focus{border-color:var(--ac);background:var(--sur);}'
+      + '.notif-filter-wrap{position:relative;flex:none;}'
+      + '.notif-filter-btn{display:flex;align-items:center;justify-content:center;gap:4px;background:transparent;border:0.5px solid var(--brd2);border-radius:8px;width:32px;height:32px;padding:0;cursor:pointer;color:var(--mu);flex:none;transition:all .12s;font-family:var(--font);font-size:11px;}'
+      + '.notif-filter-btn:hover{background:rgba(255,255,255,.06);color:var(--tx);}'
+      + '.notif-filter-btn.active{background:rgba(79,124,255,.12);border-color:var(--ac);color:var(--ac2);}'
+      + '.notif-filter-btn svg{width:14px;height:14px;flex:none;display:block;margin:auto;}'
+      + '.notif-filter-label{display:none;font-weight:500;white-space:nowrap;}'
+      + '.notif-filter-dd{display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--sur);border:0.5px solid var(--brd2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.45);min-width:140px;z-index:10;overflow:hidden;padding:4px;}'
+      + '.notif-filter-dd.open{display:block;}'
+      + '.notif-filter-opt{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:none;padding:8px 12px;color:var(--tx);font-family:var(--font);font-size:12.5px;cursor:pointer;border-radius:6px;text-align:left;}'
+      + '.notif-filter-opt:hover{background:rgba(255,255,255,.06);}'
+      + '.notif-filter-opt.selected{color:var(--ac2);font-weight:600;}'
+      + '.notif-filter-opt .nf-check{width:14px;height:14px;flex:none;opacity:0;}'
+      + '.notif-filter-opt.selected .nf-check{opacity:1;}'
+      + '.notif-filter-opt .nf-label{flex:1;}'
+      + '.notif-filter-opt .nf-hint{font-size:11px;color:var(--mu);flex:none;}';
     var st = document.createElement('style'); st.id='cc-ntf-style'; st.textContent = css; document.head.appendChild(st);
   }
 
@@ -292,11 +344,65 @@
       return b;
     }
     ['sms','email','call','appt'].forEach(function(k){ tabs.appendChild(mkIconTab(k)); });
+    // Inject search bar after tabs
+    var panel = tabs.parentElement;
+    var body = document.getElementById('notif-body');
+    if(panel && body && !panel.querySelector('.notif-search')){
+      var searchWrap = document.createElement('div');
+      searchWrap.className = 'notif-search';
+      var CHECK_SVG = '<svg class="nf-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      searchWrap.innerHTML = '<svg class="notif-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+        + '<input type="text" class="notif-search-input" id="notif-search-input" placeholder="Search notifications…" autocomplete="off" />'
+        + '<div class="notif-filter-wrap" id="notif-filter-wrap">'
+        +   '<button type="button" class="notif-filter-btn" id="notif-filter-btn" title="Filter by read status">'
+        +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>'
+        +     '<span class="notif-filter-label"></span>'
+        +   '</button>'
+        +   '<div class="notif-filter-dd" id="notif-filter-dd">'
+        +     '<button class="notif-filter-opt selected" data-filter="all"><span class="nf-label">All</span>'+CHECK_SVG+'</button>'
+        +     '<button class="notif-filter-opt" data-filter="unread"><span class="nf-label">Unread</span>'+CHECK_SVG+'</button>'
+        +     '<button class="notif-filter-opt" data-filter="read"><span class="nf-label">Read</span>'+CHECK_SVG+'</button>'
+        +   '</div>'
+        + '</div>';
+      panel.insertBefore(searchWrap, body);
+      var input = searchWrap.querySelector('input');
+      input.addEventListener('input', function(){ _searchQuery = this.value.trim(); render(_currentTab); });
+      var filterBtn = document.getElementById('notif-filter-btn');
+      var filterDd = document.getElementById('notif-filter-dd');
+      filterBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        filterDd.classList.toggle('open');
+      });
+      filterDd.addEventListener('click', function(e){
+        var opt = e.target.closest('.notif-filter-opt'); if(!opt) return;
+        e.stopPropagation();
+        _readFilter = opt.getAttribute('data-filter') || 'all';
+        filterDd.classList.remove('open');
+        render(_currentTab);
+      });
+      document.addEventListener('mousedown', function(e){
+        if(filterDd.classList.contains('open') && !e.target.closest('#notif-filter-wrap')){
+          filterDd.classList.remove('open');
+        }
+      });
+    }
   }
 
   /* ── override per-page placeholder functions ─────────────────────────── */
   function installOverrides(){
     var prevOpen = window.openNotifications;
+    var prevClose = window.closeNotifications;
+    window.closeNotifications = function(){
+      _searchQuery = '';
+      _readFilter = 'all';
+      var si = document.getElementById('notif-search-input'); if(si) si.value = '';
+      var fd = document.getElementById('notif-filter-dd'); if(fd) fd.classList.remove('open');
+      if(typeof prevClose === 'function') prevClose();
+      else {
+        var p = document.getElementById('notif-panel'); if(p) p.classList.remove('open');
+        var b = document.getElementById('header-bell'); if(b) b.classList.remove('active');
+      }
+    };
     window.openNotifications = function(){
       if(typeof prevOpen === 'function') prevOpen();
       else {

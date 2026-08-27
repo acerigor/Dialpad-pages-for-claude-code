@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Lead {
+  id          Int      @id @default(autoincrement())
+  active      Boolean  @default(true)
+  status      String   @default("Active")
+  name        String
+  email       String   @default("")
+  phone       String   @default("")
+  source      String   @default("")
+  stock       String   @default("")
+  vehicle     String   @default("")
+  assign      String?
+  label       String?
+  accentColor String   @default("#534AB7")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages    Message[]
+  notes       Note[]
+  calls       CallRecord[]
+  activities  Activity[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  leadId    Int
+  lead      Lead     @relation(fields: [leadId], references: [id])
+  type      String
+  direction String
+  body      String   @default("")
+  subject   String?
+  agent     String?
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  leadId    Int
+  lead      Lead     @relation(fields: [leadId], references: [id])
+  body      String
+  agent     String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           Int    @id @default(autoincrement())
+  initials     String @unique
+  name         String
+  email        String @default("")
+  role         String @default("agent")
+  avatar       String @default("")
+  passwordHash String @default("")
+}
+
+model CallRecord {
+  id          Int      @id @default(autoincrement())
+  leadId      Int?
+  lead        Lead?    @relation(fields: [leadId], references: [id])
+  leadName    String   @default("")
+  type        String
+  direction   String
+  durationSec Int      @default(0)
+  agent       String?
+  createdAt   DateTime @default(now())
+}
+
+model Activity {
+  id        Int      @id @default(autoincrement())
+  leadId    Int?
+  lead      Lead?    @relation(fields: [leadId], references: [id])
+  type      String
+  title     String
+  date      String
+  time      String   @default("")
+  notes     String   @default("")
+  agent     String?
+  createdAt DateTime @default(now())
+}
+
+model SmsRecord {
+  id        Int      @id @default(autoincrement())
+  direction String
+  createdAt DateTime @default(now())
+}
+
+model EmailRecord {
+  id        Int      @id @default(autoincrement())
+  direction String
+  createdAt DateTime @default(now())
+}

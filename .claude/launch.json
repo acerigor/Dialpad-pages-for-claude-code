@@ -5,7 +5,8 @@
       "name": "static",
       "runtimeExecutable": "node",
       "runtimeArgs": ["serve.js"],
-      "port": 8123
+      "port": 8123,
+      "autoPort": true
     }
   ]
 }

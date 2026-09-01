@@ -17,39 +17,33 @@ echo   Opening %PAGE% ...
 echo   (Keep this window open. Close it or press Ctrl+C to stop.)
 echo.
 
-REM Check Node.js is installed
-where node >nul 2>nul
-if %errorlevel% neq 0 (
-  echo.
-  echo   ERROR: Node.js was not found on your PATH.
-  echo   Install it from https://nodejs.org/ then run this file again.
-  echo.
-  pause
-  exit /b 1
-)
-
-REM Check node_modules exists
-if not exist "%~dp0node_modules" (
-  echo   Installing dependencies...
-  echo.
-  npm install
-  if %errorlevel% neq 0 (
-    echo.
-    echo   ERROR: npm install failed. Check the error above.
-    echo.
-    pause
-    exit /b 1
-  )
-  echo.
-)
-
 REM Open the browser a couple seconds after the server boots
 start "" cmd /c "timeout /t 2 >nul & start http://localhost:%PORT%/%PAGE%"
 
-REM Start the server
-node "%~dp0serve.js"
+REM Node.js is the most reliable here (ships its own runtime, no downloads).
+where node >nul 2>nul
+if %errorlevel%==0 (
+  node "%~dp0serve.js"
+  echo.
+  echo   Server stopped. Press any key to close.
+  pause
+  goto end
+)
+
+REM Fall back to a REAL Python via the "py" launcher only. The bare "python"
+REM command on Windows is often a Microsoft Store stub that does NOT serve.
+where py >nul 2>nul
+if %errorlevel%==0 (
+  py -3 -m http.server %PORT%
+  goto end
+)
 
 echo.
-echo   Server stopped. Press any key to close this window.
+echo   ERROR: Node.js was not found on your PATH.
+echo   Install it from https://nodejs.org/ then run this file again.
+echo   (Alternatively install Python from https://www.python.org/ and
+echo    tick "Add Python to PATH".)
 echo.
 pause
+
+:end

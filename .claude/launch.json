@@ -4,9 +4,8 @@
     {
       "name": "static",
       "runtimeExecutable": "node",
-      "runtimeArgs": [".claude/static-server.js"],
-      "port": 8123,
-      "autoPort": true
+      "runtimeArgs": ["serve.js"],
+      "port": 8123
     }
   ]
 }

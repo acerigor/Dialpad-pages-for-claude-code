@@ -1045,7 +1045,7 @@
 
   function gsEsc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-  var _gsSel = 0, _gsHits = [], _gsBuilt = false, _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
+  var _gsSel = 0, _gsHits = [], _gsBuilt = false, _gsPage = null;
 
   function ensureGsCss(){
     if(document.getElementById('gs-style')) return;
@@ -1058,10 +1058,27 @@
       + '.gs-head input::placeholder{color:var(--mu);}'
       + '.gs-esc{background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);font-family:var(--font);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;flex:none;font-weight:500;}'
       + '.gs-esc:hover{color:var(--tx);}'
-      + '.gs-chips{display:flex;align-items:center;gap:6px;padding:8px 16px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
-      + '.gs-chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:500;background:var(--sur2);border:0.5px solid var(--brd2);color:var(--mu);cursor:pointer;transition:all .12s;font-family:var(--font);}'
-      + '.gs-chip:hover{border-color:var(--ac);color:var(--tx);}'
-      + '.gs-chip.on{background:var(--ac);border-color:var(--ac);color:#fff;}'
+      + '.gs-section-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--mu);padding:12px 16px 4px;}'
+      + '.gs-clear-filter{display:none;font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--ac);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);}'
+      + '.gs-clear-filter:hover{text-decoration:underline;}'
+      + '.gs-clear-filter.show{display:block;}'
+      + '.gs-pages{display:flex;flex-direction:column;gap:2px;padding:4px 16px 8px;border-bottom:0.5px solid var(--brd);flex-shrink:0;}'
+      + '.gs-page-link{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;color:var(--tx);cursor:pointer;transition:all .12s;font-family:var(--font);text-decoration:none;background:transparent;border:none;text-align:left;width:100%;}'
+      + '.gs-page-link:hover{background:var(--sur2);}'
+      + '.gs-page-link.on{background:var(--ac);border-color:var(--ac);}'
+      + '.gs-page-link.on .gs-page-link-title{color:#fff;}'
+      + '.gs-page-link.on .gs-page-link-sub{color:rgba(255,255,255,.7);}'
+      + '.gs-page-link.on svg{color:#fff;}'
+      + '.gs-page-link svg{width:16px;height:16px;flex:none;color:var(--mu);align-self:center;}'
+      + '.gs-page-link-text{display:flex;flex-direction:column;gap:1px;}'
+      + '.gs-page-link-title{font-size:12.5px;font-weight:500;}'
+      + '.gs-page-link-sub{font-size:10.5px;font-weight:400;color:var(--mu);}'
+      + '.gs-active-filter{display:none;align-items:center;gap:6px;padding:6px 16px;flex-shrink:0;}'
+      + '.gs-active-filter.show{display:flex;}'
+      + '.gs-active-filter-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--ac);color:#fff;font-size:11px;font-weight:500;font-family:var(--font);}'
+      + '.gs-active-filter-x{cursor:pointer;opacity:.7;font-size:13px;line-height:1;}'
+      + '.gs-active-filter-x:hover{opacity:1;}'
+      + '.gs-section-divider{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--mu);padding:12px 12px 4px;margin-top:4px;border-top:0.5px solid var(--brd);}'
       + '.gs-body{overflow-y:auto;flex:1;padding:6px 4px 8px;}'
       + '.gs-empty{padding:32px 20px;text-align:center;color:var(--mu);font-size:13px;}'
       + '.gs-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border-left:2px solid transparent;background:transparent;border-top:none;border-right:none;border-bottom:none;width:calc(100% - 8px);margin:0 4px;text-align:left;font-family:var(--font);}'
@@ -1085,16 +1102,19 @@
     bd.innerHTML = '<div class="gs-panel" role="dialog" aria-modal="true" aria-label="Global search">'
       + '<div class="gs-head">'
         + '<svg class="gs-mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
-        + '<input type="text" id="gs-input" placeholder="Search leads, pages, and settings…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>'
+        + '<input type="text" id="gs-input" placeholder="Search leads…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>'
         + '<button type="button" class="gs-esc" onclick="closeGlobalSearch()">Esc</button>'
       + '</div>'
-      + '<div class="gs-chips" id="gs-chips">'
-        + '<button type="button" class="gs-chip on" data-gs-scope="lead">Leads</button>'
-        + '<button type="button" class="gs-chip" data-gs-scope="email">Email</button>'
-        + '<button type="button" class="gs-chip" data-gs-scope="phone">Phone</button>'
-        + '<button type="button" class="gs-chip" data-gs-scope="vehicle">Vehicle</button>'
-        + '<button type="button" class="gs-chip" data-gs-scope="pages">Pages</button>'
+      + '<div class="gs-section-label"><span>Pages</span><button type="button" class="gs-clear-filter" id="gs-clear-filter">Clear filter</button></div>'
+      + '<div class="gs-pages">'
+        + '<button type="button" class="gs-page-link" data-gs-page="crm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">CRM</span><span class="gs-page-link-sub">Manage leads and contacts</span></span></button>'
+        + '<button type="button" class="gs-page-link" data-gs-page="calls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">Call History</span><span class="gs-page-link-sub">View past calls</span></span></button>'
+        + '<button type="button" class="gs-page-link" data-gs-page="sms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">Message History</span><span class="gs-page-link-sub">Browse SMS conversations</span></span></button>'
+        + '<button type="button" class="gs-page-link" data-gs-page="voicemail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="11.5" r="4.5"/><circle cx="18.5" cy="11.5" r="4.5"/><line x1="5.5" y1="16" x2="18.5" y2="16"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">Voicemail</span><span class="gs-page-link-sub">Listen to voice messages</span></span></button>'
+        + '<button type="button" class="gs-page-link" data-gs-page="appointments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">Appointments</span><span class="gs-page-link-sub">Schedule and manage bookings</span></span></button>'
+        + '<button type="button" class="gs-page-link" data-gs-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="gs-page-link-text"><span class="gs-page-link-title">Settings</span><span class="gs-page-link-sub">Configure preferences</span></span></button>'
       + '</div>'
+      + '<div class="gs-active-filter" id="gs-active-filter"></div>'
       + '<div class="gs-body" id="gs-body"></div>'
       + '<div class="gs-empty" id="gs-empty" hidden>No matches. Try another word.</div>'
     + '</div>';
@@ -1113,26 +1133,23 @@
       body.addEventListener('click', gsBodyClick);
       body.addEventListener('mouseover', gsBodyMouseOver);
     }
-    var chips = document.getElementById('gs-chips');
-    if(chips){
-      chips.addEventListener('click', function(e){
-        var chip = e.target.closest('.gs-chip');
-        if(!chip) return;
-        var scope = chip.getAttribute('data-gs-scope') || 'lead';
-        if(scope === 'lead'){
-          _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
-        } else if(_gsScope.lead){
-          _gsScope = {lead:false,email:false,phone:false,vehicle:false};
-          _gsScope[scope] = true;
-        } else {
-          _gsScope[scope] = !_gsScope[scope];
-          if(!_gsScope.email && !_gsScope.phone && !_gsScope.vehicle && !_gsScope.pages){
-            _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
-          } else if(_gsScope.email && _gsScope.phone && _gsScope.vehicle && _gsScope.pages){
-            _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
-          }
-        }
-        gsUpdateChips(chips);
+    var pages = bd.querySelector('.gs-pages');
+    if(pages){
+      pages.addEventListener('click', function(e){
+        var btn = e.target.closest('.gs-page-link');
+        if(!btn) return;
+        var page = btn.getAttribute('data-gs-page');
+        _gsPage = (_gsPage === page) ? null : page;
+        gsUpdatePages();
+        var inp = document.getElementById('gs-input');
+        gsFilter(inp ? inp.value : '');
+      });
+    }
+    var clearBtn = document.getElementById('gs-clear-filter');
+    if(clearBtn){
+      clearBtn.addEventListener('click', function(){
+        _gsPage = null;
+        gsUpdatePages();
         var inp = document.getElementById('gs-input');
         gsFilter(inp ? inp.value : '');
       });
@@ -1140,28 +1157,25 @@
     _gsBuilt = true;
   }
 
-  function gsUpdateChips(container){
-    var all = container.querySelectorAll('.gs-chip');
-    for(var k = 0; k < all.length; k++){
-      var s = all[k].getAttribute('data-gs-scope');
-      all[k].classList.toggle('on', !!_gsScope[s]);
+  function gsUpdatePages(){
+    var pages = document.querySelectorAll('.gs-page-link');
+    for(var k = 0; k < pages.length; k++){
+      var p = pages[k].getAttribute('data-gs-page');
+      pages[k].classList.toggle('on', _gsPage === p);
     }
+    var clr = document.getElementById('gs-clear-filter');
+    if(clr) clr.classList.toggle('show', !!_gsPage);
   }
 
   function gsLeadHits(q){
     var arr = (window.CCLeads && Array.isArray(CCLeads.LEADS)) ? CCLeads.LEADS : [];
     if(!q) return [];
     return arr.filter(function(l){
-      if(_gsScope.lead) return String(l.name||'').toLowerCase().indexOf(q)>=0
+      return String(l.name||'').toLowerCase().indexOf(q)>=0
           ||String(l.phone||'').toLowerCase().indexOf(q)>=0
           ||String(l.email||'').toLowerCase().indexOf(q)>=0
           ||String(l.vehicle||'').toLowerCase().indexOf(q)>=0
           ||String(l.stock||'').toLowerCase().indexOf(q)>=0;
-      if(_gsScope.email   && String(l.email  ||'').toLowerCase().indexOf(q)>=0) return true;
-      if(_gsScope.phone   && String(l.phone  ||'').toLowerCase().indexOf(q)>=0) return true;
-      if(_gsScope.vehicle && (String(l.vehicle||'').toLowerCase().indexOf(q)>=0
-                           || String(l.stock  ||'').toLowerCase().indexOf(q)>=0)) return true;
-      return false;
     }).map(function(l){
       var subParts = [];
       if(l.vehicle) subParts.push(l.vehicle);
@@ -1264,16 +1278,30 @@
   function gsFilter(v){
     var q = String(v || '').toLowerCase().trim();
     if(!q){ _gsHits = []; }
-    else if(!_gsScope.lead){
-      var hits = [];
-      if(_gsScope.email || _gsScope.phone || _gsScope.vehicle) hits = hits.concat(gsLeadHits(q));
-      if(_gsScope.pages) hits = hits.concat(GS_INDEX.filter(function(e){
-        return String(e.title||'').toLowerCase().indexOf(q) >= 0
-            || String(e.sub||'').toLowerCase().indexOf(q) >= 0
-            || String(e.type||'').toLowerCase().indexOf(q) >= 0;
-      }));
-      _gsHits = hits.slice(0, GS_MAX);
-    } else {
+    else if(_gsPage){
+      var allHits = gsLeadHits(q).concat(gsInteractionHits(q));
+      var pageTypeMap = {crm:'Lead',calls:'Call',sms:'SMS',voicemail:'Voicemail',appointments:'Appointment',settings:'Setting'};
+      var filterType = pageTypeMap[_gsPage];
+      if(_gsPage === 'crm'){
+        _gsHits = allHits.filter(function(h){ return h.type === 'Lead'; }).slice(0, GS_MAX);
+      } else if(_gsPage === 'calls'){
+        _gsHits = allHits.filter(function(h){ return h.type === 'Call'; }).slice(0, GS_MAX);
+      } else if(_gsPage === 'sms'){
+        _gsHits = allHits.filter(function(h){ return h.type === 'SMS'; }).slice(0, GS_MAX);
+      } else if(_gsPage === 'voicemail'){
+        _gsHits = allHits.filter(function(h){ return h.type === 'Voicemail'; }).slice(0, GS_MAX);
+      } else if(_gsPage === 'appointments' || _gsPage === 'settings'){
+        var navHits = GS_INDEX.filter(function(e){
+          return (String(e.title||'').toLowerCase().indexOf(q) >= 0
+              || String(e.sub||'').toLowerCase().indexOf(q) >= 0)
+              && String(e.type||'').toLowerCase().indexOf(_gsPage === 'settings' ? 'setting' : 'appointment') >= 0;
+        });
+        _gsHits = navHits.slice(0, GS_MAX);
+      } else {
+        _gsHits = [];
+      }
+    }
+    else {
       var navHits = GS_INDEX.filter(function(e){
         return String(e.title||'').toLowerCase().indexOf(q) >= 0
             || String(e.sub||'').toLowerCase().indexOf(q) >= 0
@@ -1291,8 +1319,39 @@
     var body = document.getElementById('gs-body');
     var empty = document.getElementById('gs-empty');
     if(!body || !empty) return;
-    if(!_gsHits.length){ body.innerHTML = ''; empty.hidden = false; return; }
+    var inp = document.getElementById('gs-input');
+    var hasQuery = inp && inp.value.trim().length > 0;
+    var sectionLabel = document.querySelector('.gs-section-label');
+    var pagesEl = document.querySelector('.gs-pages');
+    var activeFilter = document.getElementById('gs-active-filter');
+    if(sectionLabel) sectionLabel.style.display = hasQuery ? 'none' : '';
+    if(pagesEl) pagesEl.style.display = hasQuery ? 'none' : '';
+    if(activeFilter){
+      var filterName = '';
+      if(_gsPage){
+        var pageNames = {crm:'CRM',calls:'Call History',sms:'Message History',voicemail:'Voicemail',appointments:'Appointments',settings:'Settings'};
+        filterName = pageNames[_gsPage] || _gsPage;
+      }
+      if(hasQuery && filterName){
+        activeFilter.innerHTML = '<span class="gs-active-filter-chip">' + filterName + '<span class="gs-active-filter-x" id="gs-filter-x">×</span></span>';
+        activeFilter.classList.add('show');
+        var xBtn = document.getElementById('gs-filter-x');
+        if(xBtn) xBtn.onclick = function(){
+          _gsPage = null;
+          gsUpdatePages();
+          gsFilter(inp ? inp.value : '');
+        };
+      } else {
+        activeFilter.classList.remove('show');
+        activeFilter.innerHTML = '';
+      }
+    }
+    if(!_gsHits.length){ body.innerHTML = ''; body.style.display = 'none'; empty.hidden = !hasQuery; return; }
     empty.hidden = true;
+    body.style.display = '';
+    var sectionMap = {'Lead':'CRM','Call':'Call History','SMS':'Message History','Voicemail':'Voicemail','Page':'Pages','Reputation':'Pages','Settings':'Settings'};
+    var lastSection = '';
+    var showSections = !_gsPage;
     body.innerHTML = _gsHits.map(function(e, i){
       var on = (i === _gsSel) ? ' on' : '';
       var avatar = '';
@@ -1301,7 +1360,12 @@
         var initials = String(e.lead.name || '').trim().split(/\s+/).slice(0,2).map(function(p){return (p[0]||'').toUpperCase();}).join('');
         avatar = '<span class="gs-row-av" style="background:' + gsEsc(color) + ';">' + gsEsc(initials) + '</span>';
       }
-      return '<button type="button" class="gs-row' + on + '" data-i="' + i + '">'
+      var divider = '';
+      if(showSections){
+        var sec = sectionMap[e.type] || '';
+        if(sec && sec !== lastSection){ divider = '<div class="gs-section-divider">' + gsEsc(sec) + '</div>'; lastSection = sec; }
+      }
+      return divider + '<button type="button" class="gs-row' + on + '" data-i="' + i + '">'
         + avatar
         + '<span class="gs-row-txt">'
           + '<span class="gs-row-title">' + gsEsc(e.title) + '</span>'
@@ -1354,9 +1418,8 @@
     document.getElementById('gs-backdrop').classList.add('open');
     document.body.style.overflow = 'hidden';
     var inp = document.getElementById('gs-input'); if(inp){ inp.value = ''; setTimeout(function(){ inp.focus(); }, 30); }
-    _gsSel = 0; _gsHits = []; _gsScope = {lead:true,email:false,phone:false,vehicle:false,pages:false};
-    var chips = document.getElementById('gs-chips');
-    if(chips) gsUpdateChips(chips);
+    _gsSel = 0; _gsHits = []; _gsPage = null;
+    gsUpdatePages();
     gsRender();
   }
   function closeGlobalSearch(){
